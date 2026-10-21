@@ -1,36 +1,44 @@
 # asyncio
 
-> 15 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **test_format_npc_stats_for_admin_no_npc_id()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_stats_for_admin_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_no_npcs()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC stats for admin successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC stats for admin when NPC ID missing.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting single NPC result successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting single NPC result with admin stats.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup when no NPCs in room.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Scenario 5: Chat Messages Between Players **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **scenario-05-chat-messages.md** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 1: Clean State - Unmute Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 2: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 3: AW Sends Chat Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 4: Verify Ithaqua Sees AW's Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 5: Ithaqua Replies** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 6: Verify AW Sees Ithaqua's Reply** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 7: Test Multiple Messages** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 8: Test Message Formatting** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Step 9: Test Message History** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (14 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
+- `e2e-tests/scenarios/scenario-05-chat-messages.md`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

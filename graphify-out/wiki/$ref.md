@@ -1,35 +1,35 @@
 # $ref
 
-> 13 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **$ref** (4 connections) — `server/help/help_schema.json`
-- **aliases** (4 connections) — `server/help/help_schema.json`
-- **properties** (3 connections) — `server/help/help_schema.json`
-- **commands** (3 connections) — `server/help/help_schema.json`
-- **guides** (3 connections) — `server/help/help_schema.json`
-- **items** (2 connections) — `server/help/help_schema.json`
-- **items** (2 connections) — `server/help/help_schema.json`
-- **items** (2 connections) — `server/help/help_schema.json`
-- **items** (2 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **uniqueItems** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
+- **Decisions required** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **P6 · Review Clusters (draft — P4 findings still to fold in)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Proposed for bulk confirmation (mechanical, no judgement needed)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **A · Hard-coded metrics in documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **B · Migration scaffolding that outlived its migration** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **C · Broken links to archived documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **D · The design record was built from the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **E · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **F · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **G · Doc ↔ doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **H · Contract/path drift, rooted in one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **I · Undocumented systems** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **J · Operational defects — recommend removing from this audit entirely** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Not findings — recorded so they are not re-litigated** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
-- [help_schema.json](help_schema.json.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

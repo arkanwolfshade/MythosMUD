@@ -1,32 +1,39 @@
 # Findings
 
-> 10 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Findings** (5 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY: Manual Statistical Calculations** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY: Dice Rolling and Stat Generation** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **🔵 LOW PRIORITY: Type Hints and Documentation** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Issue 1: Performance Monitor - Manual Statistics** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Issue 2: Performance Tracker - Repeated Statistical Operations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Issue 3: Stats Generator - Manual Dice Rolling** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Issue 4: Stats Summary - Manual Summation** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Issue 5: Missing NumPy Type Hints** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **✅ RESOLVED: NumPy Dependency and Usage** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **ADR-024-server-authoritative-perceived-reality.md** (5 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
+- **ADR-025-corruption-perceptual-filter.md** (4 connections) — `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
+- **SUBSYSTEM_CORRUPTION_DESIGN.md** (4 connections) — `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- **SUBSYSTEM_DREAM_MESSAGING_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
+- **SUBSYSTEM_ENTITY_CONTACT_DESIGN.md** (3 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **Lucidity Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
+- **Rest Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
+- **Server-authoritative hallucinations (#714)** (1 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
 
 ## Relationships
 
-- [NumPy Code Review - MythosMUD Codebase](NumPy_Code_Review_-_MythosMUD_Codebase.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
+- [event_publisher](event_publisher.md) (1 shared connections)
+- [holidays](holidays.md) (1 shared connections)
+- [test_event_publisher_init_with_initial_sequence](test_event_publisher_init_with_initial_sequence.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NUMPY_CODE_REVIEW.md`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
+- `docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md`
+- `docs/subsystems/SUBSYSTEM_CORRUPTION_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

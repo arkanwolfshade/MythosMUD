@@ -1,10 +1,10 @@
 # Things and notes to expand on
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Things and notes to expand on** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

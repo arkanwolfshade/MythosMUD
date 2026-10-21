@@ -1,24 +1,23 @@
 # test_validate_room_exists_cache_not_found
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_validate_room_exists_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() returns False when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_target_exists_partial_match()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_target_exists with partial match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

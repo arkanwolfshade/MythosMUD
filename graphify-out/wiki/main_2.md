@@ -1,32 +1,34 @@
 # main
 
-> 11 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **main()** (6 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_write_state_atomic()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **.claude/hooks/trigger_test_agent.py** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Path** (3 connections)
-- **NoReturn** (1 connections)
-- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **^[a-z0-9_]+$** (5 connections) — `schemas/emote_schema.json`
+- **aliases** (5 connections) — `schemas/emote_schema.json`
+- **properties** (4 connections) — `schemas/emote_schema.json`
+- **patternProperties** (2 connections) — `schemas/emote_schema.json`
+- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **items** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
+- **uniqueItems** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [sub_zone](sub_zone.md) (1 shared connections)
+- [Recommendations Summary](Recommendations_Summary.md) (1 shared connections)
+- [9. Command Blocking During Grace Period](9._Command_Blocking_During_Grace_Period.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/hooks/trigger_test_agent.py`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

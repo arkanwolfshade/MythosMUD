@@ -1,10 +1,10 @@
 # ADR-019-player-effects-system.md
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-019-player-effects-system.md** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
+- **Cursor Hooks** (0 connections) — `docs/CURSOR_HOOKS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-019-player-effects-system.md`
+- `docs/CURSOR_HOOKS.md`
 
 ## Audit Trail
 

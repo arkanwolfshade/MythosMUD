@@ -1,15 +1,15 @@
 # test_create_go_command
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_go_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 

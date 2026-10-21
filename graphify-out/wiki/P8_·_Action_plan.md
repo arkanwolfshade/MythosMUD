@@ -1,27 +1,25 @@
 # P8 · Action plan
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **P8 · Action plan** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Documentation edits** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Issues to reopen — **C7**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **New ADRs (next free numbers, index updated in `decisions/README.md`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Remediation plans to draft (not execute)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Verification before closing P8** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **The Malleus Monstrorum Keeper Deck (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- **The Malleus Monstrorum Keeper Deck.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

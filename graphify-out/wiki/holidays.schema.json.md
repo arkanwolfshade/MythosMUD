@@ -1,30 +1,30 @@
 # holidays.schema.json
 
-> 8 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **holidays.schema.json** (7 connections) — `db/static/schemas/holidays.schema.json`
-- **required** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **$id** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **title** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **ui-v2 demos** (4 connections) — `client/src/components/ui-v2/demos/README.md`
+- **UI Primitives README** (3 connections) — `client/src/components/ui-v2/primitives/README.md`
+- **ui-v2 demos README** (2 connections) — `client/src/components/ui-v2/demos/README.md`
+- **Contents** (1 connections) — `client/src/components/ui-v2/demos/README.md`
+- **Entry** (1 connections) — `client/src/components/ui-v2/demos/README.md`
+- **Purpose** (1 connections) — `client/src/components/ui-v2/demos/README.md`
+- **UI Primitives** (1 connections) — `client/src/components/ui-v2/primitives/README.md`
 
 ## Relationships
 
-- [items](items.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `client/src/components/ui-v2/demos/README.md`
+- `client/src/components/ui-v2/primitives/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

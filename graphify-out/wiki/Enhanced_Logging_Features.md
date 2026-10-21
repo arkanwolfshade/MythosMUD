@@ -1,27 +1,25 @@
 # Enhanced Logging Features
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Enhanced Logging Features** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Correlation IDs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Exception Tracking** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **MDC (Mapped Diagnostic Context)** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Security Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Detailed Feature Comparison** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Entry Points** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Primitives** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Task Management** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- [log_room_broadcast_result](log_room_broadcast_result.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

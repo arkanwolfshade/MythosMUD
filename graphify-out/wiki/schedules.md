@@ -1,27 +1,31 @@
 # schedules
 
-> 6 nodes
+> 10 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **load_test_10_players.spec.ts** (9 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **generateLoadTestCredential()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **registerPlayer()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **analyzeLogFiles()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **executeCommand()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **INVITE_CODES** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **PLAYER_CONFIGS** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **PlayerConfig** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **NOTE: This test is designed to be executed using Playwright MCP tools for** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **selectProfessionAndCreateCharacter()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
 
 ## Relationships
 
-- [schedule.schema.json](schedule.schema.json.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `e2e-tests/load-tests/load_test_10_players.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,22 @@
 # test_add_room_drop_zero_quantity
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_add_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() handles zero quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Zustand Stores** (0 connections) — `client/README.md`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `client/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,35 +1,35 @@
 # fix_markdown_code_block_style.py
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **fix_markdown_code_block_style.py** (6 connections) — `scripts/fix_markdown_code_block_style.py`
-- **fix_code_block_style()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
-- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
-- **main()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
-- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
-- **detect_code_language()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
-- **is_indented_code_line()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
-- **Path** (3 connections)
-- **Parse markdownlint output to get files with MD046 issues.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
-- **Check if a line is part of an indented code block.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
-- **Fix code block style in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
-- **Try to detect the language of a code block from its content. Returns empty…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
-- **Convert indented code blocks to fenced code blocks. Returns: (new_content,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **AnyIO Code Review - Anti-Patterns and Issues** (7 connections) — `docs/archive/anyio_code_review.md`
+- **Migration Priority** (4 connections) — `docs/archive/anyio_code_review.md`
+- **anyio_code_review.md** (2 connections) — `docs/archive/anyio_code_review.md`
+- **anyio_vs_asyncio_comparison.md** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Executive Summary** (1 connections) — `docs/archive/anyio_code_review.md`
+- **High Priority (Entry Points)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Low Priority (Complex Refactoring)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Medium Priority (Core Primitives)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Notes** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Recommendations** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Testing Considerations** (1 connections) — `docs/archive/anyio_code_review.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.connection_manager](connection_manager.md) (1 shared connections)
+- [log_room_broadcast_result](log_room_broadcast_result.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_markdown_code_block_style.py`
+- `docs/archive/anyio_code_review.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

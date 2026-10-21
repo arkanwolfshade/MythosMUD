@@ -1,25 +1,24 @@
 # Paired YAML and Env Config Tuples
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Paired YAML and Env Config Tuples** (1 connections) — `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
-- **Conftest Pydantic Config Migration** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
+- **test_process_combined_rows_no_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_combined_rows processes rows without exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
-- `docs/archive/CONFTEST_MIGRATION_PLAN.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

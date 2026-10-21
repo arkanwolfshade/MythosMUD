@@ -1,26 +1,27 @@
 # .flee
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Flee from current situation.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Handle fleeing action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Catatonic Movement Prevention Bug** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **current_room_id VARCHAR(50) Truncation** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **WebSocket Go Command Unified Handler Bypass** (1 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- **Movement Valid Exits Rejection Bug** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
+- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,39 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)
 
-> 16 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Communities (12 total, 7 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **down-darker-trails/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 0 - "Call of Cthulhu (7th Edition); Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 1 - "APP; Characteristics"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 2 - "Everett Scanlon; Gustavo Romero"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 3 - "First Aid; Hit Points"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 4 - "Formless Spawn of Tsathoggua; Rudolf Zimmer"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **asyncio** (13 connections)
+- **test_get_player_room_from_persistence()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_true()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_check_player_mute_status_patched_and_emote()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence_mock_player()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_get_player_room_from_persistence_no_layer()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_in_room_via_persistence()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_is_player_muted_with_user_manager_async_paths()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test get_player_room_from_persistence() returns player room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test get_player_room_from_persistence() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_in_room() returns True when player is in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_in_room() returns False when player is not in room.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (10 shared connections)
+- [mp_regeneration_service](mp_regeneration_service.md) (3 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

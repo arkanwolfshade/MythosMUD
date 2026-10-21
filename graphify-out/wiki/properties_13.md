@@ -1,50 +1,52 @@
 # properties
 
-> 31 nodes
+> 24 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
-- **long_description** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **prototype_id** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **short_description** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **weight** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- *... and 6 more nodes in this community*
+- **directionHallucination.ts** (13 connections) — `client/src/utils/directionHallucination.ts`
+- **corruptionDecay.ts** (9 connections) — `client/src/utils/corruptionDecay.ts`
+- **AsciiNoise.tsx** (8 connections) — `client/src/components/map/AsciiNoise.tsx`
+- **decayMessageText()** (8 connections) — `client/src/utils/corruptionDecay.ts`
+- **getHallucinatedExits()** (7 connections) — `client/src/utils/directionHallucination.ts`
+- **mulberry32()** (7 connections) — `client/src/utils/directionHallucination.ts`
+- **AsciiNoise()** (6 connections) — `client/src/components/map/AsciiNoise.tsx`
+- **seedFrom()** (6 connections) — `client/src/utils/directionHallucination.ts`
+- **directionHallucination.test.ts** (6 connections) — `client/src/utils/__tests__/directionHallucination.test.ts`
+- **corruptionDecay.test.ts** (5 connections) — `client/src/utils/__tests__/corruptionDecay.test.ts`
+- **generateAsciiNoise()** (4 connections) — `client/src/utils/directionHallucination.ts`
+- **hashString()** (4 connections) — `client/src/utils/directionHallucination.ts`
+- **AsciiNoise.test.tsx** (3 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
+- **ageBucket()** (3 connections) — `client/src/utils/corruptionDecay.ts`
+- **prefersReducedMotion()** (2 connections) — `client/src/components/map/AsciiNoise.tsx`
+- **ChatHistoryMessageBody()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- **isProtectedToken()** (2 connections) — `client/src/utils/corruptionDecay.ts`
+- **MYTHOS_GLYPHS** (2 connections) — `client/src/utils/corruptionDecay.ts`
+- **DIRECTION_POOL** (2 connections) — `client/src/utils/directionHallucination.ts`
+- **shuffle()** (2 connections) — `client/src/utils/directionHallucination.ts`
+- **AsciiNoiseProps** (1 connections) — `client/src/components/map/AsciiNoise.tsx`
+- **mockMatchMedia()** (1 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
+- **HallucinatedDirection** (1 connections) — `client/src/utils/directionHallucination.ts`
+- **timestampMinutesAgo()** (1 connections) — `client/src/utils/__tests__/corruptionDecay.test.ts`
 
 ## Relationships
 
-- [type](type.md) (4 shared connections)
-- [enum](enum_2.md) (2 shared connections)
-- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [.set_player_skills](set_player_skills.md) (8 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (3 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `client/src/components/map/AsciiNoise.tsx`
+- `client/src/components/map/__tests__/AsciiNoise.test.tsx`
+- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- `client/src/utils/__tests__/corruptionDecay.test.ts`
+- `client/src/utils/__tests__/directionHallucination.test.ts`
+- `client/src/utils/corruptionDecay.ts`
+- `client/src/utils/directionHallucination.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

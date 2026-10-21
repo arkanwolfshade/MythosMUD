@@ -1,12 +1,11 @@
 # Memory Leak Remediation
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Memory Leak Remediation** (2 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Closed WebSockets Deque Cap** (1 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Memory Leak Metrics Collection** (1 connections) — `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+- **unit/game/magic/__init__.py** (1 connections) — `server/tests/unit/game/magic/__init__.py`
+- **Game magic unit tests.** (1 connections) — `server/tests/unit/game/magic/__init__.py`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
-- `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- `server/tests/unit/game/magic/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

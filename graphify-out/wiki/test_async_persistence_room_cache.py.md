@@ -1,47 +1,31 @@
 # test_async_persistence_room_cache.py
 
-> 14 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **test_async_persistence_room_cache.py** (32 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_parse_exits_json_string_invalid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exit_rows_missing_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exits_for_room_no_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Unit tests for async persistence layer: load_room_cache_async, query_rooms,…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _generate_room_id_from_zone_data with None values.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with invalid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exits_for_room processes exits with direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exits_for_room skips exits without direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_combined_rows processes rows with exits JSON.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_exit_rows handles missing direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **_AsyncPersistenceLike** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **_PlayerServiceLike** (4 connections) — `server/realtime/integration/game_state_provider.py`
+- **.convert_player_to_schema()** (3 connections) — `server/realtime/integration/game_state_provider.py`
+- **Protocol** (2 connections)
+- **Minimal duck-type for the app's PlayerService (issue #787: avoid Any at the…** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Convert a Player model to its client-facing schema representation.** (1 connections) — `server/realtime/integration/game_state_provider.py`
+- **Minimal duck-type for the async persistence layer's player lookup.** (1 connections) — `server/realtime/integration/game_state_provider.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (6 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_get_user_by_username_case_insensitive_no_session](test_get_user_by_username_case_insensitive_no_session.md) (1 shared connections)
-- [test_get_professions_no_session](test_get_professions_no_session.md) (1 shared connections)
-- [test_get_players_batch_empty_list](test_get_players_batch_empty_list.md) (1 shared connections)
-- [test_generate_room_id_from_zone_data_with_prefix](test_generate_room_id_from_zone_data_with_prefix.md) (1 shared connections)
-- [test_generate_room_id_from_zone_data_needs_generation](test_generate_room_id_from_zone_data_needs_generation.md) (1 shared connections)
-- [test_parse_exits_json_string_valid](test_parse_exits_json_string_valid.md) (1 shared connections)
-- [test_load_room_cache_async_rooms_none](test_load_room_cache_async_rooms_none.md) (1 shared connections)
-- [test_parse_exits_json_list](test_parse_exits_json_list.md) (1 shared connections)
-- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [ChatLogger](ChatLogger.md) (2 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [test_game.py](test_game.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/realtime/integration/game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 9 (90%)
+- INFERRED: 1 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # UI-v2 Components
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **UI-v2 Components** (0 connections) — `client/src/components/ui-v2`
+- **AI READING INSTRUCTION** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/src/components/ui-v2`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

@@ -1,10 +1,10 @@
 # lizard.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **lizard.py** (0 connections) — `scripts/lizard.py`
+- **unit/game/npcs/__init__.py** (0 connections) — `server/tests/unit/game/npcs/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/lizard.py`
+- `server/tests/unit/game/npcs/__init__.py`
 
 ## Audit Trail
 

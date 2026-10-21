@@ -1,23 +1,23 @@
 # High-Risk Major Package Updates
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **High-Risk Major Package Updates** (1 connections) — `scripts/dependency_upgrade_report.md`
-- **pytest-asyncio Major Upgrade** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test collect_room_targets() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/dependency_upgrade_report.md`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

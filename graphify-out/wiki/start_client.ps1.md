@@ -1,10 +1,10 @@
 # start_client.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **start_client.ps1** (0 connections) — `scripts/start_client.ps1`
+- **Clarify Skill** (0 connections) — `.cursor/skills/clarify/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/start_client.ps1`
+- `.cursor/skills/clarify/SKILL.md`
 
 ## Audit Trail
 

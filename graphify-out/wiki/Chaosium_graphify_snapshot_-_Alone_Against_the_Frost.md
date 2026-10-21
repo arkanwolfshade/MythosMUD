@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Alone Against the Frost
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Alone Against the Frost** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
-- **alone-against-the-frost/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
+- **Pull request template** (3 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
+- **PR Issue References workflow** (1 connections) — `.github/workflows/pr-issue-refs.yml`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
+- `.github/PULL_REQUEST_TEMPLATE.md`
+- `.github/workflows/pr-issue-refs.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 3 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

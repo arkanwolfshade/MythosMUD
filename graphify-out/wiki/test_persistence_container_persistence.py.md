@@ -1,35 +1,33 @@
 # test_persistence_container_persistence.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Unit tests for persistence.container_persistence module. This module tests the…** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Critical Insights** (12 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **1. Infrastructure Tests are the Main Optimization Target** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **2. Regression Tests are 100% High-Value** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **3. Coverage Tests Written for Metrics, Not Quality** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **4. No Parametrized Tests (Major Opportunity)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **5. Critical Gaps in New Architecture** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Example** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Example Low-Value Test** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Examples** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Opportunity** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Relationships
 
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

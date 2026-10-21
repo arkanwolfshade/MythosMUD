@@ -1,28 +1,30 @@
 # .clear_player_combat_state
 
-> 6 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **.handle_combat_end()** (4 connections) — `server/services/player_combat_service.py`
-- **.cleanup_stale_combat_states()** (3 connections) — `server/services/player_combat_service.py`
-- **Clear a player's combat state. Args: player_id: ID of the player** (1 connections) — `server/services/player_combat_service.py`
-- **Handle combat end by clearing all players in the combat. Args: combat_id: ID of…** (1 connections) — `server/services/player_combat_service.py`
-- **Clean up stale combat states. Returns: Number of stale states cleaned up** (1 connections) — `server/services/player_combat_service.py`
+- **Chat Effect Accessibility Floor Design** (9 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **2. Why (almost) no settings panel** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **3. The floor — server-side hard guarantees** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **4. `prefers-reduced-motion`** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **5. What this document does not do** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **6. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **7. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [UUID](UUID.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/player_combat_service.py`
+- `docs/subsystems/SUBSYSTEM_CHAT_EFFECT_ACCESSIBILITY_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

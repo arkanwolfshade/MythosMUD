@@ -1,44 +1,40 @@
 # compilerOptions
 
-> 23 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **compilerOptions** (15 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **load-tests/tsconfig.json** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **lib** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **paths** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **typeRoots** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **types** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **include** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **@playwright/test** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **baseUrl** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **module** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **moduleResolution** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noEmit** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedLocals** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedParameters** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **skipLibCheck** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **strict** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **target** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **ES2020** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **node** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@playwright/test** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@types** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- ***.spec.ts** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **Recommended Test Additions** (10 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Net Impact Summary** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Test Coverage Gaps Report** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Net Result** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **1. MessageBroker Integration Tests (15 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **3. Database Migration Tests (10 tests, ~1.5 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **4. WebSocket Edge Case Tests (15 tests, ~2 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **5. Error Recovery Tests (20 tests, ~3 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Additions** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Coverage Gap Priority Matrix** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **If We Execute Full Recommendations** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Immediate Priority (Add First)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Removals** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Secondary Priority (Add Second)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **"The goal is not comprehensive coverage of all code, but comprehensive protection of all user value."** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Total: 35 tests, ~3.5 hours effort, closes critical gaps** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Total: 35 tests, ~5 hours effort, improves reliability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [extract_player_name](extract_player_name.md) (1 shared connections)
+- [Communities (10 total, 0 thin omitted)](Communities_10_total,_0_thin_omitted.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/tsconfig.json`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

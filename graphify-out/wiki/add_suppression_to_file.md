@@ -1,15 +1,13 @@
 # add_suppression_to_file
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **add_suppression_to_file()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
-- **main()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
-- **fix_psscriptanalyzer.py** (2 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Path** (2 connections)
-- **Add suppression comment to a PowerShell file if it uses Write-Host and doesn't…** (1 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Process all PowerShell scripts in the scripts directory.** (1 connections) — `scripts/fix_psscriptanalyzer.py`
+- **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Relationships
 
@@ -17,11 +15,12 @@
 
 ## Source Files
 
-- `scripts/fix_psscriptanalyzer.py`
+- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

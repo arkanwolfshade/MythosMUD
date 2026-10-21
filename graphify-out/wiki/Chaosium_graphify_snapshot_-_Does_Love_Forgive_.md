@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Does Love Forgive_
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Does Love Forgive_** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
-- **does-love-forgive/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **One Server Only** (1 connections) — `.claude/rules/server-management.md`
+- **USER_RULES.md** (1 connections) — `USER_RULES.md`
 
 ## Relationships
 
@@ -14,11 +13,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- `.claude/rules/server-management.md`
+- `USER_RULES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

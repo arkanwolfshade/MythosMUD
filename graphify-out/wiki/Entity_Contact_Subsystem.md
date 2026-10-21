@@ -1,10 +1,10 @@
 # Entity Contact Subsystem
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Entity Contact Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- **e2e-run-parallel.ps1** (0 connections) — `scripts/e2e-run-parallel.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_ENTITY_CONTACT_DESIGN.md`
+- `scripts/e2e-run-parallel.ps1`
 
 ## Audit Trail
 

@@ -1,10 +1,10 @@
 # player_lucidity Index Name Fix
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **player_lucidity Index Name Fix** (0 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- **Structured Logging Correct Patterns** (0 connections) — `docs/examples/logging/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- `docs/examples/logging/README.md`
 
 ## Audit Trail
 

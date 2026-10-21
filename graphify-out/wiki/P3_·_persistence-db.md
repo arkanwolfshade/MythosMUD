@@ -1,29 +1,27 @@
 # P3 · persistence-db
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **P3 · persistence-db** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **P3-Cluster-Persistence.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **H4 · D1 resolved — the code is a three-pattern hybrid no document describes** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **H5 · "Services never construct raw queries" is false at three layers** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **H6 · "Fully Async" is true of the class but not of the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
-- **STALE — docs behind completed work** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **Enhanced Logging Features** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Correlation IDs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Exception Tracking** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **MDC (Mapped Diagnostic Context)** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Security Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [system_commands.py](system_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

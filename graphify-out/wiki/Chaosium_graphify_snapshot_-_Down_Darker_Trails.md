@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Down Darker Trails
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Down Darker Trails** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
-- **down-darker-trails/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- **Authoritative Database Schema from mythos_dev** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

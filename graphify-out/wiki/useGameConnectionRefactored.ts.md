@@ -1,71 +1,74 @@
 # useGameConnectionRefactored.ts
 
-> 67 nodes
+> 254 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **useGameConnectionRefactored.ts** (23 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **useWebSocketConnection.ts** (20 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnectionTestFixtures.ts** (16 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useGameConnection()** (13 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
-- **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useWebSocketConnection.pingHeartbeat.test.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **useWebSocketConnection()** (11 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **wsConnectionAfterEach()** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionBeforeEach()** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useGameConnectionRefactored.replacementClose.test.ts** (9 connections) — `client/src/hooks/__tests__/useGameConnectionRefactored.replacementClose.test.ts`
-- **useWebSocketConnection.connection.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- **useWebSocketConnection.errorHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **useWebSocketConnection.messageHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- **defaultOptions** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **latestWebSocketInstance** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsTestState** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useGameConnectionRefactored.intentionalDisconnect.test.ts** (8 connections) — `client/src/hooks/__tests__/useGameConnectionRefactored.intentionalDisconnect.test.ts`
-- **useWebSocketConnection.callbacks.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- **useWebSocketConnection.cleanup.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
-- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
-- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
-- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
-- *... and 42 more nodes in this community*
+- **User** (331 connections) — `server/models/user.py`
+- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
+- **login_user()** (35 connections) — `server/auth/endpoints.py`
+- **register_user()** (31 connections) — `server/auth/endpoints.py`
+- **UserCreate** (31 connections) — `server/auth/endpoints.py`
+- **test_endpoints_register.py** (30 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **LoginRequest** (22 connections) — `server/auth/endpoints.py`
+- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
+- **asyncio** (18 connections)
+- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **list_invites()** (14 connections) — `server/auth/endpoints.py`
+- **test_endpoints_invites.py** (14 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
+- **schemas/auth/__init__.py** (13 connections) — `server/schemas/auth/__init__.py`
+- **create_invite()** (12 connections) — `server/auth/endpoints.py`
+- **_persist_new_user()** (12 connections) — `server/auth/endpoints.py`
+- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
+- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
+- **asyncio** (11 connections)
+- **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
+- **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
+- **test_endpoints_login_profession.py** (10 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
+- **_mock_invite_manager()** (10 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
+- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
+- *... and 229 more nodes in this community*
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (10 shared connections)
-- [security.ts](security.ts.md) (5 shared connections)
-- [ResourceManager](ResourceManager.md) (3 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (60 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (52 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (35 shared connections)
+- [._create_grid_map](_create_grid_map.md) (29 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (24 shared connections)
+- [schema.sql](schema.sql.md) (20 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (16 shared connections)
+- [test_look_player.py](test_look_player.py.md) (16 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (14 shared connections)
+- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (14 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (10 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useConnectionState.test.ts`
-- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
-- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
-- `client/src/hooks/__tests__/useGameConnectionRefactored.intentionalDisconnect.test.ts`
-- `client/src/hooks/__tests__/useGameConnectionRefactored.isNewGameSessionClose.test.ts`
-- `client/src/hooks/__tests__/useGameConnectionRefactored.replacementClose.test.ts`
-- `client/src/hooks/__tests__/useSessionManagement.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- `client/src/hooks/useConnectionState.ts`
-- `client/src/hooks/useConnectionStateMachine.test.ts`
-- `client/src/hooks/useConnectionStateMachine.ts`
-- `client/src/hooks/useGameConnection.test.ts`
-- `client/src/hooks/useGameConnection.ts`
-- `client/src/hooks/useGameConnectionRefactored.ts`
+- `server/auth/endpoints.py`
+- `server/auth/invites.py`
+- `server/auth/token_epoch.py`
+- `server/auth/users.py`
+- `server/models/user.py`
+- `server/schemas/auth/__init__.py`
+- `server/schemas/auth/invite.py`
+- `server/tests/integration/test_db_connectivity.py`
+- `server/tests/integration/test_integration_cleanup.py`
+- `server/tests/unit/auth/test_endpoints_invites.py`
+- `server/tests/unit/auth/test_endpoints_login.py`
+- `server/tests/unit/auth/test_endpoints_login_profession.py`
+- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `server/tests/unit/models/test_user.py`
+- `server/tests/unit/schemas/test_invite_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 765 (83%)
+- INFERRED: 153 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

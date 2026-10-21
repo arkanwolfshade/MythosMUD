@@ -1,38 +1,33 @@
 # vite.userConfig.ts
 
-> 11 nodes
+> 10 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **vite.userConfig.ts** (7 connections) — `client/vite.userConfig.ts`
-- **vite.config.ts** (5 connections) — `client/vite.config.ts`
-- **configureForwardAuthorization()** (3 connections) — `client/vite.proxyAuthorization.ts`
-- **createViteUserConfig()** (3 connections) — `client/vite.userConfig.ts`
-- **vite.proxyAuthorization.ts** (2 connections) — `client/vite.proxyAuthorization.ts`
-- **vite.vitestOptions.ts** (2 connections) — `client/vite.vitestOptions.ts`
-- **vitestTestOptions** (2 connections) — `client/vite.vitestOptions.ts`
-- **vitest.config.ts** (1 connections) — `client/vitest.config.ts`
-- **vitest.config.d.ts** (1 connections) — `client/vitest.config.d.ts`
-- **TODO: Implement AST-based console removal plugin to selectively remove** (1 connections) — `client/vite.config.ts`
-- **TODO: Implement AST-based console removal to preserve console.error/warn** (1 connections) — `client/vite.userConfig.ts`
+- **_PlayerLookupPersistence** (6 connections) — `server/api/real_time.py`
+- **Protocol** (4 connections)
+- **_ConnectionManagerUtilsModule** (3 connections) — `server/api/real_time.py`
+- **.get_player_by_id()** (3 connections) — `server/api/real_time.py`
+- **.resolve_connection_manager()** (2 connections) — `server/api/real_time.py`
+- **.get_player_by_user_id()** (2 connections) — `server/api/real_time.py`
+- **Player** (2 connections)
+- **_WebSocketHandlerModule** (2 connections) — `server/api/real_time.py`
+- **Resolve the connection manager singleton (or optional candidate).** (1 connections) — `server/api/real_time.py`
+- **Minimal async persistence surface for WebSocket player resolution.** (1 connections) — `server/api/real_time.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CombatMonitoringService](CombatMonitoringService.md) (5 shared connections)
+- [compare_linting_results.py](compare_linting_results.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/vite.config.ts`
-- `client/vite.proxyAuthorization.ts`
-- `client/vite.userConfig.ts`
-- `client/vite.vitestOptions.ts`
-- `client/vitest.config.d.ts`
-- `client/vitest.config.ts`
+- `server/api/real_time.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

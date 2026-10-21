@@ -1,26 +1,24 @@
 # jackson_linter.py
 
-> 17 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **_validate_after_unicode_error()** (7 connections) — `scripts/jackson_linter.py`
-- **jackson_linter.py** (7 connections) — `scripts/jackson_linter.py`
-- **Path** (6 connections)
-- **collect_json_files()** (5 connections) — `scripts/jackson_linter.py`
-- **validate_json_file()** (5 connections) — `scripts/jackson_linter.py`
-- **_file_appears_binary_or_terminal_output()** (4 connections) — `scripts/jackson_linter.py`
-- **_first_fallback_encoding_that_parses()** (4 connections) — `scripts/jackson_linter.py`
-- **_is_vscode_jsonc_settings()** (4 connections) — `scripts/jackson_linter.py`
-- **main()** (4 connections) — `scripts/jackson_linter.py`
-- **UnicodeDecodeError** (1 connections)
-- **Discover JSON files under cwd, validate syntax, return exit code (0 ok, 1…** (1 connections) — `scripts/jackson_linter.py`
-- **VS Code allows JSON with Comments in settings.json; stdlib json cannot parse it.** (1 connections) — `scripts/jackson_linter.py`
-- **Return paths to JSON files under root, excluding cache and build trees.** (1 connections) — `scripts/jackson_linter.py`
-- **True if the first bytes look like binary or UTF-16 BOM, not plain UTF-8 JSON…** (1 connections) — `scripts/jackson_linter.py`
-- **If JSON loads under a non-UTF-8 encoding, return that encoding name; otherwise…** (1 connections) — `scripts/jackson_linter.py`
-- **Try alternate encodings; return True if file is valid or intentionally skipped.** (1 connections) — `scripts/jackson_linter.py`
-- **Parse one JSON file; print errors/warnings. Return True if ok or skipped as…** (1 connections) — `scripts/jackson_linter.py`
+- **Fix patterns by tier** (5 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **Mypy Remediation** (5 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **Mypy Remediation — Reference** (4 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **mypy-remediation/reference.md** (2 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **mypy-remediation/SKILL.md** (2 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **🔴 Critical — import and name errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **Error code table** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **🟡 High — type errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **🔵 Low — type precision** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **🟢 Medium — type refinement** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
+- **Entry point** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **Fix-verify loop** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **Priority** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
 
 ## Relationships
 
@@ -28,11 +26,12 @@
 
 ## Source Files
 
-- `scripts/jackson_linter.py`
+- `.claude/skills/mypy-remediation/SKILL.md`
+- `.claude/skills/mypy-remediation/reference.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

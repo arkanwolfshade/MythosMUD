@@ -1,31 +1,30 @@
 # Responsive Design
 
-> 10 nodes
+> 9 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **Responsive Design** (8 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Responsive Images: Get It Right** (3 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Breakpoints: Content-Driven** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Detect Input Method, Not Just Screen Size** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Layout Adaptation Patterns** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Mobile-First: Write It Right** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Picture Element for Art Direction** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Safe Areas: Handle the Notch** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **srcset with Width Descriptors** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **Testing: Don't Trust DevTools Alone** (1 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
+- **test_check_codacy_yaml.py** (5 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **_CheckCodacyYamlModule** (5 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **_load_module()** (4 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **test_pinned_runtime_is_accepted()** (2 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **test_stale_311_runtime_is_flagged_with_the_pinned_version()** (2 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **._content_is_valid()** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **Protocol** (1 connections)
+- **Tests for the Python-runtime guard in scripts/check_codacy_yaml.py (#748).** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **Shape of scripts/check_codacy_yaml.py, loaded dynamically below (not a static…** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/responsive-design.md`
+- `server/tests/unit/scripts/test_check_codacy_yaml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

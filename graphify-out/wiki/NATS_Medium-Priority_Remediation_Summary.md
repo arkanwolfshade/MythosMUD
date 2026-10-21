@@ -1,43 +1,41 @@
 # NATS Medium-Priority Remediation Summary
 
-> 21 nodes
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **NATS Medium-Priority Remediation Summary** (9 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Completed Medium-Priority Fixes ✅** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Configuration Options** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Implementation Details** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Health Monitoring** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Impact Assessment** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **NATSMessageBroker** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **1. Integrated Subject Manager into NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **2. Added Health Monitoring to NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **3. Documented Manual Acknowledgment Strategy** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **After Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Before Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Event Callback Improvements** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Manual Acknowledgment** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Remaining Low-Priority Items** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Subject Manager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Subject Manager Integration** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Testing Status** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **NATSSubjectManager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **knip.json** (8 connections) — `client/knip.json`
+- **rules** (8 connections) — `client/knip.json`
+- **ignoreBinaries** (3 connections) — `client/knip.json`
+- **project** (3 connections) — `client/knip.json`
+- **ignore** (2 connections) — `client/knip.json`
+- **binaries** (1 connections) — `client/knip.json`
+- **dependencies** (1 connections) — `client/knip.json`
+- **devDependencies** (1 connections) — `client/knip.json`
+- **exports** (1 connections) — `client/knip.json`
+- **files** (1 connections) — `client/knip.json`
+- **types** (1 connections) — `client/knip.json`
+- **unlisted** (1 connections) — `client/knip.json`
+- **$schema** (1 connections) — `client/knip.json`
+- **treatConfigHintsAsErrors** (1 connections) — `client/knip.json`
+- **pwsh** (1 connections) — `client/knip.json`
+- **src/**/*.{ts,tsx,js,jsx}** (1 connections) — `client/knip.json`
+- **tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts** (1 connections) — `client/knip.json`
+- **tests/**/*.ts** (1 connections) — `client/knip.json`
+- **uv** (1 connections) — `client/knip.json`
 
 ## Relationships
 
-- [NATS Anti-Patterns Review 2026-01-13](NATS_Anti-Patterns_Review_2026-01-13.md) (2 shared connections)
+- [fixture](fixture.md) (1 shared connections)
+- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- `client/knip.json`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

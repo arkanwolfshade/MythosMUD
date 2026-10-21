@@ -1,10 +1,10 @@
 # Click Best-Practices Remediation
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Click Best-Practices Remediation** (0 connections) — `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
+- **sync_obsidian_graphify.ps1** (0 connections) — `scripts/sync_obsidian_graphify.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
+- `scripts/sync_obsidian_graphify.ps1`
 
 ## Audit Trail
 

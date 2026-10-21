@@ -1,27 +1,25 @@
 # Enhanced Logging Migration Report
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
-- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
-- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
-- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
-- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
-- **Summary** (1 connections) — `docs/archive/migration_report.md`
+- **📚 REFERENCES AND RESOURCES** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Best Practice Documents** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **External Resources** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Investigation Reports** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/migration_report.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

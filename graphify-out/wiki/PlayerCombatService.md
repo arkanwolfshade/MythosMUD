@@ -1,71 +1,62 @@
 # PlayerCombatService
 
-> 162 nodes
+> 46 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **PlayerCombatService** (73 connections) — `server/services/player_combat_service.py`
-- **CombatCommandHandler** (57 connections) — `server/commands/combat_handler.py`
-- **combat_handler.py** (54 connections) — `server/commands/combat_handler.py`
-- **combat_loader.py** (30 connections) — `server/commands/combat_loader.py`
-- **CombatValidator** (26 connections) — `server/validators/combat_validator.py`
-- **get_combat_command_handler()** (26 connections) — `server/commands/combat_loader.py`
-- **player_combat_service.py** (26 connections) — `server/services/player_combat_service.py`
-- **commands/combat.py** (23 connections) — `server/commands/combat.py`
-- **test_combat_loader.py** (22 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **player_combat_service_support.py** (17 connections) — `server/services/player_combat_service_support.py`
-- **.event_bus()** (14 connections) — `server/realtime/connection_manager.py`
-- **_app_from_request()** (13 connections) — `server/commands/combat_loader.py`
-- **.__init__()** (12 connections) — `server/commands/combat_handler.py`
-- **CombatCommandHandlerExtras** (10 connections) — `server/commands/combat_handler.py`
-- **handle_kick_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_punch_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_strike_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_assist_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_attack_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_flee_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_protect_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_taunt_command()** (8 connections) — `server/commands/combat_loader.py`
-- **_mock_app_with_container()** (8 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
-- **._init_quest_service()** (7 connections) — `server/container/bundles/game.py`
-- *... and 137 more nodes in this community*
+- **test_combat_status_message_categories.py** (47 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **CombatMessagingIntegration** (23 connections) — `server/services/combat_messaging/integration.py`
+- **asyncio** (13 connections)
+- **test_phantom_combat_line_matches_real_npc_category_and_never_mints_its_own()** (10 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_first_awaited_args()** (8 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_npc_attacked_and_took_damage_are_combat_hit()** (8 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_sent_personal()** (7 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_sent_room()** (7 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_combat_attack_categories_follow_each_recipients_perspective()** (7 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_combat_state_notices_are_combat_status()** (7 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_player_attacked_is_combat_hurt()** (7 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_dispatched()** (6 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_published_data()** (6 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_combat_ended_is_combat_status()** (6 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_mortally_wounded_lines_are_combat_status_for_both_recipients()** (6 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_player_death_lines_are_combat_death_for_both_recipients()** (6 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_catatonia_is_status_lucidity()** (5 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_dp_decay_is_status_health()** (5 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_lucidity_change_is_status_lucidity()** (5 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_npc_death_line_is_combat_death()** (5 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **test_rescue_update_is_status_rescue()** (5 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_data()** (4 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **_participant()** (4 connections) — `server/tests/unit/services/test_combat_status_message_categories.py`
+- **fixture** (4 connections)
+- **combat_messaging/__init__.py** (3 connections) — `server/services/combat_messaging/__init__.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (21 shared connections)
-- [test_player_combat_service.py](test_player_combat_service.py.md) (21 shared connections)
-- [AliasStorage](AliasStorage.md) (19 shared connections)
-- [CombatService](CombatService.md) (15 shared connections)
-- [command_parser.py](command_parser.py.md) (12 shared connections)
-- [UUID](UUID.md) (11 shared connections)
-- [test_flee_command.py](test_flee_command.py.md) (10 shared connections)
-- [EventBus](EventBus.md) (9 shared connections)
-- [TargetType](TargetType.md) (8 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (7 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (7 shared connections)
-- [PlayerCombatState](PlayerCombatState.md) (7 shared connections)
+- [look_container.py](look_container.py.md) (21 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (20 shared connections)
+- [test_database_extended.py](test_database_extended.py.md) (7 shared connections)
+- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (4 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (2 shared connections)
+- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (2 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [ground_channel.py](ground_channel.py.md) (1 shared connections)
+- [PerformanceTester](PerformanceTester.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat.py`
-- `server/commands/combat_handler.py`
-- `server/commands/combat_loader.py`
-- `server/container/bundles/game.py`
-- `server/realtime/connection_manager.py`
-- `server/services/player_combat_service.py`
-- `server/services/player_combat_service_support.py`
-- `server/tests/unit/commands/test_assist_wiring.py`
-- `server/tests/unit/commands/test_combat_handler.py`
-- `server/tests/unit/commands/test_combat_loader.py`
-- `server/tests/unit/commands/test_flee_command.py`
-- `server/tests/unit/services/test_player_combat_service.py`
-- `server/validators/combat_validator.py`
+- `server/services/combat_messaging/__init__.py`
+- `server/services/combat_messaging/integration.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/tests/unit/services/test_combat_status_message_categories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 428 (82%)
-- INFERRED: 93 (18%)
+- EXTRACTED: 128 (83%)
+- INFERRED: 27 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

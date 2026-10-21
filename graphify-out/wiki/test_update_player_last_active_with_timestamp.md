@@ -1,24 +1,22 @@
 # test_update_player_last_active_with_timestamp
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active with provided timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Codebase Explorer Agent** (0 connections) — `.claude/agents/codebase-explorer.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `.claude/agents/codebase-explorer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

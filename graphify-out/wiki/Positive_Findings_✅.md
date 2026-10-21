@@ -1,30 +1,28 @@
 # Positive Findings ✅
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Positive Findings ✅** (9 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **5. **TLS Configuration Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **6. **Connection Pooling Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **7. **Message Acknowledgment Support**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **8. **Async Mute Data Loading**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Design ↔ Implementation Drift Audit** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Headline finding · the design record was largely built from the code** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Correction · the "back-dated ADRs" evidence was wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Notes** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **P8 progress** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Rulings — all 8 complete** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Scope boundary** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
 
 ## Relationships
 
-- [NATS Anti-Patterns and Best Practices Review](NATS_Anti-Patterns_and_Best_Practices_Review.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

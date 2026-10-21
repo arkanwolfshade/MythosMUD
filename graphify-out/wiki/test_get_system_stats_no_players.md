@@ -1,19 +1,19 @@
 # test_get_system_stats_no_players
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_system_stats handles no active players.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_process_dict_occupant_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() skips invalid name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

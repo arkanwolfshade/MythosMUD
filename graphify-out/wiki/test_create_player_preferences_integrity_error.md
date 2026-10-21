@@ -1,26 +1,23 @@
 # test_create_player_preferences_integrity_error
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_create_player_preferences_integrity_error()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with integrity error.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **vitest-jest-dom.d.ts** (0 connections) — `client/src/test/vitest-jest-dom.d.ts`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
-- [endpoints.py](endpoints.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `client/src/test/vitest-jest-dom.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

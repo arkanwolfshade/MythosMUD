@@ -1,31 +1,33 @@
 # ensure_directory_exists
 
-> 8 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
-- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Ensure a directory exists and return its absolute path. Args: directory: The…** (1 connections) — `server/security_utils.py`
-- **Test ensure_directory_exists with existing directory.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists creates directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists with relative path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
+- **test_clean_command_input_basic()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_unicode()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_whitespace()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test cleaning basic command input.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test cleaning command with extra whitespace.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test cleaning empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test cleaning command with unicode characters.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Clean and normalize command input with comprehensive sanitization. This…** (1 connections) — `server/validators/command_validator.py`
 
 ## Relationships
 
-- [test_security_utils.py](test_security_utils.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (6 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/security_utils.py`
-- `server/tests/unit/infrastructure/test_security_utils.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

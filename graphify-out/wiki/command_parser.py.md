@@ -1,66 +1,78 @@
 # command_parser.py
 
-> 201 nodes
+> 327 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **command_parser.py** (52 connections) — `server/utils/command_parser.py`
-- **test_command_parser.py** (51 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **parse_command()** (38 connections) — `server/utils/command_parser.py`
-- **test_command_processor.py** (32 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_assist_wiring.py** (25 connections) — `server/tests/unit/commands/test_assist_wiring.py`
-- **test_protect_wiring.py** (24 connections) — `server/tests/unit/commands/test_protect_wiring.py`
-- **CommandParser** (22 connections) — `server/utils/command_parser.py`
-- **CommandProcessor** (20 connections) — `server/utils/command_processor.py`
-- **command_processor.py** (16 connections) — `server/utils/command_processor.py`
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
-- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
-- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
-- **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **test_the_topic_survives_extraction_from_the_parsed_command()** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_parse_command_basic()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_create_command_object_pydantic_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_empty_string()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_unknown_command()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_parse_command_use_and_its_aliases()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 176 more nodes in this community*
+- **AliasStorage** (248 connections) — `server/alias_storage.py`
+- **command_error()** (227 connections) — `server/commands/command_results.py`
+- **command_service.py** (115 connections) — `server/commands/command_service.py`
+- **alias_storage.py** (81 connections) — `server/alias_storage.py`
+- **get_npc_instance_service()** (78 connections) — `server/services/npc_instance_service.py`
+- **command_results.py** (60 connections) — `server/commands/command_results.py`
+- **admin_commands.py** (42 connections) — `server/commands/admin_commands.py`
+- **admin_mute_commands.py** (32 connections) — `server/commands/admin_mute_commands.py`
+- **router.py** (32 connections) — `server/commands/npc_admin/router.py`
+- **combat_loader.py** (30 connections) — `server/commands/combat_loader.py`
+- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
+- **admin_global_mute_commands.py** (26 connections) — `server/commands/admin_global_mute_commands.py`
+- **get_combat_command_handler()** (26 connections) — `server/commands/combat_loader.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **npc_admin/__init__.py** (25 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (25 connections) — `server/commands/npc_admin/instance.py`
+- **commands/combat.py** (23 connections) — `server/commands/combat.py`
+- **npc_admin_commands.py** (22 connections) — `server/commands/npc_admin_commands.py`
+- **test_combat_loader.py** (22 connections) — `server/tests/unit/commands/test_combat_loader.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **handle_mute_command()** (19 connections) — `server/commands/admin_mute_commands.py`
+- **definition.py** (19 connections) — `server/commands/npc_admin/definition.py`
+- **test_alias_storage.py** (19 connections) — `server/tests/unit/test_alias_storage.py`
+- **handle_npc_command()** (18 connections) — `server/commands/npc_admin/router.py`
+- **system_commands.py** (18 connections) — `server/commands/system_commands.py`
+- *... and 302 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (23 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (12 shared connections)
-- [BaseCommand](BaseCommand.md) (12 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (11 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [CommandFactory](CommandFactory.md) (6 shared connections)
-- [_prepare_command_for_processing](_prepare_command_for_processing.md) (6 shared connections)
-- [system_commands.py](system_commands.py.md) (5 shared connections)
-- [command_service.py](command_service.py.md) (5 shared connections)
-- [get_help_content](get_help_content.md) (4 shared connections)
-- [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [.resolve_combat_target](resolve_combat_target.md) (53 shared connections)
+- [MagicCommandHandler](MagicCommandHandler.md) (44 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (40 shared connections)
+- [Room](Room.md) (39 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (31 shared connections)
+- [asyncio](asyncio.md) (27 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (21 shared connections)
+- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (20 shared connections)
+- [CORSConfig](CORSConfig.md) (19 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (18 shared connections)
+- [test_help_docs.py](test_help_docs.py.md) (18 shared connections)
+- [test_command_communication.py](test_command_communication.py.md) (17 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_assist_wiring.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/commands/test_protect_wiring.py`
-- `server/tests/unit/test_command_parser_smoke.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_parser.py`
-- `server/utils/command_processor.py`
+- `server/alias_storage.py`
+- `server/commands/__init__.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_global_mute_commands.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/alias_commands.py`
+- `server/commands/combat.py`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_loader.py`
+- `server/commands/command_results.py`
+- `server/commands/command_service.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin/test_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 371 (93%)
-- INFERRED: 26 (7%)
+- EXTRACTED: 1519 (89%)
+- INFERRED: 187 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

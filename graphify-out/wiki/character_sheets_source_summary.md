@@ -1,26 +1,25 @@
 # character_sheets (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **character_sheets (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
-- **character_sheets.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
+- **MythosMUD Comprehensive Planning Document** (3 connections) — `PLANNING.md`
+- **Milestones and roadmap phases** (1 connections) — `PLANNING.md`
+- **Technical architecture** (1 connections) — `PLANNING.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
+- `PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Keeper Tips  (2026-08-12)
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Keeper Tips  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Communities (3 total, 1 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **call-of-cthulhu-keeper-tips/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Design"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Community 1 - "Call of Cthulhu Roleplaying Game; Keeper Tips: C"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Typeset Skill** (6 connections) — `.claude/skills/typeset/SKILL.md`
+- **Improve Typography Systematically** (6 connections) — `.claude/skills/typeset/SKILL.md`
+- **Assess Current Typography** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Establish Hierarchy** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Fix Readability** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Font Selection** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Plan Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Refine Details** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Verify Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Weight Consistency** (1 connections) — `.claude/skills/typeset/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- `.claude/skills/typeset/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

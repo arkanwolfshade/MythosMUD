@@ -1,63 +1,52 @@
 # real_time.py
 
-> 131 nodes
+> 28 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **real_time.py** (51 connections) — `server/api/real_time.py`
-- **test_real_time_helpers.py** (40 connections) — `server/tests/unit/api/test_real_time_helpers.py`
-- **get_container_async_persistence()** (21 connections) — `server/container/async_persistence_access.py`
-- **asyncio** (20 connections)
-- **_RealtimeConnectionManager** (16 connections) — `server/api/real_time.py`
-- **_resolve_player_id()** (14 connections) — `server/api/real_time.py`
-- **UUID** (14 connections)
-- **realtime/realtime.py** (14 connections) — `server/schemas/realtime/realtime.py`
-- **handle_new_game_session()** (12 connections) — `server/api/real_time.py`
-- **_ensure_connection_manager()** (11 connections) — `server/api/real_time.py`
-- **ConnectionStatisticsResponse** (10 connections) — `server/schemas/realtime/realtime.py`
-- **get_player_connections()** (10 connections) — `server/api/real_time.py`
-- **_parse_websocket_token()** (10 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_path_or_token()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint()** (10 connections) — `server/api/real_time.py`
-- **websocket_endpoint_route()** (10 connections) — `server/api/real_time.py`
-- **WebSocket** (10 connections)
-- **_resolve_player_id_from_test()** (9 connections) — `server/api/real_time.py`
-- **_resolve_player_id_from_token()** (9 connections) — `server/api/real_time.py`
-- **ErrorStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
-- **PresenceStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
-- **SessionStatistics** (8 connections) — `server/schemas/realtime/presence_data.py`
-- **get_connection_statistics()** (8 connections) — `server/api/real_time.py`
-- **_validate_websocket_connection_manager()** (8 connections) — `server/api/real_time.py`
-- **NewGameSessionResponse** (7 connections) — `server/schemas/realtime/realtime.py`
-- *... and 106 more nodes in this community*
+- **LucidityTierCache** (14 connections) — `server/services/lucidity_tier_cache.py`
+- **test_lucidity_tier_cache.py** (9 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **lucidity_tier_cache.py** (8 connections) — `server/services/lucidity_tier_cache.py`
+- **UUID** (5 connections)
+- **.get_tier()** (4 connections) — `server/services/lucidity_tier_cache.py`
+- **.is_deranged()** (4 connections) — `server/services/lucidity_tier_cache.py`
+- **.clear()** (3 connections) — `server/services/lucidity_tier_cache.py`
+- **.set_tier()** (3 connections) — `server/services/lucidity_tier_cache.py`
+- **test_clear_removes_the_cached_tier()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **test_get_tier_is_none_for_unrecorded_player()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **test_is_deranged_false_for_other_tiers()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **test_is_deranged_false_on_cache_miss()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **test_set_tier_accepts_str_or_uuid_for_the_same_player()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **test_set_tier_then_is_deranged()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **.__init__()** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **In-memory cache of each player's current lucidity tier (#714). Exit…** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **Module-level singleton (mirrors phantom_hostile_service) -- callers MUST share…** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **Record this player's current tier.** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **Return the cached tier, or None if this player has never been recorded.** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **True only if the cached tier is exactly 'deranged' -- a cache miss is never…** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **Drop a player's cached tier (e.g. on disconnect).** (1 connections) — `server/services/lucidity_tier_cache.py`
+- **Unit tests for the in-memory lucidity tier cache (#714). This cache is exit…** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **A player never written to the cache has no recorded tier.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **Fail safe: an unrecorded player is never treated as deranged.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- **Only an exact 'deranged' tier makes is_deranged True.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (25 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [.state](state.md) (2 shared connections)
-- [player_event_handlers_respawn_room.py](player_event_handlers_respawn_room.py.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
-- [CombatAttackHandler](CombatAttackHandler.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [player_presence_tracker.py](player_presence_tracker.py.md) (1 shared connections)
+- [ChatLogger](ChatLogger.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [ExitEdge.tsx](ExitEdge.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/real_time.py`
-- `server/container/async_persistence_access.py`
-- `server/schemas/realtime/presence_data.py`
-- `server/schemas/realtime/realtime.py`
-- `server/tests/unit/api/test_real_time_helpers.py`
+- `server/services/lucidity_tier_cache.py`
+- `server/tests/unit/services/test_lucidity_tier_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 326 (95%)
-- INFERRED: 17 (5%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

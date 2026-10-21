@@ -1,23 +1,22 @@
 # test_take_room_drop_partial_quantity
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_take_room_drop_partial_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() adjusts quantity when quantity < available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **playwright.config.ts** (0 connections) — `client/playwright.config.ts`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `client/playwright.config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

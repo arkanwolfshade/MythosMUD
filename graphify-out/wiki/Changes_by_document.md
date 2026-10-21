@@ -1,38 +1,44 @@
 # Changes by document
 
-> 16 nodes
+> 16 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Changes by document** (16 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **CLAUDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONTAINER_SYSTEM_API_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/E2E_TESTING_GUIDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/NATS_SUBJECT_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/QUICK_START_E2E_TESTS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/realtime.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **e2e-tests/MULTIPLAYER_TEST_RULES.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **server/README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **MPRegenerationService** (18 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.process_tick_regeneration()** (6 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Any** (5 connections)
+- **UUID** (5 connections)
+- **._get_regen_multiplier()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_item()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_meditation()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.restore_mp_from_rest()** (4 connections) — `server/game/magic/mp_regeneration_service.py`
+- **.__init__()** (3 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Get MP regeneration multiplier based on player state. Args: stats: Player stats…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from resting (accelerated regeneration). Args: player_id: Player ID…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from meditation (highly accelerated regeneration). Args: player_id:…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Restore MP from consuming an item. Args: player_id: Player ID amount: Amount of…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Service for managing MP regeneration. Handles passive regeneration over time…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Initialize the MP regeneration service. Args: player_service: Player service…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
+- **Process MP regeneration for a player on a game tick. Args: player_id: Player ID…** (1 connections) — `server/game/magic/mp_regeneration_service.py`
 
 ## Relationships
 
-- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
+- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [integration](integration.md) (1 shared connections)
+- [test_database_extended.py](test_database_extended.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DOCUMENTATION_AUDIT.md`
+- `server/game/magic/mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 35 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

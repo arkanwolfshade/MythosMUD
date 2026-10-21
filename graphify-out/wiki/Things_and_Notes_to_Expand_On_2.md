@@ -1,10 +1,10 @@
 # Things and Notes to Expand On
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Things and Notes to Expand On** (0 connections) — `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- **Argon2 Security Review** (0 connections) — `docs/archive/ARGON2_SECURITY_REVIEW.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- `docs/archive/ARGON2_SECURITY_REVIEW.md`
 
 ## Audit Trail
 

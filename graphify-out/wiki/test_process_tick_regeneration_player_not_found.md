@@ -1,24 +1,23 @@
 # test_process_tick_regeneration_player_not_found
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_process_tick_regeneration_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() returns zero when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test check_rate_limit returns False when limit exceeded.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

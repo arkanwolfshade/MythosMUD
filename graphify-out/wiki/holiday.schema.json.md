@@ -1,30 +1,35 @@
 # holiday.schema.json
 
-> 8 nodes
+> 14 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **holiday.schema.json** (8 connections) — `schemas/calendar/holiday.schema.json`
-- **required** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **$id** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **$schema** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **title** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **holidays** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **check_no_production_assert.py** (6 connections) — `scripts/check_no_production_assert.py`
+- **_AssertFinder** (5 connections) — `scripts/check_no_production_assert.py`
+- **find_assert_line_numbers()** (5 connections) — `scripts/check_no_production_assert.py`
+- **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
+- **main()** (4 connections) — `scripts/check_no_production_assert.py`
+- **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
+- **Path** (3 connections)
+- **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
+- **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
+- **Assert** (1 connections)
+- **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
+- **True for MythosMUD backend modules under ``server/``, excluding tests and…** (1 connections) — `scripts/check_no_production_assert.py`
+- **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`
+- **Return sorted unique line numbers of ``assert`` in file; empty if none or…** (1 connections) — `scripts/check_no_production_assert.py`
 
 ## Relationships
 
-- [holiday](holiday.md) (1 shared connections)
-- [holidays](holidays.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `scripts/check_no_production_assert.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

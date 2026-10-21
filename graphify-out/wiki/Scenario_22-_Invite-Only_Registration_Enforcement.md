@@ -1,34 +1,32 @@
 # Scenario 22: Invite-Only Registration Enforcement
 
-> 25 nodes
+> 23 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Scenario 22: Invite-Only Registration Enforcement** (10 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Execution Steps** (7 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **MythosMUD Server** (4 connections) — `server/README.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **scenario-22-invite-registration.md** (2 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Server Realtime Module** (2 connections) — `server/realtime/README.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **✅ EXECUTED - ALL STEPS PASSED** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Execution Record** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 1: Switch to registration mode** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 2: Blank invite code is rejected client-side, no request sent** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 3: Invalid invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 4: Expired invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 5: Already-used invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Step 6: Valid invite code succeeds (control case)** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- **Who Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
-- **Persistence Repositories** (1 connections) — `server/persistence/repositories/README.md`
-- **MythosMUD Test Suite** (1 connections) — `server/tests/README.md`
+- **MUD Disconnect Grace Period & Rest Command: Industry Comparison** (15 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **10. Grace Period Persistence** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **1. Disconnect Grace Period Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **2. Auto-Attack During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **3. Grace Period Visibility & Messaging** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **4. Rest/Quit Command During Combat** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **5. Rest Command Countdown Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **6. Rest Location (Inn/Hotel) Behavior** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **7. Reconnection During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **8. Grace Period After Intentional Disconnect** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **9. Command Blocking During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **11. Missing Features from Other MUDs** (2 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **disconnect_grace_period_comparison.md** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Executive Summary** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Features We're NOT Implementing (but exist elsewhere)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Gap Analysis** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Industry Practices** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Our Plan** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Questions for Discussion** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Relationships
 
@@ -36,17 +34,12 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
-- `e2e-tests/scenarios/scenario-22-invite-registration.md`
-- `server/README.md`
-- `server/persistence/repositories/README.md`
-- `server/realtime/README.md`
-- `server/tests/README.md`
+- `.cursor/plans/disconnect_grace_period_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (83%)
-- INFERRED: 4 (17%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,53 @@
 # .get_upcoming_holidays
 
-> 22 nodes
+> 36 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
-- **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
-- **_ensure_utc()** (6 connections) — `server/services/holiday_service.py`
-- **datetime** (6 connections)
-- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
-- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
-- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
-- **._day_ordinal()** (3 connections) — `server/services/holiday_service.py`
-- **.get_active_holiday_names()** (3 connections) — `server/services/holiday_service.py`
-- **.get_upcoming_summary()** (3 connections) — `server/services/holiday_service.py`
-- **.last_refresh()** (3 connections) — `server/services/holiday_service.py`
-- **.test_ensure_utc_naive_and_aware()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **Update the active holiday window for the provided Mythos timestamp.** (1 connections) — `server/services/holiday_service.py`
-- **Return currently active holiday entries.** (1 connections) — `server/services/holiday_service.py`
-- **Get active holidays and serialize them for API responses. This method…** (1 connections) — `server/services/holiday_service.py`
-- **Get upcoming holidays and serialize them for API responses. This method…** (1 connections) — `server/services/holiday_service.py`
-- **Convenience helper for formatted admin output.** (1 connections) — `server/services/holiday_service.py`
-- **Return the next N holidays, wrapping around the calendar.** (1 connections) — `server/services/holiday_service.py`
-- **Return formatted strings describing upcoming holidays.** (1 connections) — `server/services/holiday_service.py`
-- **Convert month/day into a monotonically increasing ordinal (1-indexed).** (1 connections) — `server/services/holiday_service.py`
-- **Get the last refresh timestamp. Returns: datetime | None: The timestamp of the…** (1 connections) — `server/services/holiday_service.py`
-- **Naive datetimes gain UTC; aware datetimes convert to UTC.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **LRUCache** (29 connections) — `server/caching/lru_cache.py`
+- **K** (7 connections)
+- **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
+- **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **.get()** (5 connections) — `server/caching/lru_cache.py`
+- **V** (5 connections)
+- **.get_stats()** (4 connections) — `server/caching/lru_cache.py`
+- **.items()** (4 connections) — `server/caching/lru_cache.py`
+- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
+- **.delete()** (3 connections) — `server/caching/lru_cache.py`
+- **._evict_expired_entries()** (3 connections) — `server/caching/lru_cache.py`
+- **.keys()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.values()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear()** (2 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
+- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **Put an item into the cache. Args: key: The key to store value: The value to…** (1 connections) — `server/caching/lru_cache.py`
+- **Delete an item from the cache. Args: key: The key to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
+- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
+- **Get cache statistics. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/lru_cache.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (11 shared connections)
-- [HolidayEntry](HolidayEntry.md) (5 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [RoomCacheLoader](RoomCacheLoader.md) (4 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (3 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (3 shared connections)
+- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (1 shared connections)
+- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/holiday_service.py`
-- `server/tests/unit/services/test_holiday_service.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

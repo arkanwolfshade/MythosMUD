@@ -1,16 +1,14 @@
 # CRITICAL SERVER MANAGEMENT RULES
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **CRITICAL SERVER MANAGEMENT RULES** (4 connections) — `.claude/rules/server-management.md`
-- **Server Authority (Critical)** (2 connections) — `.claude/rules/server-management.md`
-- **Server Management** (2 connections) — `.claude/rules/server-management.md`
-- **Implications** (1 connections) — `.claude/rules/server-management.md`
-- **MANDATORY SERVER STARTUP PROCEDURE** (1 connections) — `.claude/rules/server-management.md`
-- **ONE SERVER ONLY RULE** (1 connections) — `.claude/rules/server-management.md`
-- **PRE-COMMAND CHECKLIST** (1 connections) — `.claude/rules/server-management.md`
+- **Four-Level Room Hierarchy** (2 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
+- **Room Hierarchy Implementation** (2 connections) — `docs/archive/ROOM_PLANNING.md`
+- **Hierarchical World Loader** (2 connections) — `docs/archive/ROOM_PLANNING.md`
+- **Environment Classification** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
+- **Environment Inheritance** (1 connections) — `docs/archive/ROOM_PLANNING.md`
 
 ## Relationships
 
@@ -18,12 +16,13 @@
 
 ## Source Files
 
-- `.claude/rules/server-management.md`
+- `docs/archive/ROOM_HIERARCHY_FRD.md`
+- `docs/archive/ROOM_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

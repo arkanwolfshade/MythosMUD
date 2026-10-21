@@ -1,24 +1,23 @@
 # test_get_room_persistence_returns_dict
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_room_persistence_returns_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() handles dict from persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_set_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test set_limit updates channel limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,41 +1,44 @@
 # ._fetch
 
-> 15 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **._fetch()** (8 connections) — `server/alias_storage.py`
-- **.create_alias()** (7 connections) — `server/alias_storage.py`
-- **_row_to_alias()** (6 connections) — `server/alias_storage.py`
-- **.get_player_aliases()** (5 connections) — `server/alias_storage.py`
-- **.get_alias()** (4 connections) — `server/alias_storage.py`
-- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
-- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
-- **test_row_to_alias_stores_naive_utc()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **SimpleNamespace** (2 connections)
-- **Validate alias name format.** (1 connections) — `server/alias_storage.py`
-- **Validate alias command.** (1 connections) — `server/alias_storage.py`
-- **Run a row-returning alias function; None on database error.** (1 connections) — `server/alias_storage.py`
-- **Get all aliases for a player (empty on unknown player or DB error).** (1 connections) — `server/alias_storage.py`
-- **Get a specific alias for a player (case-insensitive name match).** (1 connections) — `server/alias_storage.py`
-- **Create (or replace the command of) an alias; None if invalid, over the limit,…** (1 connections) — `server/alias_storage.py`
+- **compilerOptions** (15 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **load-tests/tsconfig.json** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **lib** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **paths** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **typeRoots** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **types** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **include** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **@playwright/test** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **baseUrl** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **module** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **moduleResolution** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **noEmit** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **noUnusedLocals** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **noUnusedParameters** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **skipLibCheck** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **strict** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **target** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **ES2020** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **node** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **../../client/node_modules/@playwright/test** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **../../client/node_modules/@types** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- ***.spec.ts** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [Alias](Alias.md) (5 shared connections)
-- [test_alias_storage.py](test_alias_storage.py.md) (3 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/tests/unit/test_alias_storage.py`
+- `e2e-tests/load-tests/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

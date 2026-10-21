@@ -1,78 +1,78 @@
 # ContainerComponent
 
-> 562 nodes
+> 248 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **ContainerComponent** (169 connections) — `server/models/container.py`
-- **ContainerSourceType** (95 connections) — `server/models/container.py`
-- **test_corpse_lifecycle_service.py** (61 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **ContainerServiceError** (49 connections) — `server/services/container_service_helpers.py`
-- **ContainerLockState** (42 connections) — `server/models/container.py`
-- **test_container.py** (41 connections) — `server/tests/unit/models/test_container.py`
-- **InventoryStack** (38 connections) — `server/services/inventory_service.py`
-- **container_service.py** (38 connections) — `server/services/container_service.py`
-- **container_service_transfer_to.py** (34 connections) — `server/services/container_service_transfer_to.py`
-- **models/container.py** (33 connections) — `server/models/container.py`
-- **container_service_session.py** (30 connections) — `server/services/container_service_session.py`
-- **handle_transfer_items_exceptions()** (29 connections) — `server/api/container_exception_handlers.py`
-- **container_service_transfer_from.py** (28 connections) — `server/services/container_service_transfer_from.py`
-- **test_container_exception_handlers.py** (27 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **container_service_lock.py** (26 connections) — `server/services/container_service_lock.py`
-- **handle_open_container_exceptions()** (24 connections) — `server/api/container_exception_handlers.py`
-- **container_service_helpers.py** (24 connections) — `server/services/container_service_helpers.py`
-- **ContainerTransferFromMixin** (22 connections) — `server/services/container_service_transfer_from.py`
-- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
-- **ContainerSessionMixin** (21 connections) — `server/services/container_service_session.py`
-- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
-- **ContainerAccessMixin** (20 connections) — `server/services/container_service_access.py`
-- **ContainerNotFoundError** (20 connections) — `server/services/container_service_helpers.py`
-- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
-- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
-- *... and 537 more nodes in this community*
+- **BaseCommand** (176 connections) — `server/models/command_base.py`
+- **CommandType** (113 connections) — `server/models/command_base.py`
+- **command.py** (112 connections) — `server/models/command.py`
+- **command_base.py** (28 connections) — `server/models/command_base.py`
+- **test_command_player_state.py** (23 connections) — `server/tests/unit/models/test_command_player_state.py`
+- **test_command_base.py** (22 connections) — `server/tests/unit/models/test_command_base.py`
+- **command_communication.py** (20 connections) — `server/models/command_communication.py`
+- **command_utility.py** (20 connections) — `server/models/command_utility.py`
+- **test_command_utility.py** (20 connections) — `server/tests/unit/models/test_command_utility.py`
+- **command_combat.py** (16 connections) — `server/models/command_combat.py`
+- **command_moderation.py** (16 connections) — `server/models/command_moderation.py`
+- **command_player_state.py** (16 connections) — `server/models/command_player_state.py`
+- **MuteGlobalCommand** (15 connections) — `server/models/command_moderation.py`
+- **LieCommand** (15 connections) — `server/models/command_player_state.py`
+- **command_admin.py** (14 connections) — `server/models/command_admin.py`
+- **KickCommand** (14 connections) — `server/models/command_combat.py`
+- **PunchCommand** (14 connections) — `server/models/command_combat.py`
+- **StrikeCommand** (14 connections) — `server/models/command_combat.py`
+- **GoCommand** (14 connections) — `server/models/command_exploration.py`
+- **PoseCommand** (13 connections) — `server/models/command_communication.py`
+- **LearnCommand** (13 connections) — `server/models/command_magic.py`
+- **SpellCommand** (13 connections) — `server/models/command_magic.py`
+- **HelpCommand** (13 connections) — `server/models/command_utility.py`
+- **WhoCommand** (13 connections) — `server/models/command_utility.py`
+- **GotoCommand** (12 connections) — `server/models/command_admin.py`
+- *... and 223 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (86 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (53 shared connections)
-- [LootAllRequest](LootAllRequest.md) (46 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (42 shared connections)
-- [ContainerService](ContainerService.md) (29 shared connections)
-- [CorpseLifecycleService](CorpseLifecycleService.md) (27 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (24 shared connections)
-- [alias_storage.py](alias_storage.py.md) (15 shared connections)
-- [test_corpse_lifecycle_decay.py](test_corpse_lifecycle_decay.py.md) (12 shared connections)
-- [InventoryService](InventoryService.md) (10 shared connections)
-- [ValueError](ValueError.md) (10 shared connections)
-- [ValidationError](ValidationError.md) (7 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (77 shared connections)
+- [test_nats_service_pool.py](test_nats_service_pool.py.md) (46 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (34 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (30 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (27 shared connections)
+- [LucidityRepository](LucidityRepository.md) (26 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (26 shared connections)
+- [container_query_helpers.py](container_query_helpers.py.md) (23 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (23 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (14 shared connections)
+- [EmoteService](EmoteService.md) (13 shared connections)
+- [File-by-File Changes](File-by-File_Changes.md) (12 shared connections)
 
 ## Source Files
 
-- `server/api/container_exception_handlers.py`
-- `server/api/container_helpers.py`
-- `server/models/container.py`
-- `server/services/container_service.py`
-- `server/services/container_service_access.py`
-- `server/services/container_service_helpers.py`
-- `server/services/container_service_lock.py`
-- `server/services/container_service_session.py`
-- `server/services/container_service_transfer_from.py`
-- `server/services/container_service_transfer_to.py`
-- `server/services/corpse_lifecycle_service.py`
-- `server/services/inventory_service.py`
-- `server/tests/unit/api/conftest.py`
-- `server/tests/unit/api/test_container_endpoints_basic_weapon.py`
-- `server/tests/unit/api/test_container_events.py`
-- `server/tests/unit/api/test_container_events_loot.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
-- `server/tests/unit/api/test_containers.py`
+- `server/models/command.py`
+- `server/models/command_admin.py`
+- `server/models/command_alias.py`
+- `server/models/command_base.py`
+- `server/models/command_channel.py`
+- `server/models/command_combat.py`
+- `server/models/command_communication.py`
+- `server/models/command_exploration.py`
+- `server/models/command_follow.py`
+- `server/models/command_inventory.py`
+- `server/models/command_magic.py`
+- `server/models/command_moderation.py`
+- `server/models/command_party.py`
+- `server/models/command_player_state.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/commands/test_command_registry_consistency.py`
+- `server/tests/unit/models/test_command_base.py`
+- `server/tests/unit/models/test_command_player_state.py`
+- `server/tests/unit/models/test_command_utility.py`
+- `server/utils/command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1303 (82%)
-- INFERRED: 279 (18%)
+- EXTRACTED: 849 (90%)
+- INFERRED: 96 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

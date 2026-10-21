@@ -1,39 +1,42 @@
 # Polish Systematically
 
-> 18 nodes
+> 16 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **Polish Systematically** (13 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Skill** (6 connections) — `.claude/skills/polish/SKILL.md`
-- **Code Quality** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Color & Contrast** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Content & Copy** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Edge Cases & Error States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Final Verification** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Forms & Inputs** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Icons & Images** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Interaction States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Micro-interactions & Transitions** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Performance** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Checklist** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Pre-Polish Assessment** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Responsiveness** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Typography Refinement** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Visual Alignment & Spacing** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **RescueBanner.tsx** (9 connections) — `client/src/components/health/RescueBanner.tsx`
+- **rescue.ts** (9 connections) — `client/src/types/rescue.ts`
+- **RescueStatus** (9 connections) — `client/src/types/rescue.ts`
+- **rescueStatus.ts** (8 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
+- **RescueBanner.test.tsx** (6 connections) — `client/src/components/health/__tests__/RescueBanner.test.tsx`
+- **RescueBanner** (5 connections) — `client/src/components/health/RescueBanner.tsx`
+- **toRescueStatus()** (3 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
+- **RESCUE_TERMINAL_DISPLAY_MS** (3 connections) — `client/src/types/rescue.ts`
+- **headline()** (2 connections) — `client/src/components/health/RescueBanner.tsx`
+- **RescueBannerProps** (2 connections) — `client/src/components/health/RescueBanner.tsx`
+- **toneClass()** (2 connections) — `client/src/components/health/RescueBanner.tsx`
+- **optionalString()** (2 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
+- **RescueRole** (2 connections) — `client/src/types/rescue.ts`
+- **RescueStatusKind** (2 connections) — `client/src/types/rescue.ts`
+- **status()** (1 connections) — `client/src/components/health/__tests__/RescueBanner.test.tsx`
+- **BANNER_STATUSES** (1 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (5 shared connections)
+- [party_commands.py](party_commands.py.md) (3 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (2 shared connections)
 
 ## Source Files
 
-- `.claude/skills/polish/SKILL.md`
+- `client/src/components/health/RescueBanner.tsx`
+- `client/src/components/health/__tests__/RescueBanner.test.tsx`
+- `client/src/components/ui-v2/eventLog/rescueStatus.ts`
+- `client/src/types/rescue.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

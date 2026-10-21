@@ -1,63 +1,56 @@
 # NPCPopulationController
 
-> 145 nodes
+> 124 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
-- **test_npc_instance_service.py** (53 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **NPCInstanceService** (25 connections) — `server/services/npc_instance_service.py`
-- **asyncio** (23 connections)
-- **initialize_npc_instance_service()** (14 connections) — `server/services/npc_instance_service.py`
-- **._create_npc_services()** (10 connections) — `server/container/bundles/npc.py`
-- **Any** (10 connections)
-- **.__init__()** (8 connections) — `server/npc/population_control.py`
-- **fixture** (8 connections)
-- **._check_spawn_requirements_for_room()** (7 connections) — `server/npc/population_control.py`
-- **._register_spawned_npc_in_population_stats()** (6 connections) — `server/npc/population_control.py`
-- **._spawn_npc()** (6 connections) — `server/npc/population_control.py`
-- **.move_npc_instance()** (6 connections) — `server/services/npc_instance_service.py`
-- **._handle_player_entered_room()** (5 connections) — `server/npc/population_control.py`
-- **.spawn_npc_instance()** (5 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_configuration()** (4 connections) — `server/npc/population_control.py`
-- **._handle_player_left_room()** (4 connections) — `server/npc/population_control.py`
-- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
-- **._update_player_count()** (4 connections) — `server/npc/population_control.py`
-- **._apply_npc_room_move()** (4 connections) — `server/services/npc_instance_service.py`
-- **._check_npc_move_blocked_by_combat()** (4 connections) — `server/services/npc_instance_service.py`
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- *... and 120 more nodes in this community*
+- **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **asyncio** (55 connections)
+- **test_handle_nats_message_attribute_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_circuit_breaker_open()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_connection_manager_resolution_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_dlq_on_final_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_unknown_message_id_defaults()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_validation_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_process_message_with_retry_exhaustion()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_process_single_message_uuid_conversion_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_event_subjects_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_nats_error_returns_false()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_not_found()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_injected_returns_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_setter_updates_helpers()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_event_data_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_event_type_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_retry_on_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (39 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (11 shared connections)
-- [test_npc_utils.py](test_npc_utils.py.md) (9 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (8 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [PopulationStats](PopulationStats.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCStartupService](NPCStartupService.md) (2 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (9 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
+- [test_rate_overrides.py](test_rate_overrides.py.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/npc.py`
-- `server/npc/population_control.py`
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 272 (89%)
-- INFERRED: 32 (11%)
+- EXTRACTED: 190 (91%)
+- INFERRED: 19 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

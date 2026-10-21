@@ -1,34 +1,39 @@
 # Phase 4: Testing and Refinement
 
-> 13 nodes
+> 18 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Phase 4: Testing and Refinement** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.1: Comprehensive Testing of All Panels** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.2: Performance Optimization** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.3: User Feedback Integration** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.4: Documentation Updates** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **fix_markdown_blanks_around_lists.py** (8 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **fix_blanks_around_lists()** (7 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **main()** (5 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **get_list_type()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **is_code_block_delimiter()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **is_list_item()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **is_table_row()** (3 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Path** (3 connections)
+- **Check if a line is a list item.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Parse markdownlint output to get files with MD032 issues.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Fix blanks around lists in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Main function to fix MD032 issues.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Get the type of list item: 'unordered', 'ordered', 'checklist', or None.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Check if a line is a code block delimiter.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Check if a line is a table row.** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
+- **Add blank lines around lists where missing. Returns: (new_content, lines_added)** (1 connections) — `scripts/fix_markdown_blanks_around_lists.py`
 
 ## Relationships
 
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `scripts/fix_markdown_blanks_around_lists.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

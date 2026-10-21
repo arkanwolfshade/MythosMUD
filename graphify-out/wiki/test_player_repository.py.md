@@ -1,50 +1,49 @@
 # test_player_repository.py
 
-> 18 nodes
+> 29 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_player_repository.py** (49 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization_with_cache()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_player_repository_initialization_with_event_bus()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_save_player_with_bool_is_admin()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_invalid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_validate_and_fix_player_room_valid()** (2 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Unit tests for player repository. Tests the PlayerRepository class which…** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes correctly.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes with room cache.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test PlayerRepository initializes with event bus.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test validate_and_fix_player_room returns False for valid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test validate_and_fix_player_room fixes invalid room.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player converts bool is_admin to int.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_user_id returns first active player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **ascii_map_exits.py** (15 connections) — `server/services/ascii_map_exits.py`
+- **build_departures()** (5 connections) — `server/services/ascii_map_exits.py`
+- **build_exit_bridges()** (5 connections) — `server/services/ascii_map_exits.py`
+- **get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_exits.py`
+- **get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_exits.py`
+- **horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_exits.py`
+- **_index_room_positions()** (4 connections) — `server/services/ascii_map_exits.py`
+- **_room_id()** (4 connections) — `server/services/ascii_map_exits.py`
+- **vertical_exit_char_between()** (4 connections) — `server/services/ascii_map_exits.py`
+- **ExitLookup** (3 connections)
+- **_departing_directions()** (3 connections) — `server/services/ascii_map_exits.py`
+- **_horizontal_bridge_cells()** (3 connections) — `server/services/ascii_map_exits.py`
+- **_vertical_bridge_cells()** (3 connections) — `server/services/ascii_map_exits.py`
+- **ExitInfo** (2 connections)
+- **Grid** (2 connections)
+- **reverse_direction()** (2 connections) — `server/services/ascii_map_exits.py`
+- **Exit geometry for the ASCII map. Extracted from `ascii_map_renderer.py` to…** (1 connections) — `server/services/ascii_map_exits.py`
+- **Exit character shown on the row between (x, y) and the room below it, or None.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Stable identifier for `room`, or "" when it has none.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Room ids present in this view, and the map cell each positioned one occupies.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Directions of `room`'s exits whose target is not part of this view.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Directions in which each room has an exit leading OUT of the loaded area. A map…** (1 connections) — `server/services/ascii_map_exits.py`
+- **Cells strictly between (x, y) and an east/west target more than one column away.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Cells strictly between (x, y) and a north/south target more than one row away.** (1 connections) — `server/services/ascii_map_exits.py`
+- **Cells lying strictly between two rooms joined by a single exit. A grid cell is…** (1 connections) — `server/services/ascii_map_exits.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (14 shared connections)
-- [_make_mock_row](_make_mock_row.md) (9 shared connections)
-- [_ScalarResult](_ScalarResult.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [session](session.md) (4 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [player_repository](player_repository.md) (2 shared connections)
-- [test_list_players_empty](test_list_players_empty.md) (1 shared connections)
-- [test_soft_delete_player_success](test_soft_delete_player_success.md) (1 shared connections)
-- [test_update_player_last_active_with_timestamp](test_update_player_last_active_with_timestamp.md) (1 shared connections)
+- [mock_container](mock_container.md) (1 shared connections)
+- [NATS Complete Remediation Summary](NATS_Complete_Remediation_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/services/ascii_map_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 42 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,55 +1,47 @@
 # quality_fragmentation_lizard.py
 
-> 47 nodes
+> 22 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **quality_fragmentation_lizard.py** (25 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **quality_fragmentation_guard.py** (24 connections) — `scripts/ci/quality_fragmentation_guard.py`
-- **quality_fragmentation_core.py** (18 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **ChangedFile** (11 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **GuardContext** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **check_ai_guardrails()** (9 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **git_show_file()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **run_cmd()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **check_fragmentation_trends()** (9 connections) — `scripts/ci/quality_fragmentation_guard.py`
-- **quality_fragmentation_trends.py** (9 connections) — `scripts/ci/quality_fragmentation_trends.py`
-- **LizardFunctionRow** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **main()** (8 connections) — `scripts/ci/quality_fragmentation_guard.py`
-- **_check_head_rows()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **_process_head_lizard()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **build_context()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **is_safe_git_ref()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **check_lizard_limits()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **_has_override_in_file()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **parse_lizard_output()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **run_lizard_on_content()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **_process_base_lizard()** (6 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **is_code_file()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **parse_args()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **file_nloc_failures()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **_map_function_node_to_row()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- *... and 22 more nodes in this community*
+- **NATS Complete Remediation Summary** (16 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Complete Fix Summary** (4 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Configuration Options Added** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Metrics Enhancements** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **After Remediation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Before Remediation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Conclusion** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Documentation Created** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Enhanced Configuration Usage** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Enhanced Metrics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **High-Priority Issues ✅ (5/5 Complete)** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Low-Priority Issues ✅ (3/3 Complete)** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Medium-Priority Issues ✅ (4/4 Complete)** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **New Configuration Fields** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **New Metrics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Performance Impact** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Remaining Work (Optional)** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Summary Statistics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (14 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (11 shared connections)
-- [safe_run_static](safe_run_static.md) (4 shared connections)
-- [quality_fragmentation_graph.py](quality_fragmentation_graph.py.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
+- [room_schema.json](room_schema.json.md) (1 shared connections)
+- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
+- [test_check_pr_issue_references.py](test_check_pr_issue_references.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- `scripts/ci/quality_fragmentation_core.py`
-- `scripts/ci/quality_fragmentation_guard.py`
-- `scripts/ci/quality_fragmentation_lizard.py`
-- `scripts/ci/quality_fragmentation_trends.py`
+- `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (87%)
-- INFERRED: 21 (13%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

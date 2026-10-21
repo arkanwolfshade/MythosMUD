@@ -1,42 +1,35 @@
 # get_npc_name_from_instance
 
-> 16 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
-- **test_connection_utils.py** (9 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Get NPC name from the actual NPC instance, preserving original case from…** (1 connections) — `server/realtime/connection_utils.py`
-- **Unit tests for connection utils. Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns NPC name when found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
-- **Test get_npc_name_from_instance() handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Keeper Tips  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Communities (3 total, 1 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **call-of-cthulhu-keeper-tips/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Community 0 - "Scenario Design"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Community 1 - "Call of Cthulhu Roleplaying Game; Keeper Tips: C"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [NpcDisposition](NpcDisposition.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_utils.py`
-- `server/tests/unit/realtime/test_connection_utils.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

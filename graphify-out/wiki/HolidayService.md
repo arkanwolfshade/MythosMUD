@@ -1,63 +1,59 @@
 # HolidayService
 
-> 55 nodes
+> 89 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **HolidayService** (44 connections) — `server/services/holiday_service.py`
-- **HolidayCollection** (40 connections) — `server/schemas/calendar/calendar.py`
-- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **ChronicleLike** (12 connections) — `server/time/time_service.py`
-- **.__init__()** (9 connections) — `server/services/holiday_service.py`
-- **test_holiday_service.py** (9 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.__init__()** (7 connections) — `server/time/time_event_consumer.py`
-- **.test_init_loads_from_database()** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **._load_from_database()** (4 connections) — `server/services/holiday_service.py`
-- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_serialized_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_serialized_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_get_upcoming_summary()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_init_with_collection()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_last_refresh_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_refresh_active_activates_matching_holiday()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_refresh_active_caps_duration()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_refresh_active_expires_old_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_refresh_active_no_matches()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_refresh_active_removes_unknown_holiday_id()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- *... and 30 more nodes in this community*
+- **test_wearable_container_service.py** (73 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **asyncio** (55 connections)
+- **WearableContainerServiceError** (19 connections) — `server/services/wearable_container_service.py`
+- **test_add_items_to_wearable_container_capacity_exceeded()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_not_found()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_update_fails()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_player()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_wrong_source_type()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_filters_non_equipment()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_container_overflow_player_not_found()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_capacity_exceeded()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_creation_error()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_capacity_exceeded()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_not_found()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_update_fails()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_player()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_update_wearable_container_items_wrong_source_type()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_dict_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_non_dict_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_empty()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_exception_in_validation()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_multiple_containers()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [HolidayEntry](HolidayEntry.md) (11 shared connections)
-- [.get_upcoming_holidays](get_upcoming_holidays.md) (11 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [_holiday_entry_from_row](_holiday_entry_from_row.md) (7 shared connections)
-- [validate_calendar.py](validate_calendar.py.md) (7 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (4 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [.sample_holidays](sample_holidays.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (14 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (5 shared connections)
+- [✅ Best Practices Compliance](✅_Best_Practices_Compliance.md) (5 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (2 shared connections)
+- [test_process_combined_rows_no_exits](test_process_combined_rows_no_exits.md) (2 shared connections)
+- [test_warmup_room_cache](test_warmup_room_cache.md) (2 shared connections)
+- [Easy Coverage Wins](Easy_Coverage_Wins.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/calendar.py`
-- `server/services/holiday_service.py`
-- `server/tests/unit/services/test_holiday_service.py`
-- `server/time/time_event_consumer.py`
-- `server/time/time_service.py`
+- `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 179 (92%)
+- INFERRED: 15 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

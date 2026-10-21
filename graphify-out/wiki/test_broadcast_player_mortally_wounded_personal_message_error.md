@@ -1,24 +1,22 @@
 # test_broadcast_player_mortally_wounded_personal_message_error
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **ADR-023: Package Ownership and Fan-Out** (0 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

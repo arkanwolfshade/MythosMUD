@@ -1,36 +1,51 @@
 # required
 
-> 15 nodes
+> 28 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **required** (15 connections) — `schemas/items/item_prototype.schema.json`
-- **base_value** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **effect_components** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **flags** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **item_type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **long_description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **metadata** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **prototype_id** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **short_description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **stacking_rules** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **tags** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **usage_restrictions** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **wear_slots** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **weight** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **name** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **get_hallucinated_exits()** (16 connections) — `server/services/exit_hallucination.py`
+- **test_exit_hallucination.py** (12 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **exit_hallucination.py** (10 connections) — `server/services/exit_hallucination.py`
+- **seed_from()** (7 connections) — `server/services/exit_hallucination.py`
+- **mulberry32()** (5 connections) — `server/services/exit_hallucination.py`
+- **_hash_string()** (3 connections) — `server/services/exit_hallucination.py`
+- **_shuffle()** (3 connections) — `server/services/exit_hallucination.py`
+- **test_get_hallucinated_exits_differs_by_player()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_get_hallucinated_exits_is_stable_for_same_room_and_player()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_get_hallucinated_exits_matches_js_reference()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_get_hallucinated_exits_only_uses_the_real_direction_pool()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_mulberry32_yields_floats_in_unit_interval()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_seed_from_matches_js_reference()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **test_seed_from_order_matters()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **Server-side exit hallucination for the deranged lucidity tier (#626, #714).…** (1 connections) — `server/services/exit_hallucination.py`
+- **32-bit string hash (djb2 variant) -- port of hashString() in…** (1 connections) — `server/services/exit_hallucination.py`
+- **Combine room + player into a single seed -- order matters, port of seedFrom().** (1 connections) — `server/services/exit_hallucination.py`
+- **mulberry32: small, fast, deterministic PRNG -- port of mulberry32() in…** (1 connections) — `server/services/exit_hallucination.py`
+- **Deterministic shuffle driven by rng -- port of shuffle() (random-key sort, not…** (1 connections) — `server/services/exit_hallucination.py`
+- **Return this viewer's seeded, deterministic fake exit set for this room (#626,…** (1 connections) — `server/services/exit_hallucination.py`
+- **Unit tests for server-side exit hallucination (#626, #714). Golden values in…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **seed_from(room, player) must match the Node reference exactly (bit-for-bit…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **Room and player aren't interchangeable in the seed -- different rooms,…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **Golden values from the Node reference implementation -- see module docstring.** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- **Same (room, player) must yield the same lie every time -- stable across re-…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [player_presence_tracker.py](player_presence_tracker.py.md) (3 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
+- [ChatLogger](ChatLogger.md) (2 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/services/exit_hallucination.py`
+- `server/tests/unit/services/test_exit_hallucination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

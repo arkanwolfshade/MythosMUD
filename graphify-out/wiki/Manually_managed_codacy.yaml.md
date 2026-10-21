@@ -1,12 +1,11 @@
 # Manually managed codacy.yaml
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Manually managed codacy.yaml** (2 connections) — `.codacy/README.md`
-- **Grype and Trivy CVE scanning** (1 connections) — `.codacy/README.md`
-- **Run codacy_cli_analyze after every edit** (1 connections) — `.github/instructions/codacy.instructions.md`
+- **Mandatory AI Execution Contract** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
+- **E2E Scenario Template** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `.codacy/README.md`
-- `.github/instructions/codacy.instructions.md`
+- `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

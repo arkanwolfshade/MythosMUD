@@ -1,26 +1,31 @@
 # Dead Light and Other Dark Turns (source summary)
 
-> 4 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Dead Light and Other Dark Turns (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **Dead Light and Other Dark Turns.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **.format()** (5 connections) — `server/structured_logging/player_guid_formatter.py`
+- **_canonical_ip()** (3 connections) — `server/middleware/auth_rate_limit.py`
+- **._convert_player_guids()** (3 connections) — `server/structured_logging/player_guid_formatter.py`
+- **LogRecord** (1 connections)
+- **Format a log record with enhanced player GUID display. Args: record: The log…** (1 connections) — `server/structured_logging/player_guid_formatter.py`
+- **Convert player GUIDs in message to enhanced format. Args: message: The log…** (1 connections) — `server/structured_logging/player_guid_formatter.py`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (2 shared connections)
+- [_PlayerCombatClearing](_PlayerCombatClearing.md) (1 shared connections)
+- [Optimize Skill](Optimize_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- `server/middleware/auth_rate_limit.py`
+- `server/structured_logging/player_guid_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

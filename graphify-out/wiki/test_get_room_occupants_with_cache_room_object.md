@@ -1,24 +1,23 @@
 # test_get_room_occupants_with_cache_room_object
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_attack_strength_success()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength with successful validation.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

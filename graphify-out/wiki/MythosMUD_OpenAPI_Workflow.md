@@ -1,16 +1,14 @@
 # MythosMUD OpenAPI Workflow
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **MythosMUD OpenAPI Workflow** (6 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Commands** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Output** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Requirements** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **When to Regenerate** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **OpenAPI Workflow Skill** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Local Channel System** (3 connections) — `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- **Scenario 10 Local Channel Movement** (2 connections) — `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- **Local Channel Sub-Zone Routing** (1 connections) — `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- **Scenario 11 Local Channel Errors** (1 connections) — `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- **Scenario 12 Local Channel Integration** (1 connections) — `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Relationships
 
@@ -18,11 +16,15 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

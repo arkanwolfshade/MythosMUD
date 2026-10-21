@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Alone Against the Dark
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Alone Against the Dark** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
-- **alone-against-the-dark/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- **Issue Template Config** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
+- **Private Security Advisory Channel** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

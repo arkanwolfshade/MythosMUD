@@ -1,56 +1,52 @@
 # test_inventory_command_prototype.py
 
-> 29 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **test_inventory_command_prototype.py** (21 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **infer_equip_slot_from_prototype()** (18 connections) — `server/commands/inventory_command_prototype.py`
-- **inventory_command_prototype.py** (14 connections) — `server/commands/inventory_command_prototype.py`
-- **prototype_from_registry()** (10 connections) — `server/commands/inventory_command_prototype.py`
-- **prototype_registry_from_request()** (10 connections) — `server/commands/inventory_command_prototype.py`
-- **_consumable_prototype()** (6 connections) — `server/commands/inventory_use_command.py`
-- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
-- **test_prototype_from_registry_missing_get()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_prototype_from_registry_swallows_registry_error()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **_inventory_prototype_id()** (2 connections) — `server/commands/inventory_command_prototype.py`
-- **_wear_slots_from_prototype()** (2 connections) — `server/commands/inventory_command_prototype.py`
-- **test_infer_equip_slot_empty_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_from_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_invalid_prototype_id_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_missing_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_no_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_non_inventory_stack()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_non_string_wear_slot()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_infer_equip_slot_uses_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_prototype_from_registry_returns_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_prototype_registry_from_request_missing_app()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_prototype_registry_from_request_no_state()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **test_prototype_registry_from_request_returns_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
-- **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
-- **Resolve prototype registry from FastAPI-style request (agent-readable…** (1 connections) — `server/commands/inventory_command_prototype.py`
-- *... and 4 more nodes in this community*
+- **Persistence Layer Async Migration Plan** (16 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Rollback Procedures** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Success Metrics** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Decision Points** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Migration Timeline** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Monitoring & Validation** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Aggressive Timeline (Focused Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Conservative Timeline (Gradual Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Emergency Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Individual File Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Metrics to Track** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Overall Migration Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-File Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-Phase Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Performance Validation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 1: Foundation Complete ✅** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **References** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Total Migration Effort** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **When NOT to Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **When TO Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (10 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [inventory_item_matching.py](inventory_item_matching.py.md) (1 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
+- [test_profession_service.py](test_profession_service.py.md) (1 shared connections)
+- [run_make_stages.py](run_make_stages.py.md) (1 shared connections)
+- [start_hour](start_hour.md) (1 shared connections)
+- [load_test_10_players.spec.ts](load_test_10_players.spec.ts.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_prototype.py`
-- `server/commands/inventory_use_command.py`
-- `server/tests/unit/commands/test_inventory_command_prototype.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

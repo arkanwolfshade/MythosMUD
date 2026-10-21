@@ -1,19 +1,18 @@
 # Cursor Subagents Overview
 
-> 10 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Cursor Subagents Overview** (5 connections) — `.cursor/agents/README.md`
-- **Bug Investigator Subagent** (3 connections) — `.cursor/agents/bug-investigator.md`
-- **Security Auditor Subagent** (2 connections) — `.cursor/agents/security-auditor.md`
-- **Address Semgrep Security Findings Plan** (2 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Codebase Explorer Subagent** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Performance Profiler Subagent** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Test Suite Analyzer Subagent** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Official Test Credentials** (1 connections) — `.cursor/commands/investigate-bug.md`
-- **Subagent Automatic Discovery** (1 connections) — `.cursor/agents/QUICK_START.md`
-- **Codacy High/Critical Issues Remediation** (1 connections) — `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
+- **Room Pathing Validator Implementation Spec** (3 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **Connectivity Analysis** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Legacy string exit format** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Object exit format with flags** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Legacy exit format migration support** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **earth_arkhamcity_intersection_derby_high start room** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **Bidirectional Path Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Exit Flags (one_way, self_reference)** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **ValidationRule abstract base** (1 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
 
 ## Relationships
 
@@ -21,21 +20,13 @@
 
 ## Source Files
 
-- `.cursor/agents/QUICK_START.md`
-- `.cursor/agents/README.md`
-- `.cursor/agents/bug-investigator.md`
-- `.cursor/agents/codebase-explorer.md`
-- `.cursor/agents/performance-profiler.md`
-- `.cursor/agents/security-auditor.md`
-- `.cursor/agents/test-analyzer.md`
-- `.cursor/commands/investigate-bug.md`
-- `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
+- `tools/room_toolkit/room_validator/README.md`
+- `tools/room_toolkit/room_validator/room_validator_instructions.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (78%)
-- INFERRED: 2 (22%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

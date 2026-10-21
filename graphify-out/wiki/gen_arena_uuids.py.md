@@ -1,23 +1,23 @@
 # gen_arena_uuids.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **gen_arena_uuids.py** (1 connections) — `scripts/gen_arena_uuids.py`
-- **Generate deterministic UUIDs for arena zone, subzone, 121 rooms. One-off script.** (1 connections) — `scripts/gen_arena_uuids.py`
+- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test compare_canonical_rooms() returns True for same rooms.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/gen_arena_uuids.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

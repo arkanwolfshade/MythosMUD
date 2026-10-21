@@ -1,13 +1,11 @@
 # Lucidity System Expansion Scenarios
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Lucidity System Expansion Scenarios** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/README.md`
-- **Catatonia Grounding Ritual Scenario** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **player_lucidity Ledger** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- **Sanitarium Failover Escalation** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
+- **Architecture Remediation Implementation Summary** (1 connections) — `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
+- **Architecture Remediation Plan** (1 connections) — `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
@@ -15,14 +13,13 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/lucidity-system-expansion/README.md`
-- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
-- `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
+- `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
+- `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

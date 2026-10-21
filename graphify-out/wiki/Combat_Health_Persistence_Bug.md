@@ -1,25 +1,24 @@
 # Combat Health Persistence Bug
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
+- **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_combined_rows processes rows with exits JSON.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
-- `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

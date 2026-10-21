@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - The Malleus Monstrorum Keeper Deck
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - The Malleus Monstrorum Keeper Deck** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **the-malleus-monstrorum-keeper-deck/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
+- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- `.cursor/plans/react_best-practices_remediation.plan.md`
+- `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,34 @@
 # Dreamlands.md
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **Dreamlands.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
-- **Fungi from Yuggoth.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
-- **Ghoul.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
-- **Dreamlands** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
-- **S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **Fungi from Yuggoth** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
-- **Ghoul** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
+- **Test Timing Analysis - Optimization Targets** (6 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Recommendations** (5 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Test Timing Analysis** (3 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **slow Marker Filter Bug** (2 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **1. **Mark Additional Slow Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **2. **Investigate Heavy Setup Tests**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **3. **Verify Marker Application**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **4. **Target Time Budget (5-7 min = 300-420 seconds)**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Critical Finding: Tests Still Running Despite Markers** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Next Actions** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **pytest-xdist Parallel Fast Suite** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Relationships
 
-- [Cosmic Horror.md](Cosmic_Horror.md.md) (3 shared connections)
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (3 shared connections)
-- [Geography Overview.md](Geography_Overview.md.md) (1 shared connections)
-- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
+- [Middleware Package Design](Middleware_Package_Design.md) (1 shared connections)
+- [_holiday_entry_from_row](_holiday_entry_from_row.md) (1 shared connections)
+- [bench_cache_npc.py](bench_cache_npc.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
-- `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
-- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

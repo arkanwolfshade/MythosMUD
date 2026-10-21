@@ -1,31 +1,30 @@
 # Complexity Refactoring Test Plan
 
-> 22 nodes
+> 21 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Complexity Refactoring Test Plan** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **🎯 Test Categories** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **🔍 Specific Edge Cases to Test** (7 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **1. Application Startup & CORS (create_app)** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **2. WebSocket Connections** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **3. Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **4. Container Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **5. Player Respawn** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **6. Game Tick Processing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **7. Integration Tests** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Container Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **CORS Configuration** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Game Tick Processing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **📝 Notes** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **📊 Performance Checks** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **🚨 Red Flags to Watch For** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Respawn Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **✅ Success Criteria** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **WebSocket Token Parsing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **create_app CORS Configuration** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **WebSocket Connection Routes** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **test_report_any_baseline.py** (11 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **ReportTestApi** (9 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **test_counts_the_four_burn_down_rules()** (6 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **test_groups_by_directory_not_by_file()** (6 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **test_non_burn_down_rules_are_listed_but_excluded_from_the_total()** (6 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **_write_baseline()** (6 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **Path** (5 connections)
+- **test_missing_baseline_exits_with_guidance()** (5 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **CaptureFixture** (4 connections)
+- **MonkeyPatch** (4 connections)
+- **report_api_module_scope()** (4 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **_ReportModule** (3 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **test_burn_down_rules_cover_implicit_any()** (3 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **fixture** (1 connections)
+- **Protocol** (1 connections)
+- **Tests for scripts/report_any_baseline.py (#784). This script is the burn-down…** (1 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **The two parameter rules close the laundering path; dropping them re-opens it.** (1 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **Public surface of scripts/report_any_baseline.py used by these tests.** (1 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **Typed facade over the dynamically imported script.** (1 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
+- **Build a baseline.json whose entries carry the given rule codes.** (1 connections) — `server/tests/unit/scripts/test_report_any_baseline.py`
 
 ## Relationships
 
@@ -33,11 +32,11 @@
 
 ## Source Files
 
-- `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- `server/tests/unit/scripts/test_report_any_baseline.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

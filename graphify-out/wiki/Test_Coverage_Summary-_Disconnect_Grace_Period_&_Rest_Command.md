@@ -1,42 +1,45 @@
 # Test Coverage Summary: Disconnect Grace Period & Rest Command
 
-> 19 nodes
+> 15 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Test Coverage Summary: Disconnect Grace Period & Rest Command** (12 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Categories** (5 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **New Test Files Created** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Coverage Summary** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Integration Tests** (3 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Test Coverage by File** (3 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **E2E Test Scenarios** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Unit Tests** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Coverage Targets** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Coverage Verification** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Critical Files (90% Target)** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **E2E Scenarios** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Expected Coverage Results** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Grace Period System Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Next Steps** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Normal Files (70% Target)** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Notes** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Overview** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Rest Command Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **ProfessionCacheService** (20 connections) — `server/caching/cache_service.py`
+- **TestProfessionCacheService** (7 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **fixture** (5 connections)
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **_Profession** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_profession_by_id_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_professions()** (2 connections) — `server/caching/cache_service.py`
+- **.test_get_all_professions_hit_and_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_professions()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Service for caching profession data.** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the profession cache service. Args: persistence: Persistence layer…** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all profession caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
-- [Test Execution](Test_Execution.md) (1 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (7 shared connections)
+- [ConnectionManager Refactoring Summary](ConnectionManager_Refactoring_Summary.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [Quieter Skill](Quieter_Skill.md) (2 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (1 shared connections)
+- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
+- [Skill: Create a New Worktree for a Task](Skill-_Create_a_New_Worktree_for_a_Task.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (92%)
+- INFERRED: 3 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

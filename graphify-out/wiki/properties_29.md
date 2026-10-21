@@ -1,35 +1,35 @@
 # properties
 
-> 11 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **properties** (11 connections) — `server/help/help_schema.json`
-- **summary** (4 connections) — `server/help/help_schema.json`
-- **arguments** (3 connections) — `server/help/help_schema.json`
-- **category** (3 connections) — `server/help/help_schema.json`
-- **admin_only** (2 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **minLength** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **minLength** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
+- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
+- **bonus_tags** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **items** (3 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (6 shared connections)
-- [$ref]($ref.md) (1 shared connections)
-- [type](type.md) (1 shared connections)
-- [command](command.md) (1 shared connections)
+- [identify_critical_code.py](identify_critical_code.py.md) (2 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [Schemas Package Design](Schemas_Package_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

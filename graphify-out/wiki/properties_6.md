@@ -1,40 +1,54 @@
 # properties
 
-> 11 nodes
+> 38 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **properties** (12 connections) — `schemas/intersection_schema.json`
-- **id** (4 connections) — `schemas/intersection_schema.json`
-- **field1** (2 connections) — `schemas/intersection_schema.json`
-- **field2** (2 connections) — `schemas/intersection_schema.json`
-- **field3** (2 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **useRoomEditModal.ts** (17 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModal.tsx** (16 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalForm.tsx** (16 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModal()** (4 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- **RoomEditModalProps** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **fieldBorderClass()** (3 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **buildInitialFormData()** (3 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditDescriptionField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditFormData** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalForm()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditNameField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalTabs.tsx** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
+- **RoomEditModalTabs()** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
+- **toFormValue()** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **ENVIRONMENT_OPTIONS** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalContent()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalFooter()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **FieldError()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditDescriptionHint()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [intersection_schema.json](intersection_schema.json.md) (1 shared connections)
-- [name](name.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [environment](environment.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (4 shared connections)
+- [.set_player_skills](set_player_skills.md) (3 shared connections)
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `client/src/components/map/RoomEditModal.tsx`
+- `client/src/components/map/RoomEditModalForm.tsx`
+- `client/src/components/map/RoomEditModalTabs.tsx`
+- `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- `client/src/components/map/useRoomEditModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

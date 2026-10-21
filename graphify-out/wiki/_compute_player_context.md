@@ -1,33 +1,35 @@
 # ._compute_player_context
 
-> 8 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **._compute_player_context()** (5 connections) — `server/npc/aggressive_mob_npc.py`
-- **.get_players()** (4 connections) — `server/models/room.py`
-- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Get list of player IDs currently in the room. Returns: List of player IDs in…** (1 connections) — `server/models/room.py`
-- **Debug log for context enrichment (best-effort, must not fail).** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Populate player_in_range, enemy_nearby, and target_id for attack rules. Uses…** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Get player_in_range, enemy_nearby, and target_id from persistence. Returns…** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Enhanced Logging Quick Reference** (10 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Context Binding** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Validation Checklist** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Clear Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **🚨 CRITICAL: DO NOT USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Log Levels** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **✅ MANDATORY: ALWAYS USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **One-page cheat sheet for MythosMUD enhanced logging patterns** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Quick Fixes** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Request Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Security Features** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- [spells.sql](spells.sql.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
-- `server/npc/aggressive_mob_npc.py`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

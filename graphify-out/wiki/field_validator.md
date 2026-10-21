@@ -1,38 +1,35 @@
 # field_validator
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **field_validator** (6 connections)
-- **.validate_duration()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_bonus_tags()** (4 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_season()** (4 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_tradition()** (4 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_days()** (4 connections) — `server/schemas/calendar/calendar.py`
-- **.validate_slug_list()** (4 connections) — `server/schemas/calendar/calendar.py`
-- **Any** (1 connections)
-- **Validate schedule entry days are standard English weekday names (Sunday,…** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate slug-formatted list entries. Args: value: Sequence of strings to…** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Ensure the schedule window moves time forward like the Chronology Tablets…** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate tradition value. Args: value: The tradition string to validate…** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate season value. Args: value: The season string to validate Returns: str:…** (1 connections) — `server/schemas/calendar/calendar.py`
-- **Validate bonus tags format.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **test_ascii_map_renderer_grid.py** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **test_render_map_empty_and_connected_rooms()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **.test_player_marker_preserved_when_player_room_not_last_at_same_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **test_determine_map_style_and_symbols()** (2 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **fixture** (1 connections)
+- **Unit tests for AsciiMapRenderer grid building. Guards against regressions in…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Tests for _build_grid player marker when multiple rooms share coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **Multiple rooms at same (x,y): cell keeps player marker even if player room is…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **render_map covers empty map, styles, exits, and row rendering.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 
 ## Relationships
 
-- [ValueError](ValueError.md) (6 shared connections)
-- [HolidayEntry](HolidayEntry.md) (3 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (3 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (6 shared connections)
+- [mock_container](mock_container.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/calendar.py`
+- `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (76%)
-- INFERRED: 6 (24%)
+- EXTRACTED: 15 (83%)
+- INFERRED: 3 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

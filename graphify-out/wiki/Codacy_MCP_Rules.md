@@ -1,10 +1,10 @@
 # Codacy MCP Rules
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Codacy MCP Rules** (0 connections) — `.claude/rules/codacy.md`
+- **ADR-005: Repository Pattern for Data Access** (0 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/codacy.md`
+- `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
 
 ## Audit Trail
 

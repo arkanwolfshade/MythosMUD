@@ -1,13 +1,11 @@
 # Cursor Subagents Documentation
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor Subagents Documentation** (2 connections) — `docs/CURSOR_SUBAGENTS.md`
-- **Cursor Workflows Documentation** (2 connections) — `docs/CURSOR_WORKFLOWS.md`
-- **Cursor CLI Documentation** (1 connections) — `docs/CURSOR_CLI.md`
-- **Cursor IDE Setup Guide** (1 connections) — `docs/CURSOR_SETUP_GUIDE.md`
+- **migrations/README.md** (2 connections) — `db/migrations/README.md`
+- **DDL Migrations (Removed)** (1 connections) — `db/migrations/README.md`
 
 ## Relationships
 
@@ -15,14 +13,11 @@
 
 ## Source Files
 
-- `docs/CURSOR_CLI.md`
-- `docs/CURSOR_SETUP_GUIDE.md`
-- `docs/CURSOR_SUBAGENTS.md`
-- `docs/CURSOR_WORKFLOWS.md`
+- `db/migrations/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

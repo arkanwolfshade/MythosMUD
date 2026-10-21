@@ -1,45 +1,44 @@
 # Onboard Skill
 
-> 24 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **Onboard Skill** (8 connections) — `.claude/skills/onboard/SKILL.md`
-- **Design Onboarding Experiences** (6 connections) — `.claude/skills/onboard/SKILL.md`
-- **Empty State Design** (6 connections) — `.claude/skills/onboard/SKILL.md`
-- **Onboarding Principles** (6 connections) — `.claude/skills/onboard/SKILL.md`
-- **Implementation Patterns** (2 connections) — `.claude/skills/onboard/SKILL.md`
-- **Assess Onboarding Needs** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Context Over Ceremony** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Contextual Help** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Documentation & Help** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Feature Discovery & Adoption** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Guided Tours & Walkthroughs** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **How to Get Started** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Initial Product Onboarding** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Interactive Tutorials** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Make It Optional (When Possible)** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Respect User Intelligence** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Show, Don't Tell** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Technical approaches:** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Time to Value** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Verify Onboarding Quality** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Visual Interest** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **What Will Be Here** (1 connections) — `.claude/skills/onboard/SKILL.md`
-- **Why It Matters** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **._create_grid_map()** (6 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._assign_coordinates()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_ascii_map()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._generate_color_legend()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_color()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_name()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._draw_connection()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._get_next_coordinates()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Any** (3 connections)
+- **Extract street name from room ID. Args: room_id: Full room ID Returns: Street…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Get color code for a street. Args: room_id: Full room ID Returns: ANSI color…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Render the mini-map as ASCII art with grid-based visualization. Args:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Create a grid-based map visualization. Args: nodes: List of room nodes edges:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Assign grid coordinates to rooms based on connectivity. Args: nodes: List of…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Get coordinates for the next room based on direction. Args: x: Current x…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Reverse a direction. Args: direction: Original direction Returns: Reversed…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Draw a connection line between two rooms. Args: grid: The grid to draw on x1,…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Generate a color-coded legend for the streets and special symbols. Args: nodes:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Render a JSON summary of the mini-map data. Args: minimap_data: Mini-map graph…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Render connectivity statistics for the mini-map. Args: minimap_data: Mini-map…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [asyncio](asyncio.md) (11 shared connections)
 
 ## Source Files
 
-- `.claude/skills/onboard/SKILL.md`
+- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

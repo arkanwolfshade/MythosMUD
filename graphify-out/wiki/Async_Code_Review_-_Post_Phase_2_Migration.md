@@ -1,51 +1,54 @@
 # Async Code Review - Post Phase 2 Migration
 
-> 44 nodes
+> 49 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Async Code Review - Post Phase 2 Migration** (16 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🚫 Anti-Patterns NOT Found (Good!)** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ Positive Findings** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🔍 Anti-Pattern Check** (6 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🎓 Best Practice Examples to Share** (5 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📋 Checklist Against Best Practices** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🎯 Code Quality Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🎯 Final Verdict** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🟡 Minor Recommendations (Not Blocking)** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📈 Performance Impact Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **1. Consistent Pattern Application** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **2. Proper Async Propagation** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **3. Exception Handling Preserved** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **4. Resource Cleanup Maintained** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **5. Proper Import Organization** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **6. Documentation Added** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **After Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **anyio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Areas for Future Enhancement (Not Blocking)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **asyncio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Before Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Blocking Calls in Async Functions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Calling async without await** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Code Quality: ✅ EXCELLENT (A)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📊 Compliance Scorecard** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- *... and 19 more nodes in this community*
+- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **goto_helpers.py** (26 connections) — `server/commands/goto_helpers.py`
+- **asyncio** (21 connections)
+- **patch** (16 connections)
+- **validate_goto_context()** (14 connections) — `server/commands/goto_helpers.py`
+- **execute_confirm_goto()** (12 connections) — `server/commands/goto_helpers.py`
+- **execute_goto_teleport()** (12 connections) — `server/commands/goto_helpers.py`
+- **validate_confirm_goto_context()** (12 connections) — `server/commands/goto_helpers.py`
+- **resolve_goto_target()** (11 connections) — `server/commands/goto_helpers.py`
+- **resolve_target_player_for_goto()** (11 connections) — `server/commands/goto_helpers.py`
+- **log_goto_failure()** (10 connections) — `server/commands/goto_helpers.py`
+- **Any** (9 connections)
+- **_announce_goto_teleport()** (7 connections) — `server/commands/goto_helpers.py`
+- **_relocate_admin_player_for_goto()** (5 connections) — `server/commands/goto_helpers.py`
+- **test_execute_confirm_goto()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_success()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_execute_goto_teleport_without_online_admin()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_log_goto_failure_swallows_logger_error()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_not_in_database()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_offline()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_goto_target_success()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_target_player_for_goto()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_target_player_for_goto_not_in_db()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_resolve_target_player_for_goto_offline()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_validate_confirm_goto_context_not_admin()** (4 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
-- [✅ Best Practices Compliance](✅_Best_Practices_Compliance.md) (1 shared connections)
-- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
-- [🔴 Anti-Patterns Check (Critical)](🔴_Anti-Patterns_Check_Critical.md) (1 shared connections)
+- [ErrorContext](ErrorContext.md) (18 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (11 shared connections)
+- [command_parser.py](command_parser.py.md) (8 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (8 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/commands/goto_helpers.py`
+- `server/tests/unit/commands/test_goto_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 170 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

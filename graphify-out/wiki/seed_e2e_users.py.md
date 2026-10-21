@@ -1,36 +1,34 @@
 # seed_e2e_users.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **seed_e2e_users.py** (11 connections) — `scripts/seed_e2e_users.py`
-- **_ensure_player_for_user()** (6 connections) — `scripts/seed_e2e_users.py`
-- **_seed_e2e_users()** (5 connections) — `scripts/seed_e2e_users.py`
-- **e2e_player_id()** (4 connections) — `scripts/seed_e2e_users.py`
-- **e2e_user_id()** (4 connections) — `scripts/seed_e2e_users.py`
-- **UUID** (4 connections)
-- **main()** (3 connections) — `scripts/seed_e2e_users.py`
-- **E2eUserSpec** (2 connections) — `scripts/seed_e2e_users.py`
-- **datetime** (2 connections)
-- **Connection** (1 connections)
-- **Entry point: run E2E user seed via anyio.** (1 connections) — `scripts/seed_e2e_users.py`
-- **Deterministic users.id for a seeded E2E account.** (1 connections) — `scripts/seed_e2e_users.py`
-- **Deterministic players.player_id for a seeded E2E character.** (1 connections) — `scripts/seed_e2e_users.py`
-- **One row in users plus optional default character for login E2E.** (1 connections) — `scripts/seed_e2e_users.py`
+- **Lint Remediation** (8 connections) — `.cursor/commands/lint-remediation.md`
+- **Fix patterns by tier** (4 connections) — `.cursor/commands/lint-remediation.md`
+- **lint-remediation.md** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🔴 Critical — compilation errors** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Entry point** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Error code table** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Fix-verify loop** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟡 High — code quality** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **🟢 Medium — style** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Never** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Priority** (1 connections) — `.cursor/commands/lint-remediation.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/seed_e2e_users.py`
+- `.cursor/commands/lint-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

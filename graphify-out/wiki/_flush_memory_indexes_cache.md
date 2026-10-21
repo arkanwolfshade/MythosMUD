@@ -1,19 +1,19 @@
 # ._flush_memory_indexes_cache
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **._flush_memory_indexes_cache()** (2 connections) — `server/app/memory_cleanup_service.py`
-- **Flush persistent in-memory indexes associated with cached memory residency.** (1 connections) — `server/app/memory_cleanup_service.py`
+- **test_list_room_drops_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_cleanup_service.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

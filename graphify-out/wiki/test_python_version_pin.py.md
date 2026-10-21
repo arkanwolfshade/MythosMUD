@@ -1,39 +1,41 @@
 # test_python_version_pin.py
 
-> 17 nodes
+> 15 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **test_python_version_pin.py** (13 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **_read()** (11 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **_pinned_minor()** (5 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **_pinned_version()** (4 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_ci_venv_cache_is_keyed_on_the_interpreter_version()** (3 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_pr_issue_refs_sparse_checkout_includes_the_pin_file()** (3 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_requires_python_floor_matches_the_pin()** (3 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_runner_image_installs_the_pinned_python_via_uv_not_apt()** (3 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_tool_target_versions_match_the_pin()** (3 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_ci_fails_when_the_venv_python_differs_from_the_pin()** (2 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_python_version_file_is_an_exact_patch_pin()** (2 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_run_test_ci_derives_site_packages_from_the_running_interpreter()** (2 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **test_workflows_read_python_from_the_pin_file_not_a_literal()** (2 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **Path** (1 connections)
-- **Guards for the Python version uplift (#748): one pin, derived everywhere else.…** (1 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **The workflow sparse-checks-out one script; setup-python cannot read a file that…** (1 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
-- **The install step skips rebuilding any venv that looks valid, so a restored 3.12…** (1 connections) — `server/tests/unit/scripts/test_python_version_pin.py`
+- **emote_commands.py** (17 connections) — `server/commands/emote_commands.py`
+- **handle_emote_command()** (17 connections) — `server/commands/emote_commands.py`
+- **Any** (6 connections)
+- **_get_emote_services()** (5 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (5 connections) — `server/commands/emote_commands.py`
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **Emote command handlers for MythosMUD. This module contains handlers for the…** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the result from chat service after sending emote. Args: result: Result…** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes. Args: command_data: Command…** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data. Args: command_data: Command data dictionary…** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service, player service, and emote service from app state. Args:…** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote. Args:…** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes. Args: action: Emote…** (1 connections) — `server/commands/emote_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [look_container.py](look_container.py.md) (8 shared connections)
+- [command_parser.py](command_parser.py.md) (8 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_python_version_pin.py`
+- `server/commands/emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

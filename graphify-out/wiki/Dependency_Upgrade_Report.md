@@ -1,10 +1,10 @@
 # Dependency Upgrade Report
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dependency Upgrade Report** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- **Pydantic Testing Patterns** (0 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- `docs/TESTING_PYDANTIC_PATTERNS.md`
 
 ## Audit Trail
 

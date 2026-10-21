@@ -1,38 +1,30 @@
 # type
 
-> 16 nodes
+> 9 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **type** (6 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **wear_slots** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **damage_types** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **effect_components** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **_filter_lines()** (5 connections) — `scripts/filter_static_dml.py`
+- **filter_static_dml.py** (4 connections) — `scripts/filter_static_dml.py`
+- **main()** (3 connections) — `scripts/filter_static_dml.py`
+- **_skip_sequence_set_block()** (3 connections) — `scripts/filter_static_dml.py`
+- **_skip_table_data_block()** (3 connections) — `scripts/filter_static_dml.py`
+- **Skip a TABLE DATA block (COPY ... \\.). Return index after the block.** (1 connections) — `scripts/filter_static_dml.py`
+- **Skip a SEQUENCE SET block (setval + trailing blank lines). Return index after…** (1 connections) — `scripts/filter_static_dml.py`
+- **Filter out TABLE DATA and SEQUENCE SET blocks for excluded tables/sequences.** (1 connections) — `scripts/filter_static_dml.py`
+- **Read export DML, drop COPY/SEQUENCE blocks for runtime tables, write back.** (1 connections) — `scripts/filter_static_dml.py`
 
 ## Relationships
 
-- [properties](properties.md) (5 shared connections)
-- [enum](enum_2.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `scripts/filter_static_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

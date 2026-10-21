@@ -1,15 +1,13 @@
 # player_effects.sql
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **player_effects.sql** (5 connections) — `db/procedures/player_effects.sql`
-- **schema_name.add_player_effect()** (1 connections) — `db/procedures/player_effects.sql`
-- **schema_name.delete_player_effect()** (1 connections) — `db/procedures/player_effects.sql`
-- **schema_name.expire_effects_for_tick()** (1 connections) — `db/procedures/player_effects.sql`
-- **schema_name.get_active_effects_for_player()** (1 connections) — `db/procedures/player_effects.sql`
-- **schema_name.get_effects_expiring_this_tick()** (1 connections) — `db/procedures/player_effects.sql`
+- **Historical DDL Final Status** (2 connections) — `db/verification/ddl_final_status.md`
+- **Historical DDL Verification Summary** (2 connections) — `db/verification/ddl_verification_summary.md`
+- **Historical DDL Partial Status** (1 connections) — `db/verification/ddl_status.md`
+- **mythos_dev players UUID Schema Variation** (1 connections) — `db/verification/ddl_verification_summary.md`
 
 ## Relationships
 
@@ -17,12 +15,14 @@
 
 ## Source Files
 
-- `db/procedures/player_effects.sql`
+- `db/verification/ddl_final_status.md`
+- `db/verification/ddl_status.md`
+- `db/verification/ddl_verification_summary.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (33%)
+- INFERRED: 2 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---

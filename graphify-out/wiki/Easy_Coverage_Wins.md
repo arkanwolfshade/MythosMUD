@@ -1,32 +1,28 @@
 # Easy Coverage Wins
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Easy Coverage Wins** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Coverage Improvement Summary** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Python Code Coverage Status** (3 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
-- **Realtime Small-File Coverage Sweep** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **70% Coverage Threshold** (2 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
-- **analyze_coverage_gaps.py** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
-- **bcrypt PyO3 Reimport Limitation** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **wearable_service()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **fixture** (2 connections)
+- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Create WearableContainerService instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
-- [Easy Coverage Wins - Quick Analysis](Easy_Coverage_Wins_-_Quick_Analysis.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (2 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PYTHON_COVERAGE_STATUS.md`
-- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- `docs/archive/EASY_COVERAGE_WINS.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,53 +1,51 @@
 # PayloadOptimizer
 
-> 38 nodes
+> 37 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **PayloadOptimizer** (23 connections) — `server/realtime/payload_optimizer.py`
-- **test_payload_optimizer.py** (20 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
-- **.optimize_payload()** (6 connections) — `server/realtime/payload_optimizer.py`
-- **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
-- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **optimizer()** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **Any** (4 connections)
-- **_CompareExplodes** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
-- **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_size_measures_non_json_values()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
-- **test_compress_payload_round_trip_metadata()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_detects_changes()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_empty_when_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_no_previous_returns_full()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_optimizer_returns_singleton()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_size_returns_byte_length()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_compresses_large_payload()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_force_compression_when_beneficial()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_rejects_oversized_payload_with_datetime()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- *... and 13 more nodes in this community*
+- **Phase 3, Task 3.2: NATS Subject Manager Usage Review** (13 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Architecture Strengths** (5 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Refactoring Opportunities** (5 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **chat_whisper_player Pattern** (3 connections) — `e2e-tests/PHASE_3_CODE_REVIEW_FINDINGS.md`
+- **NATSSubjectManager** (3 connections) — `e2e-tests/PHASE_3_CODE_REVIEW_FINDINGS.md`
+- **Dependency Injection Analysis** (3 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Recommendations** (3 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Code Quality Assessment** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Current Architecture Analysis** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Dual-Path Subject Construction** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Migration Status** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Performance Implications** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Subject Manager Usage Patterns** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Usage Patterns Analysis** (2 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Legacy Whisper Subscription Bug** (1 connections) — `e2e-tests/PHASE_3_CODE_REVIEW_FINDINGS.md`
+- **Phase 3 Comprehensive Code Review** (1 connections) — `e2e-tests/PHASE_3_COMPLETE_SUMMARY.md`
+- **PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **1. Resilience Through Redundancy** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **2. Centralized Pattern Management** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **3. Error Handling** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **4. Logging and Observability** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Conclusion** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Current Implementation Quality: **EXCELLENT** (9/10)** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Current Injection Pattern** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- **Current Usage Statistics** (1 connections) — `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/payload_optimizer.py`
-- `server/tests/unit/realtime/test_payload_optimizer.py`
+- `e2e-tests/PHASE_3_CODE_REVIEW_FINDINGS.md`
+- `e2e-tests/PHASE_3_COMPLETE_SUMMARY.md`
+- `e2e-tests/PHASE_3_TASK_2_SUBJECT_MANAGER_REVIEW.md`
+- `e2e-tests/PHASE_3_TASK_3_DOCUMENTATION_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (83%)
-- INFERRED: 12 (17%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # Enhanced Logging Migration Complete
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Enhanced Logging Migration Complete** (2 connections) — `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
-- **Enhanced Logging Implementation Complete** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- **Enhanced Logging Implementation Summary** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
+- **generate_schema_from_dev.ps1** (1 connections) — `scripts/generate_schema_from_dev.ps1`
+- **Write-ColorOutput()** (1 connections) — `scripts/generate_schema_from_dev.ps1`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/IMPLEMENTATION_COMPLETE.md`
-- `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
-- `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
+- `scripts/generate_schema_from_dev.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

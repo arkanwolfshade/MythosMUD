@@ -1,31 +1,27 @@
 # monitoring_service
 
-> 8 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **monitoring_service()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **fixture** (4 connections)
-- **mock_combat_config()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **mock_feature_flags()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **mock_config()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Create mock feature flags.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Create mock combat config.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
-- **Create CombatMonitoringService instance with mocked dependencies.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **account_sanctions.sql** (4 connections) — `db/procedures/account_sanctions.sql`
+- **schema_name.apply_ban_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
+- **schema_name.apply_kick_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
+- **schema_name.get_active_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
+- **schema_name.lift_ban_sanction()** (1 connections) — `db/procedures/account_sanctions.sql`
 
 ## Relationships
 
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (4 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_monitoring_service.py`
+- `db/procedures/account_sanctions.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

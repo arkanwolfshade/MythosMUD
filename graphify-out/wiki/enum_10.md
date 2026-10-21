@@ -1,30 +1,29 @@
 # enum
 
-> 8 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
-- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **environment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **C2 · REVISED — procedures-only is binding** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **The rule** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **C2-Revised-Ruling.md** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for enforcement (#618)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for the code — migration backlog** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for the documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Known bounded exception** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

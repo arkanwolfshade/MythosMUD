@@ -1,10 +1,10 @@
 # MythosMUD Local Data Directory
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Local Data Directory** (0 connections) — `data/local/README.md`
+- **7. Related docs** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/local/README.md`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

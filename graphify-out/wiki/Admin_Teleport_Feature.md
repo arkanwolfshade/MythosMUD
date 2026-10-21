@@ -1,10 +1,10 @@
 # Admin Teleport Feature
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Admin Teleport Feature** (0 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
+- **Dream Messaging Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/ADMIN_TELEPORT_FRD.md`
+- `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
 
 ## Audit Trail
 

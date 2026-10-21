@@ -1,25 +1,25 @@
 # Call of Cthulhu Keeper Tips (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Call of Cthulhu Keeper Tips (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
-- **Call of Cthulhu Keeper Tips.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

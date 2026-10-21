@@ -1,52 +1,51 @@
 # EmoteService
 
-> 39 nodes
+> 36 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **EmoteService** (18 connections) — `server/game/emote_service.py`
-- **test_emote_service.py** (17 connections) — `server/tests/unit/game/test_emote_service.py`
-- **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
-- **EmoteDefinition** (6 connections) — `server/game/emote_service.py`
-- **.format_emote_messages()** (4 connections) — `server/game/emote_service.py`
-- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
-- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
-- **test_load_emotes_handles_missing_table_gracefully()** (4 connections) — `server/tests/unit/game/test_emote_service.py`
-- **.__init__()** (3 connections) — `server/game/emote_service.py`
-- **.load_emotes()** (3 connections) — `server/game/emote_service.py`
-- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
-- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
-- **test_emote_service_init_does_not_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_format_emote_messages_unknown_raises()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_load_emotes_populates_from_repository()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_reload_emotes_calls_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **asyncio** (3 connections)
-- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
-- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
-- **test_format_emote_messages()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_is_emote_alias_and_get_definition()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_list_available_emotes()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_no_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_with_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **TypedDict** (1 connections)
-- *... and 14 more nodes in this community*
+- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **AliasCommand** (17 connections) — `server/models/command_alias.py`
+- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
+- **.validate_command()** (4 connections) — `server/models/command_alias.py`
+- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
+- **field_validator** (3 connections)
+- **test_alias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_command_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_validate_command_none()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_alias_command_with_command()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_aliases_command_no_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
+- **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Validate command content for security using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Unit tests for alias command models. Tests the alias command models and their…** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test UnaliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test UnaliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [SchemaValidator](SchemaValidator.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (13 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (3 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/emote_service.py`
-- `server/tests/unit/game/test_emote_service.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/models/test_command_alias.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 61 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,36 @@
 # test_websocket_handler_validation.py
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_validator()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
-- **Unit tests for websocket handler message validation. Tests the message…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Disconnect Grace Period** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Disconnect Grace Period and Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
+- **Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
+- **30-Second Disconnect Grace Period** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
+- **LOGIN_WARDED Effect** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
+- **Effects System ADR and Implementation** (2 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
+- **Effects System Implementation** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
+- **Zombie Linkdead State** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **ADR-009 Effects System Architecture** (1 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
 
 ## Relationships
 
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [load_motd](load_motd.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
+- `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
+- `.cursor/plans/effects_system_implementation.plan.md`
+- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 9 (82%)
+- INFERRED: 2 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

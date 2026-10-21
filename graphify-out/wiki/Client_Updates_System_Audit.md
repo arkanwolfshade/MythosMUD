@@ -1,12 +1,11 @@
 # Client Updates System Audit
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
-- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- **server/tests/__init__.py** (1 connections) — `server/tests/__init__.py`
+- **MythosMUD server test suite.** (1 connections) — `server/tests/__init__.py`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
-- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- `server/tests/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

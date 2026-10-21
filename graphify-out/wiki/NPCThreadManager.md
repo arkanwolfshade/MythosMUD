@@ -1,59 +1,61 @@
 # NPCThreadManager
 
-> 89 nodes
+> 71 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **NPCThreadManager** (62 connections) — `server/npc/threading.py`
-- **test_npc_thread_manager_internals.py** (32 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **asyncio** (17 connections)
-- **._execute_wander_movement()** (7 connections) — `server/npc/threading.py`
-- **._parse_behavior_config()** (7 connections) — `server/npc/threading.py`
-- **._npc_thread_worker()** (6 connections) — `server/npc/threading.py`
-- **._execute_npc_behavior()** (5 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (5 connections) — `server/npc/threading.py`
-- **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (4 connections) — `server/npc/threading.py`
-- **._resolve_wander_npc()** (4 connections) — `server/npc/threading.py`
-- **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
-- **._stop_npc_thread_internal()** (4 connections) — `server/npc/threading.py`
-- **test_bridge_send_message_to_npc_swallows_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_execute_npc_behavior_no_instance_service()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_execute_npc_behavior_npc_not_active()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_execute_npc_behavior_success()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_execute_npc_behavior_swallows_inner_execute_error()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_execute_npc_behavior_swallows_outer_unexpected_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_parse_behavior_config_dict_attr()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_parse_behavior_config_invalid_json_string()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_parse_behavior_config_json_non_dict()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_parse_behavior_config_valid_json_string()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- **test_process_wander_action_handles_unexpected_exception()** (4 connections) — `server/tests/unit/npc/test_npc_thread_manager_internals.py`
-- *... and 64 more nodes in this community*
+- **test_lifespan_shutdown.py** (31 connections) — `server/tests/unit/app/test_lifespan_shutdown.py`
+- **lifespan_protocols.py** (30 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_shutdown.py** (27 connections) — `server/app/lifespan_shutdown.py`
+- **asyncio** (16 connections)
+- **shutdown_services()** (15 connections) — `server/app/lifespan_shutdown.py`
+- **_resolve_service()** (10 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_connection_manager()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (9 connections)
+- **lifespan_connection_manager()** (8 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_task_registry()** (8 connections) — `server/app/lifespan_protocols.py`
+- **FastAPI** (8 connections)
+- **_shutdown_event_bus()** (8 connections) — `server/app/lifespan_shutdown.py`
+- **lifespan_event_bus()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_memory_monitor()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_nats_handler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_tick_scheduler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **_flush_live_instances()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_chronicle()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_resolve_container_field()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_container_attr()** (5 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_container()** (5 connections) — `server/app/lifespan_protocols.py`
+- **FastAPI** (5 connections)
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (11 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (12 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [command_error](command_error.md) (3 shared connections)
+- [EventHandler](EventHandler.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [deque](deque.md) (2 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
-- `server/tests/unit/npc/test_npc_thread_manager_internals.py`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_shutdown.py`
+- `server/tests/unit/app/test_lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (81%)
-- INFERRED: 33 (19%)
+- EXTRACTED: 200 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,33 @@
 # POSTGRESQL_AUDIT_REPORT_2026.md
 
-> 10 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **POSTGRESQL_AUDIT_REPORT_2026.md** (7 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **bigint generated always as identity** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **PYTHON_MODEL_UPDATES_REQUIRED.md** (4 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
-- **Migration 019 PostgreSQL Anti-patterns Fixes** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **SELECT * Anti-pattern** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **Integer to BigInteger Column Mapping** (2 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
-- **String(n) to Text Column Mapping** (2 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
-- **varchar(n) Prefer text** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **Schema Drift player_id uuid vs varchar** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **players.current_room_id Index Gap** (1 connections) — `docs/archive/POSTGRESQL_CODE_REVIEW.md`
+- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_bidirectional_returns_em_dash()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_east_returns_gt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_west_returns_lt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _horizontal_exit_char_between (em dash, >, <).** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Bidirectional horizontal exit between two rooms uses an em dash.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way east exit renders as a greater-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way west exit renders as a less-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **When there are no horizontal exits, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [Migration 019 Ready for Deployment](Migration_019_Ready_for_Deployment.md) (2 shared connections)
-- [PostgreSQL & SQL Audit Report](PostgreSQL_&_SQL_Audit_Report.md) (1 shared connections)
-- [PYDANTIC_CODE_REVIEW.md](PYDANTIC_CODE_REVIEW.md.md) (1 shared connections)
-- [Python Model Updates Required for Migration 019](Python_Model_Updates_Required_for_Migration_019.md) (1 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (5 shared connections)
+- [ClientLogger](ClientLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- `docs/archive/POSTGRESQL_CODE_REVIEW.md`
-- `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 14 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

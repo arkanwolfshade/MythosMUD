@@ -1,52 +1,61 @@
 # LucidityTierCache
 
-> 28 nodes
+> 24 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **LucidityTierCache** (14 connections) — `server/services/lucidity_tier_cache.py`
-- **test_lucidity_tier_cache.py** (9 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **lucidity_tier_cache.py** (8 connections) — `server/services/lucidity_tier_cache.py`
-- **UUID** (5 connections)
-- **.get_tier()** (4 connections) — `server/services/lucidity_tier_cache.py`
-- **.is_deranged()** (4 connections) — `server/services/lucidity_tier_cache.py`
-- **.clear()** (3 connections) — `server/services/lucidity_tier_cache.py`
-- **.set_tier()** (3 connections) — `server/services/lucidity_tier_cache.py`
-- **test_clear_removes_the_cached_tier()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **test_get_tier_is_none_for_unrecorded_player()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **test_is_deranged_false_for_other_tiers()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **test_is_deranged_false_on_cache_miss()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **test_set_tier_accepts_str_or_uuid_for_the_same_player()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **test_set_tier_then_is_deranged()** (3 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **.__init__()** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **In-memory cache of each player's current lucidity tier (#714). Exit…** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **Module-level singleton (mirrors phantom_hostile_service) -- callers MUST share…** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **Record this player's current tier.** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **Return the cached tier, or None if this player has never been recorded.** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **True only if the cached tier is exactly 'deranged' -- a cache miss is never…** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **Drop a player's cached tier (e.g. on disconnect).** (1 connections) — `server/services/lucidity_tier_cache.py`
-- **Unit tests for the in-memory lucidity tier cache (#714). This cache is exit…** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **A player never written to the cache has no recorded tier.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **Fail safe: an unrecorded player is never treated as deranged.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- **Only an exact 'deranged' tier makes is_deranged True.** (1 connections) — `server/tests/unit/services/test_lucidity_tier_cache.py`
-- *... and 3 more nodes in this community*
+- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **test_cache_service.py** (21 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **cache_service.py** (14 connections) — `server/caching/cache_service.py`
+- **lru_cache.py** (13 connections) — `server/caching/lru_cache.py`
+- **server/caching/__init__.py** (12 connections) — `server/caching/__init__.py`
+- **cached()** (11 connections) — `server/caching/cache_service.py`
+- **_seed_players_cache()** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **TestCachedDecorator** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.fetch()** (6 connections) — `server/tests/unit/test_support_helpers.py`
+- **reset_cache_manager()** (5 connections) — `server/caching/lru_cache.py`
+- **.test_async_cache_hit_and_miss()** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_custom_key_func()** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cached_missing_cache_calls_function()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_sync_cache_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_reset_cache_manager()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_missing_cache_calls_function()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Cache service for MythosMUD server. This module provides caching services that…** (1 connections) — `server/caching/cache_service.py`
+- **Decorator to cache function results. Args: cache_name: Name of the cache to use…** (1 connections) — `server/caching/cache_service.py`
+- **Caching module for MythosMUD server. This module provides comprehensive caching…** (1 connections) — `server/caching/__init__.py`
+- **LRU Cache implementation for MythosMUD server. This module provides thread-safe…** (1 connections) — `server/caching/lru_cache.py`
+- **Get the global cache manager instance. Returns: The global cache manager…** (1 connections) — `server/caching/lru_cache.py`
+- **Reset the global cache manager (for testing).** (1 connections) — `server/caching/lru_cache.py`
+- **Unit tests for server.caching.cache_service.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Keep players cache truthy; empty LRUCache is bool-false via __len__.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
 
 ## Relationships
 
-- [test_look_room.py](test_look_room.py.md) (1 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [passive_lucidity_flux/service.py](passive_lucidity_flux-service.py.md) (1 shared connections)
+- [fixture](fixture.md) (8 shared connections)
+- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (8 shared connections)
+- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [Skill: Create a New Worktree for a Task](Skill-_Create_a_New_Worktree_for_a_Task.md) (4 shared connections)
+- [ConnectionManager Refactoring Summary](ConnectionManager_Refactoring_Summary.md) (4 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (3 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (3 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [ValueError](ValueError.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_tier_cache.py`
-- `server/tests/unit/services/test_lucidity_tier_cache.py`
+- `server/caching/__init__.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
+- `server/tests/unit/caching/test_cache_service.py`
+- `server/tests/unit/test_support_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 94 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

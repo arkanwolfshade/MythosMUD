@@ -1,25 +1,23 @@
 # Test Execution
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Execution** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run E2E Scenarios** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run Integration Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Run Unit Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **LLM Wiki Pattern.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
+- **LLM Wiki Pattern** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Relationships
 
-- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

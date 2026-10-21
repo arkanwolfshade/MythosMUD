@@ -1,60 +1,49 @@
 # RateLimiter
 
-> 85 nodes
+> 27 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **RateLimiter** (69 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_first()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- *... and 60 more nodes in this community*
+- **Persistence Layer Refactoring - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📊 Final Metrics** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🔍 Validation Results** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🚀 What's Now Possible** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📈 Benefits** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🏗️ What Was Built** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Code Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎉 Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Directory Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Documentation Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📚 Documentation Index** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Existing Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Gradual Migration** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For New Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Future (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Immediate (Available Now)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Import Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Linting** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎯 Mission Accomplished** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📝 Next Steps (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Recommendations** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Repository Breakdown** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Tests** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [MessageQueue](MessageQueue.md) (9 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (2 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
-- [test_connection_session_management.py](test_connection_session_management.py.md) (2 shared connections)
-- [ConnectionCleaner](ConnectionCleaner.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
-- [rate_limiter](rate_limiter.md) (1 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (90%)
-- INFERRED: 14 (10%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

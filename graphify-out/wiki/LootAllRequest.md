@@ -1,62 +1,52 @@
 # LootAllRequest
 
-> 127 nodes
+> 81 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **LootAllRequest** (59 connections) — `server/api/container_models.py`
-- **loot_all_items()** (34 connections) — `server/api/container_endpoints_loot.py`
-- **container_endpoints_loot.py** (32 connections) — `server/api/container_endpoints_loot.py`
-- **test_container_helpers_loot.py** (22 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
-- **TestLootAllItems** (16 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **TestTransferAllItemsFromContainer** (16 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- **asyncio** (14 connections)
-- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **test_container_endpoints_loot.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **TestGetContainerAndPlayerForLootAll** (10 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **test_container_endpoints_loot_register.py** (10 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- **asyncio** (9 connections)
-- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_loot_all_items_capacity_error()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **.test_loot_all_items_container_not_found()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **.test_loot_all_items_locked_error()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_transfer_all_items_from_container_capacity_error()** (7 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- *... and 102 more nodes in this community*
+- **test_logging_processors.py** (37 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **enhance_player_ids()** (19 connections) — `server/structured_logging/logging_processors.py`
+- **set_global_player_service()** (18 connections) — `server/structured_logging/logging_processors.py`
+- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
+- **logging_processors.py** (13 connections) — `server/structured_logging/logging_processors.py`
+- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
+- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
+- **EventDict** (5 connections)
+- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **_enhance_one_player_id()** (4 connections) — `server/structured_logging/logging_processors.py`
+- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_enhance_player_ids_swallows_database_error_without_importing_it()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **_EnhancePlayerIdsTls** (3 connections) — `server/structured_logging/logging_processors.py`
+- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (46 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (37 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (25 shared connections)
-- [ContainerService](ContainerService.md) (13 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [test_map_helpers.py](test_map_helpers.py.md) (4 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_events.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/tests/unit/api/test_container_endpoints_loot.py`
-- `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- `server/tests/unit/api/test_container_events_loot.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/structured_logging/logging_processors.py`
+- `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 366 (92%)
-- INFERRED: 32 (8%)
+- EXTRACTED: 141 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,45 +1,40 @@
 # test_support_helpers.py
 
-> 21 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **test_support_helpers.py** (10 connections) — `server/tests/unit/test_support_helpers.py`
-- **calls_of()** (6 connections) — `server/tests/support.py`
-- **mock_of()** (6 connections) — `server/tests/support.py`
-- **_Subject** (5 connections) — `server/tests/unit/test_support_helpers.py`
-- **async_mock_of()** (5 connections) — `server/tests/support.py`
-- **support.py** (5 connections) — `server/tests/support.py`
-- **test_async_mock_of_returns_awaitable_members()** (4 connections) — `server/tests/unit/test_support_helpers.py`
-- **test_calls_of_rejects_a_non_mock()** (4 connections) — `server/tests/unit/test_support_helpers.py`
-- **test_mock_of_answers_the_subject_interface()** (3 connections) — `server/tests/unit/test_support_helpers.py`
-- **test_mock_of_uses_spec_set_so_unknown_attributes_are_rejected()** (3 connections) — `server/tests/unit/test_support_helpers.py`
-- **.resolve()** (2 connections) — `server/tests/unit/test_support_helpers.py`
-- **T** (2 connections)
-- **asyncio** (1 connections)
-- **Typed mock helpers shared across the server test suite (#784).…** (1 connections) — `server/tests/support.py`
-- **A ``MagicMock`` restricted to ``cls``'s interface, typed as ``cls``.…** (1 connections) — `server/tests/support.py`
-- **``mock_of`` for classes whose methods are coroutines.…** (1 connections) — `server/tests/support.py`
-- **Recover the ``MagicMock`` assertion API from a double typed as its subject. The…** (1 connections) — `server/tests/support.py`
-- **Tests for the typed mock helpers in server/tests/support.py (#784).** (1 connections) — `server/tests/unit/test_support_helpers.py`
-- **Stand-in for a service under test.** (1 connections) — `server/tests/unit/test_support_helpers.py`
-- **spec_set (not spec) is the whole point: a renamed attribute must fail loudly.** (1 connections) — `server/tests/unit/test_support_helpers.py`
-- **Guards against calls_of() silently handing back a real object typed as a mock.** (1 connections) — `server/tests/unit/test_support_helpers.py`
+- **Polish Systematically** (13 connections) — `.claude/skills/polish/SKILL.md`
+- **Polish Skill** (6 connections) — `.claude/skills/polish/SKILL.md`
+- **Code Quality** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Color & Contrast** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Content & Copy** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Edge Cases & Error States** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Final Verification** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Forms & Inputs** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Icons & Images** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Interaction States** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Micro-interactions & Transitions** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Performance** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Polish Checklist** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Pre-Polish Assessment** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Responsiveness** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Typography Refinement** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **Visual Alignment & Spacing** (1 connections) — `.claude/skills/polish/SKILL.md`
 
 ## Relationships
 
-- [cached](cached.md) (1 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/support.py`
-- `server/tests/unit/test_support_helpers.py`
+- `.claude/skills/polish/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,11 @@
 # apply_migration
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
-- **main()** (2 connections) — `scripts/apply_players_migration.py`
-- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
-- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
+- **Graceful Degradation Planning** (1 connections) — `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
+- **Health Endpoint Specification** (1 connections) — `docs/archive/HEALTH_ENDPOINT_SPEC.md`
 
 ## Relationships
 
@@ -15,12 +13,13 @@
 
 ## Source Files
 
-- `scripts/apply_players_migration.py`
+- `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
+- `docs/archive/HEALTH_ENDPOINT_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,39 +1,36 @@
 # format_combat_status
 
-> 15 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Any** (2 connections)
-- **Produce a human-readable combat status string. This helper is retained for…** (1 connections) — `server/commands/combat_helpers.py`
-- **Resolve a combat target by name. The current implementation is intentionally…** (1 connections) — `server/commands/combat_helpers.py`
-- **Unit tests for combat command helper functions. Tests helper functions in…** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **Client Test Remediation** (5 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **Fix patterns by tier** (4 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **Client Test Remediation — Reference** (3 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **client-test-remediation/reference.md** (2 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **client-test-remediation/SKILL.md** (2 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **🔴 Critical — TypeScript/rendering errors** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **🟡 High — component issues** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **🟢 Medium — hook/async issues** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
+- **Entry point** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **Fix-verify loop** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **Priority** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
 
 ## Relationships
 
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
+- `.claude/skills/client-test-remediation/SKILL.md`
+- `.claude/skills/client-test-remediation/reference.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (82%)
-- INFERRED: 4 (18%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

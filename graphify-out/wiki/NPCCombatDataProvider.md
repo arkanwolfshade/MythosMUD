@@ -1,62 +1,56 @@
 # NPCCombatDataProvider
 
-> 79 nodes
+> 66 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **NPCCombatDataProvider** (44 connections) — `server/services/npc_combat_data_provider.py`
-- **test_npc_combat_data_provider.py** (21 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **_NPCCombatIntegrationValidationDeps** (19 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_npc_combat_data()** (9 connections) — `server/services/npc_combat_data_provider.py`
-- **asyncio** (8 connections)
-- **.get_uuid_mapping()** (7 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_player_combat_data()** (6 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **Any** (6 connections)
-- **._resolve_npc_behavior_snapshot()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_combat_service()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_engaged_foe_name()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (5 connections)
-- **.get_npc_definition()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_npc_instance()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **._resolve_npc_combat_stats()** (4 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._end_combat_if_participant_in_combat()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **test_get_npc_combat_data_reads_aggression_level_from_catalog_or_int()** (4 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- *... and 54 more nodes in this community*
+- **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
+- **test_calendar_schemas.py** (21 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
+- **calendar/__init__.py** (11 connections) — `server/schemas/calendar/__init__.py`
+- **calendar/calendar.py** (9 connections) — `server/schemas/calendar/calendar.py`
+- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
+- **field_validator** (6 connections)
+- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_duration()** (5 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_bonus_tags()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_season()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_tradition()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **BaseModel** (4 connections)
+- **.validate_days()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_slug_list()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection_ensure_unique_ids()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_holiday_collection_id_map()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **.id_map()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **Path** (3 connections)
+- **test_extract_observance_ids()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (25 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
-- [NpcDisposition](NpcDisposition.md) (2 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
-- [coerce_int](coerce_int.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [resolve_npc_attack_damage](resolve_npc_attack_damage.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [test_aggression.py](test_aggression.py.md) (1 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
-- [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (17 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (11 shared connections)
+- [start_grace_period](start_grace_period.md) (8 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
+- [schema.sql](schema.sql.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/schemas/calendar/__init__.py`
+- `server/schemas/calendar/calendar.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (88%)
-- INFERRED: 20 (12%)
+- EXTRACTED: 137 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

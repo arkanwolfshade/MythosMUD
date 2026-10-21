@@ -1,37 +1,36 @@
 # test_validate_codacy_coverage_gate.py
 
-> 16 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **test_validate_codacy_coverage_gate.py** (10 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **Path** (7 connections)
-- **_CodacyGateModule** (4 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_fails_when_report_has_no_classes()** (3 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_passes_with_unprefixed_filenames()** (3 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **_load_gate_module()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_cobertura_root_line_rate_parses()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_lcov_aggregate_and_gate()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_lcov_gate_fails()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_fails_low_aggregate()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **test_validate_python_gate_passes()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **Protocol** (1 connections)
-- **Tests for scripts/validate_codacy_coverage_gate.py (Codacy upload quality gate).** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **Public surface of validate_codacy_coverage_gate loaded via importlib.** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **`coverage xml --cov=server` writes `<source>server</source>` and lists…** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
-- **An empty/malformed Cobertura report (no <class> elements at all) must still be…** (1 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- **skill** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **equipmentBonus** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **bonus** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **bonus** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **skill** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [lint_optional_auth_no_guard.py](lint_optional_auth_no_guard.py.md) (1 shared connections)
+- [format_metadata](format_metadata.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

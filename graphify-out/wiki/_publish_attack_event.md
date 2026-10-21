@@ -1,25 +1,28 @@
 # ._publish_attack_event
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
-- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **.__init__()** (6 connections) — `server/npc/idle_movement.py`
+- **Initialize the idle movement handler. Args: event_bus: Optional EventBus…** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [admin_setstat_command.py](admin_setstat_command.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

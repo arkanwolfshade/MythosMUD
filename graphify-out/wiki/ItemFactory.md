@@ -1,61 +1,63 @@
 # ItemFactory
 
-> 36 nodes
+> 66 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **ItemFactory** (35 connections) — `server/game/items/item_factory.py`
-- **test_room_item_seeder.py** (26 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **seed_room_items()** (15 connections) — `server/services/room_item_seeder.py`
-- **FakeRoomManager** (11 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **_room()** (10 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **FakePersistence** (9 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **initialize_room_items()** (9 connections) — `server/services/room_item_seeder.py`
-- **factory()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_startup_hook_never_fails_startup()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_startup_hook_seeds_cached_rooms()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_malformed_or_unknown_entries_are_skipped()** (6 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_one_bad_entry_does_not_block_the_rest()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_places_declared_item_on_the_floor()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_quantity_defaults_to_one()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_rooms_without_items_are_ignored()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **test_template_rooms_are_skipped()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **_item_entries()** (4 connections) — `server/services/room_item_seeder.py`
-- **.__init__()** (3 connections) — `server/game/items/item_factory.py`
-- **Room** (3 connections)
-- **_as_entry()** (2 connections) — `server/services/room_item_seeder.py`
-- **.__init__()** (2 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **.list_rooms()** (2 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **.warmup_room_cache()** (2 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- **asyncio** (2 connections)
-- **.add_room_drop()** (1 connections) — `server/tests/unit/services/test_room_item_seeder.py`
-- *... and 11 more nodes in this community*
+- **get_async_session()** (68 connections) — `server/database.py`
+- **test_database_extended.py** (43 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **asyncio** (12 connections)
+- **init_db()** (10 connections) — `server/database.py`
+- **get_engine()** (9 connections) — `server/database.py`
+- **close_db()** (8 connections) — `server/database.py`
+- **test_database_manager_close_dispose_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_close_with_engine()** (6 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_close_without_engine()** (6 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_database_path_unsupported()** (6 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_database_path_postgresql()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_event_loop_check()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_initializes()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_no_running_loop()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_engine_reinitializes_if_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_manager_get_session_maker_initializes()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_async_session_rollback_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_async_session_rollback_on_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_engine_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_get_session_maker_initializes_database()** (5 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **verify_and_load_seed.py** (4 connections) — `scripts/verify_and_load_seed.py`
+- **main()** (4 connections) — `scripts/verify_and_load_seed.py`
+- **ensure_database_directory()** (4 connections) — `server/database.py`
+- **test_close_db_error()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_close_db_success()** (4 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (17 shared connections)
-- [test_item_factory.py](test_item_factory.py.md) (6 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (5 shared connections)
-- [initialize_components](initialize_components.md) (4 shared connections)
-- [Room](Room.md) (3 shared connections)
-- [RoomListPersistence](RoomListPersistence.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [items/__init__.py](items-__init__.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (2 shared connections)
-- [items/catalog_dml.py](items-catalog_dml.py.md) (1 shared connections)
+- [resolve_lazy_attr](resolve_lazy_attr.md) (26 shared connections)
+- [InventoryPanel.tsx](InventoryPanel.tsx.md) (13 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (12 shared connections)
+- [test_check_coverage_thresholds.py](test_check_coverage_thresholds.py.md) (6 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (4 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (4 shared connections)
+- [endpoints.py](endpoints.py.md) (3 shared connections)
+- [reset_database](reset_database.md) (3 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (3 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (3 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/items/item_factory.py`
-- `server/services/room_item_seeder.py`
-- `server/tests/unit/services/test_room_item_seeder.py`
+- `scripts/add_flavor_text_column.py`
+- `scripts/load_seed_using_project_db.py`
+- `scripts/verify_and_load_seed.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (81%)
-- INFERRED: 24 (19%)
+- EXTRACTED: 203 (93%)
+- INFERRED: 16 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

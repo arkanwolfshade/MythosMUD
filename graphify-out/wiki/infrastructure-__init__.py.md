@@ -1,23 +1,23 @@
 # infrastructure/__init__.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
-- **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test record_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/__init__.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

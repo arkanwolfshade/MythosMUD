@@ -1,23 +1,22 @@
 # test_take_room_drop_removes_empty_room
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_take_room_drop_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes room when drop list becomes empty.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `client/playwright.config.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

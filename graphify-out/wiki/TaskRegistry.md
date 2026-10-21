@@ -1,61 +1,46 @@
 # TaskRegistry
 
-> 87 nodes
+> 13 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **TaskRegistry** (49 connections) — `server/app/task_registry.py`
-- **test_task_registry.py** (24 connections) — `server/tests/unit/app/test_task_registry.py`
-- **asyncio** (14 connections)
-- **TaskRegistry** (14 connections)
-- **task_registry.py** (13 connections) — `server/app/task_registry.py`
-- **Any** (10 connections)
-- **get_registry()** (9 connections) — `server/app/task_registry.py`
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
-- **.shutdown_all()** (8 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **unregister_task()** (7 connections) — `server/app/task_registry.py`
-- **test_module_level_helpers()** (7 connections) — `server/tests/unit/app/test_task_registry.py`
-- **register_task()** (6 connections) — `server/app/task_registry.py`
-- **test_register_closes_coro_when_create_task_fails()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **test_cancel_task_by_name()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_get_registry_info_and_metrics()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_list_active_tasks_and_stats_by_type()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_and_unregister_task()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_duplicate_name_gets_suffix()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_register_during_shutdown_raises()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- *... and 62 more nodes in this community*
+- **test_player_event_handlers_utils.py** (49 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_mixed()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_empty()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_npc_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_normalize_player_id_invalid_string()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Unit tests for player event handler utilities. Tests the…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test _extract_name_from_occupant() with dict containing player_name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test build_occupants_snapshot_data() with mixed occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test build_occupants_snapshot_data() with empty list.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_player_id() with invalid string.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (3 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [event_handler.py](event_handler.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [ground_channel.py](ground_channel.py.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [preferences_service](preferences_service.md) (4 shared connections)
+- [quests.sql](quests.sql.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [generate_schema_from_dev.ps1](generate_schema_from_dev.ps1.md) (2 shared connections)
+- [generate_schema_from_dev.sh script](generate_schema_from_dev.sh_script.md) (2 shared connections)
+- [install_ci_dependencies.sh](install_ci_dependencies.sh.md) (2 shared connections)
+- [test_mute_channel_invalid_id](test_mute_channel_invalid_id.md) (1 shared connections)
+- [Server Authority](Server_Authority.md) (1 shared connections)
+- [test_is_channel_muted_invalid_id](test_is_channel_muted_invalid_id.md) (1 shared connections)
+- [test_is_channel_muted_not_found](test_is_channel_muted_not_found.md) (1 shared connections)
+- [test_check_rate_limit_within_limits](test_check_rate_limit_within_limits.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
-- `server/events/event_bus.py`
-- `server/tests/unit/app/test_task_registry.py`
-- `server/tests/unit/commands/test_ground_channel.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (89%)
-- INFERRED: 22 (11%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

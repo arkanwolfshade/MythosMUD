@@ -1,24 +1,25 @@
 # magic_points
 
-> 3 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **magic_points** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **test_profession_get_mechanical_effects_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **test_profession_get_mechanical_effects_valid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns dict for valid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [properties](properties.md) (2 shared connections)
+- [required](required.md) (2 shared connections)
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

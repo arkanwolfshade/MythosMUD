@@ -1,13 +1,13 @@
 # sub_zone
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **sub_zone** (4 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **Test Execution** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Run E2E Scenarios** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Run Integration Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Run Unit Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Audit Trail
 

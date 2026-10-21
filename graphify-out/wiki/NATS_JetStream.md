@@ -1,23 +1,24 @@
 # NATS JetStream
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **NATS JetStream** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
-- **NATS Message Acknowledgment** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **test_profession_meets_stat_requirements_one_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when one requirement is not met.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_CODE_REVIEW.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

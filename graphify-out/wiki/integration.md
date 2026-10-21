@@ -1,28 +1,33 @@
 # integration
 
-> 5 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **integration()** (5 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **fixture** (2 connections)
-- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **NPCCombatIntegration wired to the mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **mp_regeneration_service()** (5 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **fixture** (4 connections)
+- **mock_player()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mock_player_service()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player service.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (4 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
+- [Changes by document](Changes_by_document.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

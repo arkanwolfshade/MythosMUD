@@ -1,46 +1,43 @@
 # test_emote.py
 
-> 23 nodes
+> 21 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **test_emote.py** (13 connections) — `server/tests/unit/models/test_emote.py`
-- **Emote** (10 connections) — `server/models/emote.py`
-- **test_emote_alias_case_sensitive()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_creation()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_multiple_aliases()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_repr()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_alias_table_name()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_creation()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_repr()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_table_name()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **test_emote_with_placeholders()** (3 connections) — `server/tests/unit/models/test_emote.py`
-- **Base** (2 connections)
-- **Predefined emote definitions.** (1 connections) — `server/models/emote.py`
-- **Unit tests for emote models. Tests the Emote and EmoteAlias SQLAlchemy models.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias aliases are case sensitive.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote has correct table name.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote __repr__ method.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test Emote can have placeholders in messages.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias has correct table name.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias __repr__ method.** (1 connections) — `server/tests/unit/models/test_emote.py`
-- **Test EmoteAlias can have different aliases for same emote.** (1 connections) — `server/tests/unit/models/test_emote.py`
+- **audit_suppressions.py** (9 connections) — `scripts/audit_suppressions.py`
+- **main()** (8 connections) — `scripts/audit_suppressions.py`
+- **Any** (7 connections)
+- **find_suppressions()** (6 connections) — `scripts/audit_suppressions.py`
+- **scan_all_files()** (6 connections) — `scripts/audit_suppressions.py`
+- **print_summary_report()** (5 connections) — `scripts/audit_suppressions.py`
+- **write_report_file()** (5 connections) — `scripts/audit_suppressions.py`
+- **calculate_statistics()** (4 connections) — `scripts/audit_suppressions.py`
+- **group_by_file()** (4 connections) — `scripts/audit_suppressions.py`
+- **group_by_tool()** (4 connections) — `scripts/audit_suppressions.py`
+- **Path** (4 connections)
+- **has_explanation()** (3 connections) — `scripts/audit_suppressions.py`
+- **Scan all Python and TypeScript files for suppressions. Args: workspace_root:…** (1 connections) — `scripts/audit_suppressions.py`
+- **Calculate summary statistics from suppressions. Args: all_suppressions: List of…** (1 connections) — `scripts/audit_suppressions.py`
+- **Group suppressions by file path. Args: all_suppressions: List of all…** (1 connections) — `scripts/audit_suppressions.py`
+- **Group suppressions by tool and calculate statistics. Args: all_suppressions:…** (1 connections) — `scripts/audit_suppressions.py`
+- **Write the report to a JSON file. Args: workspace_root: Root directory of the…** (1 connections) — `scripts/audit_suppressions.py`
+- **Print the summary report to stdout. Args: report: Report dictionary…** (1 connections) — `scripts/audit_suppressions.py`
+- **Main entry point for the suppression audit.** (1 connections) — `scripts/audit_suppressions.py`
+- **Check if a suppression line has an explanation. Args: line: The full line…** (1 connections) — `scripts/audit_suppressions.py`
+- **Find all suppressions in a file. Args: file_path: Path to the file to scan…** (1 connections) — `scripts/audit_suppressions.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/emote.py`
-- `server/tests/unit/models/test_emote.py`
+- `scripts/audit_suppressions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (92%)
-- INFERRED: 3 (8%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

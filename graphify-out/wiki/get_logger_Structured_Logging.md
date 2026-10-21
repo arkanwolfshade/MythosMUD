@@ -1,11 +1,10 @@
 # get_logger Structured Logging
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **MythosMUD Worldbuilding Source** (0 connections) — `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

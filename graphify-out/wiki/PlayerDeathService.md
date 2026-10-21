@@ -1,61 +1,59 @@
 # PlayerDeathService
 
-> 31 nodes
+> 39 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **PlayerDeathService** (28 connections) — `server/services/player_death_service.py`
-- **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **.handle_player_death()** (11 connections) — `server/services/player_death_service.py`
-- **.initialize()** (9 connections) — `server/container/bundles/combat.py`
-- **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
-- **.process_mortally_wounded_tick()** (6 connections) — `server/services/player_death_service.py`
-- **UUID** (6 connections)
-- **._clear_player_combat_state()** (5 connections) — `server/services/player_death_service.py`
-- **._ensure_player_posture_lying()** (5 connections) — `server/services/player_death_service.py`
-- **.get_dead_players()** (5 connections) — `server/services/player_death_service.py`
-- **._get_room_name_for_death()** (5 connections) — `server/services/player_death_service.py`
-- **.get_mortally_wounded_players()** (4 connections) — `server/services/player_death_service.py`
-- **._persist_death_location_stats()** (4 connections) — `server/services/player_death_service.py`
-- **AsyncSession** (4 connections)
-- **Player** (4 connections)
-- **.__init__()** (3 connections) — `server/services/player_death_service.py`
-- **Any** (3 connections)
-- **Exception** (1 connections)
-- **Initialize combat services.** (1 connections) — `server/container/bundles/combat.py`
-- **Get all players who are dead (DP <= -10). Args: session: Async database session…** (1 connections) — `server/services/player_death_service.py`
-- **Process DP decay for a single mortally wounded player. Decreases player DP by…** (1 connections) — `server/services/player_death_service.py`
-- **Ensure player posture is set to lying when dead. Args: player: Player object to…** (1 connections) — `server/services/player_death_service.py`
-- **Clear player combat state when they die. BUGFIX #244: As documented in…** (1 connections) — `server/services/player_death_service.py`
-- **Get room name for death location display. Args: death_location: Room ID where…** (1 connections) — `server/services/player_death_service.py`
-- **Store death room id/name on player stats so login can show the place of death.** (1 connections) — `server/services/player_death_service.py`
-- *... and 6 more nodes in this community*
+- **test_room_item_seeder.py** (26 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **seed_room_items()** (15 connections) — `server/services/room_item_seeder.py`
+- **FakeRoomManager** (11 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **_room()** (10 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **initialize_room_items()** (9 connections) — `server/services/room_item_seeder.py`
+- **FakePersistence** (9 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **RoomListPersistence** (7 connections) — `server/services/room_item_seeder.py`
+- **factory()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_startup_hook_never_fails_startup()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_startup_hook_seeds_cached_rooms()** (7 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_malformed_or_unknown_entries_are_skipped()** (6 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **RoomDropSink** (5 connections) — `server/services/room_item_seeder.py`
+- **test_one_bad_entry_does_not_block_the_rest()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_places_declared_item_on_the_floor()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_quantity_defaults_to_one()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_rooms_without_items_are_ignored()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **test_template_rooms_are_skipped()** (5 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **Room** (3 connections)
+- **Protocol** (2 connections)
+- **Room** (2 connections)
+- **.add_room_drop()** (2 connections) — `server/services/room_item_seeder.py`
+- **.list_rooms()** (2 connections) — `server/services/room_item_seeder.py`
+- **.warmup_room_cache()** (2 connections) — `server/services/room_item_seeder.py`
+- **.__init__()** (2 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- **.list_rooms()** (2 connections) — `server/tests/unit/services/test_room_item_seeder.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [LoggingConfig](LoggingConfig.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
-- [fixture](fixture.md) (2 shared connections)
-- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (18 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [items/catalog_dml.py](items-catalog_dml.py.md) (3 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
-- `server/services/player_death_service.py`
-- `server/structured_logging/enhanced_logging_config.py`
+- `server/services/room_item_seeder.py`
+- `server/tests/unit/services/test_room_item_seeder.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (89%)
-- INFERRED: 10 (11%)
+- EXTRACTED: 93 (86%)
+- INFERRED: 15 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Per-Recipient Whisper Rate Limit
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Per-Recipient Whisper Rate Limit** (0 connections) — `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- `scripts/items/validate_prototypes.ps1`
 
 ## Audit Trail
 

@@ -1,10 +1,10 @@
 # temp_verify_e2e_invites.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **temp_verify_e2e_invites.py** (0 connections) — `scripts/temp_verify_e2e_invites.py`
+- **WebSocket Best Practices Compliance** (0 connections) — `.cursor/websocket-compliance-verification.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_verify_e2e_invites.py`
+- `.cursor/websocket-compliance-verification.md`
 
 ## Audit Trail
 

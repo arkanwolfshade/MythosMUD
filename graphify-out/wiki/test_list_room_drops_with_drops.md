@@ -1,23 +1,22 @@
 # test_list_room_drops_with_drops
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_list_room_drops_with_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test list_room_drops() returns room drops.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Agent Routing** (0 connections) — `.claude/rules/agent-routing.md`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `.claude/rules/agent-routing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

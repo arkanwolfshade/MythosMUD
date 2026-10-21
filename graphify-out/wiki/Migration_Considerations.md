@@ -1,25 +1,24 @@
 # Migration Considerations
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Migration Considerations** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Data Migration** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Performance Impact** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **safe_print()** (2 connections) — `scripts/markdownlint.py`
+- **markdownlint.py** (1 connections) — `scripts/markdownlint.py`
+- **Print text, handling Unicode encoding errors on Windows.** (1 connections) — `scripts/markdownlint.py`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `scripts/markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,47 +1,36 @@
 # compilerOptions
 
-> 30 nodes
+> 12 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **compilerOptions** (18 connections) — `client/tsconfig.node.json`
-- **include** (8 connections) — `client/tsconfig.node.json`
-- **tsconfig.node.json** (3 connections) — `client/tsconfig.node.json`
-- **lib** (2 connections) — `client/tsconfig.node.json`
-- **types** (2 connections) — `client/tsconfig.node.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.node.json`
-- **composite** (1 connections) — `client/tsconfig.node.json`
-- **declarationDir** (1 connections) — `client/tsconfig.node.json`
-- **emitDeclarationOnly** (1 connections) — `client/tsconfig.node.json`
-- **module** (1 connections) — `client/tsconfig.node.json`
-- **moduleDetection** (1 connections) — `client/tsconfig.node.json`
-- **moduleResolution** (1 connections) — `client/tsconfig.node.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.node.json`
-- **noUnusedLocals** (1 connections) — `client/tsconfig.node.json`
-- **noUnusedParameters** (1 connections) — `client/tsconfig.node.json`
-- **skipLibCheck** (1 connections) — `client/tsconfig.node.json`
-- **strict** (1 connections) — `client/tsconfig.node.json`
-- **target** (1 connections) — `client/tsconfig.node.json`
-- **tsBuildInfoFile** (1 connections) — `client/tsconfig.node.json`
-- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.node.json`
-- **exclude** (1 connections) — `client/tsconfig.node.json`
-- **ES2020** (1 connections) — `client/tsconfig.node.json`
-- **node** (1 connections) — `client/tsconfig.node.json`
-- **vite.userConfig.ts** (1 connections) — `client/tsconfig.node.json`
-- **playwright.config.ts** (1 connections) — `client/tsconfig.node.json`
-- *... and 5 more nodes in this community*
+- **generate_room_id()** (9 connections) — `server/world_loader.py`
+- **TestGenerateRoomId** (6 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **Test generate_room_id() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test generate_room_id() with basic components.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test generate_room_id() handles components with underscores.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test generate_room_id() with empty components.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test generate_room_id() preserves special characters in components.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Generate hierarchical room ID from components. Args: plane: Plane identifier…** (1 connections) — `server/world_loader.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
+- [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
+- [FastAPI Code Review - Anti-Patterns and Best Practices](FastAPI_Code_Review_-_Anti-Patterns_and_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.node.json`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

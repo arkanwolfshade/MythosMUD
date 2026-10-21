@@ -1,10 +1,10 @@
 # Scenario 42 Quest Log Visible After Login
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Scenario 42 Quest Log Visible After Login** (0 connections) — `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
+- **load_graphify_env.ps1** (0 connections) — `scripts/load_graphify_env.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
+- `scripts/load_graphify_env.ps1`
 
 ## Audit Trail
 

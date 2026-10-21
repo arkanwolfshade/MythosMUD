@@ -1,23 +1,23 @@
 # server/constants/__init__.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **server/constants/__init__.py** (1 connections) — `server/constants/__init__.py`
-- **Project-wide constants packages.** (1 connections) — `server/constants/__init__.py`
+- **test_take_room_drop_quantity_too_large()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() with quantity larger than available.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/constants/__init__.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

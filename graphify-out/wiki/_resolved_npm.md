@@ -1,13 +1,11 @@
 # _resolved_npm
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **_resolved_npm()** (3 connections) — `scripts/precommit_run_npm.py`
-- **main()** (2 connections) — `scripts/precommit_run_npm.py`
-- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
-- **Return absolute path to npm (prefer npm.cmd on Windows), or None if not found.** (1 connections) — `scripts/precommit_run_npm.py`
+- **Mapped Diagnostic Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **bind_request_context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
 
@@ -15,11 +13,12 @@
 
 ## Source Files
 
-- `scripts/precommit_run_npm.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

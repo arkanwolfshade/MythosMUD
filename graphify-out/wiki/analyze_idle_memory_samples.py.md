@@ -1,34 +1,32 @@
 # analyze_idle_memory_samples.py
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **analyze_idle_memory_samples.py** (8 connections) — `scripts/analyze_idle_memory_samples.py`
-- **JsonSample** (6 connections) — `scripts/analyze_idle_memory_samples.py`
-- **analyze()** (5 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_append_qualname_deltas()** (5 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_append_slope_rows()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_qualname_counts()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_slope_per_hour()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
-- **main()** (2 connections) — `scripts/analyze_idle_memory_samples.py`
-- **Path** (1 connections)
-- **Analyze idle memory JSONL samples (warmup + measurement windows).** (1 connections) — `scripts/analyze_idle_memory_samples.py`
-- **JSONL row with numeric fields used for slope analysis.** (1 connections) — `scripts/analyze_idle_memory_samples.py`
-- **Read the `task_qualnames` histogram out of one sample row. `JsonSample` is…** (1 connections) — `scripts/analyze_idle_memory_samples.py`
-- **Report which coroutine qualnames grew between the first and last measurement…** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List** (11 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **6. Methodology** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **7. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **8. Related docs** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **9. Changelog** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Python Model Updates Required for Migration 019](Python_Model_Updates_Required_for_Migration_019.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/analyze_idle_memory_samples.py`
+- `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

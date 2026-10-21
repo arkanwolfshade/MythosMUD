@@ -1,27 +1,25 @@
 # PostgreSQL Procedures Migration - Audit Spreadsheet
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **postgresql_procedures_audit.md** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Audit Table** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Domain Grouping Summary** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Scope** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **🔍 TESTING STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 1 Testing (Critical)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 2 Testing (Performance)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 3 Testing (Polish)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/postgresql_procedures_audit.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

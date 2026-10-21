@@ -1,32 +1,31 @@
 # TestMinimapExplorationInvestigationDoc
 
-> 10 nodes
+> 9 nodes · cohesion 0.36
 
 ## Key Concepts
 
-- **TestMinimapExplorationInvestigationDoc** (5 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_describes_uuid_vs_stable_id_mismatch()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_explains_impact_on_non_admin_users()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_investigation_doc_exists()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **test_minimap_exploration_documentation.py** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Guardrails for minimap / exploration documentation. Ensures the investigation…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Content checks for the minimap explored-rooms investigation document.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **The session document must remain present for traceability.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must state that explored room identifiers are UUIDs, not…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must tie the bug to non-admin minimap behavior (not only admins).** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **fix_room_references()** (6 connections) — `scripts/fix_room_references.py`
+- **load_room_file()** (5 connections) — `scripts/fix_room_references.py`
+- **save_room_file()** (5 connections) — `scripts/fix_room_references.py`
+- **fix_room_references.py** (4 connections) — `scripts/fix_room_references.py`
+- **Path** (3 connections)
+- **main()** (2 connections) — `scripts/fix_room_references.py`
+- **Load a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Save a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Fix room ID references in the northside area. Args: base_path: Path to the…** (1 connections) — `scripts/fix_room_references.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- `scripts/fix_room_references.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

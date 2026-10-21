@@ -1,19 +1,19 @@
 # test_set_limit
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_set_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test set_limit updates channel limit.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_normalize_player_id_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_player_id() with UUID.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

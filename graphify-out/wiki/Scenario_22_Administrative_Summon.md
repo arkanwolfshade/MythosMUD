@@ -1,10 +1,10 @@
 # Scenario 22 Administrative Summon
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Scenario 22 Administrative Summon** (0 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
+- **lizard.py** (0 connections) — `scripts/lizard.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-22-summon-command.md`
+- `scripts/lizard.py`
 
 ## Audit Trail
 

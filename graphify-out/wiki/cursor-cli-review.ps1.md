@@ -1,10 +1,10 @@
 # cursor-cli-review.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **cursor-cli-review.ps1** (0 connections) — `scripts/cursor-cli-review.ps1`
+- **Enhanced Logging System Guide** (0 connections) — `server/structured_logging/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/cursor-cli-review.ps1`
+- `server/structured_logging/README.md`
 
 ## Audit Trail
 

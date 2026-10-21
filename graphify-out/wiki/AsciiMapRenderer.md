@@ -1,57 +1,56 @@
 # AsciiMapRenderer
 
-> 36 nodes
+> 22 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **AsciiMapRenderer** (81 connections) — `server/services/ascii_map_renderer.py`
-- **_room()** (11 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **TestDepartureMarkers** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **test_ascii_map_renderer_bridges.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **_plain()** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **._rendered()** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **TestBridgeComputation** (6 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **TestHorizontalBridging** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_adjacent_rooms_still_render_unchanged()** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_an_unconnected_gap_stays_blank()** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **TestVerticalBridging** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_a_west_exit_out_of_the_area_marks_the_empty_cell_beside_it()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_an_exit_to_a_loaded_room_is_not_marked()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_an_east_west_exit_spanning_three_cells_is_drawn()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_a_north_south_exit_spanning_three_cells_is_drawn()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_an_unconnected_vertical_gap_stays_blank()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_a_diagonal_target_is_ignored()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_only_interior_cells_are_bridged()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_westward_and_northward_spans_are_bridged_too()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_a_north_exit_out_of_the_area_is_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_a_room_with_no_exits_is_not_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.test_an_east_exit_out_of_the_area_is_marked()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **.__init__()** (2 connections) — `server/services/ascii_map_renderer.py`
-- **.test_adjacent_rooms_produce_no_bridge_cells()** (2 connections) — `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
-- **Renders ASCII maps from room coordinate data. Supports multiple map styles…** (1 connections) — `server/services/ascii_map_renderer.py`
-- *... and 11 more nodes in this community*
+- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
+- **StatusEffectType** (18 connections) — `server/models/game.py`
+- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
+- **_handle_player_status_effect()** (9 connections) — `server/game/magic/spell_effects_status.py`
+- **Any** (8 connections)
+- **_grace_period_blocks_negative_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
+- **_maybe_run_force_flee_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
+- **_remove_player_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
+- **_parse_status_effect_metadata()** (6 connections) — `server/game/magic/spell_effects_status.py`
+- **UUID** (5 connections)
+- **Status effect spell logic (apply/remove status, force-flee, grace-period…** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Parse effect_data for status-effect type, duration, intensity, remove flag.…** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Remove a matching status effect from a player.** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Apply a status effect, respecting login grace-period protection.** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Apply or remove a status effect on a player, respecting grace-period rules.** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Process status effect: apply/remove on player, or apply to NPC (no persistence).** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **True if target is in login grace period and effect is negative (should block).** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Load player, append status effect, save; return result dict or error if player…** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Run flee effect when effect_data.force_flee is set; otherwise return None.** (1 connections) — `server/game/magic/spell_effects_status.py`
+- **Status effects that can be applied to characters.** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [.render_map](render_map.md) (20 shared connections)
-- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (7 shared connections)
-- [TestVerticalExitCharBetween](TestVerticalExitCharBetween.md) (7 shared connections)
-- [RoomService](RoomService.md) (6 shared connections)
-- [test_ascii_map_exits.py](test_ascii_map_exits.py.md) (6 shared connections)
-- [test_ascii_map_renderer_grid.py](test_ascii_map_renderer_grid.py.md) (6 shared connections)
-- [TestHorizontalExitCharBetween](TestHorizontalExitCharBetween.md) (5 shared connections)
-- [TestResolveExitTarget](TestResolveExitTarget.md) (5 shared connections)
-- [TestSymbolTables](TestSymbolTables.md) (3 shared connections)
+- [RoomService](RoomService.md) (10 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (8 shared connections)
+- [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (4 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (3 shared connections)
+- [ChatLogger](ChatLogger.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [Improve Layout Systematically](Improve_Layout_Systematically.md) (2 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (1 shared connections)
+- [test_pattern_matcher.py](test_pattern_matcher.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/ascii_map_renderer.py`
-- `server/tests/unit/services/test_ascii_map_renderer_bridges.py`
+- `server/game/magic/spell_effects_status.py`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (90%)
-- INFERRED: 14 (10%)
+- EXTRACTED: 79 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

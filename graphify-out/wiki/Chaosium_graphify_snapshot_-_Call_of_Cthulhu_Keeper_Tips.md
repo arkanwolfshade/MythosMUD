@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Call of Cthulhu Keeper Tips
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Keeper Tips** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
-- **call-of-cthulhu-keeper-tips/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

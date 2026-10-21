@@ -1,10 +1,10 @@
 # Dependabot Dependency Updates
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dependabot Dependency Updates** (0 connections) — `.github/dependabot.yml`
+- **populate_npc_sample_data.ps1** (0 connections) — `scripts/populate_npc_sample_data.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.github/dependabot.yml`
+- `scripts/populate_npc_sample_data.ps1`
 
 ## Audit Trail
 

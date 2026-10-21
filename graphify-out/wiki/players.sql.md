@@ -1,40 +1,42 @@
 # players.sql
 
-> 18 nodes
+> 20 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **players.sql** (17 connections) — `db/procedures/players.sql`
-- **schema_name.get_user_id_by_username_ci()** (2 connections) — `db/procedures/players.sql`
-- **schema_name.player_is_deleted()** (2 connections) — `db/procedures/players.sql`
-- **schema_name.capture_invite()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.clear_player_inventory()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.delete_player()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_active_players_by_user_id()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_player_by_id()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_player_by_name()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_players_batch()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_players_by_user_id()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.get_players_in_room()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.list_players()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.soft_delete_player()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.update_player_current_room()** (1 connections) — `db/procedures/players.sql`
-- **schema_name.update_player_last_active()** (1 connections) — `db/procedures/players.sql`
-- **users** (1 connections)
-- **time()** (1 connections) — `db/procedures/players.sql`
+- **fixtures/unit/__init__.py** (8 connections) — `server/tests/fixtures/unit/__init__.py`
+- **strict_mocker()** (6 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **dummy_request()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fakerandom()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
+- **mock_helpers.py** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **fixture** (3 connections)
+- **test_container()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Any** (2 connections)
+- **MockerFixture** (2 connections)
+- **Any** (1 connections)
+- **SimpleNamespace** (1 connections)
+- **Unit-tier fixtures with strict mocking and in-memory fakes.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a minimal request object for testing with container support.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a mock ApplicationContainer for testing. This fixture creates a…** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fixture** (1 connections)
+- **Strict mocking helpers for unit tests. Provides fixtures and helpers that…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Return a patch helper that enables autospec by default. Usage: patched_fn =…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Convenience helper for direct calls with autospec=True by default.** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Relationships
 
-- [users](users.md) (1 shared connections)
-- [players](players.md) (1 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `db/procedures/players.sql`
+- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

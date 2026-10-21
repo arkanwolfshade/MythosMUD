@@ -1,58 +1,61 @@
 # PlayerNameExtractor
 
-> 164 nodes
+> 58 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
-- **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **Any** (14 connections)
-- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
-- **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
-- **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
-- **UUID** (8 connections)
-- **._try_fallback_name_sources()** (7 connections) — `server/realtime/player_name_utils.py`
-- **._is_uuid_string()** (6 connections) — `server/realtime/player_name_utils.py`
-- **._is_valid_name_string()** (6 connections) — `server/realtime/player_name_utils.py`
-- **.extract_player_name()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._is_valid_name()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._log_uuid_validation_failure()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._try_player_username()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._try_user_object_name()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._validate_name_basic()** (5 connections) — `server/realtime/player_name_utils.py`
-- **.validate_player_name_not_uuid()** (5 connections) — `server/realtime/player_name_utils.py`
-- **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
-- **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
-- **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
-- **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
-- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **.test_try_user_object_name_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- *... and 139 more nodes in this community*
+- **test_npc_definitions_api.py** (35 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **npc_definitions_api.py** (31 connections) — `server/api/admin/npc_definitions_api.py`
+- **_update_npc_definition_internal()** (16 connections) — `server/api/admin/npc_definitions_api.py`
+- **get_npc_definitions()** (15 connections) — `server/api/admin/npc_definitions_api.py`
+- **create_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
+- **get_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
+- **delete_npc_definition()** (12 connections) — `server/api/admin/npc_definitions_api.py`
+- **_admin_user()** (12 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **NPCBehaviorConfigModel** (10 connections) — `server/api/admin/npc_schemas.py`
+- **NPCDefinitionResponse** (10 connections) — `server/api/admin/npc_schemas.py`
+- **.from_orm()** (10 connections) — `server/api/admin/npc_schemas.py`
+- **NPCDefinitionUpdate** (10 connections) — `server/api/admin/npc_schemas.py`
+- **asyncio** (10 connections)
+- **patch** (10 connections)
+- **test_create_npc_definition()** (10 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **update_npc_definition()** (9 connections) — `server/api/admin/npc_definitions_api.py`
+- **NPCBaseStatsModel** (7 connections) — `server/api/admin/npc_schemas.py`
+- **NPCDefinitionCreate** (7 connections) — `server/api/admin/npc_schemas.py`
+- **test_update_npc_definition_internal()** (7 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **test_update_npc_definition_not_found()** (7 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **build_update_params_from_model()** (6 connections) — `server/api/admin/npc_schemas.py`
+- **NPCAIIntegrationModel** (6 connections) — `server/api/admin/npc_schemas.py`
+- **test_delete_npc_definition_not_found()** (6 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **test_get_npc_definition_found()** (6 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **test_get_npc_definition_not_found()** (6 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (8 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [event_handler.py](event_handler.py.md) (4 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [NpcDisposition](NpcDisposition.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (19 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (9 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (7 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (6 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_item_catalog.py](test_item_catalog.py.md) (2 shared connections)
+- [ItemFactory](ItemFactory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_name_utils.py`
-- `server/tests/unit/realtime/test_player_name_utils.py`
+- `server/api/admin/npc_definitions_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/tests/unit/api/test_npc_definitions_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 282 (95%)
-- INFERRED: 14 (5%)
+- EXTRACTED: 196 (90%)
+- INFERRED: 21 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

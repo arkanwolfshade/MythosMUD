@@ -1,24 +1,23 @@
 # 🎯 Next Steps
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🎯 Next Steps** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Future Enhancements** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Immediate Actions** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **ensure_codacy_coverage_reporter_ci.sh** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
+- **ensure_codacy_coverage_reporter_ci.sh script** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Relationships
 
-- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

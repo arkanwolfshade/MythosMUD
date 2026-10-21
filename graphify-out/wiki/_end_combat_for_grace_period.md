@@ -1,35 +1,33 @@
 # _end_combat_for_grace_period
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **_end_combat_for_grace_period()** (10 connections) — `server/api/players.py`
-- **test_players_combat_grace.py** (10 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **test_grace_period_swallows_cleanup_errors()** (6 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **test_grace_period_removes_only_that_player_from_combat()** (5 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **_combat()** (4 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **_service()** (4 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **test_grace_period_is_a_no_op_without_a_combat()** (4 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **asyncio** (4 connections)
-- **test_grace_period_is_a_no_op_without_a_combat_service()** (3 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **UUID** (2 connections)
-- **End combat for player entering login grace period. Args: player_id: Player UUID** (1 connections) — `server/api/players.py`
-- **Unit tests for the login-grace combat exit in server.api.players (#833: leave…** (1 connections) — `server/tests/unit/api/test_players_combat_grace.py`
-- **Combat cleanup is best effort: a failing removal must not break the grace-…** (1 connections) — `server/tests/unit/api/test_players_combat_grace.py`
+- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
+- [_occupation_slots_9](_occupation_slots_9.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/players.py`
-- `server/tests/unit/api/test_players_combat_grace.py`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

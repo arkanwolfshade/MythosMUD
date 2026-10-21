@@ -1,42 +1,31 @@
 # items/__init__.py
 
-> 13 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **items/__init__.py** (11 connections) — `server/game/items/__init__.py`
-- **ItemInstance** (9 connections) — `server/game/items/item_instance.py`
-- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
-- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
-- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **Any** (1 connections)
-- **Item system package. This module exposes the prototype schema and registry…** (1 connections) — `server/game/items/__init__.py`
-- **Item instance model for runtime item representation. This module defines the…** (1 connections) — `server/game/items/item_instance.py`
-- **Runtime representation of an item created from a prototype.** (1 connections) — `server/game/items/item_instance.py`
-- **Convert the instance into an inventory stack payload understood by legacy…** (1 connections) — `server/game/items/item_instance.py`
-- **Unit tests for ItemInstance model.** (1 connections) — `server/tests/unit/game/test_item_instance.py`
+- **Python Code Coverage Status** (5 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Priority Recommendations** (3 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Normal Files Below 70% Threshold** (2 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **PYTHON_COVERAGE_STATUS.md** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Critical Files Below Threshold** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Immediate Priority (Critical Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Secondary Priority (Normal Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Showing top 50 files with largest coverage gaps** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Summary** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [ItemFactory](ItemFactory.md) (2 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (2 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (1 shared connections)
-- [test_item_factory.py](test_item_factory.py.md) (1 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/items/__init__.py`
-- `server/game/items/item_instance.py`
-- `server/tests/unit/game/test_item_instance.py`
+- `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

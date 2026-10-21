@@ -1,27 +1,32 @@
 # .get_active_sessions
 
-> 5 nodes
+> 8 nodes · cohesion 0.32
 
 ## Key Concepts
 
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **Any** (2 connections)
-- **Get list of active admin sessions. Returns: List of active session information** (1 connections) — `server/services/admin_auth_service.py`
-- **Get audit log entries. Args: limit: Maximum number of entries to return…** (1 connections) — `server/services/admin_auth_service.py`
+- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
+- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
+- **_ApplicationContainerType** (4 connections) — `server/container/async_persistence_access.py`
+- **.get_instance()** (2 connections) — `server/container/async_persistence_access.py`
+- **Protocol** (2 connections)
+- **Access the DI container's live AsyncPersistenceLayer singleton.** (1 connections) — `server/container/async_persistence_access.py`
+- **Container singleton surface needed for persistence lookup.** (1 connections) — `server/container/async_persistence_access.py`
+- **ApplicationContainer.get_instance without importing container.main.** (1 connections) — `server/container/async_persistence_access.py`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [test_party_service.py](test_party_service.py.md) (3 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
+- `server/container/async_persistence_access.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

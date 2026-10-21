@@ -1,25 +1,24 @@
 # Call of Cthulhu 7th Edition - Keeper's Rulebook (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Call of Cthulhu 7th Edition - Keeper's Rulebook (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
-- **Call of Cthulhu 7th Edition - Keeper's Rulebook.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **Impeccable design context** (2 connections) — `.impeccable.md`
+- **Legibility under pressure** (1 connections) — `.impeccable.md`
+- **Dark terminal-first aesthetic** (1 connections) — `.impeccable.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- `.impeccable.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

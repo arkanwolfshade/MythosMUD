@@ -1,24 +1,22 @@
 # test_enrich_behavior_context_sets_player_in_range_when_players_in_room
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **_enrich_behavior_context sets player_in_range and enemy_nearby True when…** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **ADR-021: Character Display Name Validation** (0 connections) — `docs/architecture/decisions/ADR-021-character-display-name-validation.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (1 shared connections)
-- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- `docs/architecture/decisions/ADR-021-character-display-name-validation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

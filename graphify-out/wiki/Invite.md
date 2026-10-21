@@ -1,56 +1,48 @@
 # Invite
 
-> 83 nodes
+> 33 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Invite** (49 connections) — `server/models/invite.py`
-- **InviteManager** (33 connections) — `server/auth/invites.py`
-- **test_invite_manager.py** (23 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
-- **asyncio** (14 connections)
-- **.create_invite()** (6 connections) — `server/models/invite.py`
-- **._generate_invite_code()** (6 connections) — `server/models/invite.py`
-- **.use_invite()** (5 connections) — `server/auth/invites.py`
-- **.validate_invite()** (5 connections) — `server/auth/invites.py`
-- **test_use_invite()** (5 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_use_invite_capture_rejected()** (5 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_use_invite_reserve_rejected()** (5 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_validate_invite_expired()** (5 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **.create_invite()** (4 connections) — `server/auth/invites.py`
-- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
-- **test_cleanup_expired_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_create_invite_explicit_expiry()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_create_invite_with_default_expiry()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_invite_manager_dependency()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_unused_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_user_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_list_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_validate_invite_missing_code()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_validate_invite_not_found()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_validate_invite_success()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- *... and 58 more nodes in this community*
+- **lint_optional_auth_no_guard.py** (16 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_find_unguarded()** (8 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_is_guarded()** (8 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_auth_posture()** (6 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_sibling_module_funcs()** (6 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_body_has_direct_guard()** (5 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **scan()** (5 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_dep_names_in_default()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_guard_call_name()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_is_current_user_name()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_route_decorators()** (4 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_called_helper_names()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **_collect_files()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **main()** (3 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **AST** (3 connections)
+- **AsyncFunctionDef** (3 connections)
+- **FunctionDef** (3 connections)
+- **Path** (3 connections)
+- **expr** (2 connections)
+- **AllowlistEntry** (2 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **Module** (2 connections)
+- **stmt** (2 connections)
+- **Call** (1 connections)
+- **Guard against unguarded optional-authentication route handlers. See issue #734.…** (1 connections) — `scripts/lint_optional_auth_no_guard.py`
+- **Return 'required', 'optional', or 'anonymous' from the handler's Depends()…** (1 connections) — `scripts/lint_optional_auth_no_guard.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [endpoints.py](endpoints.py.md) (8 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [test_database_helpers.py](test_database_helpers.py.md) (1 shared connections)
-- [StatusEffect](StatusEffect.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/auth/invites.py`
-- `server/models/invite.py`
-- `server/tests/unit/auth/test_invite_manager.py`
-- `server/tests/unit/models/test_invite.py`
+- `scripts/lint_optional_auth_no_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (79%)
-- INFERRED: 39 (21%)
+- EXTRACTED: 55 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

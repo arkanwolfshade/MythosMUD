@@ -1,10 +1,10 @@
 # PostgreSQL Standards for Contributors
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **PostgreSQL Standards for Contributors** (0 connections) — `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
+- **check_professions_schema.py** (0 connections) — `scripts/check_professions_schema.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
+- `scripts/check_professions_schema.py`
 
 ## Audit Trail
 

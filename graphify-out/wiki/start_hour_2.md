@@ -1,25 +1,26 @@
 # start_hour
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Common Conversion Patterns** (5 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 1: Simple Query** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 2: Batch Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 3: Health Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 4: FastAPI Dependency Injection** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

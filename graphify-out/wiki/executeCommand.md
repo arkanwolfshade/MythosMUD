@@ -1,64 +1,55 @@
 # executeCommand
 
-> 31 nodes
+> 65 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **executeCommand()** (113 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensurePlayableConnection()** (39 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **collect-n-quest.spec.ts** (30 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **executeCommandWithoutRecovery()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureArmitagePresent()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **listArmitageIds()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **assertCollectNJournalComplete()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **escapeRegExp()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **summonAndPickupCollectItems()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **turnInCollectNQuest()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **nudgeStandBothPlayers()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- **despawnArmitage()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **askCollectNQuest()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **despawnQuestGiverInstances()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureAdminInFoyer()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **restoreTarget()** (3 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- **nudgeStandBothPlayers()** (3 connections) — `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- **abandonCollectNQuest()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **assertQuestGiverVisible()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **expectWhoListingOnPage()** (2 connections) — `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- *... and 6 more nodes in this community*
+- **PassiveMobNPC** (61 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base.py** (26 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_passive_mob_npc.py** (19 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
+- **.__init__()** (5 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base_execute_behavior_sets_in_combat_context()** (4 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base_execute_behavior()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats_legacy_dp()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_is_alive_property()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_is_npc_in_combat_fails_closed_on_lookup_error()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_to_room_blocked_when_in_combat()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **passive_npc()** (3 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/passive_mob_npc.py`
+- **._handle_flee()** (2 connections) — `server/npc/passive_mob_npc.py`
+- **asyncio** (2 connections)
+- **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_from_dict()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_handle_die_and_idle()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_heal_when_dead_returns_false()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_inventory_operations()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (77 shared connections)
-- [player.ts](player.ts.md) (44 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (30 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (10 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (8 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (8 shared connections)
-- [tutorial-instance-lifecycle.spec.ts](tutorial-instance-lifecycle.spec.ts.md) (5 shared connections)
-- [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (8 shared connections)
+- [dependencies](dependencies.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [admin_setstat_command.py](admin_setstat_command.py.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `server/npc/passive_mob_npc.py`
+- `server/tests/unit/npc/test_npc_base.py`
+- `server/tests/unit/npc/test_passive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 248 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 102 (82%)
+- INFERRED: 22 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

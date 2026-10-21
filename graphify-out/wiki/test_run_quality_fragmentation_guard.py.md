@@ -1,17 +1,14 @@
 # test_run_quality_fragmentation_guard.py
 
-> 8 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **test_run_quality_fragmentation_guard.py** (7 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **_assert_utf8_replace()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **_fake_result()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **_load_module()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **test_changed_files_between_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **test_local_changed_files_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **test_run_git_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
-- **Regression test for scripts/run_quality_fragmentation_guard.py's git-output…** (1 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **S. Petersen's Field Guide to Lovecraftian Horrors (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **S. Petersen's Field Guide to Lovecraftian Horrors.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
 
 ## Relationships
 
@@ -19,11 +16,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

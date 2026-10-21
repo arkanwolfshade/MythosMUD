@@ -1,40 +1,44 @@
 # TabbedInterfaceOverlay.tsx
 
-> 12 nodes
+> 19 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **TabbedInterfaceOverlay.tsx** (8 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
-- **useTabbedInterface()** (4 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
-- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- **useTabbedInterface.test.ts** (4 connections) — `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
-- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **TabbedInterfaceOverlayProps** (2 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- **TabbedInterface()** (2 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **TabbedInterface.test.tsx** (2 connections) — `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- **TabbedInterfaceProps** (1 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- **test_room_map_coordinates.py** (7 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **_as_float()** (6 connections) — `server/models/room.py`
+- **.__init__()** (6 connections) — `server/models/room.py`
+- **_room()** (6 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **TestRoomCoordinates** (5 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **TestAsFloat** (3 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_booleans_are_not_coordinates()** (3 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_coerces_every_shape_the_column_arrives_in()** (3 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_a_room_at_the_origin_is_not_treated_as_missing()** (3 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_to_dict_always_has_the_keys()** (3 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_coordinates_survive_into_to_dict()** (2 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **.test_partial_coordinates_do_not_invent_the_other_axis()** (2 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **Coerce a `numeric(10,2)` column to float. The driver hands back `Decimal` for…** (1 connections) — `server/models/room.py`
+- **Initialize a Room from JSON data. Args: room_data: Dictionary containing room…** (1 connections) — `server/models/room.py`
+- **parametrize** (1 connections)
+- **`Room` carries map coordinates end to end (#829). `GET /api/rooms/list`…** (1 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **bool is a subclass of int, so a naive isinstance check would make True == 1.0.** (1 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **The client distinguishes "no coordinates" from "not sent"; the keys must exist…** (1 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
+- **(0, 0) is a real cell. Truthiness checks on coordinates are a classic bug.** (1 connections) — `server/tests/unit/models/test_room_map_coordinates.py`
 
 ## Relationships
 
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (3 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (4 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/TabbedInterface.tsx`
-- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
-- `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
-- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
-- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
-- `client/src/components/ui-v2/useTabbedInterface.ts`
+- `server/models/room.py`
+- `server/tests/unit/models/test_room_map_coordinates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,63 @@
 # MemoryMonitor
 
-> 53 nodes
+> 61 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **MemoryMonitor** (25 connections) — `client/src/utils/memoryMonitor.ts`
-- **MemoryLeakDetector** (16 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **memoryMonitor.ts** (10 connections) — `client/src/utils/memoryMonitor.ts`
-- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
-- **memoryLeakDetector.ts** (8 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **useMemoryLeakDetector()** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.generateReport()** (7 connections) — `client/src/utils/memoryMonitor.ts`
-- **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
-- **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
-- **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
-- **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
-- **.calculateGrowthRate()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.checkMemory()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.detectMemoryLeak()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.getMemoryStats()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.setCallbacks()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.start()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.getComponentStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.getOverallStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 28 more nodes in this community*
+- **command_input.py** (18 connections) — `server/command_handler/command_input.py`
+- **should_treat_as_emote()** (17 connections) — `server/command_handler/command_input.py`
+- **command_handler/__init__.py** (14 connections) — `server/command_handler/__init__.py`
+- **normalize_command()** (12 connections) — `server/command_handler/command_input.py`
+- **TestCommandNormalization** (12 connections) — `server/tests/unit/commands/test_command_input.py`
+- **_is_predefined_emote()** (11 connections) — `server/command_handler/command_input.py`
+- **clean_command_input()** (10 connections) — `server/command_handler/command_input.py`
+- **TestEmoteDetection** (10 connections) — `server/tests/unit/commands/test_command_input.py`
+- **test_command_input.py** (9 connections) — `server/tests/unit/commands/test_command_input.py`
+- **_mock_request()** (6 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_false()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_handles_error()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_no_emote_service()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_is_predefined_emote_true()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
+- **test_a_combat_verb_is_never_mistaken_for_an_emote()** (3 connections) — `server/tests/unit/commands/test_assist_wiring.py`
+- **.test_clean_command_input_basic()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_leading_trailing_whitespace()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_multiple_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_clean_command_input_tabs()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_empty()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_slash_with_spaces()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_whitespace_only()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- **.test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (3 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (6 shared connections)
+- [QuestService](QuestService.md) (5 shared connections)
+- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (4 shared connections)
+- [test_logging_file_categories.py](test_logging_file_categories.py.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (2 shared connections)
+- [DialogueService](DialogueService.md) (2 shared connections)
+- [go_command.py](go_command.py.md) (2 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (1 shared connections)
+- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/memoryLeakDetector.test.ts`
-- `client/src/utils/__tests__/memoryMonitor.test.ts`
-- `client/src/utils/memoryLeakDetector.ts`
-- `client/src/utils/memoryMonitor.ts`
+- `server/command_handler/__init__.py`
+- `server/command_handler/command_input.py`
+- `server/tests/unit/commands/test_assist_wiring.py`
+- `server/tests/unit/commands/test_command_input.py`
+- `server/tests/unit/commands/test_protect_wiring.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 124 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

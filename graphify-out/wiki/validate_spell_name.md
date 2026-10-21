@@ -1,32 +1,37 @@
 # .validate_spell_name
 
-> 9 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **.validate_spell_name()** (4 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (4 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (4 connections) — `server/models/command_magic.py`
-- **field_validator** (4 connections)
-- **.validate_target()** (3 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
-- **Validate target format.** (1 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
-- **Validate spell name format.** (1 connections) — `server/models/command_magic.py`
+- **Migration 019 Verification Report** (7 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Files Modified Summary** (5 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Next Steps** (2 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Before Production Deployment** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Documentation (3 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Migration Scripts (1 file)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Mitigation** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Python Models (5 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **SQL Schema Files (4 files)** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
+- **Verification Summary** (1 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (4 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
+- [Path](Path.md) (1 shared connections)
+- [_personal_interest_4](_personal_interest_4.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_magic.py`
+- `docs/archive/MIGRATION_019_VERIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (80%)
-- INFERRED: 3 (20%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

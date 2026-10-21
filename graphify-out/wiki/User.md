@@ -2,7 +2,7 @@
 
 > God node · 331 connections · `server/models/user.py`
 
-**Community:** [LoggedHTTPException](LoggedHTTPException.md)
+**Community:** [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md)
 
 ## Connections by Relation
 

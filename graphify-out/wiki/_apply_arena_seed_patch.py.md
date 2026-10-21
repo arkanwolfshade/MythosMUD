@@ -1,37 +1,35 @@
 # _apply_arena_seed_patch.py
 
-> 16 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **_apply_arena_seed_patch.py** (12 connections) — `scripts/_apply_arena_seed_patch.py`
-- **patch_file()** (8 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Path** (7 connections)
-- **_append_before_copy_terminator()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_arena_room_links()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_arena_room_rows()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_zone_configuration_row()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_insert_after_line_containing()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_zones_and_subzones()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **main()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_with_trailing_nl()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_load_arena_links()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_load_arena_rooms()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
-- **One-off idempotent patch: add limbo arena world seed to e2e/unit DML (mirrors…** (1 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Apply arena seed slices to one DML file; return human-readable action lines.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Patch mythos_e2e and mythos_unit DML files when patch snippet files are present.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Optimize Skill** (6 connections) — `.claude/skills/optimize/SKILL.md`
+- **Optimization Strategy** (6 connections) — `.claude/skills/optimize/SKILL.md`
+- **Core Web Vitals Optimization** (4 connections) — `.claude/skills/optimize/SKILL.md`
+- **Animation Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Assess Performance Issues** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Cumulative Layout Shift (CLS < 0.1)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **First Input Delay (FID < 100ms) / INP (< 200ms)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Largest Contentful Paint (LCP < 2.5s)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Loading Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Network Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Performance Monitoring** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **React/Framework Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Rendering Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Verify Improvements** (1 connections) — `.claude/skills/optimize/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/_apply_arena_seed_patch.py`
+- `.claude/skills/optimize/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

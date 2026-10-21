@@ -1,16 +1,14 @@
 # MythosMUD Logging Standards
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
 
 ## Relationships
 
@@ -18,11 +16,12 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
+- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

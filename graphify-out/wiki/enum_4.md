@@ -1,29 +1,36 @@
 # enum
 
-> 8 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/calendar/holiday.schema.json`
-- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **catholic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **islamic** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **jewish** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **mythos** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **neo_pagan** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **gateways-to-terror/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 0 - "Pre-Generated Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 1 - "Pre-Generated Investigators (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 2 - "Pre-Generated Investigators (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # ADR-021: Character Display Name Validation
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-021: Character Display Name Validation** (0 connections) — `docs/architecture/decisions/ADR-021-character-display-name-validation.md`
+- **20260924145030_rooms_environment_column.sql** (0 connections) — `db/migrations/20260924145030_rooms_environment_column.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-021-character-display-name-validation.md`
+- `db/migrations/20260924145030_rooms_environment_column.sql`
 
 ## Audit Trail
 

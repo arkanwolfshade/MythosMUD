@@ -1,33 +1,30 @@
 # bench_cache_npc.py
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **_FakeNPCService** (6 connections) — `scripts/bench_cache_npc.py`
-- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
-- **bench_npc_cache()** (5 connections) — `scripts/bench_cache_npc.py`
-- **Any** (4 connections)
-- **.get_npc_definition()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.get_npc_definitions()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.get_spawn_rules()** (2 connections) — `scripts/bench_cache_npc.py`
-- **main()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache_npc.py`
-- **NPC cache micro-benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache_npc.py`
+- **Top Time Consumers (>10 seconds)** (8 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Argon2 Password Tests (1.4+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Auth & Security Tests (21+ seconds setup each)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Infrastructure Tests (3.5+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **NATS Message Handler Tests (2-3 seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Performance Tests (still running despite slow marker)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Rate Limiter Timing Tests (still running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **SSE Handler Tests (60 seconds total)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Dreamlands.md](Dreamlands.md.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bench_cache_npc.py`
+- `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

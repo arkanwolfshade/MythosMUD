@@ -1,30 +1,28 @@
 # _filter_lines
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **_filter_lines()** (5 connections) — `scripts/filter_static_dml.py`
-- **filter_static_dml.py** (4 connections) — `scripts/filter_static_dml.py`
-- **main()** (3 connections) — `scripts/filter_static_dml.py`
-- **_skip_sequence_set_block()** (3 connections) — `scripts/filter_static_dml.py`
-- **_skip_table_data_block()** (3 connections) — `scripts/filter_static_dml.py`
-- **Skip a TABLE DATA block (COPY ... \\.). Return index after the block.** (1 connections) — `scripts/filter_static_dml.py`
-- **Skip a SEQUENCE SET block (setval + trailing blank lines). Return index after…** (1 connections) — `scripts/filter_static_dml.py`
-- **Filter out TABLE DATA and SEQUENCE SET blocks for excluded tables/sequences.** (1 connections) — `scripts/filter_static_dml.py`
-- **Read export DML, drop COPY/SEQUENCE blocks for runtime tables, write back.** (1 connections) — `scripts/filter_static_dml.py`
+- **🔴 CRITICAL ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **2. asyncio.run() Called from Existing Event Loop Context** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **5. Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **6. F-String Logging Destroying Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/filter_static_dml.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

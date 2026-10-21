@@ -1,10 +1,10 @@
 # check_professions_structure.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **check_professions_structure.py** (0 connections) — `scripts/check_professions_structure.py`
+- **verify_schema_match.ps1** (0 connections) — `scripts/verify_schema_match.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/check_professions_structure.py`
+- `scripts/verify_schema_match.ps1`
 
 ## Audit Trail
 

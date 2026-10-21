@@ -1,31 +1,30 @@
 # test_websocket_handler_disconnect.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **test_websocket_handler_disconnect.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_logs_close_code_and_reason()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **test_handle_websocket_disconnect_no_connection_id()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **MockerFixture** (1 connections)
-- **Unit tests for websocket handler disconnect handling. Tests the disconnect…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() returns True.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **Test _handle_websocket_disconnect() with no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
-- **The WebSocket close code/reason must reach the log, not be silently discarded.…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **fixture** (3 connections)
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (3 shared connections)
+- [MythosMUD Code Quality Targets for AI](MythosMUD_Code_Quality_Targets_for_AI.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 9 (90%)
+- INFERRED: 1 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

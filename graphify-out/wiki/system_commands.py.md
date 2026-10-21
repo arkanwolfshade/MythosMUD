@@ -1,62 +1,48 @@
 # system_commands.py
 
-> 36 nodes
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **system_commands.py** (18 connections) — `server/commands/system_commands.py`
-- **handle_help_command()** (16 connections) — `server/commands/system_commands.py`
-- **test_help_commands.py** (16 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **handle_system_command()** (11 connections) — `server/commands/system_commands.py`
-- **_text()** (6 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **asyncio** (6 connections)
-- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_help_command_hides_admin_commands_from_players()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_no_topic()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_positional_arg_fallback()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_too_many_args()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_unknown_topic()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_with_topic()** (5 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_system_command()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_chat_service()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **test_handle_system_command_no_message()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
-- **help_commands.py** (4 connections) — `server/commands/help_commands.py`
-- **_help_topic()** (3 connections) — `server/commands/system_commands.py`
-- **asyncio** (3 connections)
-- **Any** (1 connections)
-- **Help command adapter module. The original help command handler lives in…** (1 connections) — `server/commands/help_commands.py`
-- **System commands for MythosMUD. This module contains handlers for system-level…** (1 connections) — `server/commands/system_commands.py`
-- **Broadcast a system-level message via the chat service if available.** (1 connections) — `server/commands/system_commands.py`
-- **Topic from the validated command's ``topic`` field, falling back to the first…** (1 connections) — `server/commands/system_commands.py`
-- **Handle the help command: ``help`` lists topics, ``help <command|alias|guide>``…** (1 connections) — `server/commands/system_commands.py`
-- *... and 11 more nodes in this community*
+- **Enhanced Logging Best Practices for MythosMUD** (16 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **🚨 CRITICAL ANTI-PATTERNS - DO NOT USE** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Common Anti-Patterns** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Log Analysis and Monitoring** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Log Rotation and Management** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Conclusion** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Configuration** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Custom Log Analysis** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **✅ Do This Instead** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **❌ Don't Do This** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **❌ FORBIDDEN IMPORT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **❌ FORBIDDEN LOGGING PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Log Cleanup** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **✅ MANDATORY CORRECT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Overview** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Using Our Log Analysis Tools** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [command_parser.py](command_parser.py.md) (5 shared connections)
-- [catalog_commands.py](catalog_commands.py.md) (4 shared connections)
-- [command_error](command_error.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [MessageCategory](MessageCategory.md) (3 shared connections)
-- [get_help_content](get_help_content.md) (2 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [help_content.py](help_content.py.md) (1 shared connections)
+- [C2 · REVISED — procedures-only is binding](C2_·_REVISED_—_procedures-only_is_binding.md) (2 shared connections)
+- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- [P5 · Adversarial Refutation](P5_·_Adversarial_Refutation.md) (1 shared connections)
+- [Test File Migration Mapping](Test_File_Migration_Mapping.md) (1 shared connections)
+- [P3 · persistence-db](P3_·_persistence-db.md) (1 shared connections)
+- [10 Concurrent Players Load Test](10_Concurrent_Players_Load_Test.md) (1 shared connections)
+- [test_integration_cleanup_gate.py](test_integration_cleanup_gate.py.md) (1 shared connections)
+- [MythosMUD Message of the Day](MythosMUD_Message_of_the_Day.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/help_commands.py`
-- `server/commands/system_commands.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/commands/test_system_commands.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (89%)
-- INFERRED: 10 (11%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

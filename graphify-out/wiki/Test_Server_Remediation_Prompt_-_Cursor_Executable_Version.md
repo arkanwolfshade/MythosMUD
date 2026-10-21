@@ -1,39 +1,41 @@
 # Test Server Remediation Prompt - Cursor Executable Version
 
-> 14 nodes
+> 13 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **Test Server Remediation Prompt - Cursor Executable Version** (17 connections) — `.cursor/commands/server-test-remediation.md`
-- **server-test-remediation.md** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Best Practices** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **COMPLETION VERIFICATION** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **CRITICAL "DO NOT" INSTRUCTIONS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **CRITICAL: EXECUTION REQUIREMENTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **DECISION TREE - START HERE** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **ERROR HANDLING PROTOCOL** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **MANDATORY PROGRESS TRACKING** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **MANDATORY VERIFICATION CHECKPOINTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Project Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Success Criteria** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **TOOL USAGE EXAMPLES** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Troubleshooting** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **Channel Broadcasting Strategies for NATS Message Handler. This module…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Register a new strategy for a channel type. Args: channel_type: Channel type to…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [REQUIRED TOOL USAGE PATTERN](REQUIRED_TOOL_USAGE_PATTERN.md) (1 shared connections)
-- [Step-by-Step Remediation Process](Step-by-Step_Remediation_Process.md) (1 shared connections)
-- [FAILURE PATTERN RECOGNITION](FAILURE_PATTERN_RECOGNITION.md) (1 shared connections)
-- [Common Test Failure Categories](Common_Test_Failure_Categories.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Gateways_to_Terror__2026-08-12.md) (6 shared connections)
+- [fix_markdown_line_length.py](fix_markdown_line_length.py.md) (6 shared connections)
+- [usePanelContext.ts](usePanelContext.ts.md) (4 shared connections)
+- [zone_and_subzone](zone_and_subzone.md) (3 shared connections)
+- [test_db_connectivity_create_and_read_user](test_db_connectivity_create_and_read_user.md) (3 shared connections)
+- [TestCheckCastingState](TestCheckCastingState.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

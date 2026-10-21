@@ -1,16 +1,14 @@
 # MythosMUD ADR Authoring
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **MythosMUD ADR Authoring** (6 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Index Update** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Location** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Structure** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **Template** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
-- **ADR Authoring Skill** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Modular E2E Test Suite** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- **E2E Validation Passed** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
+- **AI Context Limit 20KB** (1 connections) — `e2e-tests/FILE_SIZE_ANALYSIS.md`
+- **E2E Test Suite README** (1 connections) — `e2e-tests/README.md`
 
 ## Relationships
 
@@ -18,11 +16,14 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
+- `e2e-tests/END_TO_END_VALIDATION.md`
+- `e2e-tests/FILE_SIZE_ANALYSIS.md`
+- `e2e-tests/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

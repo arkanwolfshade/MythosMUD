@@ -1,60 +1,53 @@
 # GameStateProvider
 
-> 64 nodes
+> 74 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **GameStateProvider** (45 connections) — `server/realtime/integration/game_state_provider.py`
-- **UUID** (18 connections)
-- **.send_initial_game_state()** (15 connections) — `server/realtime/integration/game_state_provider.py`
-- **Any** (12 connections)
-- **._process_occupants_with_grace_periods()** (10 connections) — `server/realtime/integration/game_state_provider.py`
-- **.connection_manager()** (10 connections) — `server/realtime/nats_message_handler.py`
-- **._get_player_data_for_client()** (9 connections) — `server/realtime/integration/game_state_provider.py`
-- **._apply_grace_period_suffixes()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **.convert_room_uuids_to_names()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_login_grace_period_status()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_player_name_with_grace_periods()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._build_client_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._convert_player_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_following_for_client()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **Player** (6 connections)
-- **._get_lucidity_for_client()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_player()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_room_data_with_conversion()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_room_occupants()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- *... and 39 more nodes in this community*
+- **test_health_monitor.py** (26 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **HealthMonitor** (25 connections) — `server/realtime/monitoring/health_monitor.py`
+- **asyncio** (12 connections)
+- **UUID** (10 connections)
+- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_player_connection_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_single_websocket_health()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **fixture** (5 connections)
+- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._determine_overall_health()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._wait_for_task_cancellation()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Any** (4 connections)
+- **health_monitor()** (4 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **mock_cleanup_dead_websocket()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_is_websocket_open()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_performance_tracker()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [test_game_state_provider.py](test_game_state_provider.py.md) (10 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (9 shared connections)
-- [test_game_state_provider_hallucination.py](test_game_state_provider_hallucination.py.md) (4 shared connections)
-- [.state](state.md) (4 shared connections)
-- [NpcDisposition](NpcDisposition.md) (4 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
-- [_AsyncPersistenceLike](_AsyncPersistenceLike.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (5 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (1 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/nats_message_handler.py`
+- `server/realtime/monitoring/health_monitor.py`
+- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (84%)
-- INFERRED: 26 (16%)
+- EXTRACTED: 120 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

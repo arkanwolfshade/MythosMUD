@@ -1,24 +1,22 @@
 # test_get_dead_players_finds_dead
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_dead_players_finds_dead()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_dead_players() finds dead players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **server/app/__init__.py** (0 connections) — `server/app/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `server/app/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

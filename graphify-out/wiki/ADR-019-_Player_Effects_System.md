@@ -1,10 +1,10 @@
 # ADR-019: Player Effects System
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-019: Player Effects System** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
+- **Quest Design Guidelines** (0 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-019-player-effects-system.md`
+- `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Audit Trail
 

@@ -1,23 +1,23 @@
 # test_process_room_rows_zone_without_slash
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_without_slash()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows handles zone_stable_id without slash.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **JSON Schema Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **schemas/room_schema.json** (1 connections) — `tools/room_toolkit/room_validator/README.md`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `tools/room_toolkit/room_validator/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

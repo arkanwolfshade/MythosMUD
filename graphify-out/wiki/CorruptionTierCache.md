@@ -1,32 +1,31 @@
 # CorruptionTierCache
 
-> 11 nodes
+> 9 nodes · cohesion 0.42
 
 ## Key Concepts
 
-- **CorruptionTierCache** (6 connections) — `server/services/corruption_tier_cache.py`
-- **.get_tier()** (4 connections) — `server/services/corruption_tier_cache.py`
-- **.set_tier()** (4 connections) — `server/services/corruption_tier_cache.py`
-- **UUID** (4 connections)
-- **.clear()** (3 connections) — `server/services/corruption_tier_cache.py`
-- **CorruptionTier** (2 connections)
-- **.__init__()** (1 connections) — `server/services/corruption_tier_cache.py`
-- **Module-level singleton (mirrors `lucidity_tier_cache`) -- callers MUST share…** (1 connections) — `server/services/corruption_tier_cache.py`
-- **Record this player's current tier.** (1 connections) — `server/services/corruption_tier_cache.py`
-- **Return the cached tier, or `pure` if this player has never been recorded.** (1 connections) — `server/services/corruption_tier_cache.py`
-- **Drop a player's cached tier (e.g. on disconnect).** (1 connections) — `server/services/corruption_tier_cache.py`
+- **quality_fragmentation_graph.py** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **compute_python_cross_file_depth()** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **collect_python_defs_and_calls()** (5 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **_named_calls()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **_top_level_definitions()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **build_call_graph()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **max_path_length()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **Module** (2 connections)
+- **Path** (2 connections)
 
 ## Relationships
 
-- [CorruptionTier](CorruptionTier.md) (2 shared connections)
+- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (2 shared connections)
+- [Test Suite Refactoring Plan](Test_Suite_Refactoring_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corruption_tier_cache.py`
+- `scripts/ci/quality_fragmentation_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

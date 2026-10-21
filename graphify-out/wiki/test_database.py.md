@@ -1,33 +1,37 @@
 # test_database.py
 
-> 10 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **test_database.py** (7 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_initial_state()** (5 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_reset_instance()** (5 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_singleton()** (5 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **test_database_manager_direct_init_raises()** (4 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Unit tests for database initialization.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that DatabaseManager is a singleton.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test resetting the singleton instance.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test that direct initialization raises RuntimeError when instance exists.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **Test initial state of database manager.** (1 connections) — `server/tests/unit/infrastructure/test_database.py`
+- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [DatabaseManager](DatabaseManager.md) (12 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [TestLogoutCommand](TestLogoutCommand.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_database.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

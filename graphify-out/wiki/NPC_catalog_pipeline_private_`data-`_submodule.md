@@ -1,28 +1,30 @@
 # NPC catalog pipeline (private `data/` submodule)
 
-> 7 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **NPC catalog pipeline (private `data/` submodule)** (6 connections) — `data/npc_catalog/README.md`
-- **npc_catalog/README.md** (1 connections) — `data/npc_catalog/README.md`
-- **Current batches** (1 connections) — `data/npc_catalog/README.md`
-- **Generate (from MythosMUD repo root)** (1 connections) — `data/npc_catalog/README.md`
-- **Human review gate (required before DML commit)** (1 connections) — `data/npc_catalog/README.md`
-- **Layout** (1 connections) — `data/npc_catalog/README.md`
-- **Out of scope here** (1 connections) — `data/npc_catalog/README.md`
+- **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **test_get_plane_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_dream()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_plane_from_room_id() extracts plane.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_plane_from_room_id() extracts different plane.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_plane_from_room_id() returns None for invalid format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Extract plane from room ID. Room ID format:…** (1 connections) — `server/utils/room_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestCombatConfiguration](TestCombatConfiguration.md) (5 shared connections)
 
 ## Source Files
 
-- `data/npc_catalog/README.md`
+- `server/tests/unit/utils/test_room_utils.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

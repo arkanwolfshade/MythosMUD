@@ -1,25 +1,25 @@
 # Down Darker Trails (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Down Darker Trails (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Down Darker Trails.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Memory Leak Remediation** (2 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- **Closed WebSockets Deque Cap** (1 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- **Memory Leak Metrics Collection** (1 connections) — `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+- `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

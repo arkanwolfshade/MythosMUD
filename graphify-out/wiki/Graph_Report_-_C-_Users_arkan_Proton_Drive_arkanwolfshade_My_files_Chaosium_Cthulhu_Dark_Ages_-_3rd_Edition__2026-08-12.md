@@ -1,21 +1,20 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Cthulhu Dark Ages - 3rd Edition  (2026-08-12)
 
-> 12 nodes
+> 11 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Cthulhu Dark Ages - 3rd Edition  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Communities (8 total, 7 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Community 0 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Teach Impeccable Skill** (7 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Skill** (3 connections) — `.cursor/skills/overdrive/SKILL.md`
+- **Polish Skill** (3 connections) — `.cursor/skills/polish/SKILL.md`
+- **Quieter Skill** (3 connections) — `.cursor/skills/quieter/SKILL.md`
+- **Onboard Skill** (2 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Optimize Skill** (2 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Typeset Skill** (2 connections) — `.cursor/skills/typeset/SKILL.md`
+- **Aha Moment Onboarding** (1 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Core Web Vitals Performance** (1 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Design Context Persistence (.impeccable.md)** (1 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Mode** (1 connections) — `.cursor/skills/overdrive/SKILL.md`
 
 ## Relationships
 
@@ -23,12 +22,18 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- `.cursor/skills/onboard/SKILL.md`
+- `.cursor/skills/optimize/SKILL.md`
+- `.cursor/skills/overdrive/SKILL.md`
+- `.cursor/skills/polish/SKILL.md`
+- `.cursor/skills/quieter/SKILL.md`
+- `.cursor/skills/teach-impeccable/SKILL.md`
+- `.cursor/skills/typeset/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

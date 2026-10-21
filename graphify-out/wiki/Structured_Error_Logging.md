@@ -1,27 +1,31 @@
 # Structured Error Logging
 
-> 3 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Structured Error Logging** (2 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
-- **log_and_raise Utilities** (1 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
-- **Test/Production Environment Separation** (1 connections) — `docs/archive/TEST_PROD_SEPARATION.md`
+- **test_apply_damage_blocked_during_grace_period()** (5 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **test_npc_damage_blocked_during_grace_period()** (5 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **asyncio** (4 connections)
+- **Test that NPC damage is blocked when target is in login grace period.** (1 connections) — `server/tests/unit/services/test_damage_grace_period.py`
+- **Test that damage is blocked when target is in login grace period.** (1 connections) — `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
+- [ChatLogger](ChatLogger.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
-- `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
-- `docs/archive/TEST_PROD_SEPARATION.md`
+- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 10 (83%)
+- INFERRED: 2 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,55 +1,50 @@
 # test_hallucination_services.py
 
-> 79 nodes
+> 93 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_hallucination_services.py** (27 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **HallucinationFrequencyService** (22 connections) — `server/services/hallucination_frequency_service.py`
-- **PhantomHostileService** (18 connections) — `server/services/phantom_hostile_service.py`
-- **hallucination_frequency_service.py** (11 connections) — `server/services/hallucination_frequency_service.py`
-- **asyncio** (9 connections)
-- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
-- **_mock_rng()** (7 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **PhantomData** (6 connections) — `server/services/phantom_hostile_service.py`
-- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **UUID** (6 connections)
-- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
-- **.find_phantom_by_name_in_room()** (5 connections) — `server/services/phantom_hostile_service.py`
-- **test_hallucination_frequency_room_entry_roll()** (5 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_triggers_and_sets_cooldown()** (5 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **UUID** (5 connections)
-- **.get_active_phantoms()** (4 connections) — `server/services/phantom_hostile_service.py`
-- **test_check_room_entry_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_check_time_based_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_fake_hallucination_select_type()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_handles_lucidity_errors()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_cooldown_active()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_requires_session()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_unknown_tier()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- *... and 54 more nodes in this community*
+- **test_look_container.py** (57 connections) — `server/tests/unit/commands/test_look_container.py`
+- **JsonMap** (22 connections)
+- **asyncio** (13 connections)
+- **ContainerLookArgs** (10 connections) — `server/commands/look_container.py`
+- **_get_container_description()** (10 connections) — `server/commands/look_container.py`
+- **test_handle_container_look_success()** (7 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_handle_container_look_not_found()** (6 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_try_lookup_container_implicit_success()** (6 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_in_equipped()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_in_room()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **_result_text()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **sample_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **sample_equipped_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_by_container_id()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_no_get_containers()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_not_found()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_success()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_get_container_method()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_inner_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_by_prototype_id()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (6 shared connections)
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [lucidity.py](lucidity.py.md) (2 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [HallucinationRng](HallucinationRng.md) (1 shared connections)
+- [look_helpers.py](look_helpers.py.md) (50 shared connections)
+- [_RecordingRoom](_RecordingRoom.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/hallucination_frequency_service.py`
-- `server/services/phantom_hostile_service.py`
-- `server/tests/unit/services/test_hallucination_services.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (92%)
-- INFERRED: 12 (8%)
+- EXTRACTED: 193 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

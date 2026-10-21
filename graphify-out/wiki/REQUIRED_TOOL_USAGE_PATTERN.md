@@ -1,37 +1,33 @@
 # REQUIRED TOOL USAGE PATTERN
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **REQUIRED TOOL USAGE PATTERN** (9 connections) — `.cursor/commands/server-test-remediation.md`
-- **3. Systematic Investigation Approach** (5 connections) — `.cursor/commands/server-test-remediation.md`
-- **5. Test Environment Setup** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **10. Final Verification** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **6. Quality Assurance Checklist** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Environment Variables** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Authentication Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **For WebSocket Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **validator.py CLI** (5 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Path Validator Test Failures** (3 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **core/path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/reporter.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/room_loader.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/schema_validator.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **click CLI dependency** (1 connections) — `tools/room_toolkit/room_validator/requirements.txt`
+- **Graph Building Issues** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **Room Validator Test Suite** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
 
 ## Relationships
 
-- [4. Common Fix Patterns](4._Common_Fix_Patterns.md) (1 shared connections)
-- [7. Common Test Failure Solutions](7._Common_Test_Failure_Solutions.md) (1 shared connections)
-- [8. Error Handling and Debugging](8._Error_Handling_and_Debugging.md) (1 shared connections)
-- [9. Test Maintenance Best Practices](9._Test_Maintenance_Best_Practices.md) (1 shared connections)
-- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `tools/room_toolkit/room_validator/README.md`
+- `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

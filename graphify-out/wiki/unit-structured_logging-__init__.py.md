@@ -1,11 +1,10 @@
 # unit/structured_logging/__init__.py
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **unit/structured_logging/__init__.py** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
-- **Structured logging unit tests.** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
+- **seed.sql** (0 connections) — `data/db/seed.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/__init__.py`
+- `data/db/seed.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

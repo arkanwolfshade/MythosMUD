@@ -1,30 +1,30 @@
 # 🔴 Anti-Patterns Check (Critical)
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **🔴 Anti-Patterns Check (Critical)** (9 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **1. Blocking the Event Loop?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **2. Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **3. Using `asyncio.run()` in Library Code?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **4. Mixing Sync and Async Code Incorrectly?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **5. Forgetting to Await Awaitable Objects?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **6. Not Handling Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **7. Over-using Locks?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **8. Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **lib** (4 connections) — `client/tsconfig.build.json`
+- **lib** (4 connections) — `client/tsconfig.json`
+- **DOM** (1 connections) — `client/tsconfig.build.json`
+- **ES2022** (1 connections) — `client/tsconfig.build.json`
+- **DOM** (1 connections) — `client/tsconfig.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.json`
+- **ES2022** (1 connections) — `client/tsconfig.json`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
+- [_FakeConnection](_FakeConnection.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `client/tsconfig.build.json`
+- `client/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

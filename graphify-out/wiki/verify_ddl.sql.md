@@ -1,10 +1,10 @@
 # verify_ddl.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **verify_ddl.sql** (0 connections) — `db/verification/verify_ddl.sql`
+- **Test Refactoring Executive Summary** (0 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/verification/verify_ddl.sql`
+- `docs/archive/TEST_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 

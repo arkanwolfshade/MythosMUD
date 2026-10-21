@@ -1,56 +1,54 @@
 # InventoryService
 
-> 57 nodes
+> 71 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **InventoryService** (37 connections) — `server/services/inventory_service.py`
-- **test_inventory_service.py** (20 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **InventorySplitError** (11 connections) — `server/services/inventory_service.py`
-- **InventoryValidationError** (10 connections) — `server/services/inventory_service.py`
-- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
-- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
-- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
-- **InventoryServiceError** (7 connections) — `server/services/inventory_service.py`
-- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
-- **Any** (7 connections)
-- **._validate_and_clone_optional_fields()** (6 connections) — `server/services/inventory_service.py`
-- **.begin_mutation()** (5 connections) — `server/services/inventory_service.py`
-- **._can_merge()** (4 connections) — `server/services/inventory_service.py`
-- **._extract_required_fields()** (4 connections) — `server/services/inventory_service.py`
-- **._normalize_metadata()** (4 connections) — `server/services/inventory_service.py`
-- **inventory_service()** (4 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_validation_error_invalid_quantity()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_validation_error_missing_field()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_capacity_error()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_index()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_quantity_negative()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_invalid_quantity_zero()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_split_stack_quantity_too_large()** (3 connections) — `server/tests/unit/services/test_inventory_service.py`
-- **test_add_stack_merges_existing()** (2 connections) — `server/tests/unit/services/test_inventory_service.py`
-- *... and 32 more nodes in this community*
+- **MemoryProfiler** (33 connections) — `server/utils/memory_profiler.py`
+- **test_memory_profiler.py** (21 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
+- **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
+- **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
+- **Any** (8 connections)
+- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
+- **.measure_model_serialization()** (7 connections) — `server/utils/memory_profiler.py`
+- **.get_current_memory_usage()** (6 connections) — `server/utils/memory_profiler.py`
+- **.get_memory_delta()** (6 connections) — `server/utils/memory_profiler.py`
+- **.start_profiling()** (5 connections) — `server/utils/memory_profiler.py`
+- **.stop_profiling()** (5 connections) — `server/utils/memory_profiler.py`
+- **SampleModel** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_measure_model_serialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
+- **.get_memory_usage_summary()** (4 connections) — `server/utils/memory_profiler.py`
+- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
+- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
+- **OtherModel** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_compare_models_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (23 shared connections)
-- [ContainerComponent](ContainerComponent.md) (10 shared connections)
-- [equipment_service.py](equipment_service.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [command_result_text](command_result_text.md) (3 shared connections)
-- [MutationDecision](MutationDecision.md) (2 shared connections)
-- [ContainerService](ContainerService.md) (1 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [✅ POSITIVE FINDINGS](✅_POSITIVE_FINDINGS.md) (2 shared connections)
+- [testing_examples.py](testing_examples.py.md) (1 shared connections)
+- [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (1 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/inventory_service.py`
-- `server/tests/unit/services/test_inventory_service.py`
+- `server/tests/unit/utils/test_memory_profiler.py`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (88%)
-- INFERRED: 16 (12%)
+- EXTRACTED: 121 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

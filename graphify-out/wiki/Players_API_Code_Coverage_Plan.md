@@ -1,10 +1,10 @@
 # Players API Code Coverage Plan
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Players API Code Coverage Plan** (0 connections) — `docs/archive/PLANNING_code_coverage.md`
+- **Documentation Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/documentation.yml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_code_coverage.md`
+- `.github/ISSUE_TEMPLATE/documentation.yml`
 
 ## Audit Trail
 

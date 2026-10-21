@@ -1,26 +1,25 @@
 # duration_hours
 
-> 4 nodes
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **e2e_player_state.py** (2 connections) — `scripts/e2e_player_state.py`
+- **main()** (2 connections) — `scripts/e2e_player_state.py`
+- **_print_state()** (2 connections) — `scripts/e2e_player_state.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `scripts/e2e_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

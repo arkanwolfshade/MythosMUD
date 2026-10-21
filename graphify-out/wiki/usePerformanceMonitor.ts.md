@@ -1,30 +1,27 @@
 # usePerformanceMonitor.ts
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **usePerformanceMonitor.ts** (6 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **usePerformanceMonitor.test.ts** (3 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
-- **usePerformanceMonitor()** (2 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **ExtendedPerformance** (1 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
-- **ExtendedPerformance** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **PerformanceMemory** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **PerformanceMetrics** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
-- **UsePerformanceMonitorOptions** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **2. Primitive Anti-Patterns: Direct `asyncio` Primitive Usage** (6 connections) — `docs/archive/anyio_code_review.md`
+- **2.1 `asyncio.sleep()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.2 `asyncio.Lock()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.3 `asyncio.Event()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.4 `asyncio.Queue()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.5 `asyncio.wait_for()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.connection_manager](connection_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
-- `client/src/hooks/usePerformanceMonitor.ts`
+- `docs/archive/anyio_code_review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

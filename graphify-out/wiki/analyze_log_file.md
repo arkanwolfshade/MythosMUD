@@ -1,35 +1,33 @@
 # analyze_log_file
 
-> 14 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **analyze_log_file()** (8 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **analyze_logs.py** (6 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **generate_report()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **main()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **parse_log_line()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **categorize_error()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **categorize_warning()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **Any** (3 connections)
-- **Path** (2 connections)
-- **Generate a formatted report from log analysis.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **Parse a log line into structured data. Expected format: YYYY-MM-DD HH:MM:SS -…** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **Categorize an error message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **Categorize a warning message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
-- **Analyze a log file and return statistics.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Amplify the Design** (7 connections) — `.claude/skills/bolder/SKILL.md`
+- **Bolder Skill** (6 connections) — `.claude/skills/bolder/SKILL.md`
+- **Assess Current State** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Color Intensification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Composition Boldness** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Motion & Animation** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Plan Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Spatial Drama** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Typography Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Verify Quality** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Visual Effects** (1 connections) — `.claude/skills/bolder/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/analyze_logs.py`
+- `.claude/skills/bolder/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

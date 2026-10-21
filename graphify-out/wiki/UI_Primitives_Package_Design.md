@@ -1,43 +1,39 @@
 # UI Primitives Package Design
 
-> 19 nodes
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **UI Primitives Package Design** (11 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **ui-v2 demos** (4 connections) — `client/src/components/ui-v2/demos/README.md`
-- **Package UI Primitives Design** (4 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **UI Primitives README** (3 connections) — `client/src/components/ui-v2/primitives/README.md`
-- **ui-v2 demos README** (2 connections) — `client/src/components/ui-v2/demos/README.md`
-- **Contents** (1 connections) — `client/src/components/ui-v2/demos/README.md`
-- **Entry** (1 connections) — `client/src/components/ui-v2/demos/README.md`
-- **Purpose** (1 connections) — `client/src/components/ui-v2/demos/README.md`
-- **UI Primitives** (1 connections) — `client/src/components/ui-v2/primitives/README.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- **properties** (7 connections) — `schemas/room_schema.json`
+- **exits** (5 connections) — `schemas/room_schema.json`
+- **down** (2 connections) — `schemas/room_schema.json`
+- **east** (2 connections) — `schemas/room_schema.json`
+- **north** (2 connections) — `schemas/room_schema.json`
+- **south** (2 connections) — `schemas/room_schema.json`
+- **up** (2 connections) — `schemas/room_schema.json`
+- **west** (2 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (2 shared connections)
+- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/demos/README.md`
-- `client/src/components/ui-v2/primitives/README.md`
-- `docs/packages/PACKAGE_UI_PRIMITIVES_DESIGN.md`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # ADR-017: AST-Based Console Pruning
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-017: AST-Based Console Pruning** (0 connections) — `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- **20260915000000_baseline.sql** (0 connections) — `db/migrations/20260915000000_baseline.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- `db/migrations/20260915000000_baseline.sql`
 
 ## Audit Trail
 

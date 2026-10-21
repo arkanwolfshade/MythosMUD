@@ -1,35 +1,40 @@
 # ClientLogger
 
-> 13 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
-- **.info()** (6 connections) — `client/src/utils/logger.ts`
-- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
-- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
-- **.error()** (5 connections) — `client/src/utils/logger.ts`
-- **.initializeLogging()** (5 connections) — `client/src/utils/logger.ts`
-- **.flushLogs()** (4 connections) — `client/src/utils/logger.ts`
-- **.warn()** (4 connections) — `client/src/utils/logger.ts`
-- **.debug()** (3 connections) — `client/src/utils/logger.ts`
-- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
-- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
-- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
+- **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **fixture** (1 connections)
+- **Unit tests for AsciiMapRenderer exit character and exit resolution. Guards…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _get_exit_entries_for_room.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Valid exits for a room produce one entry with correct direction and coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Exits whose targets are missing are skipped when building exit entries.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Viewport bounds: return None when next cell is outside viewport.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Returns None when the next horizontal cell lies at or beyond the viewport's…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (1 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (8 shared connections)
+- [mock_container](mock_container.md) (1 shared connections)
+- [POSTGRESQL_AUDIT_REPORT_2026.md](POSTGRESQL_AUDIT_REPORT_2026.md.md) (1 shared connections)
+- [client/package.json](client-package.json.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/logger.ts`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

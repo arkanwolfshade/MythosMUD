@@ -1,26 +1,24 @@
 # Summary: Test Quality Metrics
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Summary: Test Quality Metrics** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **By removing 15% of tests, we** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Current State** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Optimized State (After Pruning)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Value Proposition** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition Keeper Screen Pack** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- **call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

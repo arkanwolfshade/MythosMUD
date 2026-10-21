@@ -1,25 +1,23 @@
 # Monitoring and Alerting
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Monitoring and Alerting** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Alerting Rules** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Health Checks** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Metrics to Monitor** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **ApplicationContainer** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
+- **DI Migration Test Results** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 
 ## Relationships
 
-- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

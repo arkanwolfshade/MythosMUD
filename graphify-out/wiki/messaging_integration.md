@@ -1,28 +1,27 @@
 # messaging_integration
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **messaging_integration()** (4 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **fixture** (2 connections)
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Create CombatMessagingIntegration instance.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Random Stats Generator Planning** (2 connections) — `docs/archive/PLANNING_stats.md`
+- **Pydantic Click Command Validation Integration** (1 connections) — `docs/archive/INTEGRATION_SUMMARY.md`
+- **Random Stats Generator Technical Plan** (1 connections) — `docs/archive/PLANNING_stats_generator.md`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/archive/INTEGRATION_SUMMARY.md`
+- `docs/archive/PLANNING_stats.md`
+- `docs/archive/PLANNING_stats_generator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

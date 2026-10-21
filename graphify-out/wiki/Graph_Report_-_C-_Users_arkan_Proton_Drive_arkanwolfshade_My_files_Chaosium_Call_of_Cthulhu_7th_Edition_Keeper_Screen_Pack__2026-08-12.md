@@ -1,23 +1,22 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition Keeper Screen Pack  (2026-08-12)
 
-> 14 nodes
+> 13 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition Keeper Screen Pack  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Community 0 - "Keeper Screen References"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Community 1 - "Keeper Screen References (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Community 2 - "Keeper Screen References (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
+- **TestDbDesignTableRoster** (6 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **test_db_design_table_roster.py** (5 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **_doc_tables()** (4 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **_schema_tables()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **.test_roster_matches_schema()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **.test_schema_has_tables()** (3 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **_doc_section_5()** (2 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **Table-roster parity check between db/schema.sql and…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **Table names from §5's domain-grouping markdown table, "Tables" column only.…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **PACKAGE_DB_DESIGN.md §5 must list exactly the tables db/schema.sql defines.** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **Sanity check the extraction pattern still matches db/schema.sql's CREATE TABLE…** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **.test_design_doc_exists()** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
+- **.test_schema_file_exists()** (1 connections) — `server/tests/unit/infrastructure/test_db_design_table_roster.py`
 
 ## Relationships
 
@@ -25,11 +24,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/GRAPH_REPORT.md`
+- `server/tests/unit/infrastructure/test_db_design_table_roster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

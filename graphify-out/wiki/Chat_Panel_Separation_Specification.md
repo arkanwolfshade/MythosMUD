@@ -1,35 +1,25 @@
 # Chat Panel Separation Specification
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Chat Panel Separation Specification** (12 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Current State Analysis** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **CHAT_PANEL_SEPARATION_SPEC.md** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Conclusion** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Current Integration Points** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Existing Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Overview** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **5. Consequences** (4 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **Negative** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
+- **Positive** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
-- [Technical Implementation](Technical_Implementation.md) (1 shared connections)
-- [UI/UX Considerations](UI-UX_Considerations.md) (1 shared connections)
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
-- [1. Enhanced ChatPanel (New Chat Input Panel)](1._Enhanced_ChatPanel_New_Chat_Input_Panel.md) (1 shared connections)
-- [Testing Strategy](Testing_Strategy.md) (1 shared connections)
-- [Migration Considerations](Migration_Considerations.md) (1 shared connections)
-- [Success Criteria](Success_Criteria.md) (1 shared connections)
-- [Risk Assessment](Risk_Assessment.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

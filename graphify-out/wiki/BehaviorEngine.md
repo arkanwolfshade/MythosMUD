@@ -1,51 +1,45 @@
 # BehaviorEngine
 
-> 137 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
-- **test_behavior_engine.py** (54 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
-- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_variable()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **test_evaluate_boolean_condition_variable_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- *... and 112 more nodes in this community*
+- **Documentation Updates - ConnectionManager Refactoring** (9 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documents Updated** (7 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Benefits of Documentation Updates** (5 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Files NOT Requiring Updates** (4 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Next Steps** (2 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **1. **Accurate Reference Material**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 1. `REAL_TIME_ARCHITECTURE.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 2. `CONNECTION_MANAGER_ARCHITECTURE.md` (NEW)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **2. **Reduced Confusion**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **3. **Better Onboarding**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 3. `WEBSOCKET_CODE_REVIEW.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 4. `DEVELOPMENT_AI.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **4. **Historical Record**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 5. `REFACTORING_SUMMARY.md` (Created Earlier)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 6. `.cursor/plans/connection-manager-refactor_b94299a2.plan.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documentation Structure** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Archive Documents** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Other Architecture Docs** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Test Documentation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Optional Future Documentation Work** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **References** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Validation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (6 shared connections)
-- [npc_config_parsing.py](npc_config_parsing.py.md) (1 shared connections)
+- [._attack_target_impl](_attack_target_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

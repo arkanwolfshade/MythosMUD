@@ -1,16 +1,13 @@
 # Second NPC Combat And Linkdead Findings
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
-- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
-- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **DML Migrations Apply Paths** (3 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **DML Migrations Apply Paths.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **Agent rule** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **Facts** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
 
 ## Relationships
 
@@ -18,14 +15,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (67%)
-- INFERRED: 2 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

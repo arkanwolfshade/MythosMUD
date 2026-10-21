@@ -1,10 +1,10 @@
 # Pydantic Testing Patterns
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Pydantic Testing Patterns** (0 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
+- **generate_nats_local_certs.ps1** (0 connections) — `scripts/generate_nats_local_certs.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/TESTING_PYDANTIC_PATTERNS.md`
+- `scripts/generate_nats_local_certs.ps1`
 
 ## Audit Trail
 

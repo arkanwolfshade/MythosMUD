@@ -1,10 +1,10 @@
 # GitHub Actions Remediation
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **GitHub Actions Remediation** (0 connections) — `.cursor/plans/github-actions-remediation.plan.md`
+- **temp_init_e2e_npc.py** (0 connections) — `scripts/temp_init_e2e_npc.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/github-actions-remediation.plan.md`
+- `scripts/temp_init_e2e_npc.py`
 
 ## Audit Trail
 

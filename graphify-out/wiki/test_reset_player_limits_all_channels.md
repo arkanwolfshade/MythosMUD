@@ -1,19 +1,19 @@
 # test_reset_player_limits_all_channels
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_reset_player_limits_all_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test reset_player_limits resets all channels when channel is None.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_process_dict_occupant_with_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes player occupant.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

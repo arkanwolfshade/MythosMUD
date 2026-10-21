@@ -1,49 +1,55 @@
 # CombatAuditLogger
 
-> 71 nodes
+> 75 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **CombatAuditLogger** (30 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit.py** (25 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **combat_audit.py** (11 connections) — `server/structured_logging/combat_audit.py`
-- **_ts()** (10 connections) — `server/structured_logging/combat_audit.py`
-- **CombatParties** (8 connections) — `server/structured_logging/combat_audit.py`
-- **CombatMonitoringAlert** (7 connections) — `server/structured_logging/combat_audit.py`
-- **_parties()** (7 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **datetime** (7 connections)
-- **CombatSecurityEvent** (6 connections) — `server/structured_logging/combat_audit.py`
-- **CombatAttackDetails** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_death()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_end()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_start()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_validation_failure()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit_logger_log_combat_attack()** (5 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **.log_combat_attack()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_monitoring_alert()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_rate_limit()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_security_event()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit_logger_log_combat_death()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_end()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_high()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_low()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_with_player()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_security_event()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- *... and 46 more nodes in this community*
+- **test_shutdown_sequence.py** (26 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **shutdown_sequence.py** (17 connections) — `server/commands/shutdown_sequence.py`
+- **execute_shutdown_sequence()** (15 connections) — `server/commands/shutdown_sequence.py`
+- **_ShutdownApp** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_ShutdownAppState** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **asyncio** (12 connections)
+- **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_persist_all_players()** (8 connections) — `server/commands/shutdown_sequence.py`
+- **Any** (8 connections)
+- **schedule_process_termination()** (7 connections) — `server/commands/shutdown_process_termination.py`
+- **_cancel_background_tasks()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **_despawn_all_npcs()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **test_despawn_all_npcs_via_app_state_fallback()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_execute_shutdown_sequence_happy_path()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_persist_all_players_database_error_on_player()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_cleanup_connection_manager()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_all_players()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_nats_service()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_stop_nats_message_handler()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **test_cancel_background_tasks_timeout()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cancel_background_tasks_unregisters_shutdown_task()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cleanup_connection_manager_missing()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_despawn_all_npcs_no_services()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_disconnect_all_players_string_uuid()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_disconnect_nats_service_os_error()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [Room](Room.md) (9 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/combat_audit.py`
-- `server/tests/unit/structured_logging/test_combat_audit.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/commands/shutdown_sequence.py`
+- `server/tests/unit/commands/test_shutdown_process_termination.py`
+- `server/tests/unit/commands/test_shutdown_sequence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 163 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

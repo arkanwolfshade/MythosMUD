@@ -1,10 +1,10 @@
 # MythosMudProcessScope.Tests.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMudProcessScope.Tests.ps1** (0 connections) — `scripts/tests/MythosMudProcessScope.Tests.ps1`
+- **GitHub Issues task tracking** (0 connections) — `TASKS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/MythosMudProcessScope.Tests.ps1`
+- `TASKS.md`
 
 ## Audit Trail
 

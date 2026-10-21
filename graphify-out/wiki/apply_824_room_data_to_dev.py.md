@@ -1,23 +1,23 @@
 # apply_824_room_data_to_dev.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **main()** (1 connections) — `scripts/apply_824_room_data_to_dev.py`
-- **apply_824_room_data_to_dev.py** (1 connections) — `scripts/apply_824_room_data_to_dev.py`
+- **test_is_player_muted_by_receiver()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test is_player_muted_by_receiver() checks mute status.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/apply_824_room_data_to_dev.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

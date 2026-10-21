@@ -1,60 +1,61 @@
 # ChatService
 
-> 143 nodes
+> 158 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **ChatService** (97 connections) — `server/game/chat_service.py`
-- **test_chat_service.py** (43 connections) — `server/tests/unit/game/test_chat_service.py`
-- **UUID** (28 connections)
-- **asyncio** (22 connections)
-- **.send_say_message()** (11 connections) — `server/game/chat_service.py`
-- **.send_emote_message()** (10 connections) — `server/game/chat_service.py`
-- **._chat_send_services()** (7 connections) — `server/game/chat_service.py`
-- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
-- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_local_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_predefined_emote()** (4 connections) — `server/game/chat_service.py`
-- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
-- **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_global_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_local_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_local_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- *... and 118 more nodes in this community*
+- **ConnectionManager** (193 connections) — `server/realtime/connection_manager.py`
+- **UUID** (42 connections)
+- **test_connection_manager_class.py** (15 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **ConnectionManager** (11 connections)
+- **._track_player_disconnected()** (7 connections) — `server/realtime/connection_manager.py`
+- **.broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
+- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **._get_player()** (5 connections) — `server/realtime/connection_manager.py`
+- **.track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
+- **Player** (5 connections)
+- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
+- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
+- **._cleanup_dead_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
+- **.force_disconnect_player()** (4 connections) — `server/realtime/connection_manager.py`
+- **._get_players_batch()** (4 connections) — `server/realtime/connection_manager.py`
+- **.handle_new_login()** (4 connections) — `server/realtime/connection_manager.py`
+- **._is_websocket_open()** (4 connections) — `server/realtime/connection_manager.py`
+- **._prune_player_from_all_rooms()** (4 connections) — `server/realtime/connection_manager.py`
+- **._safe_close_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **._send_initial_game_state()** (4 connections) — `server/realtime/connection_manager.py`
+- **.send_personal_message_old()** (4 connections) — `server/realtime/connection_manager.py`
+- **._validate_token()** (4 connections) — `server/realtime/connection_manager.py`
+- **WebSocket** (4 connections)
+- *... and 133 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (21 shared connections)
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (12 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [SpellLearningService](SpellLearningService.md) (1 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (22 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (11 shared connections)
+- [ConnectionManager](ConnectionManager.md) (11 shared connections)
+- [look_container.py](look_container.py.md) (7 shared connections)
+- [security.ts](security.ts.md) (6 shared connections)
+- [SpellEffects](SpellEffects.md) (5 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (4 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (4 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (4 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [.publish_with_pool](publish_with_pool.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/chat_service.py`
-- `server/tests/unit/game/test_chat_service.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_manager_class.py`
+- `server/tests/unit/realtime/test_message_category_invariants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (87%)
-- INFERRED: 37 (13%)
+- EXTRACTED: 303 (84%)
+- INFERRED: 59 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

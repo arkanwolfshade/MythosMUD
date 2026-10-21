@@ -1,10 +1,10 @@
 # Dependency Upgrade Implementation Plan
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dependency Upgrade Implementation Plan** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- **Whisper Location Independence** (0 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
 
 ## Audit Trail
 

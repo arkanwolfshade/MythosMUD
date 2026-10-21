@@ -1,51 +1,45 @@
 # test_connection_error_methods.py
 
-> 35 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **test_connection_error_methods.py** (14 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
-- **detect_and_handle_error_state_impl()** (10 connections) — `server/realtime/connection_error_methods.py`
-- **handle_authentication_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_security_violation_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_websocket_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **UUID** (6 connections)
-- **asyncio** (6 connections)
-- **Any** (5 connections)
-- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_authentication_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_security_violation()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **.recover_from_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **test_detect_and_handle_error_state_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_error_impl_returns_default_when_handler_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_authentication_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_security_violation_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_websocket_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_recover_from_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **manager()** (2 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **fixture** (1 connections)
-- **Error-handling method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
-- *... and 10 more nodes in this community*
+- **Persistence Layer Refactoring Summary** (11 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Files Created/Modified** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Backward Compatibility** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Benefits Achieved** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Metrics** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Migration Strategy** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Validation** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Code Organization** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Conservative Approach** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Existing Code (Unchanged)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Future Benefits (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Immediate Benefits (Phase 1)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Linting Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Migration Path (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Migration Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Modified** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **New Async Code (Opt-In)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Next Steps (Entirely Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Summary** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Tests Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Unchanged (By Design)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (10 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
+- [test_game_enums.py](test_game_enums.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_error_methods.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_error_methods.py`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

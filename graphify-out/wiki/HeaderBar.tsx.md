@@ -1,61 +1,61 @@
 # HeaderBar.tsx
 
-> 43 nodes
+> 46 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **HeaderBar.tsx** (31 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **types/mythosTime.ts** (20 connections) — `client/src/types/mythosTime.ts`
-- **MythosTimeState** (16 connections) — `client/src/types/mythosTime.ts`
-- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **utils/mythosTime.ts** (11 connections) — `client/src/utils/mythosTime.ts`
-- **mythosTime.test.ts** (10 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
-- **headerHeightClass()** (7 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
-- **headerHeight.ts** (7 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
-- **useHeaderBarDisplay()** (6 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **isMythosTimePayload()** (6 connections) — `client/src/types/mythosTime.ts`
-- **MythosTimePayload** (5 connections) — `client/src/types/mythosTime.ts`
-- **useMythosTimeBootstrap()** (5 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **hasFlavorRow()** (5 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
-- **buildMythosTimeState()** (5 connections) — `client/src/utils/mythosTime.ts`
-- **formatMythosTime12Hour()** (5 connections) — `client/src/utils/mythosTime.ts`
-- **headerHeight.test.ts** (5 connections) — `client/src/components/ui-v2/utils/__tests__/headerHeight.test.ts`
-- **HeaderBar()** (4 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **HeaderBar.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- **HeaderBarProps** (3 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **ExpandedHeaderTitleRowProps** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **UseMythosTimeBootstrapParams** (2 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **MythosHoliday** (2 connections) — `client/src/types/mythosTime.ts`
-- **ActiveEffectsRow()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **connectionStatusLabel()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **daypartAccent()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- *... and 18 more nodes in this community*
+- **CombatCommandFactory** (29 connections) — `server/utils/command_factories_combat.py`
+- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **.__init__()** (9 connections) — `server/utils/command_factories.py`
+- **.create_attack_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_kick_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_punch_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_strike_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_taunt_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **test_create_attack_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_attack_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_flee_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **.create_assist_command()** (4 connections) — `server/utils/command_factories_combat.py`
+- **.create_flee_command()** (4 connections) — `server/utils/command_factories_combat.py`
+- **.create_protect_command()** (4 connections) — `server/utils/command_factories_combat.py`
+- **test_the_factory_builds_an_assist_command_with_or_without_a_name()** (3 connections) — `server/tests/unit/commands/test_assist_wiring.py`
+- **test_the_factory_builds_a_protect_command_with_or_without_a_name()** (3 connections) — `server/tests/unit/commands/test_protect_wiring.py`
+- **Unit tests for combat command factories. Tests the CombatCommandFactory class…** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (8 shared connections)
-- [logger.ts](logger.ts.md) (7 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (7 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (4 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [CommandFactory](CommandFactory.md) (4 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/HeaderBar.tsx`
-- `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- `client/src/components/ui-v2/utils/__tests__/headerHeight.test.ts`
-- `client/src/components/ui-v2/utils/headerHeight.ts`
-- `client/src/types/mythosTime.ts`
-- `client/src/utils/__tests__/mythosTime.test.ts`
-- `client/src/utils/mythosTime.ts`
+- `server/tests/unit/commands/test_assist_wiring.py`
+- `server/tests/unit/commands/test_protect_wiring.py`
+- `server/tests/unit/utils/test_command_factories_combat.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_factories_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 119 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 78 (85%)
+- INFERRED: 14 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

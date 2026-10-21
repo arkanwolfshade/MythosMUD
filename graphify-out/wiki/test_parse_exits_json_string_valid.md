@@ -1,19 +1,19 @@
 # test_parse_exits_json_string_valid
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with valid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_system_stats handles no active players.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 

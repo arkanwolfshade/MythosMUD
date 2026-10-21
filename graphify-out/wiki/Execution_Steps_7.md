@@ -1,38 +1,43 @@
 # Execution Steps
 
-> 17 nodes
+> 20 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **scenario-06-admin-teleportation.md** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **test_audit_logger.py** (16 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_container_interaction()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Path** (2 connections)
+- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_security_event_severity_branches()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_write_entry_swallows_io_error()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Unit tests for audit_logger utilities. Tests the AuditLogger class.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Test AuditLogger initialization.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Test AuditLogger.log_command() logs command execution.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Test AuditLogger.log_permission_change() logs permission change.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Test AuditLogger.log_player_action() logs player action.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **Test AuditLogger.get_recent_entries() retrieves recent entries.** (1 connections) — `server/tests/unit/utils/test_audit_logger.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_player_preferences_service.py](test_player_preferences_service.py.md) (2 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- `server/tests/unit/utils/test_audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

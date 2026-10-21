@@ -1,42 +1,39 @@
 # test_room_environment_cascade.py
 
-> 19 nodes
+> 17 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_environment_check_constraints_share_the_same_enum()** (8 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **test_room_environment_cascade.py** (8 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **test_get_rooms_with_exits_resolves_from_subzone_when_room_unset()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **test_get_rooms_with_exits_returns_zone_and_subzone_display_names()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **test_update_room_properties_resolves_from_zone_when_room_and_subzone_unset()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **cascade_room()** (6 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **async_sessionmaker** (5 connections)
-- **AsyncSession** (5 connections)
-- **asyncio** (4 connections)
-- **integration** (4 connections)
-- **_enum_values_from_check_definition()** (3 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **fixture** (1 connections)
-- **Integration tests for the room environment inheritance cascade (#663).…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **#910: the death screen needs zones.name / subzones.name, not the stable IDs.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **Clearing a subzone's environment falls through to its zone's.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **chk_zones_environment, chk_subzones_environment, and chk_rooms_environment must…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **Extract the quoted string literals out of a CHECK constraint's…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **Zone (environment='underwater') -> subzone (environment='indoors') -> room…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
-- **A room with no environment of its own inherits its subzone's, not its zone's.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **test_seed_e2e_users.py** (7 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **_load_script()** (6 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **_RecordingConnection** (6 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **_SeedScript** (4 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **test_reseeding_a_deleted_character_reuses_its_player_id()** (4 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **test_ids_are_stable_across_imports()** (3 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **test_ids_are_distinct_per_account_and_kind()** (2 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **Protocol** (1 connections)
+- **Regression tests for scripts/seed_e2e_users.py deterministic account ids…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **Attributes of scripts/seed_e2e_users.py read after dynamic import (not on the…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **Import a fresh copy of the script, like a new seed process would.** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **Stands in for asyncpg.Connection: no existing character, records every…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **A fresh process (fresh import) must derive the same ids, or a re-seed creates…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **The #969 scenario: the character row is gone, the seed recreates it, the…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **.execute()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **.fetchrow()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **.__init__()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
 
 ## Relationships
 
-- [session_factory](session_factory.md) (5 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_room_environment_cascade.py`
+- `server/tests/unit/scripts/test_seed_e2e_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (87%)
-- INFERRED: 5 (13%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

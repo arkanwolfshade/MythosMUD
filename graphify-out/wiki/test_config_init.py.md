@@ -1,50 +1,48 @@
 # test_config_init.py
 
-> 36 nodes
+> 38 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **test_config_init.py** (19 connections) — `server/tests/unit/config/test_config_init.py`
-- **._sanitize_environment_for_nested_configs()** (8 connections) — `server/config/models/app.py`
-- **test_first_cors_origins_env_returns_first_match()** (6 connections) — `server/tests/unit/config/test_config_init.py`
-- **MonkeyPatch** (6 connections)
-- **._first_cors_origins_env()** (5 connections) — `server/config/models/app.py`
-- **test_first_cors_origins_env_none_when_unset()** (5 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_sanitize_environment_for_nested_configs_converts_comma_separated()** (5 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_sanitize_environment_for_nested_configs_noop_when_already_json()** (5 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_sanitize_environment_for_nested_configs_noop_when_only_commas()** (5 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_sanitize_environment_for_nested_configs_noop_when_unset()** (5 connections) — `server/tests/unit/config/test_config_init.py`
-- **.__init__()** (3 connections) — `server/config/models/app.py`
-- **test_appconfig_init_reraises_settings_error_unrelated_to_allow_origins()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_appconfig_init_retries_after_settings_error_naming_allow_origins()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_fresh_instances_in_test_mode()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config_init.py`
+- **test_dependency_analysis.py** (21 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **DependencyAnalyzerTestApi** (10 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **DependencyRiskTestApi** (6 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **analyzer_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **risk_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_load_dependency_analyzer_script()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_analyze_npm_dependencies_parses_stdout_from_expected_outdated_exit_code()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_analyze_python_dependencies_parses_outdated_table_output()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_categorize_update_handles_semver_and_invalid_input()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_load_dependency_risk_script()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_npm_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_python_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_risks_maps_breaking_change_counts_to_overall_risk()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_dep_info_from_npm_row_coerces_types_and_applies_defaults()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_determine_strategy_covers_incremental_batched_and_immediate_paths()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_parse_npm_outdated_json_handles_non_object_and_valid_payload()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_prioritize_updates_scores_and_sorts_descending()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_DependencyAnalyzerScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_DependencyRiskScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **fixture** (2 connections)
+- **MonkeyPatch** (2 connections)
+- **Protocol** (2 connections)
+- **_scripts_path_on_syspath()** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_FakeCompletedProcess** (1 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
 - **parametrize** (1 connections)
-- **Initialize configuration and set environment variables for legacy compatibility.** (1 connections) — `server/config/models/app.py`
-- **Return first set CORS origins env var to reduce CCN in _sanitize.** (1 connections) — `server/config/models/app.py`
-- **Normalize environment variables so nested configs can parse them reliably.** (1 connections) — `server/config/models/app.py`
-- **Unit tests for config module initialization.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **A CORS origins env var that already looks like JSON is left untouched.** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- **A CORS origins env var of only commas/whitespace parses to nothing and is left…** (1 connections) — `server/tests/unit/config/test_config_init.py`
-- *... and 11 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (13 shared connections)
-- [CombatService](CombatService.md) (8 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/config/models/app.py`
-- `server/tests/unit/config/test_config_init.py`
+- `server/tests/unit/scripts/test_dependency_analysis.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 57 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

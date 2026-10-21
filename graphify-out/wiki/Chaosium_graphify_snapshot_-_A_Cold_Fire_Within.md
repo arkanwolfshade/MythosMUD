@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - A Cold Fire Within
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - A Cold Fire Within** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **a-cold-fire-within/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- **AGENTS.md Authoritative Guidance** (1 connections) — `.github/copilot-instructions.md`
+- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- `.github/copilot-instructions.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

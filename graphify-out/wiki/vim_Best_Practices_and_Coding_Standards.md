@@ -1,48 +1,71 @@
 # vim Best Practices and Coding Standards
 
-> 44 nodes
+> 69 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **vim Best Practices and Coding Standards** (8 connections) — `.cursor/rules/vim.md`
-- **1. Code Organization and Structure** (6 connections) — `.cursor/rules/vim.md`
-- **2. Common Patterns and Anti-patterns** (6 connections) — `.cursor/rules/vim.md`
-- **3. Performance Considerations** (6 connections) — `.cursor/rules/vim.md`
-- **4. Security Best Practices** (6 connections) — `.cursor/rules/vim.md`
-- **5. Testing Approaches** (6 connections) — `.cursor/rules/vim.md`
-- **6. Common Pitfalls and Gotchas** (6 connections) — `.cursor/rules/vim.md`
-- **7. Tooling and Environment** (6 connections) — `.cursor/rules/vim.md`
-- **vim.md** (1 connections) — `.cursor/rules/vim.md`
-- **1.1 Directory Structure Best Practices for vim** (1 connections) — `.cursor/rules/vim.md`
-- **1.2 File Naming Conventions** (1 connections) — `.cursor/rules/vim.md`
-- **1.3 Module Organization Best Practices** (1 connections) — `.cursor/rules/vim.md`
-- **1.4 Component Architecture Recommendations** (1 connections) — `.cursor/rules/vim.md`
-- **1.5 Code Splitting Strategies** (1 connections) — `.cursor/rules/vim.md`
-- **2.1 Design Patterns Specific to vim** (1 connections) — `.cursor/rules/vim.md`
-- **2.2 Recommended Approaches for Common Tasks** (1 connections) — `.cursor/rules/vim.md`
-- **2.3 Anti-Patterns and Code Smells to Avoid** (1 connections) — `.cursor/rules/vim.md`
-- **2.4 State Management Best Practices** (1 connections) — `.cursor/rules/vim.md`
-- **2.5 Error Handling Patterns** (1 connections) — `.cursor/rules/vim.md`
-- **3.1 Optimization Techniques** (1 connections) — `.cursor/rules/vim.md`
-- **3.2 Memory Management Considerations** (1 connections) — `.cursor/rules/vim.md`
-- **3.3 Rendering Optimization (GUI vim)** (1 connections) — `.cursor/rules/vim.md`
-- **3.4 Bundle Size Optimization (Plugins)** (1 connections) — `.cursor/rules/vim.md`
-- **3.5 Lazy Loading Strategies** (1 connections) — `.cursor/rules/vim.md`
-- **4.1 Common Vulnerabilities and Prevention** (1 connections) — `.cursor/rules/vim.md`
-- *... and 19 more nodes in this community*
+- **logoutHandler.ts** (27 connections) — `client/src/utils/logoutHandler.ts`
+- **App.tsx** (22 connections) — `client/src/App.tsx`
+- **App()** (21 connections) — `client/src/App.tsx`
+- **app.test.helpers.ts** (15 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
+- **professionSystemErrorHandling.test.helpers.ts** (13 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **app.test.mocks.tsx** (12 connections) — `client/src/__tests__/app.test.mocks.tsx`
+- **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
+- **logoutHandler()** (9 connections) — `client/src/utils/logoutHandler.ts`
+- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
+- **App.logoutError.test.tsx** (8 connections) — `client/src/__tests__/App.logoutError.test.tsx`
+- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- **components/__tests__/LogoutFlow.integration.test.tsx** (7 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
+- **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
+- **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
+- **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
+- **App.motd.test.tsx** (7 connections) — `client/src/__tests__/App.motd.test.tsx`
+- **App.registration.test.tsx** (7 connections) — `client/src/__tests__/App.registration.test.tsx`
+- **App.statsRolling.test.tsx** (7 connections) — `client/src/__tests__/App.statsRolling.test.tsx`
+- **App.tokenValidation.test.tsx** (7 connections) — `client/src/__tests__/App.tokenValidation.test.tsx`
+- **App.demo.test.tsx** (5 connections) — `client/src/__tests__/App.demo.test.tsx`
+- **App.formState.test.tsx** (5 connections) — `client/src/__tests__/App.formState.test.tsx`
+- **setupBasicMocks()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_look_room.py](test_look_room.py.md) (8 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (6 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
+- [talk_command.py](talk_command.py.md) (2 shared connections)
+- [party_commands.py](party_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/rules/vim.md`
+- `client/src/App.integration.test.tsx`
+- `client/src/App.tsx`
+- `client/src/__tests__/App.demo.test.tsx`
+- `client/src/__tests__/App.formState.test.tsx`
+- `client/src/__tests__/App.keyboard.test.tsx`
+- `client/src/__tests__/App.loading.test.tsx`
+- `client/src/__tests__/App.login.test.tsx`
+- `client/src/__tests__/App.logout.test.tsx`
+- `client/src/__tests__/App.logoutError.test.tsx`
+- `client/src/__tests__/App.motd.test.tsx`
+- `client/src/__tests__/App.registration.test.tsx`
+- `client/src/__tests__/App.statsRolling.test.tsx`
+- `client/src/__tests__/App.tokenValidation.test.tsx`
+- `client/src/__tests__/CharacterCreationNavigation.test.tsx`
+- `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- `client/src/__tests__/ProfessionPersistence.test.tsx`
+- `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
+- `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
+- `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
+- `client/src/__tests__/app.test.helpers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 187 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

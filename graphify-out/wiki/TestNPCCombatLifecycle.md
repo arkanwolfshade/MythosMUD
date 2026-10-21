@@ -1,46 +1,56 @@
 # TestNPCCombatLifecycle
 
-> 22 nodes
+> 35 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **TestNPCCombatLifecycle** (12 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **asyncio** (6 connections)
-- **.lifecycle_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.mock_persistence()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_no_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_no_lifecycle_manager()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_sqlalchemy_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_with_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **fixture** (2 connections)
-- **Test _despawn_npc handles NPC not in active_npcs.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test suite for NPCCombatLifecycle class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a NPCCombatLifecycle instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test NPCCombatLifecycle initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely successfully despawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles missing lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles SQLAlchemy errors.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test _despawn_npc handles NPC in active_npcs via fallback path.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **test_combat_assist.py** (43 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **_assist()** (29 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **asyncio** (21 connections)
+- **_match()** (16 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **_fight()** (15 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **_two_foe_fight()** (8 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **_participant()** (7 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_phantom_fight_cannot_be_joined()** (6 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_you_are_told_when_you_are_already_in_that_fight()** (6 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **UUID** (5 connections)
+- **test_a_bare_assist_follows_the_party_leader()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_dead_tracked_target_falls_back_to_a_living_foe()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_fight_in_another_room_is_not_here()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_fight_with_no_living_foe_is_not_a_fight_to_join()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_assist_a_named_player_attacks_the_foe_they_are_fighting()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_assist_prefers_the_assisted_players_tracked_target()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_the_npc_id_falls_back_to_the_participant_uuid_when_no_string_id_was_mapped()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_without_a_tracked_target_assist_takes_the_first_living_foe()** (5 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_bare_assist_from_the_party_leader_asks_for_a_name()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_a_bare_assist_without_a_party_asks_for_a_name()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_an_idle_player_is_not_fighting_anything()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_assist_needs_a_real_player_and_a_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_only_players_can_be_assisted()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **test_you_cannot_assist_yourself()** (4 connections) — `server/tests/unit/commands/test_combat_assist.py`
+- **parametrize** (3 connections)
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (7 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (6 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (4 shared connections)
+- [DatabaseManager](DatabaseManager.md) (4 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
+- [RoomService](RoomService.md) (3 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
+- [test_experience_procedures.py](test_experience_procedures.py.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- `server/tests/unit/commands/test_combat_assist.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 133 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

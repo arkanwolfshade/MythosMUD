@@ -1,55 +1,58 @@
 # test_logging_handlers.py
 
-> 81 nodes
+> 107 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_logging_handlers.py** (28 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **create_aggregator_handler()** (20 connections) — `server/structured_logging/logging_handlers.py`
-- **logging_handlers.py** (20 connections) — `server/structured_logging/logging_handlers.py`
-- **SafeRotatingFileHandler** (15 connections) — `server/structured_logging/logging_handlers.py`
-- **WarningOnlyFilter** (12 connections) — `server/structured_logging/logging_handlers.py`
-- **load_player_guid_formatter_class()** (10 connections) — `server/structured_logging/logging_utilities.py`
-- **AsyncioConnLostWriteFilter** (9 connections) — `server/structured_logging/logging_handlers.py`
-- **_build_aggregator_formatter()** (6 connections) — `server/structured_logging/logging_handlers.py`
-- **_instantiate_aggregator_handler()** (6 connections) — `server/structured_logging/logging_handlers.py`
-- **_resolve_aggregator_handler_class()** (6 connections) — `server/structured_logging/logging_handlers.py`
-- **RotatingFileHandler** (6 connections)
-- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
-- **test_create_aggregator_handler_warning_level()** (5 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **Path** (4 connections)
-- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
-- **temp_log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **temp_log_file()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_create_aggregator_handler_with_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- *... and 56 more nodes in this community*
+- **container_events.py** (26 connections) — `server/api/container_events.py`
+- **test_container_events.py** (24 connections) — `server/tests/unit/api/test_container_events.py`
+- **asyncio** (20 connections)
+- **ConnectionManager** (18 connections)
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **emit_transfer_event()** (16 connections) — `server/api/container_events.py`
+- **test_container_events_loot.py** (16 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (11 connections) — `server/tests/unit/api/test_container_events.py`
+- **_assert_warning_once()** (10 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEvents** (9 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_transfer_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_passes_updated_container()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **asyncio** (7 connections)
+- **ConnectionManager** (7 connections)
+- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_transfer_event_success()** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_validation_error()** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (9 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (27 shared connections)
+- [test_look_player.py](test_look_player.py.md) (18 shared connections)
+- [CombatParticipant](CombatParticipant.md) (14 shared connections)
+- [ChatService](ChatService.md) (11 shared connections)
+- [RoomNodeData](RoomNodeData.md) (10 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [test_party_service.py](test_party_service.py.md) (4 shared connections)
+- [generate_arkham_grid.py](generate_arkham_grid.py.md) (4 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_handlers.py`
-- `server/structured_logging/logging_utilities.py`
-- `server/tests/unit/structured_logging/test_logging_handlers.py`
+- `server/api/container_events.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 281 (92%)
+- INFERRED: 25 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

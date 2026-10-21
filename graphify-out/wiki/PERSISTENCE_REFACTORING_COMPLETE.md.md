@@ -1,40 +1,33 @@
 # PERSISTENCE_REFACTORING_COMPLETE.md
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **PERSISTENCE_REFACTORING_COMPLETE.md** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **Sync-to-Async Delegation** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **PersistenceLayer Sync Facade** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **PlayerRepository** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Persistence Async Migration Plan** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Gradual File-by-File Async Migration** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **PERSISTENCE_EXTRACTION_COMPLETE.md** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Implementation Pattern** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **PERSISTENCE_REFACTORING_SUMMARY.md** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Opt-In Async Persistence** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **HealthRepository** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Seven Async Repositories** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **FAILURE PATTERN RECOGNITION** (6 connections) — `.cursor/commands/server-test-remediation.md`
+- **3. Systematic Investigation Approach** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **A. Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **B. Authentication/Security Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **C. WebSocket/Connection Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **D. Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **E. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Authentication Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For WebSocket Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [Persistence Layer Extraction - COMPLETE ✅](Persistence_Layer_Extraction_-_COMPLETE_✅.md) (2 shared connections)
-- [Persistence Layer Refactoring - COMPLETE ✅](Persistence_Layer_Refactoring_-_COMPLETE_✅.md) (1 shared connections)
-- [Persistence Layer Refactoring Summary](Persistence_Layer_Refactoring_Summary.md) (1 shared connections)
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
+- [generate_sql.mjs](generate_sql.mjs.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

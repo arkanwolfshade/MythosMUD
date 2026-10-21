@@ -1,42 +1,66 @@
 # RescueBanner.tsx
 
-> 16 nodes
+> 26 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **RescueStatus** (9 connections) — `client/src/types/rescue.ts`
-- **RescueBanner.tsx** (9 connections) — `client/src/components/health/RescueBanner.tsx`
-- **rescue.ts** (9 connections) — `client/src/types/rescue.ts`
-- **rescueStatus.ts** (8 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
-- **RescueBanner.test.tsx** (6 connections) — `client/src/components/health/__tests__/RescueBanner.test.tsx`
-- **RescueBanner** (5 connections) — `client/src/components/health/RescueBanner.tsx`
-- **toRescueStatus()** (3 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
-- **RESCUE_TERMINAL_DISPLAY_MS** (3 connections) — `client/src/types/rescue.ts`
-- **RescueBannerProps** (2 connections) — `client/src/components/health/RescueBanner.tsx`
-- **RescueRole** (2 connections) — `client/src/types/rescue.ts`
-- **RescueStatusKind** (2 connections) — `client/src/types/rescue.ts`
-- **headline()** (2 connections) — `client/src/components/health/RescueBanner.tsx`
-- **toneClass()** (2 connections) — `client/src/components/health/RescueBanner.tsx`
-- **optionalString()** (2 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
-- **status()** (1 connections) — `client/src/components/health/__tests__/RescueBanner.test.tsx`
-- **BANNER_STATUSES** (1 connections) — `client/src/components/ui-v2/eventLog/rescueStatus.ts`
+- **Cosmic Horror.md** (21 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- **Nameless Horrors - 2nd Edition.md** (8 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Church of Sunyata.md** (7 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- **Bleak Prospect.md** (7 connections) — `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
+- **The Hungry Void.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
+- **The Faceless Men.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- **The Old Gods (nameless patrons).md** (6 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- **Dreamlands.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- **ZyMedBio.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
+- **Dark Young of Shub-Niggurath.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- **Fungi from Yuggoth.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
+- **Ghoul.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
+- **Evocations of the Inner God.md** (3 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
+- **Flying Polyp.md** (3 connections) — `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
+- **Dreamlands** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- **S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **Evocations of the Inner God** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
+- **The Hungry Void** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
+- **Church of Sunyata** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- **Dark Young of Shub-Niggurath** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- **Flying Polyp** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
+- **Fungi from Yuggoth** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
+- **Ghoul** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
+- **The Faceless Men** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- **The Old Gods (nameless patrons)** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (3 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (14 shared connections)
+- [TestVerificationSqlUsersPlayers](TestVerificationSqlUsersPlayers.md) (6 shared connections)
+- [npc_base_stats.schema.json](npc_base_stats.schema.json.md) (3 shared connections)
+- [room_validator/schemas/unified_room_schema.json](room_validator-schemas-unified_room_schema.json.md) (2 shared connections)
+- [test_follow_flow.py](test_follow_flow.py.md) (2 shared connections)
+- [item_catalog/generate_dml.py](item_catalog-generate_dml.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/health/RescueBanner.tsx`
-- `client/src/components/health/__tests__/RescueBanner.test.tsx`
-- `client/src/components/ui-v2/eventLog/rescueStatus.ts`
-- `client/src/types/rescue.ts`
+- `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Fungi from Yuggoth.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Ghoul.md`
+- `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
+- `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 66 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

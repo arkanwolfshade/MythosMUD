@@ -1,60 +1,60 @@
 # websocket_helpers.py
 
-> 64 nodes
+> 58 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **websocket_helpers.py** (38 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (28 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (13 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (8 connections) — `server/realtime/websocket_helpers.py`
-- **_bind_get_stats()** (8 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **test_prepare_player_data_service_error()** (7 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **asyncio** (7 connections)
-- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_player_and_room_adds_player_to_room()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_success()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_no_service()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_with_service()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **UUID** (6 connections)
-- **_connection_manager_with_app()** (5 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_room_not_found()** (5 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **_get_tracked_player_from_connection_manager()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **_app_with_container()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **_persistence_with_room()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 39 more nodes in this community*
+- **ground_channel.py** (23 connections) — `server/commands/ground_channel.py`
+- **cancel_ground_channel()** (23 connections) — `server/commands/ground_channel.py`
+- **test_ground_channel.py** (23 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **RescueEventRecorder** (20 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
+- **FakeConnectionManager** (19 connections) — `server/tests/unit/commands/ground_commands_test_support.py`
+- **start_ground_channel()** (15 connections) — `server/commands/ground_channel.py`
+- **_start()** (14 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **GroundChannel** (11 connections) — `server/commands/ground_channel.py`
+- **_FinishSpy** (10 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **asyncio** (10 connections)
+- **is_player_grounding()** (9 connections) — `server/commands/ground_channel.py`
+- **test_cancel_from_either_side_interrupts_both_and_clears_registry()** (9 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_cancel_is_ignored_once_committing()** (9 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_manager_without_registries_is_a_noop()** (8 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **_find_channel()** (7 connections) — `server/commands/ground_channel.py`
+- **UUID** (7 connections)
+- **_registries()** (7 connections) — `server/commands/ground_channel.py`
+- **_channel_task()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_completion_runs_finish_and_clears_registry()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_finish_interrupted_outcome_notifies_both()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_start_registers_channel_and_notifies_both_with_eta()** (7 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **_run_channel()** (6 connections) — `server/commands/ground_channel.py`
+- **test_rescuer_cannot_channel_two_rituals()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_resting_rescuer_cannot_start()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- **test_second_rescuer_for_same_target_is_rejected()** (6 connections) — `server/tests/unit/commands/test_ground_channel.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (11 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [real_time.py](real_time.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
-- [.model_dump](model_dump.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [_AsyncPersistenceLike](_AsyncPersistenceLike.md) (1 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (16 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (4 shared connections)
+- [CORSConfig](CORSConfig.md) (3 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [setup_jwt_secret](setup_jwt_secret.md) (2 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (2 shared connections)
+- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (1 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [Semgrep Configuration](Semgrep_Configuration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/commands/ground_channel.py`
+- `server/tests/unit/commands/ground_commands_test_support.py`
+- `server/tests/unit/commands/test_ground_channel.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 171 (91%)
+- INFERRED: 16 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

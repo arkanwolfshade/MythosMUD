@@ -1,11 +1,10 @@
 # POSTGRES_SEARCH_PATH for invites schema
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **POSTGRES_SEARCH_PATH for invites schema** (1 connections) — `tools/invite_tools/README.md`
-- **run_invite_tools.ps1** (1 connections) — `tools/invite_tools/README.md`
+- **20260914_npc_catalog_core_era_unit.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_core_era_unit.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `tools/invite_tools/README.md`
+- `data/npc_catalog/generated/20260914_npc_catalog_core_era_unit.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

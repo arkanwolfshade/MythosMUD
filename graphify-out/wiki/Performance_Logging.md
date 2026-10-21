@@ -1,27 +1,25 @@
 # Performance Logging
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Performance Logging** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **API Request Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Database Query Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Core Architectural Differences** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **1. **Structured Concurrency**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **2. **Backend Abstraction**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **3. **API Design Philosophy**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (2 shared connections)
+- [log_room_broadcast_result](log_room_broadcast_result.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

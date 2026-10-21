@@ -1,59 +1,55 @@
 # test_rest_and_grace_period.py
 
-> 45 nodes
+> 96 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_rest_and_grace_period.py** (25 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **asyncio** (13 connections)
-- **test_intentional_disconnect_no_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_countdown_completes_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_unintentional_disconnect_starts_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_persistence_full()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_can_auto_attack()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_cannot_use_commands()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_reconnection_cancels_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_interrupts_combat_action()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_visual_indicator_in_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_app_with_services()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **mock_connection_manager_full()** (3 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **fixture** (3 connections)
-- **.get_player_by_name()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.__setattr__()** (2 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **.__init__()** (1 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **Check if a player is currently in grace period. Args: player_id: The player's…** (1 connections) — `server/realtime/disconnect_grace_period.py`
-- *... and 20 more nodes in this community*
+- **test_quest_service.py** (49 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_MockDefRepo** (31 connections) — `server/tests/unit/game/test_quest_service.py`
+- **asyncio** (27 connections)
+- **_MockInstanceRepo** (26 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_make_definition_row()** (19 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_InstanceStub** (16 connections) — `server/tests/unit/game/test_quest_service.py`
+- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_complete_tutorial_with_rewards()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **_RespawnPersistence** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_already_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_already_completed()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_reaccept_after_abandon()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_abandon_no_instance()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_get_quest_log_returns_entries()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_record_complete_activity_auto_completes_when_goals_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_record_complete_activity_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_record_kill_suppresses_intermediate_progress_notify()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_record_kill_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_prereq_not_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_requires_any_satisfied()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [test_rest_command.py](test_rest_command.py.md) (9 shared connections)
-- [start_grace_period](start_grace_period.md) (8 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (3 shared connections)
-- [command_guards.py](command_guards.py.md) (2 shared connections)
-- [test_look_player.py](test_look_player.py.md) (2 shared connections)
-- [GameStateProvider](GameStateProvider.md) (2 shared connections)
-- [format_occupant_display_name](format_occupant_display_name.md) (2 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [NpcDisposition](NpcDisposition.md) (1 shared connections)
+- [item_catalog_repository.py](item_catalog_repository.py.md) (30 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (4 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (1 shared connections)
+- [SpellLearningService](SpellLearningService.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [test_disconnect_catchup.py](test_disconnect_catchup.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
+- `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 248 (89%)
+- INFERRED: 32 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

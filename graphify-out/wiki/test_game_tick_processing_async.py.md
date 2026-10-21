@@ -1,49 +1,57 @@
 # test_game_tick_processing_async.py
 
-> 40 nodes
+> 43 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_game_tick_processing_async.py** (21 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **asyncio** (15 connections)
-- **test_process_combat_tick_no_service()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_damage()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_remaining()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_healing()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_remaining()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_damage_over_time()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_expired()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_heal_over_time()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_container()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_online_players()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_changes()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_no_changes()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_app()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_player()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **fixture** (3 connections)
-- **Unit tests for game tick processing async functions. Tests the async game tick…** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Test _process_single_effect() with damage_over_time effect.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Test _process_single_effect() with heal_over_time effect.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Test _process_single_effect() with expired effect.** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- *... and 15 more nodes in this community*
+- **EmoteService** (18 connections) — `server/game/emote_service.py`
+- **test_emote_service.py** (17 connections) — `server/tests/unit/game/test_emote_service.py`
+- **EmoteRepository** (13 connections) — `server/persistence/repositories/emote_repository.py`
+- **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
+- **EmoteDefinition** (6 connections) — `server/game/emote_service.py`
+- **._init_emote_service()** (5 connections) — `server/container/bundles/game.py`
+- **.format_emote_messages()** (4 connections) — `server/game/emote_service.py`
+- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
+- **test_load_emotes_handles_missing_table_gracefully()** (4 connections) — `server/tests/unit/game/test_emote_service.py`
+- **.__init__()** (3 connections) — `server/game/emote_service.py`
+- **.load_emotes()** (3 connections) — `server/game/emote_service.py`
+- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
+- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/emote_repository.py`
+- **asyncio** (3 connections)
+- **test_emote_service_init_does_not_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_format_emote_messages_unknown_raises()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_load_emotes_populates_from_repository()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_reload_emotes_calls_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
+- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
+- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
+- **test_format_emote_messages()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_is_emote_alias_and_get_definition()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_list_available_emotes()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
+- **test_validate_emote_payload_no_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (13 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (5 shared connections)
+- [endpoints.py](endpoints.py.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/container/bundles/game.py`
+- `server/game/emote_service.py`
+- `server/persistence/repositories/emote_repository.py`
+- `server/tests/unit/game/test_emote_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (82%)
-- INFERRED: 13 (18%)
+- EXTRACTED: 76 (93%)
+- INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

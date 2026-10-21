@@ -1,37 +1,45 @@
 # _WearablePersistence
 
-> 13 nodes
+> 17 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **_WearablePersistence** (9 connections) — `server/services/wearable_container_service.py`
-- **Player** (4 connections)
-- **.create_container()** (3 connections) — `server/services/wearable_container_service.py`
-- **.get_containers_by_entity_id()** (3 connections) — `server/services/wearable_container_service.py`
-- **.get_player_by_id()** (3 connections) — `server/services/wearable_container_service.py`
-- **.update_container()** (3 connections) — `server/services/wearable_container_service.py`
-- **.get_container()** (2 connections) — `server/services/wearable_container_service.py`
-- **.save_player()** (2 connections) — `server/services/wearable_container_service.py`
-- **Protocol** (1 connections)
-- **The async persistence calls this service makes (AsyncPersistenceLayer satisfies…** (1 connections) — `server/services/wearable_container_service.py`
-- **Containers owned by an entity.** (1 connections) — `server/services/wearable_container_service.py`
-- **Create a container row.** (1 connections) — `server/services/wearable_container_service.py`
-- **Replace a container's items; None if the container is gone.** (1 connections) — `server/services/wearable_container_service.py`
+- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
+- **test_security_headers_middleware_init()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **Any** (2 connections)
+- **ASGIApp** (1 connections)
+- **Receive** (1 connections)
+- **Scope** (1 connections)
+- **Send** (1 connections)
+- **Backward-compatible dispatch method for BaseHTTPMiddleware interface. This…** (1 connections) — `server/middleware/security_headers.py`
+- **Add security headers to Response object (compatibility method).** (1 connections) — `server/middleware/security_headers.py`
+- **Pure ASGI middleware to add comprehensive security headers to all HTTP…** (1 connections) — `server/middleware/security_headers.py`
+- **Initialize security headers middleware. Args: app: ASGI application instance** (1 connections) — `server/middleware/security_headers.py`
+- **ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…** (1 connections) — `server/middleware/security_headers.py`
+- **Test SecurityHeadersMiddleware initialization.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
 
 ## Relationships
 
-- [WearableContainerService](WearableContainerService.md) (6 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (1 shared connections)
+- [FeedbackManager](FeedbackManager.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [TestDepartures](TestDepartures.md) (1 shared connections)
+- [test_player_repository_room.py](test_player_repository_room.py.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
+- `server/middleware/security_headers.py`
+- `server/tests/unit/middleware/test_security_headers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

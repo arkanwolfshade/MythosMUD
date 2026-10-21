@@ -1,38 +1,38 @@
 # MessageBatcher
 
-> 15 nodes
+> 14 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **MessageBatcher** (11 connections) — `client/src/utils/messageBatcher.ts`
-- **useMessageBatcher()** (6 connections) — `client/src/utils/messageBatcher.ts`
-- **.addMessage()** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.ts** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.test.ts** (4 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
-- **.flush()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.sendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.shouldSendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchedMessage** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.clear()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.generateId()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSize()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSizeBytes()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchConfig** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **.constructor()** (1 connections) — `client/src/utils/messageBatcher.ts`
+- **Protocol** (6 connections)
+- **_CatalogPersistence** (4 connections) — `server/commands/catalog_commands.py`
+- **_CatalogPlayer** (4 connections) — `server/commands/catalog_commands.py`
+- **_CatalogRequest** (4 connections) — `server/commands/catalog_commands.py`
+- **.app()** (4 connections) — `server/commands/catalog_commands.py`
+- **_CatalogApp** (3 connections) — `server/commands/catalog_commands.py`
+- **_CatalogContainer** (3 connections) — `server/commands/catalog_commands.py`
+- **.get_player_by_name()** (3 connections) — `server/commands/catalog_commands.py`
+- **_CatalogAppState** (2 connections) — `server/commands/catalog_commands.py`
+- **Player fields used for admin projection checks.** (1 connections) — `server/commands/catalog_commands.py`
+- **Async persistence surface for admin lookup.** (1 connections) — `server/commands/catalog_commands.py`
+- **Look up a player by character name.** (1 connections) — `server/commands/catalog_commands.py`
+- **Container fields used by /catalog.** (1 connections) — `server/commands/catalog_commands.py`
+- **FastAPI app carrying the DI container.** (1 connections) — `server/commands/catalog_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [send_system_message](send_system_message.md) (6 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [test_room_environment_parity.py](test_room_environment_parity.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/messageBatcher.test.ts`
-- `client/src/utils/messageBatcher.ts`
+- `server/commands/catalog_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,23 @@
 # test_handle_spell_command_wrapper_success
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_handle_spell_command_wrapper_success()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spell_command wrapper success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_system_stats returns system-wide statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

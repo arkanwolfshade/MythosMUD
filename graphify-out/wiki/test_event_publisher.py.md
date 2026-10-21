@@ -1,51 +1,62 @@
 # test_event_publisher.py
 
-> 33 nodes
+> 112 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_event_publisher.py** (25 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **asyncio** (13 connections)
-- **test_publish_game_tick_uses_metadata_tick_number()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Unit tests for event publisher. Tests the EventPublisher class.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test get_next_sequence_number() returns and increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test reset_sequence_number() resets sequence to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Same persistence name resolution path for player_left.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **tick_number from additional_metadata should win over sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- *... and 8 more nodes in this community*
+- **test_container_persistence_async_helpers.py** (47 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- **container_persistence_async.py** (37 connections) — `server/persistence/container_persistence_async.py`
+- **container_query_helpers_async.py** (25 connections) — `server/persistence/container_query_helpers_async.py`
+- **container_repository.py** (25 connections) — `server/persistence/repositories/container_repository.py`
+- **test_container_query_helpers_async.py** (22 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **create_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
+- **get_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
+- **update_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
+- **_build_container_data_from_row_async()** (15 connections) — `server/persistence/container_query_helpers_async.py`
+- **get_bank_container_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
+- **get_decayed_containers_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
+- **asyncio** (14 connections)
+- **_finalize_container_creation()** (13 connections) — `server/persistence/container_persistence_async.py`
+- **get_containers_by_entity_id_async()** (13 connections) — `server/persistence/container_query_helpers_async.py`
+- **fetch_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **_populate_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
+- **Any** (12 connections)
+- **get_containers_by_room_id_async()** (12 connections) — `server/persistence/container_query_helpers_async.py`
+- **_build_item_dict()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **_container_data_from_row()** (11 connections) — `server/persistence/container_persistence_async.py`
+- **delete_container_async()** (10 connections) — `server/persistence/container_persistence_async.py`
+- **asyncio** (10 connections)
+- **_call_create_container_procedure()** (9 connections) — `server/persistence/container_persistence_async.py`
+- **AsyncSession** (9 connections)
+- **_validate_container_create_params()** (9 connections) — `server/persistence/container_persistence_async.py`
+- *... and 87 more nodes in this community*
 
 ## Relationships
 
-- [EventPublisher](EventPublisher.md) (7 shared connections)
-- [test_event_publisher_init_with_initial_sequence](test_event_publisher_init_with_initial_sequence.md) (3 shared connections)
-- [event_publisher](event_publisher.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [.profession_to_dict](profession_to_dict.md) (38 shared connections)
+- [endpoints.py](endpoints.py.md) (25 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (10 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [AttributeError](AttributeError.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [command_result_text](command_result_text.md) (2 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (2 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `server/persistence/container_helpers.py`
+- `server/persistence/container_persistence_async.py`
+- `server/persistence/container_query_helpers_async.py`
+- `server/persistence/repositories/container_repository.py`
+- `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- `server/tests/unit/persistence/test_container_query_helpers_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 351 (96%)
+- INFERRED: 16 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

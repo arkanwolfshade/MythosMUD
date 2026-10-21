@@ -1,71 +1,56 @@
 # CatalogPage.tsx
 
-> 62 nodes
+> 80 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **CatalogPage.tsx** (33 connections) — `client/src/pages/CatalogPage.tsx`
-- **utils/config.ts** (29 connections) — `client/src/utils/config.ts`
-- **API_V1_BASE** (19 connections) — `client/src/utils/config.ts`
-- **AppRouter.tsx** (18 connections) — `client/src/AppRouter.tsx`
-- **SkillsPage.tsx** (11 connections) — `client/src/pages/SkillsPage.tsx`
-- **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **CatalogPage.test.tsx** (7 connections) — `client/src/pages/__tests__/CatalogPage.test.tsx`
-- **AppCreationFlowViews()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **creationShell()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **xstateInspector.ts** (4 connections) — `client/src/utils/xstateInspector.ts`
-- **AppRouter()** (3 connections) — `client/src/AppRouter.tsx`
-- **renderNameStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderProfessionStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderSkillsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderStatsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **CatalogLoadedView()** (3 connections) — `client/src/pages/CatalogPage.tsx`
-- **CatalogPage()** (3 connections) — `client/src/pages/CatalogPage.tsx`
-- **JsonTable()** (3 connections) — `client/src/pages/CatalogPage.tsx`
-- **useCatalogPageState()** (3 connections) — `client/src/pages/CatalogPage.tsx`
-- **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
-- **main.tsx** (3 connections) — `client/src/main.tsx`
-- **SkillsPage.test.tsx** (3 connections) — `client/src/pages/__tests__/SkillsPage.test.tsx`
-- **xstateInspector.test.ts** (3 connections) — `client/src/utils/__tests__/xstateInspector.test.ts`
-- *... and 37 more nodes in this community*
+- **test_logging_handlers.py** (28 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **logging_handlers.py** (20 connections) — `server/structured_logging/logging_handlers.py`
+- **create_aggregator_handler()** (20 connections) — `server/structured_logging/logging_handlers.py`
+- **SafeRotatingFileHandler** (15 connections) — `server/structured_logging/logging_handlers.py`
+- **WarningOnlyFilter** (12 connections) — `server/structured_logging/logging_handlers.py`
+- **load_player_guid_formatter_class()** (10 connections) — `server/structured_logging/logging_utilities.py`
+- **AsyncioConnLostWriteFilter** (9 connections) — `server/structured_logging/logging_handlers.py`
+- **_build_aggregator_formatter()** (6 connections) — `server/structured_logging/logging_handlers.py`
+- **_instantiate_aggregator_handler()** (6 connections) — `server/structured_logging/logging_handlers.py`
+- **RotatingFileHandler** (6 connections)
+- **_resolve_aggregator_handler_class()** (6 connections) — `server/structured_logging/logging_handlers.py`
+- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **test_create_aggregator_handler_warning_level()** (5 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **Path** (4 connections)
+- **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **LogRecord** (3 connections)
+- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
+- **temp_log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **temp_log_file()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [security.ts](security.ts.md) (8 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (6 shared connections)
-- [saveMapChanges.ts](saveMapChanges.ts.md) (4 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
-- [ManualPage.tsx](ManualPage.tsx.md) (4 shared connections)
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (3 shared connections)
-- [App.tsx](App.tsx.md) (2 shared connections)
-- [useThemeContext.ts](useThemeContext.ts.md) (2 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
-- [HeaderBar.tsx](HeaderBar.tsx.md) (2 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (7 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (3 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (2 shared connections)
+- [test_map_helpers.py](test_map_helpers.py.md) (1 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/AppRouter.tsx`
-- `client/src/__tests__/AppRouter.test.tsx`
-- `client/src/main.tsx`
-- `client/src/mythosApp/AppCreationFlowViews.tsx`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/pages/CatalogPage.tsx`
-- `client/src/pages/SkillsPage.tsx`
-- `client/src/pages/__tests__/CatalogPage.test.tsx`
-- `client/src/pages/__tests__/SkillsPage.test.tsx`
-- `client/src/utils/__tests__/config.test.ts`
-- `client/src/utils/__tests__/xstateInspector.test.ts`
-- `client/src/utils/config.ts`
-- `client/src/utils/xstateInspector.ts`
+- `server/structured_logging/logging_handlers.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/tests/unit/structured_logging/test_logging_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 150 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 145 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

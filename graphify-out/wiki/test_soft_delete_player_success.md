@@ -1,24 +1,22 @@
 # test_soft_delete_player_success
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **gh-stack Skill** (0 connections) — `.agents/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `.agents/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

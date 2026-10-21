@@ -1,50 +1,64 @@
 # Reporter
 
-> 91 nodes
+> 84 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **Reporter** (56 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **test_reporter.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_error()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- *... and 66 more nodes in this community*
+- **SuccessLevel** (53 connections) — `server/game/skill_service.py`
+- **test_combat_protect_action.py** (38 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_combat_taunt_action.py** (35 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **skill_service.py** (34 connections) — `server/game/skill_service.py`
+- **resolve_protect_action()** (22 connections) — `server/services/combat_protect_action.py`
+- **resolve_taunt_action()** (21 connections) — `server/services/combat_taunt_action.py`
+- **_doubles()** (21 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **asyncio** (20 connections)
+- **intercept_for_guard()** (18 connections) — `server/services/combat_protect_action.py`
+- **_doubles()** (14 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **_hate()** (14 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **asyncio** (12 connections)
+- **taunt_outcome_line()** (8 connections) — `server/services/combat_taunt_action.py`
+- **_covered_fight()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **_hate()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_failure_and_fumble_do_nothing_but_still_announce()** (8 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **taunt_outcome_parts()** (7 connections) — `server/services/combat_taunt_action.py`
+- **_Fight** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_a_redirect_happens_once_it_never_chains_to_the_protectors_own_guardian()** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_an_intercepted_blow_earns_the_protector_threat_with_the_guarding_multiplier()** (7 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_a_fumble_by_the_current_tank_hands_the_npc_to_the_next_in_line()** (7 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **test_hard_and_extreme_successes_double_the_lead()** (7 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **test_taunt_stays_room_local_if_the_taunter_has_left()** (7 connections) — `server/tests/unit/services/test_combat_taunt_action.py`
+- **_p()** (6 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- **test_a_new_protect_replaces_the_protectors_old_cover()** (6 connections) — `server/tests/unit/services/test_combat_protect_action.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (12 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (36 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (16 shared connections)
+- [DatabaseManager](DatabaseManager.md) (13 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (7 shared connections)
+- [asyncio](asyncio.md) (7 shared connections)
+- [PerformanceTester](PerformanceTester.md) (5 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (2 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `server/game/skill_service.py`
+- `server/services/combat_protect_action.py`
+- `server/services/combat_taunt_action.py`
+- `server/tests/unit/services/test_combat_protect_action.py`
+- `server/tests/unit/services/test_combat_status_segments.py`
+- `server/tests/unit/services/test_combat_taunt_action.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 305 (86%)
+- INFERRED: 49 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

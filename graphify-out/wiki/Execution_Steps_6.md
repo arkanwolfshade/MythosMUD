@@ -1,39 +1,37 @@
 # Execution Steps
 
-> 18 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Scenario 7: Who Command **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **scenario-07-who-command.md** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 10: Verify Single Player Who List** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 1: AW Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 2: Verify AW Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 3: Verify Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 4: Ithaqua Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 5: Verify Ithaqua Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 6: Test Who Command After Movement** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 7: Verify Updated Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 8: Test Who Command Format** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 9: Test Who Command with Single Player** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Quick Start: Running E2E Tests** (10 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Troubleshooting** (5 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 1: Start the E2E Test Server** (3 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Expected Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Method A: Use the E2E startup script (Simplest)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Method B: Manual startup (More control)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Next Actions** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Prerequisites ✅** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: "element(s) not found" errors** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Login failed (500)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Server won't start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Tests timeout waiting for elements** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 2: Wait for Server to Start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 3: Run the E2E Tests** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Test Credentials** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Viewing Test Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Middleware Package Design](Middleware_Package_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-07-who-command.md`
+- `docs/archive/QUICK_START_E2E_TESTS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

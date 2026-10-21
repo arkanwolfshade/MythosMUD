@@ -1,26 +1,30 @@
 # description
 
-> 5 nodes
+> 9 nodes · cohesion 0.36
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **maxLength** (1 connections) — `schemas/intersection_schema.json`
-- **minLength** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **fix_markdown_multiple_blanks.py** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **main()** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **fix_multiple_blanks()** (3 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **Path** (3 connections)
+- **Fix multiple consecutive blank lines (MD012). Returns: (new_content,…** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **Parse markdownlint output to get files with MD012 issues.** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **Fix multiple blank lines in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `scripts/fix_markdown_multiple_blanks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

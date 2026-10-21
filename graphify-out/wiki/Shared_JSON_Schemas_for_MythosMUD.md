@@ -1,13 +1,11 @@
 # Shared JSON Schemas for MythosMUD
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Shared JSON Schemas for MythosMUD** (2 connections) — `schemas/README.md`
-- **Static Data SQL Generation** (2 connections) — `scripts/static_data/README.md`
-- **Emote / Pose Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
-- **MythosMUD Scripts** (1 connections) — `scripts/README.md`
+- **health.sql** (1 connections) — `db/procedures/health.sql`
+- **schema_name.update_player_health()** (1 connections) — `db/procedures/health.sql`
 
 ## Relationships
 
@@ -15,15 +13,12 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
-- `schemas/README.md`
-- `scripts/README.md`
-- `scripts/static_data/README.md`
+- `db/procedures/health.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 3 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

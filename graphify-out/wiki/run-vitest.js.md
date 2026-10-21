@@ -1,17 +1,15 @@
 # run-vitest.js
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **run-vitest.js** (7 connections) — `client/scripts/run-vitest.js`
-- **args** (1 connections) — `client/scripts/run-vitest.js`
-- **clientRoot** (1 connections) — `client/scripts/run-vitest.js`
-- **__dirname** (1 connections) — `client/scripts/run-vitest.js`
-- **env** (1 connections) — `client/scripts/run-vitest.js`
-- **__filename** (1 connections) — `client/scripts/run-vitest.js`
-- **vitest** (1 connections) — `client/scripts/run-vitest.js`
-- **vitestBin** (1 connections) — `client/scripts/run-vitest.js`
+- **Current State Analysis** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **CHAT_PANEL_SEPARATION_SPEC.md** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Conclusion** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Current Integration Points** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Existing Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Overview** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
@@ -19,11 +17,11 @@
 
 ## Source Files
 
-- `client/scripts/run-vitest.js`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

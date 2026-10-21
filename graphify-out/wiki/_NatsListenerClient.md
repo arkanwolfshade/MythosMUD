@@ -1,27 +1,27 @@
 # _NatsListenerClient
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **_NatsListenerClient** (5 connections) — `server/services/nats_service.py`
-- **.add_disconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_error_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_reconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **Protocol** (1 connections)
+- **Test Warning Remediation** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
+- **datetime.utcnow Deprecation Fix** (1 connections) — `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
 
 ## Relationships
 
-- [NATSService](NATSService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/nats_service.py`
+- `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
+- `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- `docs/archive/early-logging-initialization.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

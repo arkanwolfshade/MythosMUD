@@ -1,27 +1,32 @@
 # FAILURE PATTERN RECOGNITION
 
-> 6 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **FAILURE PATTERN RECOGNITION** (6 connections) — `.cursor/commands/server-test-remediation.md`
-- **A. Database-Related Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **B. Authentication/Security Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **C. WebSocket/Connection Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **D. Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **E. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Exit codes and error recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Known limitations** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Output conventions** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (1 shared connections)
+- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
+- [Ruff to Pylint Rule Mapping](Ruff_to_Pylint_Rule_Mapping.md) (1 shared connections)
+- [NATS Anti-Patterns Remediation Summary](NATS_Anti-Patterns_Remediation_Summary.md) (1 shared connections)
+- [6. Rest Location (Inn/Hotel) Behavior](6._Rest_Location_Inn-Hotel_Behavior.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `.agents/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

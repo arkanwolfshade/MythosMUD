@@ -1,48 +1,43 @@
 # DialogueDefinitionRepository
 
-> 22 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **DialogueDefinitionRepository** (30 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_dialogue_definition_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **asyncio** (8 connections)
-- **_definition_dict()** (6 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **_mock_session_with_rows()** (6 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_id_not_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_npc_definition_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_list_all_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_list_all_success()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_upsert_success()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_delete_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_delete_true()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_definition_dict_coerces_keys()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_definition_dict_non_dict()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_row_to_dialogue()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **fixture** (1 connections)
-- **Coerce JSONB definition cell to a plain string-keyed dict.** (1 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **Repository for dialogue_definitions via stored procedures.** (1 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **Unit tests for DialogueDefinitionRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **Execution Steps** (14 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Scenario 17: Whisper Integration **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **scenario-17-whisper-integration.md** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 10: Test Whisper with Performance Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 11: Test Whisper with Logging Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 12: Test Whisper with Rate Limiting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 13: Verify System Integration Summary** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 1: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 2: Test Whisper with Player Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 3: Test Whisper with Location Tracking Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 4: Test Whisper with Message Broadcasting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 5: Test Whisper with Movement System Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 6: Test Whisper with Session Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 7: Test Whisper with Database Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 8: Test Whisper with Authentication Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 9: Test Whisper with Error Handling Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (18 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [DialogueService](DialogueService.md) (2 shared connections)
-- [talk_command.py](talk_command.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/repositories/dialogue_definition_repository.py`
-- `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (83%)
-- INFERRED: 12 (17%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

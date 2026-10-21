@@ -1,11 +1,11 @@
 # PostgreSQL Audit Remediation
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **PostgreSQL Audit Remediation** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **PostgreSQL Procedures Migration** (1 connections) — `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
+- **unit/realtime/maintenance/__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
+- `server/tests/unit/realtime/maintenance/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

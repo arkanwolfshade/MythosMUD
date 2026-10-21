@@ -1,72 +1,78 @@
 # useMythosAppActions.ts
 
-> 81 nodes
+> 457 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **useMythosAppActions.ts** (34 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **deleteCharacterFlow.ts** (31 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- **errorHandler.ts** (27 connections) — `client/src/utils/errorHandler.ts`
-- **getErrorMessage()** (24 connections) — `client/src/utils/errorHandler.ts`
-- **isErrorResponse()** (24 connections) — `client/src/utils/errorHandler.ts`
-- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
-- **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
-- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
-- **creationCompleteActions.ts** (18 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **isServerUnavailable()** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **deleteCharacterActions.ts** (15 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **serverAvailability.ts** (14 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
-- **motdContinueFlow.ts** (13 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- **runDeleteCharacterFlow()** (9 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
-- **tryStartLoginGracePeriod()** (9 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
-- **errorMessageFromApiBody()** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
-- **runAfterCharacterCreatedFlow()** (8 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **registerFailureMessage()** (8 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
-- *... and 56 more nodes in this community*
+- **RoomService** (104 connections) — `server/game/room_service.py`
+- **models/user.py** (76 connections) — `server/models/user.py`
+- **rooms.py** (66 connections) — `server/api/rooms.py`
+- **test_admin_auth_service.py** (55 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **get_admin_auth_service()** (54 connections) — `server/services/admin_auth_service.py`
+- **users.py** (50 connections) — `server/auth/users.py`
+- **Direction** (41 connections) — `server/models/command_base.py`
+- **rooms_helpers.py** (39 connections) — `server/api/rooms_helpers.py`
+- **AdminAction** (38 connections) — `server/services/admin_auth_service.py`
+- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
+- **test_rooms_write_api.py** (35 connections) — `server/tests/unit/api/test_rooms_write_api.py`
+- **admin_auth_service.py** (28 connections) — `server/services/admin_auth_service.py`
+- **dialogue_definitions_api.py** (27 connections) — `server/api/admin/dialogue_definitions_api.py`
+- **rooms_helpers_exits.py** (26 connections) — `server/api/rooms_helpers_exits.py`
+- **room_service.py** (26 connections) — `server/game/room_service.py`
+- **test_dialogue_definitions_api.py** (26 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
+- **AdminRole** (25 connections) — `server/services/admin_auth_service.py`
+- **npc_population_api.py** (24 connections) — `server/api/admin/npc_population_api.py`
+- **npc_spawn_rules_api.py** (24 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **npc_admin_mgmt_api.py** (22 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **update_room_exit()** (19 connections) — `server/api/rooms.py`
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **test_rooms_api.py** (19 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **exploration_service.py** (18 connections) — `server/services/exploration_service.py`
+- **delete_room_exit()** (17 connections) — `server/api/rooms.py`
+- *... and 432 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (36 shared connections)
-- [Profession](Profession.md) (18 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (12 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (8 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (8 shared connections)
-- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (7 shared connections)
-- [security.ts](security.ts.md) (5 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (61 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (52 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (51 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (42 shared connections)
+- [get_logger](get_logger.md) (39 shared connections)
+- [Room](Room.md) (31 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (25 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (19 shared connections)
+- [AttributeError](AttributeError.md) (15 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (14 shared connections)
+- [ContainerComponent](ContainerComponent.md) (14 shared connections)
+- [test_item_catalog.py](test_item_catalog.py.md) (12 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/mythosApp/apiErrorMessage.ts`
-- `client/src/mythosApp/characterSessionApi.ts`
-- `client/src/mythosApp/creationCompleteActions.ts`
-- `client/src/mythosApp/creationCompleteFlow.ts`
-- `client/src/mythosApp/deleteCharacterActions.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/guards.ts`
-- `client/src/mythosApp/loginFailureMessage.ts`
-- `client/src/mythosApp/mapServerCharacters.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/registerFailureMessage.ts`
-- `client/src/mythosApp/selectCharacterFlow.ts`
-- `client/src/mythosApp/serverAvailability.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/mythosApp/useMythosAppActions.ts`
-- `client/src/utils/apiTypeGuards.ts`
-- `client/src/utils/errorHandler.test.ts`
-- `client/src/utils/errorHandler.ts`
+- `server/api/__init__.py`
+- `server/api/admin/__init__.py`
+- `server/api/admin/dialogue_definitions_api.py`
+- `server/api/admin/dialogue_schemas.py`
+- `server/api/admin/npc.py`
+- `server/api/admin/npc_admin_mgmt_api.py`
+- `server/api/admin/npc_population_api.py`
+- `server/api/admin/npc_router_core.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/api/help.py`
+- `server/api/rooms.py`
+- `server/api/rooms_helpers.py`
+- `server/api/rooms_helpers_exits.py`
+- `server/auth/users.py`
+- `server/game/room_service.py`
+- `server/models/command_base.py`
+- `server/models/user.py`
+- `server/schemas/players/player_respawn.py`
+- `server/schemas/rooms/__init__.py`
+- `server/schemas/rooms/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 337 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 1334 (89%)
+- INFERRED: 167 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

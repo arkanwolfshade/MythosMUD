@@ -1,10 +1,10 @@
 # Gladiator Ring Arena Plan
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Gladiator Ring Arena Plan** (0 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- **setup_postgresql_test_db.ps1** (0 connections) — `scripts/setup_postgresql_test_db.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- `scripts/setup_postgresql_test_db.ps1`
 
 ## Audit Trail
 

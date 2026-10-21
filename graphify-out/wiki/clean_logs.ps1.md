@@ -1,10 +1,10 @@
 # clean_logs.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **clean_logs.ps1** (0 connections) — `scripts/clean_logs.ps1`
+- **server/game/__init__.py** (0 connections) — `server/game/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/clean_logs.ps1`
+- `server/game/__init__.py`
 
 ## Audit Trail
 

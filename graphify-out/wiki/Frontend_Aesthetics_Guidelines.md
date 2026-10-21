@@ -1,30 +1,28 @@
 # Frontend Aesthetics Guidelines
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Frontend Aesthetics Guidelines** (9 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Color & Theme** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Interaction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Layout & Space** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Motion** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Responsive** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Typography** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **UX Writing** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Visual Details** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **MythosMUD OpenAPI Workflow** (6 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **OpenAPI Workflow Skill** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Output** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Requirements** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **When to Regenerate** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/SKILL.md`
+- `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

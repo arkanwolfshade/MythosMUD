@@ -1,53 +1,56 @@
 # test_player_respawn_api.py
 
-> 32 nodes
+> 42 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **asyncio** (8 connections)
-- **test_respawn_player_from_delirium_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_validation_error()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_delirium_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_from_delirium_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_no_session()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_respawn_player_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_must_be_dead()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **test_handle_respawn_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **_respawn_payload()** (3 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 7 more nodes in this community*
+- **cleanse_command.py** (23 connections) — `server/commands/cleanse_command.py`
+- **handle_cleanse_command()** (14 connections) — `server/commands/cleanse_command.py`
+- **test_cleanse_command.py** (13 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **CorruptionActionOnCooldownError** (10 connections) — `server/services/corruption_service.py`
+- **CleansePersistence** (8 connections) — `server/commands/cleanse_command.py`
+- **Protocol** (6 connections)
+- **CleanseTargetPlayer** (5 connections) — `server/commands/cleanse_command.py`
+- **asyncio** (5 connections)
+- **CleanseApp** (4 connections) — `server/commands/cleanse_command.py`
+- **CleanseContainer** (4 connections) — `server/commands/cleanse_command.py`
+- **CleanseRequest** (4 connections) — `server/commands/cleanse_command.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/cleanse_command.py`
+- **_resolve_persistence()** (4 connections) — `server/commands/cleanse_command.py`
+- **test_handle_cleanse_command_cooldown()** (4 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **test_handle_cleanse_command_cooldown_no_expiry()** (4 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **CleanseAppState** (3 connections) — `server/commands/cleanse_command.py`
+- **.get_player_by_id()** (3 connections) — `server/commands/cleanse_command.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **fixture** (3 connections)
+- **test_handle_cleanse_command_no_persistence()** (3 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **test_handle_cleanse_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **test_handle_cleanse_command_success()** (3 connections) — `server/tests/unit/commands/test_cleanse_command.py`
+- **.get_player_by_name()** (2 connections) — `server/commands/cleanse_command.py`
+- **.save_player()** (2 connections) — `server/commands/cleanse_command.py`
+- **.app()** (2 connections) — `server/commands/cleanse_command.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (35 shared connections)
-- [ValidationError](ValidationError.md) (12 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [reset_database](reset_database.md) (10 shared connections)
+- [command_parser.py](command_parser.py.md) (5 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_respawn.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/commands/cleanse_command.py`
+- `server/services/corruption_service.py`
+- `server/tests/unit/commands/test_cleanse_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (85%)
-- INFERRED: 18 (15%)
+- EXTRACTED: 87 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

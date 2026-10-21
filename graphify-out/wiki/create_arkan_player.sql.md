@@ -1,10 +1,10 @@
 # create_arkan_player.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **create_arkan_player.sql** (0 connections) — `scripts/create_arkan_player.sql`
+- **server/__init__.py** (0 connections) — `server/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/create_arkan_player.sql`
+- `server/__init__.py`
 
 ## Audit Trail
 

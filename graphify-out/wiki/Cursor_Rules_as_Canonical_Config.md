@@ -1,12 +1,11 @@
 # Cursor Rules as Canonical Config
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
+- **command_handler_unified/__init__.py** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
+- **Command handler unified unit tests.** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
-- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
+- `server/tests/unit/command_handler_unified/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,30 @@
 # bench_cache_professions.py
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
-- **bench_profession_cache()** (5 connections) — `scripts/bench_cache_professions.py`
-- **_FakePersistence** (4 connections) — `scripts/bench_cache_professions.py`
-- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
-- **.get_all_professions()** (3 connections) — `scripts/bench_cache_professions.py`
-- **Any** (3 connections)
-- **main()** (2 connections) — `scripts/bench_cache_professions.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache_professions.py`
-- **Professions cache micro-benchmark for CI artifacts. Measures miss vs. hit…** (1 connections) — `scripts/bench_cache_professions.py`
-- **Helper function to return empty dict for mock methods.** (1 connections) — `scripts/bench_cache_professions.py`
+- **pyrightconfig.json** (6 connections) — `pyrightconfig.json`
+- **extraPaths** (2 connections) — `pyrightconfig.json`
+- **extends** (1 connections) — `pyrightconfig.json`
+- **pythonVersion** (1 connections) — `pyrightconfig.json`
+- **venv** (1 connections) — `pyrightconfig.json`
+- **venvPath** (1 connections) — `pyrightconfig.json`
+- **.** (1 connections) — `pyrightconfig.json`
+- **./pyproject.toml** (1 connections) — `pyrightconfig.json`
 
 ## Relationships
 
-- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/bench_cache_professions.py`
+- `pyrightconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

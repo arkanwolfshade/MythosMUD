@@ -1,19 +1,19 @@
 # test_get_remaining_messages_error_handling
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_remaining_messages handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_disconnecting_string_id()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

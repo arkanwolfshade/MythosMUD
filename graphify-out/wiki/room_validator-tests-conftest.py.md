@@ -1,41 +1,39 @@
 # room_validator/tests/conftest.py
 
-> 19 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **room_validator/tests/conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **fixture** (8 connections)
-- **temp_rooms_dir()** (4 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **dead_end_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **invalid_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **room_with_new_exit_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **room_with_self_reference()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **sample_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **sample_room_database()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **unreachable_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Pytest configuration and fixtures for room validator tests. Provides test data…** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
-- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **MythosMUD Database Placement** (7 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **MythosMUD Full-Stack Feature** (7 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Database Placement Skill** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Full Stack Feature Skill** (2 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Allowed Paths Only** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Data Types** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Forbidden** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **PostgreSQL Access (Procedures and Functions)** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **When Adding or Moving Persistence** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Authority** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Checklist** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Principle** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Stack Summary** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **When to Touch Each Layer** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/conftest.py`
+- `.claude/skills/mythosmud-database-placement/SKILL.md`
+- `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,60 @@
 # item_catalog_repository.py
 
-> 34 nodes
+> 62 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **item_catalog_repository.py** (20 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **item_catalog_service.py** (19 connections) — `server/game/item_catalog_service.py`
-- **ItemCatalogRepository** (16 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **ItemCatalogAdminItem** (13 connections) — `server/schemas/item_catalog.py`
-- **ItemCatalogPage** (10 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **ItemPrototypeRow** (8 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **project_admin_item()** (7 connections) — `server/game/item_catalog_service.py`
-- **project_player_item()** (7 connections) — `server/game/item_catalog_service.py`
-- **test_service_list_catalog_admin_projection()** (7 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **CatalogQuery** (6 connections) — `server/game/item_catalog_service.py`
-- **.list_catalog()** (6 connections) — `server/game/item_catalog_service.py`
-- **.list_page()** (6 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **test_project_player_and_admin()** (6 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **_mappings_to_page()** (5 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **_row_to_prototype()** (5 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **_sample_row()** (5 connections) — `server/tests/unit/api/test_item_catalog.py`
-- **.__init__()** (3 connections) — `server/game/item_catalog_service.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **_as_object_dict()** (2 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **_as_object_list()** (2 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **_coerce_int()** (2 connections) — `server/persistence/repositories/item_catalog_repository.py`
-- **Item catalog service: filtered listing with player/admin column projection.** (1 connections) — `server/game/item_catalog_service.py`
-- **Normalized catalog list query.** (1 connections) — `server/game/item_catalog_service.py`
-- **P1 columns for non-admin viewers.** (1 connections) — `server/game/item_catalog_service.py`
-- **A3 full stored prototype columns for admins.** (1 connections) — `server/game/item_catalog_service.py`
-- *... and 9 more nodes in this community*
+- **QuestService** (76 connections) — `server/game/quest/quest_service.py`
+- **Any** (22 connections)
+- **QuestDefinitionSchema** (21 connections) — `server/schemas/quest/quest.py`
+- **UUID** (20 connections)
+- **_parse_definition()** (13 connections) — `server/game/quest/quest_service.py`
+- **._apply_activity_progress()** (13 connections) — `server/game/quest/quest_service.py`
+- **._sync_collect_for_instance()** (13 connections) — `server/game/quest/quest_service.py`
+- **.turn_in()** (11 connections) — `server/game/quest/quest_service.py`
+- **._complete_instance()** (10 connections) — `server/game/quest/quest_service.py`
+- **.start_quest()** (10 connections) — `server/game/quest/quest_service.py`
+- **._consume_collect_n_items()** (9 connections) — `server/game/quest/quest_service.py`
+- **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
+- **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
+- **._turn_in_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
+- **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
+- **.abandon()** (7 connections) — `server/game/quest/quest_service.py`
+- **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
+- **._load_player_for_collect()** (7 connections) — `server/game/quest/quest_service.py`
+- **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
+- **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
+- **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
+- **_definition_completion_mode_error()** (5 connections) — `server/game/quest/quest_service.py`
+- **.get_quest_log()** (5 connections) — `server/game/quest/quest_service.py`
+- **.record_complete_activity()** (5 connections) — `server/game/quest/quest_service.py`
+- **.record_kill()** (5 connections) — `server/game/quest/quest_service.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [test_item_catalog.py](test_item_catalog.py.md) (20 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [ItemCatalogService](ItemCatalogService.md) (10 shared connections)
-- [ItemCatalogResponse](ItemCatalogResponse.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [catalog_commands.py](catalog_commands.py.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (30 shared connections)
+- [properties](properties.md) (17 shared connections)
+- [endpoints.py](endpoints.py.md) (9 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (8 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (7 shared connections)
+- [test_time_bundle.py](test_time_bundle.py.md) (4 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (3 shared connections)
+- [mcp.json](mcp.json.md) (3 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [SpellLearningService](SpellLearningService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/item_catalog_service.py`
-- `server/persistence/repositories/item_catalog_repository.py`
-- `server/schemas/item_catalog.py`
-- `server/tests/unit/api/test_item_catalog.py`
+- `server/game/quest/quest_service.py`
+- `server/schemas/quest/quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (89%)
-- INFERRED: 13 (11%)
+- EXTRACTED: 199 (87%)
+- INFERRED: 31 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

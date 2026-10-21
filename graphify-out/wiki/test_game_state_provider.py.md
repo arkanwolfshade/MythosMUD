@@ -1,50 +1,51 @@
 # test_game_state_provider.py
 
-> 96 nodes
+> 82 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_game_state_provider.py** (51 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **asyncio** (28 connections)
-- **fixture** (5 connections)
-- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_with_npcs()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_lucidity_for_client_found()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_lucidity_for_client_no_row()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_app_state_fallback()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_dict_fallback()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_process_occupants_with_grace_periods()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_send_initial_game_state_includes_lucidity_tier()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_no_player_ids()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_name_with_grace_periods_falls_back_to_user()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_name_with_grace_periods_no_name_no_user()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- *... and 71 more nodes in this community*
+- **manual_dependency_analysis.py** (25 connections) — `scripts/manual_dependency_analysis.py`
+- **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
+- **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
+- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
+- **dependency_analyzer.py** (17 connections) — `scripts/dependency_analyzer.py`
+- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_dependencies()** (10 connections) — `scripts/manual_dependency_analysis.py`
+- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
+- **categorize_update()** (10 connections) — `scripts/utils/dependency_risk.py`
+- **.analyze_all_dependencies()** (9 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (9 connections) — `scripts/manual_dependency_analysis.py`
+- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
+- **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (7 connections) — `scripts/dependency_analyzer.py`
+- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
+- **assess_npm_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **assess_python_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
+- **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
+- **TypedDict** (6 connections)
+- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
+- **._assess_risks()** (5 connections) — `scripts/dependency_analyzer.py`
+- **._determine_strategy()** (5 connections) — `scripts/dependency_analyzer.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [GameStateProvider](GameStateProvider.md) (10 shared connections)
-- [NpcDisposition](NpcDisposition.md) (4 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [format_occupant_display_name](format_occupant_display_name.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `scripts/dependency_analyzer.py`
+- `scripts/manual_dependency_analysis.py`
+- `scripts/utils/dependency_analysis_types.py`
+- `scripts/utils/dependency_risk.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 175 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

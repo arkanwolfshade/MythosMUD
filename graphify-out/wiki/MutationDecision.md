@@ -1,55 +1,50 @@
 # MutationDecision
 
-> 33 nodes
+> 27 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **MutationDecision** (17 connections) — `server/services/inventory_mutation_guard.py`
-- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_transfer_to_container_mutation_guard_suppressed()** (6 connections) — `server/tests/unit/services/test_container_service.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **asyncio** (4 connections)
-- **test_acquire_async_different_players_same_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_async_with_duplicate_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_async_with_unique_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_async_without_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_acquire_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **test_inventory_mutation_guard_init()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **fixture** (1 connections)
-- **Result of attempting to acquire a guarded mutation context.** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Unit tests for inventory mutation guard - core functionality. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **Test acquire_async without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **Test acquire_async with unique token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **Test acquire_async with duplicate token suppresses mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **Test acquire_async allows same token for different players.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
-- *... and 8 more nodes in this community*
+- **MovementMonitor** (22 connections) — `server/game/movement_monitor.py`
+- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
+- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
+- **.validate_room_integrity()** (5 connections) — `server/game/movement_monitor.py`
+- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
+- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
+- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
+- **Any** (4 connections)
+- **._collect_room_player_map()** (3 connections) — `server/game/movement_monitor.py`
+- **.__init__()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
+- **.record_concurrent_movement()** (2 connections) — `server/game/movement_monitor.py`
+- **.reset_metrics()** (2 connections) — `server/game/movement_monitor.py`
+- **UUID** (2 connections)
+- **Record concurrent movement count.** (1 connections) — `server/game/movement_monitor.py`
+- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
+- **Validate players are not in multiple rooms.** (1 connections) — `server/game/movement_monitor.py`
+- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
+- **Get current alerts based on thresholds.** (1 connections) — `server/game/movement_monitor.py`
+- **Comprehensive monitoring system for the movement system. This class provides: -…** (1 connections) — `server/game/movement_monitor.py`
+- **Check for alerts and log them.** (1 connections) — `server/game/movement_monitor.py`
+- **Reset all metrics (useful for testing).** (1 connections) — `server/game/movement_monitor.py`
+- **Get a formatted performance summary for API responses. This method encapsulates…** (1 connections) — `server/game/movement_monitor.py`
+- **Log a comprehensive performance summary.** (1 connections) — `server/game/movement_monitor.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (7 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ContainerService](ContainerService.md) (3 shared connections)
-- [InventoryService](InventoryService.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [Player](Player.md) (8 shared connections)
+- [handle_read_command](handle_read_command.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/inventory_mutation_guard.py`
-- `server/tests/unit/services/test_container_service.py`
-- `server/tests/unit/services/test_inventory_mutation_guard.py`
+- `server/game/movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (88%)
-- INFERRED: 7 (12%)
+- EXTRACTED: 45 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

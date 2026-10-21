@@ -1,19 +1,19 @@
 # typescript-eslint
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **typescript-eslint** (2 connections) — `client/package.json`
-- **typescript-eslint** (1 connections) — `client/package.json`
+- **test_take_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() with index out of range.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

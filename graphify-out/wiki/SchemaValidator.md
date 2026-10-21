@@ -1,55 +1,60 @@
 # SchemaValidator
 
-> 85 nodes
+> 81 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **SchemaValidator** (55 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.get_exit_flags()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **._load_schema()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **Path** (4 connections)
-- **test_schema_validator.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **.test_get_exit_flags_missing_flags()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_flags_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_flags_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_invalid_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_get_exit_target_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_init_invalid_schema_file()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- *... and 60 more nodes in this community*
+- **FollowService** (81 connections) — `server/game/follow_service.py`
+- **test_follow_service.py** (55 connections) — `server/tests/unit/game/test_follow_service.py`
+- **asyncio** (22 connections)
+- **test_follow_request_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_npc_entered_room_moves_followers()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_move_failure_auto_unfollow()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_moves_followers()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_accept_follow_invalid_request_id()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_accept_follow_success()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_decline_follow_success()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_ensure_follower_standing_already_standing()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_ensure_follower_standing_fails_to_stand()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_ensure_follower_standing_sitting_stands()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_expire_pending_requests_removes_stale()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_following_npc()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_following_player_resolves_name()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_get_following_display_not_following()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_on_player_disconnect_cancels_pending_requests()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_already_following_rejected()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_npc_immediate()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_creates_pending()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_player_muted_auto_decline()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_request_follow_self_rejected()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_send_unfollow_notice_falls_back_to_id_without_persistence()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (10 shared connections)
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (3 shared connections)
-- [SchemaValidator](SchemaValidator.md) (3 shared connections)
-- [ValidationRule](ValidationRule.md) (2 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [ManualPage.tsx](ManualPage.tsx.md) (20 shared connections)
+- [_CombatServiceDeps](_CombatServiceDeps.md) (16 shared connections)
+- [analyze_file](analyze_file.md) (6 shared connections)
+- [BaseEvent](BaseEvent.md) (6 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [LogAggregator](LogAggregator.md) (3 shared connections)
+- [Petersen's Abominations.md](Petersen's_Abominations.md.md) (2 shared connections)
+- [SpellLearningService](SpellLearningService.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
-- `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `server/game/follow_service.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 150 (74%)
+- INFERRED: 52 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

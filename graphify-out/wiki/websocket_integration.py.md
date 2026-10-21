@@ -1,52 +1,62 @@
 # websocket_integration.py
 
-> 39 nodes
+> 53 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **websocket_integration.py** (22 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_message()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_game_action()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_endpoint()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_chat_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_error()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **auth_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **chat_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **game_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.verify_token()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **authenticate_websocket_connection()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_heartbeat()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **Exception** (2 connections)
-- **.process_message()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.process_action()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.accept()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.client()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 14 more nodes in this community*
+- **test_application_container.py** (28 connections) — `server/tests/unit/test_application_container.py`
+- **.get_instance()** (22 connections) — `server/container/main.py`
+- **get_container()** (19 connections) — `server/container/main.py`
+- **reset_container()** (10 connections) — `server/container/main.py`
+- **.reset_instance()** (7 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
+- **test_get_and_reset_container_helpers()** (5 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **.set_instance()** (4 connections) — `server/container/main.py`
+- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_reset_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_get_container_singleton()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container_creates_new_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_dict()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_empty_string()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_invalid()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_list()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_decode_json_column_none()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_project_root()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service_invalid()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_get_service_not_initialized_service()** (3 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_is_initialized()** (3 connections) — `server/tests/unit/test_application_container.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [WebSocketManager](WebSocketManager.md) (1 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (31 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (3 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (3 shared connections)
+- [NATSService](NATSService.md) (3 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
+- [dependencies](dependencies.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `server/container/main.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 130 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

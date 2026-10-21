@@ -1,31 +1,29 @@
 # check_file
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **check_file()** (6 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **check_asyncio_run_guardrails.py** (4 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Path** (1 connections)
-- **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Return list of (line_no, line) where asyncio.run( appears in code.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Return 0 if no asyncio.run( in server/, else 1.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **enum** (6 connections) — `schemas/calendar/holiday.schema.json`
+- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **catholic** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **islamic** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **jewish** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **mythos** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **neo_pagan** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_asyncio_run_guardrails.py`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

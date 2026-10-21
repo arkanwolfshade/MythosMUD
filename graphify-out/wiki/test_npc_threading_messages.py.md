@@ -1,54 +1,51 @@
 # test_npc_threading_messages.py
 
-> 46 nodes
+> 52 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_npc_threading_messages.py** (23 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **NPCMessageQueue** (17 connections) — `server/npc/threading_messages.py`
-- **NPCCommunicationBridge** (15 connections) — `server/npc/threading.py`
-- **asyncio** (11 connections)
-- **test_bridge_broadcast_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_receive_message_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_communication_bridge_messages()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_restart_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_stop_cancels_running_task()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_dispatches_wander()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_handles_errors()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_thread_stop_and_shutdown_drop_pending_keys()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **.add_message()** (2 connections) — `server/npc/threading_messages.py`
-- **.clear_all_messages()** (2 connections) — `server/npc/threading_messages.py`
-- **.clear_messages()** (2 connections) — `server/npc/threading_messages.py`
-- **.get_messages()** (2 connections) — `server/npc/threading_messages.py`
-- **.get_queue_size()** (2 connections) — `server/npc/threading_messages.py`
-- **.get_total_queue_size()** (2 connections) — `server/npc/threading_messages.py`
-- **.__init__()** (2 connections) — `server/npc/threading_messages.py`
-- **.broadcast_to_all_npcs()** (2 connections) — `server/npc/threading.py`
-- **.get_messages_for_npc()** (2 connections) — `server/npc/threading.py`
-- **.get_pending_messages()** (2 connections) — `server/npc/threading.py`
-- **.receive_message_from_npc()** (2 connections) — `server/npc/threading.py`
-- *... and 21 more nodes in this community*
+- **TestRoomDataFixer** (20 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **RoomDataFixer** (13 connections) — `server/services/room_data_fixer.py`
+- **.apply_room_data_fixes()** (13 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_name()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_occupant_count_mismatch()** (7 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_description()** (6 connections) — `server/services/room_data_fixer.py`
+- **.fix_missing_timestamp()** (6 connections) — `server/services/room_data_fixer.py`
+- **Any** (5 connections)
+- **.count_applied_fixes()** (5 connections) — `server/services/room_data_fixer.py`
+- **test_room_data_fixer.py** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_exception_handling()** (4 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_all_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_no_errors()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_apply_room_data_fixes_preserves_original()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_count_applied_fixes_no_fixable()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_description_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_no_error()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_name_unknown_id()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_missing_timestamp_existing()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- **.test_fix_occupant_count_mismatch()** (3 connections) — `server/tests/unit/services/test_room_data_fixer.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [NPCThreadManager](NPCThreadManager.md) (11 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [MetricsCollector](MetricsCollector.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [HolidayEntry](HolidayEntry.md) (2 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
-- `server/npc/threading_messages.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
+- `server/services/room_data_fixer.py`
+- `server/tests/unit/services/test_room_data_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (80%)
-- INFERRED: 17 (20%)
+- EXTRACTED: 82 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

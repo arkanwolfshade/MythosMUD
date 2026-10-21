@@ -1,21 +1,21 @@
 # zone
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **Cthulhu Dark Ages - 3rd Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Cthulhu Dark Ages - 3rd Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
 
 ## Audit Trail
 

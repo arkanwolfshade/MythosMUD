@@ -1,10 +1,10 @@
 # Pydantic Anti-Patterns Remediation (3ee32154)
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Pydantic Anti-Patterns Remediation (3ee32154)** (0 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- **temp_init_npc_unit_test.py** (0 connections) — `scripts/temp_init_npc_unit_test.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- `scripts/temp_init_npc_unit_test.py`
 
 ## Audit Trail
 

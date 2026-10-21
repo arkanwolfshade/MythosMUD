@@ -1,14 +1,12 @@
 # Local Channel System
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Local Channel System** (3 connections) — `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
-- **Scenario 10 Local Channel Movement** (2 connections) — `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
-- **Local Channel Sub-Zone Routing** (1 connections) — `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
-- **Scenario 11 Local Channel Errors** (1 connections) — `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
-- **Scenario 12 Local Channel Integration** (1 connections) — `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
+- **Chaosium graphify snapshot - Call of Cthulhu Starter Set** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **call-of-cthulhu-starter-set/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
 
 ## Relationships
 
@@ -16,15 +14,11 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
-- `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
-- `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
-- `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
-- `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,35 +1,36 @@
 # _complete_tutorial_with_rewards
 
-> 11 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **_RespawnPersistence** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_complete_tutorial_with_rewards()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_respawn_room_reward_moves_the_players_respawn()** (6 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_respawn_room_reward_without_room_id_changes_nothing()** (5 connections) — `server/tests/unit/game/test_quest_service.py`
-- **Player** (5 connections)
-- **.get_player_by_id()** (3 connections) — `server/tests/unit/game/test_quest_service.py`
-- **.__init__()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- **.save_player()** (2 connections) — `server/tests/unit/game/test_quest_service.py`
-- **UUID** (2 connections)
-- **Typed async_persistence stand-in for reward application.** (1 connections) — `server/tests/unit/game/test_quest_service.py`
-- **Completing leave_the_tutorial points respawn at the Sanitarium Main Foyer.** (1 connections) — `server/tests/unit/game/test_quest_service.py`
+- **integration_service()** (8 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_async_persistence()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_combat_service()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_connection_manager()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **fixture** (5 connections)
+- **mock_messaging_integration()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock messaging integration.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create mock async persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **Create NPCCombatIntegrationService instance.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Relationships
 
-- [test_quest_service.py](test_quest_service.py.md) (9 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [QuestService](QuestService.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (7 shared connections)
+- [._background_audit_cycle](_background_audit_cycle.md) (4 shared connections)
+- [AuditLogger](AuditLogger.md) (4 shared connections)
+- [damage_expr_to_min_max](damage_expr_to_min_max.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 17 (59%)
+- INFERRED: 12 (41%)
 - AMBIGUOUS: 0 (0%)
 
 ---

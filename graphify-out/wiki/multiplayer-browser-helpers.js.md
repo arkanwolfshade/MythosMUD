@@ -1,6 +1,6 @@
 # multiplayer-browser-helpers.js
 
-> 38 nodes
+> 38 nodes · cohesion 0.12
 
 ## Key Concepts
 
@@ -11,10 +11,10 @@
 - **getBodyInnerText()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasCommandInputInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasGameInfoPanelInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **multiplayer-browser-helpers.test.ts** (5 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
 - **hasGameInfoAnyMessageInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasPrimaryGameUiMarkersInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **isLoginFormVisibleInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **multiplayer-browser-helpers.test.ts** (5 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
 - **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasRoomSubscriptionInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
 
 ## Source Files
 

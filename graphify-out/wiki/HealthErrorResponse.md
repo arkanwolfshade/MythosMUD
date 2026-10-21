@@ -1,32 +1,36 @@
 # HealthErrorResponse
 
-> 8 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **HealthErrorResponse** (10 connections) — `server/models/health.py`
-- **test_health_error_response_creation()** (3 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_error_response_frozen()** (3 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_error_response_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_health.py`
-- **Error response for health check failures.** (1 connections) — `server/models/health.py`
-- **Test HealthErrorResponse can be created with required fields.** (1 connections) — `server/tests/unit/models/test_health.py`
-- **Test HealthErrorResponse rejects unknown fields.** (1 connections) — `server/tests/unit/models/test_health.py`
-- **Test HealthErrorResponse is frozen (immutable).** (1 connections) — `server/tests/unit/models/test_health.py`
+- **npc_schedules.schema.json** (7 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **$id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **$schema** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **title** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (6 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [spell_effects_internal.py](spell_effects_internal.py.md) (1 shared connections)
+- [Party](Party.md) (1 shared connections)
+- [run_quality_fragmentation_guard.py](run_quality_fragmentation_guard.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/health.py`
-- `server/tests/unit/models/test_health.py`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

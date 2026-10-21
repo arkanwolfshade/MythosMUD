@@ -1,78 +1,66 @@
 # SecureBaseModel
 
-> 279 nodes
+> 175 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **SecureBaseModel** (92 connections) — `server/schemas/shared/base.py`
-- **test_npc_definitions_api.py** (35 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
-- **npc_schemas.py** (29 connections) — `server/api/admin/npc_schemas.py`
-- **npc_instances_api.py** (28 connections) — `server/api/admin/npc_instances_api.py`
-- **shared/base.py** (26 connections) — `server/schemas/shared/base.py`
-- **test_dialogue_definitions_api.py** (26 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
-- **npc_spawn_rules_api.py** (24 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **test_npc_instances_api.py** (24 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_npc_spawn_rules_api.py** (21 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **_update_npc_definition_internal()** (16 connections) — `server/api/admin/npc_definitions_api.py`
-- **schemas/admin/__init__.py** (16 connections) — `server/schemas/admin/__init__.py`
-- **spawn_npc_instance()** (15 connections) — `server/api/admin/npc_instances_api.py`
-- **create_npc_spawn_rule()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **get_npc_spawn_rules()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
-- **test_invite_schemas.py** (15 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **get_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
-- **DialogueTree** (13 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **despawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **move_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **schemas/auth/__init__.py** (13 connections) — `server/schemas/auth/__init__.py`
-- **test_user_schemas.py** (13 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **NPCDefinitionType** (12 connections) — `server/models/npc.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- **get_npc_instances()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- *... and 254 more nodes in this community*
+- **log_and_raise_enhanced()** (113 connections) — `server/utils/enhanced_error_logging.py`
+- **PlayerStateCommandFactory** (46 connections) — `server/utils/command_factories_player_state.py`
+- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
+- **test_command_factories_player_state.py** (31 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_command_factories_moderation.py** (29 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **command_factories.py** (21 connections) — `server/utils/command_factories.py`
+- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
+- **command_factories_moderation.py** (11 connections) — `server/utils/command_factories_moderation.py`
+- **command_factories_player_state.py** (11 connections) — `server/utils/command_factories_player_state.py`
+- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **Any** (7 connections)
+- **UUID** (7 connections)
+- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.apply_corruption()** (6 connections) — `server/game/player_state_service.py`
+- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
+- **.create_cleanse_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_journal_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_quests_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_quit_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_rest_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- **.create_skills_command()** (6 connections) — `server/utils/command_factories_player_state.py`
+- *... and 150 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (182 shared connections)
-- [get_logger](get_logger.md) (18 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (14 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
-- [AliasStorage](AliasStorage.md) (9 shared connections)
-- [endpoints.py](endpoints.py.md) (9 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
-- [ErrorContext](ErrorContext.md) (7 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [test_aggression.py](test_aggression.py.md) (5 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (3 shared connections)
-- [talk_command.py](talk_command.py.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (44 shared connections)
+- [AttributeError](AttributeError.md) (25 shared connections)
+- [ContainerComponent](ContainerComponent.md) (23 shared connections)
+- [command_service.py](command_service.py.md) (12 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (12 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (10 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (6 shared connections)
+- [CommandFactory](CommandFactory.md) (5 shared connections)
+- [_ScalarResult](_ScalarResult.md) (5 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [HeaderBar.tsx](HeaderBar.tsx.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/admin/dialogue_schemas.py`
-- `server/api/admin/npc_definitions_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/models/npc.py`
-- `server/schemas/admin/__init__.py`
-- `server/schemas/admin/admin_data.py`
-- `server/schemas/admin/npc_admin.py`
-- `server/schemas/auth/__init__.py`
-- `server/schemas/auth/invite.py`
-- `server/schemas/auth/user.py`
-- `server/schemas/dialogue/__init__.py`
-- `server/schemas/dialogue/dialogue_tree.py`
-- `server/schemas/shared/base.py`
-- `server/tests/unit/api/admin/test_dialogue_schemas.py`
-- `server/tests/unit/api/test_dialogue_definitions_api.py`
-- `server/tests/unit/api/test_npc_definitions_api.py`
-- `server/tests/unit/api/test_npc_instances_api.py`
-- `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- `server/game/player_state_service.py`
+- `server/tests/unit/utils/test_command_factories_moderation.py`
+- `server/tests/unit/utils/test_command_factories_player_state.py`
+- `server/tests/unit/utils/test_enhanced_error_logging.py`
+- `server/utils/command_factories.py`
+- `server/utils/command_factories_moderation.py`
+- `server/utils/command_factories_player_state.py`
+- `server/utils/enhanced_error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 783 (94%)
-- INFERRED: 49 (6%)
+- EXTRACTED: 411 (84%)
+- INFERRED: 76 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

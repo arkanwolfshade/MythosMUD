@@ -1,19 +1,17 @@
 # P8 · Applied
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **P8 · Applied** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **P8-Applied.md** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Code changes — comment-only, explicitly authorised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Documentation changes — 33 files** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Issues created — 14** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Issues reopened — 12** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **New ADRs** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Not done — deliberately** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Security — filed privately, not publicly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Verification** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Step 2: Ask UX-Focused Questions** (5 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Teach Impeccable Skill** (3 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Accessibility & Inclusion** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Aesthetic Preferences** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Brand & Personality** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Step 1: Explore the Codebase** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Step 3: Write Design Context** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Users & Purpose** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
 
 ## Relationships
 
@@ -21,11 +19,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- `.claude/skills/teach-impeccable/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

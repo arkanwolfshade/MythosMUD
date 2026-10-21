@@ -1,58 +1,59 @@
 # LoggingConfig
 
-> 42 nodes
+> 31 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **LoggingConfig** (30 connections) — `server/config/models/security_logging.py`
-- **test_enhanced_logging_config.py** (20 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **configure_enhanced_structlog()** (14 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **_StubBoundLogger** (7 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_configure_enhanced_structlog_configures_file_logging_when_enabled()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_setup_enhanced_logging_enabled_configures_uvicorn_and_sets_state()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_log_enhanced_logging_configured()** (5 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **_enabled_config()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_configure_enhanced_structlog_skips_file_logging_when_disabled()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_setup_enhanced_logging_disabled_skips_uvicorn_and_state()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_configure_structlog_with_fallback()** (4 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **_disabled_config()** (4 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **MonkeyPatch** (4 connections)
-- **test_logging_config_rotation_backup_count_default()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_logging_config_rotation_backup_count_override()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **_reset_logging_state()** (3 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **Path** (3 connections)
-- **BaseSettings** (2 connections)
-- **.error()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **Processor** (1 connections)
-- **BoundLogger** (1 connections)
-- *... and 17 more nodes in this community*
+- **player_position_service.py** (18 connections) — `server/services/player_position_service.py`
+- **PositionPlayer** (13 connections) — `server/services/player_position_service.py`
+- **.change_position()** (12 connections) — `server/services/player_position_service.py`
+- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
+- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
+- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
+- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
+- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
+- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
+- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
+- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
+- **._validate_position()** (4 connections) — `server/services/player_position_service.py`
+- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
+- **position_messages.py** (3 connections) — `server/services/position_messages.py`
+- **.get_stats()** (1 connections) — `server/services/player_position_service.py`
+- **.set_stats()** (1 connections) — `server/services/player_position_service.py`
+- **TypedDict** (1 connections)
+- **Player posture coordination service for MythosMUD. As noted in the Pnakotic…** (1 connections) — `server/services/player_position_service.py`
+- **Validate and normalize position.** (1 connections) — `server/services/player_position_service.py`
+- **Get player for position change. Returns: Tuple of (player, response_dict) if…** (1 connections) — `server/services/player_position_service.py`
+- **Copy player identity fields into the position-change response.** (1 connections) — `server/services/player_position_service.py`
+- **Load player stats, returning {} when loading fails.** (1 connections) — `server/services/player_position_service.py`
+- **Get current position from player stats.** (1 connections) — `server/services/player_position_service.py`
+- **Update player position in persistence.** (1 connections) — `server/services/player_position_service.py`
+- **Build the default unsuccessful position-change payload.** (1 connections) — `server/services/player_position_service.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (12 shared connections)
-- [NATSService](NATSService.md) (6 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [test_logging_processors.py](test_logging_processors.py.md) (4 shared connections)
-- [test_config_models.py](test_config_models.py.md) (3 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (3 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
+- [RoomDataCache](RoomDataCache.md) (12 shared connections)
+- [PlayerCombatState](PlayerCombatState.md) (6 shared connections)
+- [command_parser.py](command_parser.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (1 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (1 shared connections)
+- [.initialize](initialize.md) (1 shared connections)
+- [_CombatServiceDeps](_CombatServiceDeps.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [WearableContainerServiceError](WearableContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/security_logging.py`
-- `server/structured_logging/enhanced_logging_config.py`
-- `server/tests/unit/config/test_config_models.py`
-- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/services/player_position_service.py`
+- `server/services/position_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (85%)
-- INFERRED: 16 (15%)
+- EXTRACTED: 67 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

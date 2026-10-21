@@ -1,33 +1,32 @@
 # enum
 
-> 11 nodes
+> 9 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
+- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
+- **_FakePersistence** (5 connections) — `scripts/bench_cache.py`
+- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
+- **main()** (2 connections) — `scripts/bench_cache.py`
+- **Any** (2 connections)
+- **.__init__()** (1 connections) — `scripts/bench_cache.py`
+- **Lightweight cache benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache.py`
+- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [fixture](fixture.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `scripts/bench_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,42 @@
 # SyntaxErrorFixer
 
-> 13 nodes
+> 14 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **SyntaxErrorFixer** (7 connections) — `scripts/fix_syntax_errors.py`
-- **.fix_specific_file()** (5 connections) — `scripts/fix_syntax_errors.py`
-- **main()** (4 connections) — `scripts/fix_syntax_errors.py`
-- **.process_files()** (4 connections) — `scripts/fix_syntax_errors.py`
-- **.fix_malformed_logger_calls()** (3 connections) — `scripts/fix_syntax_errors.py`
-- **Path** (3 connections)
-- **fix_syntax_errors.py** (2 connections) — `scripts/fix_syntax_errors.py`
-- **.__init__()** (1 connections) — `scripts/fix_syntax_errors.py`
-- **Process multiple files and return statistics.** (1 connections) — `scripts/fix_syntax_errors.py`
-- **Main function to run the syntax error fixer.** (1 connections) — `scripts/fix_syntax_errors.py`
-- **Tool to fix syntax errors introduced by automated f-string remediation.** (1 connections) — `scripts/fix_syntax_errors.py`
-- **Fix malformed logger calls with broken syntax.** (1 connections) — `scripts/fix_syntax_errors.py`
-- **Fix syntax errors in a specific file.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **get_admin_sessions()** (13 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **test_npc_admin_mgmt_api.py** (13 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **get_admin_audit_log()** (10 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **asyncio** (5 connections)
+- **test_get_admin_sessions_error()** (4 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **test_cleanup_admin_sessions_success()** (3 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **test_get_admin_audit_log_success()** (3 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **test_get_admin_sessions_http_exception_reraises()** (3 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **test_get_admin_sessions_success()** (3 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **get** (2 connections)
+- **admin_user()** (2 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **Get active admin sessions.** (1 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **fixture** (1 connections)
+- **Unit tests for admin NPC management API endpoints.** (1 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (9 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_syntax_errors.py`
+- `server/api/admin/npc_admin_mgmt_api.py`
+- `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 41 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

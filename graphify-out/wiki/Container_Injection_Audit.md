@@ -1,10 +1,10 @@
 # Container Injection Audit
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Container Injection Audit** (0 connections) — `docs/CONTAINER_INJECTION_AUDIT.md`
+- **mythosmud** (0 connections) — `pyproject.toml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CONTAINER_INJECTION_AUDIT.md`
+- `pyproject.toml`
 
 ## Audit Trail
 

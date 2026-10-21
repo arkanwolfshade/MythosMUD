@@ -1,40 +1,42 @@
 # cached
 
-> 11 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **cached()** (11 connections) — `server/caching/cache_service.py`
-- **TestCachedDecorator** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_seed_players_cache()** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.fetch()** (6 connections) — `server/tests/unit/test_support_helpers.py`
-- **.test_async_cache_hit_and_miss()** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_cached_custom_key_func()** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_async_cached_missing_cache_calls_function()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_sync_cache_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_cached_missing_cache_calls_function()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Decorator to cache function results. Args: cache_name: Name of the cache to use…** (1 connections) — `server/caching/cache_service.py`
-- **Keep players cache truthy; empty LRUCache is bool-false via __len__.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Lizard Complexity Analysis Findings** (7 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🔴 CRITICAL: Functions Exceeding Threshold (CCN > 10)** (5 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **📋 Recommended Action Plan** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🎯 Refactoring Patterns** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **🟡 WARNING: Functions Near Threshold (CCN 9-10)** (3 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **LIZARD_COMPLEXITY_FINDINGS.md** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **1. `create_app` - CCN: 22** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **2. `_load_rooms_with_coordinates` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **3. `_parse_websocket_token` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **4. `_ensure_coordinates_generated` - CCN: 11** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Functions with CCN = 10** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Functions with CCN = 9** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **✅ Next Steps** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 1: Extract Exception Handling** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 2: Extract Configuration Logic** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pattern 3: Extract Data Processing** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 1: Critical Functions (CCN > 10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 2: High-Priority Near-Threshold (CCN 9-10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Phase 3: Monitoring** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **📊 Summary Statistics** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (5 shared connections)
-- [RoomCacheService](RoomCacheService.md) (2 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [test_support_helpers.py](test_support_helpers.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
-- `server/tests/unit/test_support_helpers.py`
+- `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (81%)
-- INFERRED: 6 (19%)
+- EXTRACTED: 19 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,51 +1,51 @@
 # CoordinateGenerator
 
-> 61 nodes
+> 66 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **CoordinateGenerator** (31 connections) — `server/services/coordinate_generator.py`
-- **test_coordinate_generator.py** (23 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
-- **Any** (8 connections)
-- **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
-- **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
-- **asyncio** (6 connections)
-- **._assign_coordinates_bfs()** (5 connections) — `server/services/coordinate_generator.py`
-- **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
-- **._find_origin_room()** (4 connections) — `server/services/coordinate_generator.py`
-- **._rooms_query_and_pattern()** (4 connections) — `server/services/coordinate_generator.py`
-- **._attach_room_exits()** (3 connections) — `server/services/coordinate_generator.py`
-- **._detect_coordinate_conflicts()** (3 connections) — `server/services/coordinate_generator.py`
-- **._get_next_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
-- **._nearest_free_cell()** (3 connections) — `server/services/coordinate_generator.py`
-- **._reverse_direction()** (3 connections) — `server/services/coordinate_generator.py`
-- **._room_dict_from_row()** (3 connections) — `server/services/coordinate_generator.py`
-- **._store_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **generator()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_assign_coordinates_bfs_displaces_up_down_exits()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_assign_coordinates_bfs_reaches_disconnected_components()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_assign_coordinates_bfs_resolves_collisions()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_room_dict_from_row_carries_environment_columns()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_room_dict_from_row_inherited_environment_is_none()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- *... and 36 more nodes in this community*
+- **test_skill_service.py** (36 connections) — `server/tests/unit/game/test_skill_service.py`
+- **asyncio** (23 connections)
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
+- **fixture** (6 connections)
+- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_valid_creates_rows()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_values_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_wrong_occupation_count_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_player_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **mock_skill_use_log_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_non_owner_returns_none()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_owner_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_catalog_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_used_this_level_returns_repo_result()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [RoomService](RoomService.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [deque](deque.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [Reporter](Reporter.md) (1 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_generator.py`
-- `server/tests/unit/services/test_coordinate_generator.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (93%)
-- INFERRED: 7 (7%)
+- EXTRACTED: 111 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,41 +1,42 @@
 # Petersen's Abominations.md
 
-> 12 nodes
+> 16 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Petersen's Abominations.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **ZyMedBio.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
-- **Mohole.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
-- **Hotel Hell.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- **Dark Young of Shub-Niggurath.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- **Petersen's Abominations** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Petersen's Abominations (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Hotel Hell** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- **Mohole** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
-- **Dark Young of Shub-Niggurath** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- **ZyMedBio** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **test_follow_flow.py** (14 connections) — `server/tests/integration/test_follow_flow.py`
+- **fixture** (5 connections)
+- **event_bus()** (4 connections) — `server/tests/integration/test_follow_flow.py`
+- **follow_service()** (4 connections) — `server/tests/integration/test_follow_flow.py`
+- **test_follow_accept_then_move_propagates_then_restricted_exit_unfollows()** (4 connections) — `server/tests/integration/test_follow_flow.py`
+- **connection_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **movement_service()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **user_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
+- **asyncio** (2 connections)
+- **Integration tests for follow feature. Flow: Player A requests follow B; B…** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock MovementService; move_player returns True then we can set False for…** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock UserManager; not muted.** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **Mock ConnectionManager (optional for this flow).** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **FollowService wired to real EventBus and mock MovementService.** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **A requests follow B; B accepts. B moves room_a -> room_b: A moves too. B moves…** (1 connections) — `server/tests/integration/test_follow_flow.py`
 
 ## Relationships
 
-- [Cosmic Horror.md](Cosmic_Horror.md.md) (5 shared connections)
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (5 shared connections)
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\S. Petersen's Field Guide to Lovecraftian Horrors  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_S._Petersen's_Field_Guide_to_Lovecraftian_Horrors__2026-08-12.md) (1 shared connections)
-- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [SchemaValidator](SchemaValidator.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [_CombatServiceDeps](_CombatServiceDeps.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
-- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- `server/tests/integration/test_follow_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (90%)
+- INFERRED: 3 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

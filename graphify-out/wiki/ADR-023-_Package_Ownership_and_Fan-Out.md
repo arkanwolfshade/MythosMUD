@@ -1,10 +1,10 @@
 # ADR-023: Package Ownership and Fan-Out
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-023: Package Ownership and Fan-Out** (0 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- **20261002150000_tutorial_bedroom_fixtures.sql** (0 connections) — `db/migrations/20261002150000_tutorial_bedroom_fixtures.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
+- `db/migrations/20261002150000_tutorial_bedroom_fixtures.sql`
 
 ## Audit Trail
 

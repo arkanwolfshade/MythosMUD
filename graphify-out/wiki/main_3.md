@@ -1,33 +1,38 @@
 # main
 
-> 11 nodes
+> 12 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **main()** (6 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_write_state_atomic()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **.cursor/hooks/trigger_test_agent.py** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Path** (3 connections)
-- **NoReturn** (1 connections)
-- **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **._connect_nats()** (7 connections) — `server/container/bundles/realtime.py`
+- **._setup_nats_dependent_services()** (7 connections) — `server/container/bundles/realtime.py`
+- **._handle_nats_connect_error()** (5 connections) — `server/container/bundles/realtime.py`
+- **._handle_nats_connect_false()** (4 connections) — `server/container/bundles/realtime.py`
+- **._raise_if_e2e_nats_required()** (4 connections) — `server/container/bundles/realtime.py`
+- **Any** (2 connections)
+- **BaseException** (1 connections)
+- **Attach event publisher and message handler when NATS is available.** (1 connections) — `server/container/bundles/realtime.py`
+- **Raise RuntimeError when e2e requires live NATS; no-op for other environments.** (1 connections) — `server/container/bundles/realtime.py`
+- **Convert connect failures into hard error (e2e) or soft log (other envs).** (1 connections) — `server/container/bundles/realtime.py`
+- **Handle connect() returning False; raise for e2e, soft-warn otherwise.** (1 connections) — `server/container/bundles/realtime.py`
+- **Connect to NATS if enabled and not unit_test. Returns NATSService or None.…** (1 connections) — `server/container/bundles/realtime.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_message_handlers.py](test_message_handlers.py.md) (7 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (1 shared connections)
+- [MythosMUD Code Quality Targets for AI](MythosMUD_Code_Quality_Targets_for_AI.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/hooks/trigger_test_agent.py`
+- `server/container/bundles/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

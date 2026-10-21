@@ -1,27 +1,25 @@
 # Core Logging Principles
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Core Logging Principles** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **1. **Structured Logging**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **2. **Context is Everything**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **3. **Security First**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **4. **Performance Aware**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **5. **Actionable Information**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Testing Strategy** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Integration Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Unit Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **User Acceptance Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

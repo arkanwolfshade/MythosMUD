@@ -1,42 +1,45 @@
 # Persistence Layer Extraction - COMPLETE ✅
 
-> 19 nodes
+> 17 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **Persistence Layer Extraction - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Next Steps** (5 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Migration Path for Callers** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Results** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Cleanup** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Architecture Changes** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Benefits** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **File Size Reduction** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Files Modified** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Option 1: Continue Using Sync Interface** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Option 2: Migrate to Async Interface (Recommended)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 2: API Endpoints (6 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 3: Real-time Handlers (8 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 4: Services (15 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Phase 5-7: Game, NPC, and Test files** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Removed Deprecated Code** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Summary** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
-- **Validation** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **NPCCacheService** (21 connections) — `server/caching/cache_service.py`
+- **asyncio** (10 connections)
+- **TestNPCCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_NpcDef** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_SpawnRule** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.npc_service()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_npc_definition_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
+- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
+- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (2 shared connections)
-- [Methods Extracted](Methods_Extracted.md) (1 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (8 shared connections)
+- [ConnectionManager Refactoring Summary](ConnectionManager_Refactoring_Summary.md) (5 shared connections)
+- [fixture](fixture.md) (3 shared connections)
+- [Codacy Rules](Codacy_Rules.md) (2 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (1 shared connections)
+- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 49 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

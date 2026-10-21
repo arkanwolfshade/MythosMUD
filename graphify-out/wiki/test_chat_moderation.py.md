@@ -1,49 +1,48 @@
 # test_chat_moderation.py
 
-> 29 nodes
+> 27 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **asyncio** (14 connections)
-- **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **fixture** (3 connections)
-- **player_service()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_add_admin_returns_true()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_handles_internal_error()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_includes_player_name()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_invalid_player_id()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_with_personal_mutes()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_channel_delegates_to_user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- *... and 4 more nodes in this community*
+- **LogAnalyzer** (13 connections) — `scripts/analyze_error_logs.py`
+- **.analyze_error_patterns()** (9 connections) — `scripts/analyze_error_logs.py`
+- **._parse_log_file()** (6 connections) — `scripts/analyze_error_logs.py`
+- **Any** (6 connections)
+- **._categorize_error()** (4 connections) — `scripts/analyze_error_logs.py`
+- **.detect_error_trends()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._find_error_logs()** (4 connections) — `scripts/analyze_error_logs.py`
+- **.generate_error_report()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._generate_recommendations()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._parse_log_line()** (4 connections) — `scripts/analyze_error_logs.py`
+- **main()** (4 connections) — `scripts/analyze_error_logs.py`
+- **Path** (4 connections)
+- **._extract_error_pattern()** (3 connections) — `scripts/analyze_error_logs.py`
+- **.__init__()** (3 connections) — `scripts/analyze_error_logs.py`
+- **analyze_error_logs.py** (2 connections) — `scripts/analyze_error_logs.py`
+- **Detect error trends over time. Returns trend analysis results.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Find all error log files in the directory.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Parse a log file and extract error information.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Parse a single log line and extract error information.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Extract a simplified error pattern from a message.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Comprehensive log analysis tool for MythosMUD error logs. This analyzer can…** (1 connections) — `scripts/analyze_error_logs.py`
+- **Categorize an error based on its content.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Generate recommendations based on analysis results.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Initialize the analyzer with a log directory.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Main entry point for the log analysis script.** (1 connections) — `scripts/analyze_error_logs.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_chat_moderation.py`
+- `scripts/analyze_error_logs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

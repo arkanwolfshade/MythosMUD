@@ -1,54 +1,53 @@
 # test_inventory_use_command.py
 
-> 30 nodes
+> 53 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_inventory_use_command.py** (24 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **EffectProbe** (13 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **FakePlayer** (12 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **_use()** (10 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **ItemEffectResult** (9 connections) — `server/game/items/item_effects.py`
-- **SimpleNamespace** (9 connections)
-- **test_a_refused_effect_keeps_the_item()** (8 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_unresolvable_selectors_report_what_is_missing()** (8 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_a_failed_save_restores_the_inventory_but_the_effect_stands()** (7 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_unusable_items_are_not_spent()** (7 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_use_by_index_removes_the_last_item_from_the_stack()** (7 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_use_decrements_a_stack_and_reports_to_player_and_room()** (7 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **asyncio** (7 connections)
-- **effect()** (6 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **_stack()** (6 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **request_obj()** (5 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **test_player_resolution_errors_are_passed_through()** (4 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **.__call__()** (3 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **_prototype()** (3 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **.__init__()** (2 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **fixture** (2 connections)
-- **parametrize** (2 connections)
-- **.get_inventory()** (1 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- **.set_inventory()** (1 connections) — `server/tests/unit/commands/test_inventory_use_command.py`
-- *... and 5 more nodes in this community*
+- **npcs/catalog_dml.py** (21 connections) — `server/game/npcs/catalog_dml.py`
+- **prepare_npc_definition()** (13 connections) — `server/game/npcs/catalog_dml.py`
+- **NpcBaseStats** (8 connections) — `server/game/npcs/base_stats_models.py`
+- **render_migration()** (8 connections) — `server/game/npcs/catalog_dml.py`
+- **test_base_stats_models.py** (8 connections) — `server/tests/unit/game/npcs/test_base_stats_models.py`
+- **base_stats_models.py** (7 connections) — `server/game/npcs/base_stats_models.py`
+- **npcs/test_catalog_dml.py** (7 connections) — `server/tests/unit/game/npcs/test_catalog_dml.py`
+- **npc_catalog/generate_dml.py** (6 connections) — `data/npc_catalog/generate_dml.py`
+- **_load_catalog()** (5 connections) — `data/npc_catalog/generate_dml.py`
+- **_dual_write_one_attack()** (5 connections) — `server/game/npcs/catalog_dml.py`
+- **_load_json_object()** (5 connections) — `server/tests/unit/game/npcs/test_base_stats_models.py`
+- **BaseModel** (4 connections)
+- **apply_attack_dual_write()** (4 connections) — `server/game/npcs/catalog_dml.py`
+- **_ensure_behavior_config()** (4 connections) — `server/game/npcs/catalog_dml.py`
+- **render_npc_insert()** (4 connections) — `server/game/npcs/catalog_dml.py`
+- **_load_json()** (3 connections) — `data/npc_catalog/generate_dml.py`
+- **main()** (3 connections) — `data/npc_catalog/generate_dml.py`
+- **NpcArmorMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
+- **NpcAttackMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
+- **NpcCatalogMetadata** (3 connections) — `server/game/npcs/base_stats_models.py`
+- **_as_str_object_dict()** (3 connections) — `server/game/npcs/catalog_dml.py`
+- **_normalize_damage_expr()** (3 connections) — `server/game/npcs/catalog_dml.py`
+- **_optional_description()** (3 connections) — `server/game/npcs/catalog_dml.py`
+- **_require_name()** (3 connections) — `server/game/npcs/catalog_dml.py`
+- **sql_escape()** (3 connections) — `server/game/npcs/catalog_dml.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [active_lucidity_service.py](active_lucidity_service.py.md) (6 shared connections)
-- [alias_storage.py](alias_storage.py.md) (5 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (2 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (2 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [catalog_commands.py](catalog_commands.py.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/items/item_effects.py`
-- `server/tests/unit/commands/test_inventory_use_command.py`
+- `data/npc_catalog/generate_dml.py`
+- `server/game/npcs/base_stats_models.py`
+- `server/game/npcs/catalog_dml.py`
+- `server/tests/unit/game/npcs/test_base_stats_models.py`
+- `server/tests/unit/game/npcs/test_catalog_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (95%)
-- INFERRED: 5 (5%)
+- EXTRACTED: 89 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

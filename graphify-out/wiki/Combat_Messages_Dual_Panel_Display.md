@@ -1,12 +1,11 @@
 # Combat Messages Dual Panel Display
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- **create_professions_table.sql** (1 connections) — `server/scripts/create_professions_table.sql`
+- **professions** (1 connections) — `server/scripts/create_professions_table.sql`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- `server/scripts/create_professions_table.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

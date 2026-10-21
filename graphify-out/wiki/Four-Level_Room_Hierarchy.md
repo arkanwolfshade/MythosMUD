@@ -1,14 +1,12 @@
 # Four-Level Room Hierarchy
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Four-Level Room Hierarchy** (2 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Hierarchical World Loader** (2 connections) — `docs/archive/ROOM_PLANNING.md`
-- **Room Hierarchy Implementation** (2 connections) — `docs/archive/ROOM_PLANNING.md`
-- **Environment Classification** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
-- **Environment Inheritance** (1 connections) — `docs/archive/ROOM_PLANNING.md`
+- **Chaosium graphify snapshot - Alone against the Tide** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **alone-against-the-tide/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
 
 ## Relationships
 
@@ -16,13 +14,12 @@
 
 ## Source Files
 
-- `docs/archive/ROOM_HIERARCHY_FRD.md`
-- `docs/archive/ROOM_PLANNING.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

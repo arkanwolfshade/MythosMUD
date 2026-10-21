@@ -1,20 +1,20 @@
 # test_delete_player_preferences_success
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_delete_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test deleting player preferences successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_process_tick_regeneration_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() returns zero when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
+- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
+- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 

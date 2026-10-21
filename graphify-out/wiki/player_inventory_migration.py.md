@@ -1,31 +1,31 @@
 # player_inventory_migration.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **player_inventory_migration.py** (6 connections) — `server/scripts/player_inventory_migration.py`
-- **migrate_multiple()** (4 connections) — `server/scripts/player_inventory_migration.py`
-- **migrate_player_inventories()** (4 connections) — `server/scripts/player_inventory_migration.py`
-- **parse_args()** (2 connections) — `server/scripts/player_inventory_migration.py`
-- **Path** (2 connections)
-- **Namespace** (1 connections)
-- **Create and backfill the player_inventories table.** (1 connections) — `server/scripts/player_inventory_migration.py`
-- **Ensure the player_inventories table exists and is populated for existing…** (1 connections) — `server/scripts/player_inventory_migration.py`
-- **Run the migration across multiple database paths.** (1 connections) — `server/scripts/player_inventory_migration.py`
+- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/player_inventory_migration.py`
+- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

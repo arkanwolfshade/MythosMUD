@@ -1,10 +1,10 @@
 # cursor-cli-agent.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **cursor-cli-agent.ps1** (0 connections) — `scripts/cursor-cli-agent.ps1`
+- **apply_player_id_uuid_migration.ps1** (0 connections) — `server/scripts/apply_player_id_uuid_migration.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/cursor-cli-agent.ps1`
+- `server/scripts/apply_player_id_uuid_migration.ps1`
 
 ## Audit Trail
 

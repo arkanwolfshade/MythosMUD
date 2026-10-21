@@ -1,54 +1,50 @@
 # ._build_player_attacked_event
 
-> 23 nodes
+> 38 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
-- **UUID** (5 connections)
-- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
-- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
-- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish NPC-on-player attack as player_attacked to NATS so the client receives…** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the combat event publisher used to send PlayerAttacked events to NATS.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
-- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
-- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
-- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
-- **Get current NPC stats.** (1 connections) — `server/npc/npc_base.py`
+- **test_combat_persistence_handler_persistence.py** (22 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **asyncio** (16 connections)
+- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_persistence_failure()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error_new()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_save_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **fixture** (3 connections)
+- **test_persist_player_dp_background()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_task_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow_with_verification_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_no_persistence()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_player_not_found()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_success()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_verify_player_save_called()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_player_not_found()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_success()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **mock_player()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Unit tests for combat persistence handler - persistence operations. Tests…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync calls _verify_player_save.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync handles save_player error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync completes full flow with verification and logging.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (10 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [._get_npc_display_name](_get_npc_display_name.md) (1 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [.get_combat_stats](get_combat_stats.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (1 shared connections)
+- [required](required.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/npc_base.py`
+- `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 57 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

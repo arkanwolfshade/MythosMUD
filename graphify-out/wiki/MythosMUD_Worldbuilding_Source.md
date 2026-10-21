@@ -1,12 +1,11 @@
 # MythosMUD Worldbuilding Source
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **MythosMUD Worldbuilding Source** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Cosmology: Earth Plane and Dreamlands** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Core themes and tone (Lovecraftian)** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `.cursor/plans/requests_best_practices_remediation_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

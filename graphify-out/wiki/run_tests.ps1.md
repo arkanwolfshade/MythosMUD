@@ -1,10 +1,10 @@
 # run_tests.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **run_tests.ps1** (0 connections) — `scripts/tests/run_tests.ps1`
+- **run_invite_tools.ps1** (0 connections) — `tools/invite_tools/run_invite_tools.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/run_tests.ps1`
+- `tools/invite_tools/run_invite_tools.ps1`
 
 ## Audit Trail
 

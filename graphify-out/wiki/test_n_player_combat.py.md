@@ -1,58 +1,78 @@
 # test_n_player_combat.py
 
-> 49 nodes
+> 186 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_n_player_combat.py** (41 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **_combat()** (26 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **_p()** (26 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **combat_service_end.py** (16 connections) — `server/services/combat_service_end.py`
-- **_service_for()** (12 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **remove_participant()** (10 connections) — `server/services/combat_service_end.py`
-- **_select_player_target()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **asyncio** (9 connections)
-- **_xp_recipients()** (8 connections) — `server/services/combat_service_attack.py`
-- **end_combat()** (8 connections) — `server/services/combat_service_end.py`
-- **clear_aggro_for_combat()** (7 connections) — `server/services/aggro_threat.py`
-- **remove_entity_from_aggro()** (7 connections) — `server/services/aggro_threat.py`
-- **test_join_existing_combat_adds_player_and_rebuilds_initiative()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_join_existing_combat_refuses_a_player_already_fighting_elsewhere()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_join_existing_combat_refuses_another_room()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_join_existing_combat_refuses_phantom_encounters()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_remove_participant_ends_combat_when_no_other_player_remains()** (7 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **_data()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_queue_attack_records_player_target_but_not_npc_target()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_remove_participant_does_not_count_a_dead_player_as_remaining()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_remove_participant_drops_only_the_leaver_when_others_remain()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_remove_participant_ignores_unknown_participant_and_combat()** (6 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_auto_attack_never_picks_an_ally()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_auto_attack_player_versus_player_keeps_legacy_pick()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- **test_auto_attack_prefers_the_tracked_target_and_skips_a_dead_one()** (4 connections) — `server/tests/unit/services/test_n_player_combat.py`
-- *... and 24 more nodes in this community*
+- **ui-v2/types.ts** (89 connections) — `client/src/components/ui-v2/types.ts`
+- **ChatHistoryPanel.tsx** (43 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- **projectorRoom.ts** (41 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **projectorHandlersState.ts** (39 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **projectorHandlersMessages.ts** (35 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **projectorMessageUtils.ts** (30 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **Room** (26 connections) — `client/src/components/ui-v2/types.ts`
+- **messageCategory.ts** (23 connections) — `client/src/types/messageCategory.ts`
+- **GameInfoPanel.tsx** (21 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **messageMapper.ts** (19 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **messageCategoryStyle.ts** (19 connections) — `client/src/components/ui-v2/utils/messageCategoryStyle.ts`
+- **categoryRouting.test.tsx** (18 connections) — `client/src/components/ui-v2/panels/__tests__/categoryRouting.test.tsx`
+- **ChatMessage** (18 connections) — `client/src/components/ui-v2/types.ts`
+- **messageSegments.ts** (18 connections) — `client/src/components/ui-v2/utils/messageSegments.ts`
+- **OccupantsPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **roomMergeUtils.ts** (14 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **segmentsRendering.test.tsx** (13 connections) — `client/src/components/ui-v2/panels/__tests__/segmentsRendering.test.tsx`
+- **performance.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/performance.test.tsx`
+- **channels.ts** (13 connections) — `client/src/config/channels.ts`
+- **getMessageCategoryClass()** (11 connections) — `client/src/components/ui-v2/utils/messageCategoryStyle.ts`
+- **npcOccupants.ts** (11 connections) — `client/src/components/ui-v2/utils/npcOccupants.ts`
+- **projectorHandlersContainers.ts** (10 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersContainers.ts`
+- **MessageCategory** (10 connections) — `client/src/types/messageCategory.ts`
+- **LocationPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **RoomDescriptionPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- *... and 161 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (21 shared connections)
-- [CombatInstance](CombatInstance.md) (7 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (7 shared connections)
-- [aggro_threat.py](aggro_threat.py.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (5 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_combat_turn_player_turn.py](test_combat_turn_player_turn.py.md) (1 shared connections)
+- [party_commands.py](party_commands.py.md) (43 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (37 shared connections)
+- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (23 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (18 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (15 shared connections)
+- [lint_pyright_suppressions.py](lint_pyright_suppressions.py.md) (11 shared connections)
+- [🧪 MythosMUD E2E Testing Strategy](🧪_MythosMUD_E2E_Testing_Strategy.md) (7 shared connections)
+- [test_look_room.py](test_look_room.py.md) (6 shared connections)
+- [include](include.md) (3 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [Phase 3: Polish and Optimization](Phase_3-_Polish_and_Optimization.md) (3 shared connections)
+- [Polish Systematically](Polish_Systematically.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/aggro_threat.py`
-- `server/services/combat_service_attack.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_n_player_combat.py`
+- `client/src/components/ui-v2/__tests__/performance.test.tsx`
+- `client/src/components/ui-v2/components/SegmentedText.tsx`
+- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projectorMessageUtils.buildChatMessage.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projectorMessageUtils.readCategory.test.ts`
+- `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersContainers.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- `client/src/components/ui-v2/panels/RoomDescriptionPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/ChatHistoryPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/LocationPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 643 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

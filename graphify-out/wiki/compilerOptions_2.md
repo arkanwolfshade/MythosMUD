@@ -1,47 +1,47 @@
 # compilerOptions
 
-> 26 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **compilerOptions** (11 connections) — `client/tsconfig.app.json`
-- **exclude** (8 connections) — `client/tsconfig.app.json`
-- **tsconfig.app.json** (5 connections) — `client/tsconfig.app.json`
-- **types** (3 connections) — `client/tsconfig.app.json`
-- **include** (2 connections) — `client/tsconfig.app.json`
-- **composite** (1 connections) — `client/tsconfig.app.json`
-- **declarationDir** (1 connections) — `client/tsconfig.app.json`
-- **emitDeclarationOnly** (1 connections) — `client/tsconfig.app.json`
-- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.app.json`
-- **moduleDetection** (1 connections) — `client/tsconfig.app.json`
-- **noEmit** (1 connections) — `client/tsconfig.app.json`
-- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.app.json`
-- **tsBuildInfoFile** (1 connections) — `client/tsconfig.app.json`
-- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.app.json`
-- **extends** (1 connections) — `client/tsconfig.app.json`
-- **node** (1 connections) — `client/tsconfig.app.json`
-- **src** (1 connections) — `client/tsconfig.app.json`
-- **src/**/*.spec.ts** (1 connections) — `client/tsconfig.app.json`
-- **src/**/*.spec.tsx** (1 connections) — `client/tsconfig.app.json`
-- **src/test/**/*** (1 connections) — `client/tsconfig.app.json`
-- **src/**/*.test.ts** (1 connections) — `client/tsconfig.app.json`
-- **src/**/*.test.tsx** (1 connections) — `client/tsconfig.app.json`
-- **src/**/__tests__/**/*** (1 connections) — `client/tsconfig.app.json`
-- **tests/**/*** (1 connections) — `client/tsconfig.app.json`
-- **./tsconfig.json** (1 connections) — `client/tsconfig.app.json`
-- *... and 1 more nodes in this community*
+- **asyncio** (12 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Actionable Recommendations](Actionable_Recommendations.md) (12 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (12 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.app.json`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

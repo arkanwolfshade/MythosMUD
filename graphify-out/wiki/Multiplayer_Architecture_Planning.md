@@ -1,36 +1,28 @@
 # Multiplayer Architecture Planning
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Multiplayer Architecture Planning** (3 connections) — `docs/archive/PLANNING_multiplayer.md`
-- **NATS Service** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **Chat System Implementation Plan** (2 connections) — `docs/archive/PLANNING_chat_system.md`
-- **Planning Completion Summary** (2 connections) — `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
-- **Redis to NATS Migration Plan** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
-- **Performance Optimization Summary** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- **Alias System Implementation Plan** (1 connections) — `docs/archive/PLANNING_aliases.md`
-- **Movement System Planning** (1 connections) — `docs/archive/PLANNING_movement_system.md`
+- **Modern Testing Patterns** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 1: Container-Based Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 2: Mock Container for Unit Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 3: Parametrized Integration Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 4: Fixture Factories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 5: Async Test Context Managers** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
-- `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
-- `docs/archive/PLANNING_aliases.md`
-- `docs/archive/PLANNING_chat_system.md`
-- `docs/archive/PLANNING_movement_system.md`
-- `docs/archive/PLANNING_multiplayer.md`
-- `docs/archive/PLANNING_redis_to_nats_migration.md`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (14%)
-- INFERRED: 6 (86%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

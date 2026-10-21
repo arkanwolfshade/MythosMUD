@@ -1,29 +1,26 @@
 # test_websocket_handler_json_error.py
 
-> 8 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **test_handle_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **asyncio** (1 connections)
-- **fixture** (1 connections)
-- **Unit tests for websocket handler JSON error handling. Tests the JSON decode…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
-- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **global-teardown.ts** (4 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **__dirname** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **__filename** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **globalTeardown()** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **projectRoot** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
 
 ## Relationships
 
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `client/tests/e2e/runtime/global-teardown.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

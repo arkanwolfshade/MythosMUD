@@ -1,53 +1,52 @@
 # container_helpers_inventory_display.py
 
-> 30 nodes
+> 34 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **container_helpers_inventory_display.py** (18 connections) — `server/commands/container_helpers_inventory_display.py`
-- **test_container_helpers_inventory_display.py** (18 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **get_container_data_for_inventory()** (10 connections) — `server/commands/container_helpers_inventory_display.py`
-- **match_container_to_slot()** (9 connections) — `server/commands/container_helpers_inventory_display.py`
-- **update_equipped_with_container_info()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_apply_container_component_to_slot()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_equipped_matches_container_metadata()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_lock_state_as_str()** (5 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
-- **test_get_container_data_for_inventory_handles_error()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_get_container_data_for_inventory_success()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_matches_by_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_matches_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_lock_state_as_str_fallback()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_lock_state_as_str_with_value_attr()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_match_container_to_slot_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_match_container_to_slot_not_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_update_equipped_skips_missing_slot()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_update_equipped_with_container_info()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **asyncio** (2 connections)
-- **InventoryStack** (1 connections)
-- **Player** (1 connections)
-- **Container display helpers for inventory UI (wearable contents, slot matching).** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- *... and 5 more nodes in this community*
+- **Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch** (10 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **PYDANTIC_CODE_REVIEW.md** (5 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **UVICORN_CODE_REVIEW.md** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **✅ POSITIVE FINDINGS** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Parameterized Queries** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **jsonb_set Field Name f-string SQL** (2 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **Pydantic v2 ConfigDict** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Pydantic __slots__ Performance** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Stats extra=allow Security Risk** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **1. Deprecated `asyncio.get_event_loop()` Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **1. Proper Connection Pool Management** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **2. Good Error Handling Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **2. SQL Injection Risk in Field Name Construction** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **3. Async/Await Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **3. Connection Pool Cleanup Verification** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **4. Blocking Operations in Async Context** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **4. Security Considerations** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **5. Event Loop Change Detection Complexity** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **6. Missing Error Context in Some Exception Handlers** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **7. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- **8. Inconsistent Async/Sync Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (6 shared connections)
-- [container_helpers_inventory_ops.py](container_helpers_inventory_ops.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [test_monitoring_init.py](test_monitoring_init.py.md) (1 shared connections)
+- [verify_migration.py](verify_migration.py.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_display.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- `docs/archive/UVICORN_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 35 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

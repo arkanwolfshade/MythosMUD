@@ -1,36 +1,34 @@
 # test_hallucination_category_ban.py
 
-> 15 nodes
+> 13 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **test_hallucination_category_ban.py** (9 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **category_violations()** (6 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **_import_violations()** (5 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **test_scanner_flags_each_way_of_choosing_a_category()** (4 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **test_hallucination_module_never_chooses_a_category()** (3 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **test_every_hallucination_named_module_is_listed()** (2 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **test_scanner_ignores_ordinary_code()** (2 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **parametrize** (2 connections)
-- **Import** (1 connections)
-- **ImportFrom** (1 connections)
-- **ADR-024: hallucination code never chooses a message category. A hallucinated…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **What an import statement pulls in that chooses a message category.** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **What in ``source`` chooses or names a message category: imports of it, or…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **A new module named for hallucination or phantoms must be added to the audited…** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
-- **Guard the scanner itself so the ban cannot pass vacuously.** (1 connections) — `server/tests/unit/services/test_hallucination_category_ban.py`
+- **fix_markdown_code_block_style.py** (6 connections) — `scripts/fix_markdown_code_block_style.py`
+- **fix_code_block_style()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
+- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
+- **main()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
+- **detect_code_language()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
+- **is_indented_code_line()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Path** (3 connections)
+- **Parse markdownlint output to get files with MD046 issues.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Check if a line is part of an indented code block.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Fix code block style in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Try to detect the language of a code block from its content. Returns empty…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Convert indented code blocks to fenced code blocks. Returns: (new_content,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
 
 ## Relationships
 
-- [MessageCategory](MessageCategory.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_hallucination_category_ban.py`
+- `scripts/fix_markdown_code_block_style.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

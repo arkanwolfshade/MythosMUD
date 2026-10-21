@@ -1,28 +1,32 @@
 # AsyncPersistenceRoomLookup
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **AsyncPersistenceRoomLookup** (4 connections) — `server/realtime/websocket_handler_connection.py`
-- **PlayerDisconnectService** (4 connections) — `server/realtime/websocket_handler_connection.py`
-- **.on_player_disconnect()** (2 connections) — `server/realtime/websocket_handler_connection.py`
-- **Protocol** (2 connections)
-- **.get_room_by_id()** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Notify subsystems when a WebSocket session ends for a player.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Narrow persistence surface for loading ``Room`` by id in the WS handler.** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **Schemas Package Design** (11 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **2. Members** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
 
 ## Relationships
 
-- [websocket_initial_state.py](websocket_initial_state.py.md) (3 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
+- `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,30 +1,28 @@
 # Implementation Notes
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Success Criteria** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Testing Strategy** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Corrections · `docs/subsystems/` was missing from the corpus** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **`docs/subsystems/` — 15 documents, 2,497 lines** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDING SHARPENED — the ADR-009 collision is real and now better characterised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDINGS WITHDRAWN** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **Open decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **The headline finding is REINFORCED, not weakened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **What happened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

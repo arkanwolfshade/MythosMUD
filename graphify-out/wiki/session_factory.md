@@ -1,55 +1,51 @@
 # session_factory
 
-> 21 nodes
+> 25 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **session_factory()** (91 connections) — `server/tests/fixtures/integration/__init__.py`
-- **db_cleanup()** (13 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_assert_allowed_integration_test_db()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
-- **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
-- **integration_db_url()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
-- **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
-- **fixture** (5 connections)
-- **_get_db_name_from_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_is_allowed_integration_test_db()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **FixtureRequest** (4 connections)
-- **AsyncSession** (3 connections)
-- **async_sessionmaker** (2 connections)
-- **AsyncEngine** (1 connections)
-- **Database fixtures for integration tests. This module provides database…** (1 connections) — `server/tests/fixtures/integration/db.py`
-- **Provide a SQLAlchemy async engine bound to the integration DB URL. CRITICAL:…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Provide an async session factory for integration tests. CRITICAL: This fixture…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Clean up database after each test. Deletes test-created rows from mutable…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Extract database name from a PostgreSQL URL. Returns empty string on parse…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Return True only if the URL points to an allowed test-only database…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Raise ValueError if URL is not an allowed test DB. Never truncate mythos_dev.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Provide an isolated PostgreSQL database URL for integration tests. Reads from…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **get_cached_player()** (15 connections) — `server/utils/player_cache.py`
+- **cache_player()** (13 connections) — `server/utils/player_cache.py`
+- **test_player_cache.py** (11 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **player_cache.py** (7 connections) — `server/utils/player_cache.py`
+- **_get_request_state()** (6 connections) — `server/utils/player_cache.py`
+- **test_cache_and_get_player()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_multiple()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_overwrite()** (4 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_cache_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_no_state()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_none()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **test_get_cached_player_nonexistent()** (3 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Any** (3 connections)
+- **Unit tests for player_cache utilities. Tests the player caching functions for…** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None when no cache exists.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() and get_cached_player() operations.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() returns None for nonexistent key.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() can cache multiple players.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() overwrites existing entries.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test get_cached_player() handles missing state.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Test cache_player() handles missing state gracefully.** (1 connections) — `server/tests/unit/utils/test_player_cache.py`
+- **Helpers for caching player objects during a single command request. This avoids…** (1 connections) — `server/utils/player_cache.py`
+- **Safely extract the state object from a FastAPI/Starlette request.** (1 connections) — `server/utils/player_cache.py`
+- **Return a cached player object for this request if one exists.** (1 connections) — `server/utils/player_cache.py`
+- **Cache a player object on the request for reuse within the command.** (1 connections) — `server/utils/player_cache.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_room_write_procedures.py](test_room_write_procedures.py.md) (12 shared connections)
-- [test_exploration_procedures.py](test_exploration_procedures.py.md) (11 shared connections)
-- [test_players_procedures.py](test_players_procedures.py.md) (9 shared connections)
-- [test_experience_procedures.py](test_experience_procedures.py.md) (7 shared connections)
-- [PlayerInventory](PlayerInventory.md) (6 shared connections)
-- [test_room_environment_cascade.py](test_room_environment_cascade.py.md) (5 shared connections)
-- [session](session.md) (4 shared connections)
-- [test_calendar_procedures.py](test_calendar_procedures.py.md) (4 shared connections)
-- [test_update_container_found_returns_the_id](test_update_container_found_returns_the_id.md) (4 shared connections)
-- [subzone_with_override](subzone_with_override.md) (4 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (3 shared connections)
+- [go_command.py](go_command.py.md) (5 shared connections)
+- [test_players_procedures.py](test_players_procedures.py.md) (3 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/fixtures/integration/__init__.py`
-- `server/tests/fixtures/integration/db.py`
+- `server/tests/unit/utils/test_player_cache.py`
+- `server/utils/player_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (34%)
-- INFERRED: 86 (66%)
+- EXTRACTED: 50 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

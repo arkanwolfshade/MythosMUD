@@ -1,10 +1,10 @@
 # migrate.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **migrate.ps1** (0 connections) — `scripts/migrate.ps1`
+- **unit/realtime/__init__.py** (0 connections) — `server/tests/unit/realtime/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/migrate.ps1`
+- `server/tests/unit/realtime/__init__.py`
 
 ## Audit Trail
 

@@ -1,53 +1,59 @@
 # run_flee_effect
 
-> 31 nodes
+> 31 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
-- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
-- **asyncio** (6 connections)
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_run_flee_effect_invalid_target_type()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_invalid_uuid()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_not_in_combat()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_room_error()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_services_unavailable()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_success_and_failure()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **UUID** (2 connections)
+- **test_inventory_command_prototype.py** (21 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **infer_equip_slot_from_prototype()** (18 connections) — `server/commands/inventory_command_prototype.py`
+- **inventory_command_prototype.py** (14 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_from_registry()** (10 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (10 connections) — `server/commands/inventory_command_prototype.py`
+- **_consumable_prototype()** (6 connections) — `server/commands/inventory_use_command.py`
+- **.get()** (5 connections) — `server/game/items/prototype_registry.py`
+- **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
+- **test_prototype_from_registry_missing_get()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_from_registry_swallows_registry_error()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **_inventory_prototype_id()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **_wear_slots_from_prototype()** (2 connections) — `server/commands/inventory_command_prototype.py`
+- **test_infer_equip_slot_empty_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_from_wear_slots()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_invalid_prototype_id_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_missing_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_no_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_non_inventory_stack()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_non_string_wear_slot()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_infer_equip_slot_uses_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_from_registry_returns_prototype()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_registry_from_request_missing_app()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_registry_from_request_no_state()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **test_prototype_registry_from_request_returns_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
+- **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
+- [test_metrics.py](test_metrics.py.md) (4 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (4 shared connections)
+- [TargetType](TargetType.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [items/catalog_dml.py](items-catalog_dml.py.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
-- `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- `server/commands/inventory_command_prototype.py`
+- `server/commands/inventory_use_command.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/unit/commands/test_inventory_command_prototype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 89 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 72 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # start_e2e_test.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **start_e2e_test.ps1** (0 connections) — `scripts/start_e2e_test.ps1`
+- **Colorize Skill** (0 connections) — `.cursor/skills/colorize/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/start_e2e_test.ps1`
+- `.cursor/skills/colorize/SKILL.md`
 
 ## Audit Trail
 

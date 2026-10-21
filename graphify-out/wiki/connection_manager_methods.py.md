@@ -1,60 +1,66 @@
 # connection_manager_methods.py
 
-> 160 nodes
+> 178 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **connection_manager_methods.py** (95 connections) — `server/realtime/connection_manager_methods.py`
-- **ConnectionManager** (64 connections) — `server/realtime/connection_manager_methods.py`
-- **test_connection_manager_methods.py** (52 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
-- **UUID** (24 connections)
-- **asyncio** (18 connections)
-- **broadcast_to_room_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **get_players_batch_impl()** (7 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_global_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **disconnect_websocket_connection_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_message_delivery_stats_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **get_player_presence_info_method()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **send_initial_game_state_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **send_personal_message_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **update_player_room_cache_impl()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **validate_player_presence_method()** (6 connections) — `server/realtime/connection_manager_methods.py`
-- **check_all_connections_health_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **check_connection_health_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **convert_uuids_to_strings_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_count_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_connection_id_from_websocket_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_error_statistics_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **get_npcs_batch_impl()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- *... and 135 more nodes in this community*
+- **ContainerComponent** (169 connections) — `server/models/container.py`
+- **ContainerSourceType** (95 connections) — `server/models/container.py`
+- **ContainerLockState** (42 connections) — `server/models/container.py`
+- **test_container.py** (41 connections) — `server/tests/unit/models/test_container.py`
+- **models/container.py** (33 connections) — `server/models/container.py`
+- **corpse_lifecycle_service.py** (30 connections) — `server/services/corpse_lifecycle_service.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **test_container_endpoints_loot.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **test_container_endpoints_loot_register.py** (10 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **._validate_container_access()** (8 connections) — `server/services/container_service_access.py`
+- **_real_container_with_datetime()** (7 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **.validate_entity_id()** (6 connections) — `server/models/container.py`
+- **.validate_lock_state()** (6 connections) — `server/models/container.py`
+- **.validate_source_type()** (6 connections) — `server/models/container.py`
+- **ContainerFactoryOptions** (6 connections) — `server/models/container.py`
+- **._validate_ownership()** (6 connections) — `server/services/container_service_access.py`
+- **.create_corpse()** (5 connections) — `server/models/container.py`
+- **.validate_metadata_no_personal_data()** (5 connections) — `server/models/container.py`
+- **.validate_room_id()** (5 connections) — `server/models/container.py`
+- **Any** (5 connections)
+- **field_validator** (5 connections)
+- **UUID** (5 connections)
+- **._raise_corpse_grace_denied()** (5 connections) — `server/services/container_service_access.py`
+- **._validate_bank_ownership()** (5 connections) — `server/services/container_service_access.py`
+- **._validate_corpse_grace_period()** (5 connections) — `server/services/container_service_access.py`
+- *... and 153 more nodes in this community*
 
 ## Relationships
 
-- [test_connection_delegates.py](test_connection_delegates.py.md) (25 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_connection_statistics.py](test_connection_statistics.py.md) (8 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (5 shared connections)
-- [MessageQueue](MessageQueue.md) (4 shared connections)
-- [test_connection_event_helpers.py](test_connection_event_helpers.py.md) (4 shared connections)
-- [safe_close_websocket_impl](safe_close_websocket_impl.md) (4 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (2 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [canonical_room_id_impl](canonical_room_id_impl.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (59 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (30 shared connections)
+- [CombatParticipant](CombatParticipant.md) (29 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (27 shared connections)
+- [RoomNodeData](RoomNodeData.md) (24 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (20 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (10 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (7 shared connections)
+- [endpoints.py](endpoints.py.md) (6 shared connections)
+- [AttributeError](AttributeError.md) (6 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (5 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Call_of_Cthulhu_Starter_Set__2026-08-12.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager_methods.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
+- `server/models/container.py`
+- `server/services/container_service_access.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/models/test_container.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 367 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 429 (74%)
+- INFERRED: 148 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

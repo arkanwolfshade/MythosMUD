@@ -1,19 +1,19 @@
 # test_get_system_stats
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Test get_system_stats returns system-wide statistics.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_process_dict_occupant_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test process_dict_occupant() processes generic name.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

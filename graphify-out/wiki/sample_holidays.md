@@ -1,27 +1,28 @@
 # .sample_holidays
 
-> 5 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **.sample_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.mock_chronicle()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **fixture** (2 connections)
-- **Create a mock chronicle for testing.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **Create sample holiday entries for testing.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **CRITICAL SERVER MANAGEMENT RULES** (4 connections) — `.claude/rules/server-management.md`
+- **Server Management** (2 connections) — `.claude/rules/server-management.md`
+- **Server Authority (Critical)** (2 connections) — `.claude/rules/server-management.md`
+- **Implications** (1 connections) — `.claude/rules/server-management.md`
+- **MANDATORY SERVER STARTUP PROCEDURE** (1 connections) — `.claude/rules/server-management.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/rules/server-management.md`
+- **PRE-COMMAND CHECKLIST** (1 connections) — `.claude/rules/server-management.md`
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (2 shared connections)
-- [HolidayEntry](HolidayEntry.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_holiday_service.py`
+- `.claude/rules/server-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

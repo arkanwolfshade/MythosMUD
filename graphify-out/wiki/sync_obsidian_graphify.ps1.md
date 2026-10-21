@@ -1,10 +1,10 @@
 # sync_obsidian_graphify.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **sync_obsidian_graphify.ps1** (0 connections) — `scripts/sync_obsidian_graphify.ps1`
+- **MythosMUD Commit Messages Skill** (0 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/sync_obsidian_graphify.ps1`
+- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
 
 ## Audit Trail
 

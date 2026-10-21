@@ -1,10 +1,10 @@
 # find_priority_files.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **find_priority_files.py** (0 connections) — `scripts/find_priority_files.py`
+- **unit/caching/__init__.py** (0 connections) — `server/tests/unit/caching/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/find_priority_files.py`
+- `server/tests/unit/caching/__init__.py`
 
 ## Audit Trail
 

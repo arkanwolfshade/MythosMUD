@@ -1,24 +1,23 @@
 # test_process_mortally_wounded_tick_already_dead
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_process_mortally_wounded_tick_already_dead()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test process_mortally_wounded_tick() returns False when player already dead.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **.get_npc_room()** (2 connections) — `server/npc/movement_integration.py`
+- **Get the current room ID for an NPC. Args: npc_id: ID of the NPC Returns:…** (1 connections) — `server/npc/movement_integration.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `server/npc/movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

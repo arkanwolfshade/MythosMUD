@@ -1,15 +1,13 @@
 # check_file_for_logging_issues
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **check_file_for_logging_issues()** (4 connections) — `scripts/check_logging_consistency.py`
-- **main()** (4 connections) — `scripts/check_logging_consistency.py`
-- **check_logging_consistency.py** (2 connections) — `scripts/check_logging_consistency.py`
-- **Path** (2 connections)
-- **Check a single file for logging consistency issues. Args: file_path: Path to…** (1 connections) — `scripts/check_logging_consistency.py`
-- **Main function to check all service files for logging consistency.** (1 connections) — `scripts/check_logging_consistency.py`
+- **Shared JSON Schemas for MythosMUD** (2 connections) — `schemas/README.md`
+- **Static Data SQL Generation** (2 connections) — `scripts/static_data/README.md`
+- **Emote / Pose Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
+- **MythosMUD Scripts** (1 connections) — `scripts/README.md`
 
 ## Relationships
 
@@ -17,12 +15,15 @@
 
 ## Source Files
 
-- `scripts/check_logging_consistency.py`
+- `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
+- `schemas/README.md`
+- `scripts/README.md`
+- `scripts/static_data/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 3 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

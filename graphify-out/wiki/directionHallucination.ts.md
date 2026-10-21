@@ -1,53 +1,45 @@
 # directionHallucination.ts
 
-> 24 nodes
+> 22 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **directionHallucination.ts** (13 connections) — `client/src/utils/directionHallucination.ts`
-- **corruptionDecay.ts** (9 connections) — `client/src/utils/corruptionDecay.ts`
-- **decayMessageText()** (8 connections) — `client/src/utils/corruptionDecay.ts`
-- **AsciiNoise.tsx** (8 connections) — `client/src/components/map/AsciiNoise.tsx`
-- **getHallucinatedExits()** (7 connections) — `client/src/utils/directionHallucination.ts`
-- **mulberry32()** (7 connections) — `client/src/utils/directionHallucination.ts`
-- **AsciiNoise()** (6 connections) — `client/src/components/map/AsciiNoise.tsx`
-- **seedFrom()** (6 connections) — `client/src/utils/directionHallucination.ts`
-- **directionHallucination.test.ts** (6 connections) — `client/src/utils/__tests__/directionHallucination.test.ts`
-- **corruptionDecay.test.ts** (5 connections) — `client/src/utils/__tests__/corruptionDecay.test.ts`
-- **generateAsciiNoise()** (4 connections) — `client/src/utils/directionHallucination.ts`
-- **hashString()** (4 connections) — `client/src/utils/directionHallucination.ts`
-- **ageBucket()** (3 connections) — `client/src/utils/corruptionDecay.ts`
-- **AsciiNoise.test.tsx** (3 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
-- **prefersReducedMotion()** (2 connections) — `client/src/components/map/AsciiNoise.tsx`
-- **ChatHistoryMessageBody()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **isProtectedToken()** (2 connections) — `client/src/utils/corruptionDecay.ts`
-- **shuffle()** (2 connections) — `client/src/utils/directionHallucination.ts`
-- **MYTHOS_GLYPHS** (2 connections) — `client/src/utils/corruptionDecay.ts`
-- **DIRECTION_POOL** (2 connections) — `client/src/utils/directionHallucination.ts`
-- **AsciiNoiseProps** (1 connections) — `client/src/components/map/AsciiNoise.tsx`
-- **HallucinatedDirection** (1 connections) — `client/src/utils/directionHallucination.ts`
-- **mockMatchMedia()** (1 connections) — `client/src/components/map/__tests__/AsciiNoise.test.tsx`
-- **timestampMinutesAgo()** (1 connections) — `client/src/utils/__tests__/corruptionDecay.test.ts`
+- **get_secure_file_path()** (13 connections) — `server/security_utils.py`
+- **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_mixed_case()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_numeric_filename()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_dots()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_hyphens()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_get_secure_file_path_with_underscores()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Get a secure file path within a base directory. Args: filename: The filename…** (1 connections) — `server/security_utils.py`
+- **Test get_secure_file_path with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects invalid characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects filenames with slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path creates base directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with underscores.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with dots.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path accepts filenames with hyphens.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path with numeric filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path with mixed case filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test get_secure_file_path rejects filenames with spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (5 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
-- [map/types.ts](map-types.ts.md) (3 shared connections)
+- [ascii_map_exits.py](ascii_map_exits.py.md) (11 shared connections)
+- [P3 · container-di + client + domain](P3_·_container-di_+_client_+_domain.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/AsciiNoise.tsx`
-- `client/src/components/map/__tests__/AsciiNoise.test.tsx`
-- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- `client/src/utils/__tests__/corruptionDecay.test.ts`
-- `client/src/utils/__tests__/directionHallucination.test.ts`
-- `client/src/utils/corruptionDecay.ts`
-- `client/src/utils/directionHallucination.ts`
+- `server/security_utils.py`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

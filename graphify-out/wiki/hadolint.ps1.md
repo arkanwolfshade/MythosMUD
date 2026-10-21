@@ -1,10 +1,10 @@
 # hadolint.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **hadolint.ps1** (0 connections) — `scripts/hadolint.ps1`
+- **unit/events/__init__.py** (0 connections) — `server/tests/unit/events/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/hadolint.ps1`
+- `server/tests/unit/events/__init__.py`
 
 ## Audit Trail
 

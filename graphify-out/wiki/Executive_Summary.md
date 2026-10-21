@@ -1,25 +1,26 @@
 # Executive Summary
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Executive Summary** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Key Findings** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Test Value Distribution** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Implementation Phases** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 1: Core Separation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 2: Enhanced Features** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 3: Polish and Optimization** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Phase 4: Testing and Refinement** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

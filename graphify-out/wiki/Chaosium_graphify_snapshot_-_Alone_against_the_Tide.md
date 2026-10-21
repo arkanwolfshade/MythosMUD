@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Alone against the Tide
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Alone against the Tide** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
-- **alone-against-the-tide/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **player_respawned Event Payload Gap** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- **Posture Desync After Respawn** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

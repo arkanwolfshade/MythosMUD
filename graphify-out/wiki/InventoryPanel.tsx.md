@@ -1,59 +1,60 @@
 # InventoryPanel.tsx
 
-> 33 nodes
+> 50 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **RoomContainerSummary** (16 connections) — `client/src/components/ui-v2/types.ts`
-- **InventoryPanel.tsx** (16 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **CorpseOverlay.tsx** (13 connections) — `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- **corpseOverlayUtils.ts** (12 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **corpseOverlayUtils.test.ts** (9 connections) — `client/src/components/ui-v2/containers/__tests__/corpseOverlayUtils.test.ts`
-- **getCorpseTiming()** (8 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **InventoryPanel.test.tsx** (7 connections) — `client/src/components/ui-v2/panels/__tests__/InventoryPanel.test.tsx`
-- **CorpseOverlay.test.tsx** (6 connections) — `client/src/components/ui-v2/containers/__tests__/CorpseOverlay.test.tsx`
-- **formatTimeRemaining()** (4 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **isGracePeriodActive()** (4 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **InventoryPanelProps** (3 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **CorpseCard()** (3 connections) — `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- **CorpseOverlay()** (3 connections) — `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- **calculateTimeRemaining()** (3 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **graceMetadata()** (3 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **isCorpseOwner()** (3 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **InventoryPanel()** (3 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **itemLabel()** (3 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **CorpseCardProps** (2 connections) — `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- **CorpseOverlayProps** (2 connections) — `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- **EquippedRow()** (2 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **InventoryRow()** (2 connections) — `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- **CorpseTiming** (1 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **TimeRemaining** (1 connections) — `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- **corpse()** (1 connections) — `client/src/components/ui-v2/containers/__tests__/CorpseOverlay.test.tsx`
-- *... and 8 more nodes in this community*
+- **DatabaseManager** (113 connections) — `server/database.py`
+- **test_database_init.py** (36 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_connection_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_generic_exception()** (6 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_os_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_value_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_none_url_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_postgresql_returns_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_database_path_unsupported_raises()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_engine_handles_no_running_loop()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_get_engine_reinitializes_if_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_config_runtime_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_config_validation_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_converts_postgresql_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_import_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_keeps_asyncpg_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_none_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_skip_if_already_initialized()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_type_error()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_unsupported_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_uses_module_level_url()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_uses_nullpool_for_test()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **test_initialize_database_uses_pool_config_for_production()** (5 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **.get_database_url()** (3 connections) — `server/database.py`
+- **.__init__()** (2 connections) — `server/database.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (9 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (7 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (4 shared connections)
-- [stateUpdateUtils.ts](stateUpdateUtils.ts.md) (2 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (1 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (1 shared connections)
+- [resolve_lazy_attr](resolve_lazy_attr.md) (82 shared connections)
+- [RateLimiter](RateLimiter.md) (13 shared connections)
+- [ItemFactory](ItemFactory.md) (13 shared connections)
+- [test_check_coverage_thresholds.py](test_check_coverage_thresholds.py.md) (10 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (8 shared connections)
+- [intersection_schema.json](intersection_schema.json.md) (5 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [4. Common Fix Patterns](4._Common_Fix_Patterns.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/containers/CorpseOverlay.tsx`
-- `client/src/components/ui-v2/containers/__tests__/CorpseOverlay.test.tsx`
-- `client/src/components/ui-v2/containers/__tests__/corpseOverlayUtils.test.ts`
-- `client/src/components/ui-v2/containers/corpseOverlayUtils.ts`
-- `client/src/components/ui-v2/panels/InventoryPanel.tsx`
-- `client/src/components/ui-v2/panels/__tests__/InventoryPanel.test.tsx`
-- `client/src/components/ui-v2/types.ts`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 122 (56%)
+- INFERRED: 96 (44%)
 - AMBIGUOUS: 0 (0%)
 
 ---

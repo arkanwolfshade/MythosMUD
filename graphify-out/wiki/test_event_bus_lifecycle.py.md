@@ -1,50 +1,64 @@
 # test_event_bus_lifecycle.py
 
-> 44 nodes
+> 68 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_event_bus_lifecycle.py** (24 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **asyncio** (11 connections)
-- **test_shutdown_finally_cancels_leftover_processing_task()** (5 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_shutdown_swallows_unexpected_exception()** (5 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **event_bus()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_abandon_pending_tasks_cancels_and_drains()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_active_tasks_best_effort_cancels_running_tasks()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_and_wait_for_active_tasks_abandons_pending()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_and_wait_for_active_tasks_all_already_done()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_processing_task_swallows_timeout()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_del_running_swallows_logger_warning_error()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_ensure_async_processing_unexpected_exception_logged()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_finalize_shutdown_swallows_logging_error()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_shutdown_swallows_cancelled_error()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_stop_processing_swallows_unexpected_exception()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_warn_shutdown_error_swallows_logging_error()** (4 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_active_tasks_best_effort_no_active_tasks()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_cancel_task_quietly_swallows_runtime_error()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_del_no_op_when_not_running()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_del_running_swallows_shutdown_event_set_error()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_ensure_async_processing_loop_not_running_logs_warning()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **test_signal_shutdown_swallows_queue_full()** (3 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **fixture** (1 connections)
-- **Unit tests for EventBusLifecycleMixin's edge-case and exception-handling…** (1 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- **_cancel_and_wait_for_active_tasks() falls through to _abandon_pending_tasks…** (1 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
-- *... and 19 more nodes in this community*
+- **lifespan_magic.py** (36 connections) — `server/app/lifespan_magic.py`
+- **SpellRegistry** (32 connections) — `server/game/magic/spell_registry.py`
+- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
+- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
+- **SpellRepository** (15 connections) — `server/persistence/repositories/spell_repository.py`
+- **_initialize_magic_service()** (11 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_effects()** (10 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
+- **FastAPI** (9 connections)
+- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
+- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
+- **UUID** (8 connections)
+- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
+- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
+- **._match_combat_opponent()** (7 connections) — `server/game/magic/spell_targeting.py`
+- **_initialize_mp_regeneration_service()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_registry()** (6 connections) — `server/app/lifespan_magic.py`
+- **_initialize_spell_repositories()** (6 connections) — `server/app/lifespan_magic.py`
+- **_link_magic_to_combat()** (6 connections) — `server/app/lifespan_magic.py`
+- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
+- **spell_targeting_service()** (5 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **_validate_magic_prerequisites()** (4 connections) — `server/app/lifespan_magic.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (22 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (19 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (16 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (14 shared connections)
+- [RoomService](RoomService.md) (7 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
+- [test_item.py](test_item.py.md) (6 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (3 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
+- [endpoints.py](endpoints.py.md) (3 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus_lifecycle.py`
+- `server/app/lifespan_magic.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_targeting.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (70%)
-- INFERRED: 24 (30%)
+- EXTRACTED: 190 (87%)
+- INFERRED: 29 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

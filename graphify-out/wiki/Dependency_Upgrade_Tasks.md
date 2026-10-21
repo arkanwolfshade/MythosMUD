@@ -1,10 +1,10 @@
 # Dependency Upgrade Tasks
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dependency Upgrade Tasks** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
+- **Troubleshooting Guide for MythosMUD** (0 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
+- `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Audit Trail
 

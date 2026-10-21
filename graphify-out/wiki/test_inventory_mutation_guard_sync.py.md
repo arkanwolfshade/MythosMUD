@@ -1,38 +1,47 @@
 # test_inventory_mutation_guard_sync.py
 
-> 15 nodes
+> 22 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_sync.py** (10 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_cleanup_empty_state()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_enforces_max_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_serializes_per_player()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_expiry()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **test_acquire_token_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **fixture** (1 connections)
-- **Unit tests for inventory mutation guard - synchronous acquire operations. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire serializes mutations per player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
-- **Test acquire cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- **type** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **flags** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **wear_slots** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **damage_types** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **effect_components** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **spells** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [properties](properties.md) (4 shared connections)
+- [StatsGenerator](StatsGenerator.md) (2 shared connections)
+- [format_metadata](format_metadata.md) (1 shared connections)
+- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_sync.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

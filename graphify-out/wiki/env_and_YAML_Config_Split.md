@@ -1,10 +1,10 @@
 # .env and YAML Config Split
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **.env and YAML Config Split** (0 connections) — `docs/archive/.ENV_REFACTORING_SUMMARY.md`
+- **Whisper System Production-Ready** (0 connections) — `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/.ENV_REFACTORING_SUMMARY.md`
+- `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Audit Trail
 

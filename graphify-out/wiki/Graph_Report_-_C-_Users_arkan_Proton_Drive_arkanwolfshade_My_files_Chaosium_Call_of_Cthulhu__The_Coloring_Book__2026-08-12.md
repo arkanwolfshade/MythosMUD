@@ -1,33 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)
 
-> 11 nodes
+> 10 nodes · cohesion 0.38
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Communities (1 total, 0 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Community 0 - "Mythos Subjects"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **test_calendar_procedures.py** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **holiday_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **npc_schedule_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **test_get_calendar_holidays_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **test_get_calendar_npc_schedules_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **async_sessionmaker** (4 connections)
+- **AsyncSession** (4 connections)
+- **asyncio** (2 connections)
+- **fixture** (2 connections)
+- **Integration tests for db/procedures/calendar.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_calendar_procedures.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (4 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- `server/tests/integration/test_calendar_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 17 (81%)
+- INFERRED: 4 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

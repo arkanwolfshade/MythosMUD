@@ -1,23 +1,24 @@
 # Character Info Combat HP Update Delay
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
-- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **test_register_action_handler_overwrites()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test register_action_handler() overwrites existing handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

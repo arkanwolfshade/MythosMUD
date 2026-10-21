@@ -1,23 +1,24 @@
 # Deprecated get_async_persistence Global
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- **Architecture Review Remediation** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_boolean_condition() handles 'true' literal.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

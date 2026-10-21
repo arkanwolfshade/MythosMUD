@@ -1,27 +1,25 @@
 # player_aliases.sql
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **player_aliases.sql** (5 connections) — `db/procedures/player_aliases.sql`
-- **schema_name.upsert_player_alias()** (2 connections) — `db/procedures/player_aliases.sql`
-- **schema_name.delete_player_alias()** (1 connections) — `db/procedures/player_aliases.sql`
-- **schema_name.delete_player_aliases_by_id()** (1 connections) — `db/procedures/player_aliases.sql`
-- **schema_name.get_player_alias()** (1 connections) — `db/procedures/player_aliases.sql`
-- **schema_name.get_player_aliases()** (1 connections) — `db/procedures/player_aliases.sql`
+- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- [players](players.md) (1 shared connections)
+- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/player_aliases.sql`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

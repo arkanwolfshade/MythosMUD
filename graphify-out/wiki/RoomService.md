@@ -1,74 +1,67 @@
 # RoomService
 
-> 356 nodes
+> 160 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **RoomService** (104 connections) — `server/game/room_service.py`
-- **ExplorationService** (80 connections) — `server/services/exploration_service.py`
-- **maps.py** (66 connections) — `server/api/maps.py`
-- **test_maps.py** (53 connections) — `server/tests/unit/api/test_maps.py`
-- **test_exploration_service.py** (44 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **asyncio** (27 connections)
-- **room_service.py** (26 connections) — `server/game/room_service.py`
-- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
-- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
-- **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
-- **exploration_service.py** (18 connections) — `server/services/exploration_service.py`
-- **asyncio** (18 connections)
-- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
-- **get_ascii_map()** (16 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **ascii_map_renderer.py** (16 connections) — `server/services/ascii_map_renderer.py`
-- **test_rooms_helpers_fetch_room_list.py** (16 connections) — `server/tests/unit/api/test_rooms_helpers_fetch_room_list.py`
-- **map_helpers.py** (14 connections) — `server/api/map_helpers.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
-- **set_map_origin()** (13 connections) — `server/api/maps.py`
-- **apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms_helpers.py`
-- **Any** (13 connections)
-- **recalculate_coordinates()** (12 connections) — `server/api/maps.py`
-- *... and 331 more nodes in this community*
+- **TargetMatch** (173 connections) — `server/schemas/shared/target_resolution.py`
+- **spell_effects.py** (58 connections) — `server/game/magic/spell_effects.py`
+- **spell_effects_heal.py** (41 connections) — `server/game/magic/spell_effects_heal.py`
+- **test_spell_effects_heal.py** (28 connections) — `server/tests/unit/game/magic/test_spell_effects_heal.py`
+- **run_heal_effect()** (26 connections) — `server/game/magic/spell_effects_heal.py`
+- **NpcSpellDamageTarget** (17 connections) — `server/game/magic/spell_effect_types.py`
+- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
+- **SpellEffectsEngineHealPort** (12 connections) — `server/game/magic/spell_effect_types.py`
+- **asyncio** (12 connections)
+- **spell_effect_types.py** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **SpellEffectPlayer** (11 connections) — `server/game/magic/spell_effect_types.py`
+- **get_npc_instance_for_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_run_steal_life()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_apply_target_damage()** (11 connections) — `server/game/magic/spell_effects_heal.py`
+- **spell_effects_internal.py** (11 connections) — `server/game/magic/spell_effects_internal.py`
+- **PlayerPersistenceSpellPort** (10 connections) — `server/game/magic/spell_effect_types.py`
+- **UUID** (10 connections)
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **_steal_life_resolve_target_dp()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **_add_healing_threat_if_in_combat()** (9 connections) — `server/game/magic/spell_effects_heal.py`
+- **coerce_effect_int_times_mastery()** (9 connections) — `server/game/magic/spell_effects_internal.py`
+- **._process_damage()** (9 connections) — `server/game/magic/spell_effects.py`
+- **_steal_life_publish_npc_events()** (8 connections) — `server/game/magic/spell_effects_heal.py`
+- **combat_room_id_for_npc_spell()** (8 connections) — `server/game/magic/spell_effects_internal.py`
+- **UUID** (8 connections)
+- *... and 135 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (125 shared connections)
-- [get_logger](get_logger.md) (44 shared connections)
-- [test_command_admin.py](test_command_admin.py.md) (16 shared connections)
-- [test_map_helpers.py](test_map_helpers.py.md) (13 shared connections)
-- [AsciiMapRenderer](AsciiMapRenderer.md) (6 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (4 shared connections)
-- [CoordinateValidator](CoordinateValidator.md) (4 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [test_room_service.py](test_room_service.py.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (45 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (38 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (30 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (24 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (14 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (13 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (12 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (12 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (10 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (8 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (7 shared connections)
+- [test_item.py](test_item.py.md) (6 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/map_minimap.py`
-- `server/api/maps.py`
-- `server/api/rooms_helpers.py`
-- `server/game/room_service.py`
-- `server/schemas/maps/__init__.py`
-- `server/schemas/maps/map.py`
-- `server/services/ascii_map_renderer.py`
-- `server/services/exploration_service.py`
-- `server/tests/unit/api/test_map_minimap_helpers.py`
-- `server/tests/unit/api/test_maps.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
-- `server/tests/unit/api/test_rooms_helpers_fetch_room_list.py`
-- `server/tests/unit/api/test_rooms_write_api.py`
-- `server/tests/unit/services/test_exploration_service.py`
-- `server/tests/unit/test_dependency_injection.py`
+- `server/commands/combat_taunt.py`
+- `server/game/magic/spell_effect_types.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/game/magic/spell_effects_internal.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/tests/unit/game/magic/test_spell_effects_heal.py`
+- `server/tests/unit/game/magic/test_spell_effects_internal.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 864 (87%)
-- INFERRED: 134 (13%)
+- EXTRACTED: 527 (89%)
+- INFERRED: 62 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

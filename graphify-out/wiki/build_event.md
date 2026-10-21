@@ -1,65 +1,50 @@
 # build_event
 
-> 123 nodes
+> 164 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **build_event()** (123 connections) — `server/realtime/envelope.py`
-- **envelope.py** (35 connections) — `server/realtime/envelope.py`
-- **test_envelope.py** (33 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **emit_posture_change()** (31 connections) — `server/realtime/posture_notify.py`
-- **posture_notify.py** (27 connections) — `server/realtime/posture_notify.py`
-- **rest_countdown_task.py** (18 connections) — `server/commands/rest_countdown_task.py`
-- **test_posture_notify.py** (16 connections) — `server/tests/unit/realtime/test_posture_notify.py`
-- **format_room_posture_message()** (13 connections) — `server/realtime/posture_notify.py`
-- **attach_posture_self_message()** (12 connections) — `server/realtime/posture_notify.py`
-- **create_rest_countdown_task()** (9 connections) — `server/commands/rest_countdown_task.py`
-- **test_position_commands_helpers.py** (9 connections) — `server/tests/unit/commands/test_position_commands_helpers.py`
-- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
-- **_PostureConnectionManager** (7 connections) — `server/realtime/posture_notify.py`
-- **_handle_countdown_loop()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **utc_now_z()** (6 connections) — `server/realtime/envelope.py`
-- **_send_personal_posture_message()** (6 connections) — `server/realtime/posture_notify.py`
-- **UUID** (6 connections)
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections)
-- **_SupportsEventSequence** (4 connections) — `server/realtime/envelope.py`
-- **_broadcast_room_posture_change()** (4 connections) — `server/realtime/posture_notify.py`
-- **test_build_event_defaults_command_response_to_command_output()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **test_build_event_json_serializable()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
-- *... and 98 more nodes in this community*
+- **test_optimized_security_validator.py** (81 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **optimized_security_validator.py** (21 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_message_content()** (20 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_comprehensive_sanitize_input()** (14 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_player_name()** (14 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_action_content()** (9 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_security_comprehensive()** (9 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_sanitize_unicode_input()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_strip_ansi_codes()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_alias_name()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_command_content()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_pose_content()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_reason_content()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_filter_name()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_help_topic()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **optimized_validate_target_player()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
+- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normalizes_newlines()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_normal_text()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_sanitize_unicode_input_unicode()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- *... and 139 more nodes in this community*
 
 ## Relationships
 
-- [MessageCategory](MessageCategory.md) (16 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (13 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (13 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (9 shared connections)
-- [AttributeError](AttributeError.md) (9 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (8 shared connections)
-- [alias_storage.py](alias_storage.py.md) (7 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (7 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (6 shared connections)
-- [FollowService](FollowService.md) (5 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (11 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
-- `server/realtime/envelope.py`
-- `server/realtime/posture_notify.py`
-- `server/services/position_messages.py`
-- `server/tests/unit/commands/test_position_commands_helpers.py`
-- `server/tests/unit/realtime/test_envelope.py`
-- `server/tests/unit/realtime/test_posture_notify.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 378 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 257 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

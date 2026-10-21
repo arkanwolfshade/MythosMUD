@@ -1,57 +1,49 @@
 # ItemCatalogService
 
-> 36 nodes
+> 46 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **ItemCatalogService** (35 connections) — `server/game/item_catalog_service.py`
-- **test_catalog_commands.py** (34 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **parse_catalog_args()** (11 connections) — `server/commands/catalog_commands.py`
-- **_request_with()** (11 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **asyncio** (10 connections)
-- **_player_response()** (9 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_container_without_service_attr()** (9 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_success()** (7 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_admin_from_player()** (6 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_player_object_user_without_get()** (6 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **_CatalogAppStateStub** (5 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **_CatalogAppStub** (5 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_admin_from_user_flags()** (5 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_resolve_is_admin_is_false_for_a_plain_player_with_no_flags()** (5 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_resolve_is_admin_trusts_the_stored_player_over_the_user_flags()** (5 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **_CatalogContainerStub** (4 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **_CatalogRequestStub** (4 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_format_catalog_output_player()** (4 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_handle_catalog_command_failure()** (4 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_resolve_is_admin_falls_back_to_flags_when_the_lookup_fails()** (4 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **_persistence_returning()** (3 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **test_resolve_is_admin_without_a_request_reads_only_the_user_flags()** (3 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **.__init__()** (2 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **.__init__()** (2 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- **.__init__()** (2 connections) — `server/tests/unit/commands/test_catalog_commands.py`
-- *... and 11 more nodes in this community*
+- **.render_map()** (13 connections) — `server/services/ascii_map_renderer.py`
+- **Any** (13 connections)
+- **_RoomRowContext** (7 connections) — `server/services/ascii_map_renderer.py`
+- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_cell_with_room()** (6 connections) — `server/services/ascii_map_renderer.py`
+- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_exit_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_cell()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **_ExitRowContext** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_horizontal_exit_char()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._get_vertical_exit_char()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **._build_exit_bridges()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **._get_reverse_direction()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **._horizontal_exit_char_between()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **._render_empty_map()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **._vertical_exit_char_between()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **NamedTuple** (2 connections)
+- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [catalog_commands.py](catalog_commands.py.md) (15 shared connections)
-- [ItemCatalogResponse](ItemCatalogResponse.md) (13 shared connections)
-- [item_catalog_repository.py](item_catalog_repository.py.md) (10 shared connections)
-- [test_item_catalog.py](test_item_catalog.py.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (20 shared connections)
+- [mock_container](mock_container.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/catalog_commands.py`
-- `server/game/item_catalog_service.py`
-- `server/tests/unit/commands/test_catalog_commands.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 113 (86%)
-- INFERRED: 19 (14%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,32 @@
 # CircuitBreaker Implementation Planning Document
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **CircuitBreaker Implementation Planning Document** (14 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Rollback Plan** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Configuration Schema** (2 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Dependencies** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Gradual Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Immediate Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Objectives** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Overview** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Server Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Timeline** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **.agents/skills/gh-stack/SKILL.md** (3 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **.cursor/skills/gh-stack/SKILL.md** (2 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [Architecture Overview](Architecture_Overview.md) (1 shared connections)
-- [Implementation Details](Implementation_Details.md) (1 shared connections)
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
-- [Testing Strategy](Testing_Strategy.md) (1 shared connections)
-- [Monitoring and Alerting](Monitoring_and_Alerting.md) (1 shared connections)
-- [Success Criteria](Success_Criteria.md) (1 shared connections)
-- [Future Enhancements](Future_Enhancements.md) (1 shared connections)
+- [FAILURE PATTERN RECOGNITION](FAILURE_PATTERN_RECOGNITION.md) (1 shared connections)
+- [P4 · Intent Sweep — Plan Documents](P4_·_Intent_Sweep_—_Plan_Documents.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `.agents/skills/gh-stack/SKILL.md`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

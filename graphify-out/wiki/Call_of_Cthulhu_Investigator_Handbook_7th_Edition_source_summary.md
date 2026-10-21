@@ -1,25 +1,29 @@
 # Call of Cthulhu Investigator Handbook 7th Edition (source summary)
 
-> 4 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Call of Cthulhu Investigator Handbook 7th Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **Call of Cthulhu Investigator Handbook 7th Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **messageCategoryPalette.test.ts** (9 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **contrastRatio()** (2 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **relativeLuminance()** (2 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **css** (1 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **highContrast** (1 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **normal** (1 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **paletteIn()** (1 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
+- **read()** (1 connections) — `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (2 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- `client/src/components/ui-v2/utils/__tests__/messageCategoryPalette.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

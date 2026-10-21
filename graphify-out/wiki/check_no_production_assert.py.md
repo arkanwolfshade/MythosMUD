@@ -1,35 +1,34 @@
 # check_no_production_assert.py
 
-> 14 nodes
+> 13 nodes · cohesion 0.31
 
 ## Key Concepts
 
-- **check_no_production_assert.py** (6 connections) — `scripts/check_no_production_assert.py`
-- **_AssertFinder** (5 connections) — `scripts/check_no_production_assert.py`
-- **find_assert_line_numbers()** (5 connections) — `scripts/check_no_production_assert.py`
-- **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
-- **main()** (4 connections) — `scripts/check_no_production_assert.py`
-- **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
-- **Path** (3 connections)
-- **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
-- **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
-- **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
-- **Assert** (1 connections)
-- **True for MythosMUD backend modules under ``server/``, excluding tests and…** (1 connections) — `scripts/check_no_production_assert.py`
-- **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`
-- **Return sorted unique line numbers of ``assert`` in file; empty if none or…** (1 connections) — `scripts/check_no_production_assert.py`
+- **run_quality_fragmentation_guard.py** (12 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **main()** (6 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolved_changed_files()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_run_git()** (5 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_build_guard_command()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_changed_files_between()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_git_executable()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_local_changed_files()** (4 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_is_graphify_path()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_resolve_base_sha()** (3 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **_argv_char_len()** (2 connections) — `scripts/run_quality_fragmentation_guard.py`
+- **Path** (1 connections)
+- **Generated graphify trees are not product code; skip guard/lint argv bloat.** (1 connections) — `scripts/run_quality_fragmentation_guard.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [format_occupant_display_name](format_occupant_display_name.md) (6 shared connections)
 
 ## Source Files
 
-- `scripts/check_no_production_assert.py`
+- `scripts/run_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,10 @@
 # unit/validators/__init__.py
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **unit/validators/__init__.py** (1 connections) — `server/tests/unit/validators/__init__.py`
-- **Validators unit tests.** (1 connections) — `server/tests/unit/validators/__init__.py`
+- **MythosMUD Local Data Directory** (0 connections) — `data/local/README.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/tests/unit/validators/__init__.py`
+- `data/local/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

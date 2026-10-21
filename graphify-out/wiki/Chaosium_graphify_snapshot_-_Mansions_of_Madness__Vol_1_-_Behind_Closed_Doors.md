@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
-- **mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

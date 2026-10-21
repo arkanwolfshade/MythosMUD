@@ -1,35 +1,15 @@
 # emotes.schema.json
 
-> 32 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **emotes.schema.json** (7 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (5 connections) — `db/static/schemas/emotes.schema.json`
-- **properties** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **required** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **aliases** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **emotes** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **items** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **other_message** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **self_message** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **properties** (2 connections) — `db/static/schemas/emotes.schema.json`
-- **required** (2 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **$id** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- *... and 7 more nodes in this community*
+- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
+- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
+- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
+- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
+- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
+- **Summary** (1 connections) — `docs/archive/migration_report.md`
 
 ## Relationships
 
@@ -37,11 +17,11 @@
 
 ## Source Files
 
-- `db/static/schemas/emotes.schema.json`
+- `docs/archive/migration_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

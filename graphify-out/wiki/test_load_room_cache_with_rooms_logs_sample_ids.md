@@ -1,23 +1,23 @@
 # test_load_room_cache_with_rooms_logs_sample_ids
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_load_room_cache_with_rooms_logs_sample_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _load_room_cache logs sample room IDs when rooms are loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Typography Reference** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
+- **Vertical Rhythm Typography** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

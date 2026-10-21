@@ -1,56 +1,68 @@
 # test_passive_corruption_flux_service.py
 
-> 36 nodes
+> 33 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_passive_corruption_flux_service.py** (37 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **_room()** (14 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **CorruptionFluxServiceConfig** (9 connections) — `server/services/passive_corruption_flux/config.py`
-- **test_innsmouth_pier_converges_upward_and_clamps_at_its_own_ceiling()** (9 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_process_tick_for_player_applies_bounded_rising_delta()** (8 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **CorruptionUpdateResult** (7 connections) — `server/services/corruption_service.py`
-- **test_default_cadence_derived_from_tick_rate()** (6 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_lookup_db_override_wins_over_static_config()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_process_tick_for_player_zero_delta_skips_write()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_room_attribute_rate_wins_over_db_override()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_room_attribute_target_wins_over_db_override()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **asyncio** (5 connections)
-- **_player()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_room_authoring_only_rate_still_inherits_db_target()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_lookup_rate_and_target_environment_defaults()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_lookup_rate_night_profile_differs_from_day()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_lookup_target_room_attribute_takes_precedence()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_process_tick_for_player_no_persistence_is_noop()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_process_tick_for_player_skipped_off_cadence()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_room_attribute_rate_wins_over_environment_default()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_apply_residual_accumulates_then_emits_delta()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_bound_delta_caps_rise_at_room_target()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_bound_delta_floors_fall_at_current_tier_bottom()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- **test_should_process_tick()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_service.py`
-- *... and 11 more nodes in this community*
+- **Frontend Design Skill** (30 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Frontend Design Skill** (7 connections) — `.cursor/skills/frontend-design/SKILL.md`
+- **Color & Contrast** (6 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Contrast & Accessibility** (5 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **interaction-design.md** (5 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **Normalize Skill** (5 connections) — `.claude/skills/normalize/SKILL.md`
+- **Building Functional Palettes** (4 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **color-and-contrast.md** (3 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Theming: Light & Dark Mode** (3 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **motion-design.md** (3 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **responsive-design.md** (3 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
+- **ux-writing.md** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
+- **Alpha Is A Design Smell** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Color Spaces: Use OKLCH** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Dangerous Color Combinations** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Dark Mode Is Not Inverted Light Mode** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Never Use Pure Gray or Pure Black** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Palette Structure** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Testing** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **The 60-30-10 Rule (Applied Correctly)** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **The Tinted Neutral Trap** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Token Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **WCAG Requirements** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **Context Gathering Protocol** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Design Direction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (12 shared connections)
-- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [CorruptionTier](CorruptionTier.md) (3 shared connections)
-- [.apply_corruption_adjustment](apply_corruption_adjustment.md) (2 shared connections)
-- [passive_corruption_flux/config.py](passive_corruption_flux-config.py.md) (2 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [fix_file](fix_file.md) (2 shared connections)
+- [skill](skill.md) (1 shared connections)
+- [P3 · realtime-connection + events-nats](P3_·_realtime-connection_+_events-nats.md) (1 shared connections)
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
+- [App Package Design](App_Package_Design.md) (1 shared connections)
+- [test_run_make_stages.py](test_run_make_stages.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [validate_codacy_coverage_gate.py](validate_codacy_coverage_gate.py.md) (1 shared connections)
+- [type](type.md) (1 shared connections)
+- [analyze_log_file](analyze_log_file.md) (1 shared connections)
+- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corruption_service.py`
-- `server/services/passive_corruption_flux/config.py`
-- `server/tests/unit/services/test_passive_corruption_flux_service.py`
+- `.claude/skills/frontend-design/SKILL.md`
+- `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- `.claude/skills/frontend-design/reference/interaction-design.md`
+- `.claude/skills/frontend-design/reference/motion-design.md`
+- `.claude/skills/frontend-design/reference/responsive-design.md`
+- `.claude/skills/frontend-design/reference/ux-writing.md`
+- `.claude/skills/normalize/SKILL.md`
+- `.cursor/skills/frontend-design/SKILL.md`
+- `.playwright-mcp/combat-verification-screenshot.png`
+- `.playwright-mcp/death-respawn-ui-test.png`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 60 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

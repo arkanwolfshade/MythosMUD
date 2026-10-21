@@ -1,34 +1,37 @@
 # _EventPersistence
 
-> 11 nodes
+> 15 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **_EventPersistence** (6 connections) — `server/realtime/event_publisher.py`
-- **_NatsPublish** (5 connections) — `server/realtime/event_publisher.py`
-- **.__init__()** (5 connections) — `server/realtime/event_publisher.py`
-- **_Named** (4 connections) — `server/realtime/event_publisher.py`
-- **.get_player_by_id()** (3 connections) — `server/realtime/event_publisher.py`
-- **Protocol** (3 connections)
-- **.get_room_by_id()** (2 connections) — `server/realtime/event_publisher.py`
-- **UUID** (2 connections)
-- **.is_connected()** (1 connections) — `server/realtime/event_publisher.py`
-- **.publish()** (1 connections) — `server/realtime/event_publisher.py`
-- **Initialize EventPublisher service. Args: nats_service: NATS service instance…** (1 connections) — `server/realtime/event_publisher.py`
+- **MessageBatcher** (11 connections) — `client/src/utils/messageBatcher.ts`
+- **useMessageBatcher()** (6 connections) — `client/src/utils/messageBatcher.ts`
+- **messageBatcher.ts** (5 connections) — `client/src/utils/messageBatcher.ts`
+- **.addMessage()** (5 connections) — `client/src/utils/messageBatcher.ts`
+- **messageBatcher.test.ts** (4 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
+- **.flush()** (3 connections) — `client/src/utils/messageBatcher.ts`
+- **.sendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
+- **.shouldSendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
+- **BatchedMessage** (2 connections) — `client/src/utils/messageBatcher.ts`
+- **.clear()** (2 connections) — `client/src/utils/messageBatcher.ts`
+- **.generateId()** (2 connections) — `client/src/utils/messageBatcher.ts`
+- **.getBatchSize()** (2 connections) — `client/src/utils/messageBatcher.ts`
+- **.getBatchSizeBytes()** (2 connections) — `client/src/utils/messageBatcher.ts`
+- **BatchConfig** (1 connections) — `client/src/utils/messageBatcher.ts`
+- **.constructor()** (1 connections) — `client/src/utils/messageBatcher.ts`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [EventPublisher](EventPublisher.md) (2 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/event_publisher.py`
+- `client/src/utils/__tests__/messageBatcher.test.ts`
+- `client/src/utils/messageBatcher.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
-- **call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **UI Panel Resize Bug** (1 connections) — `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- **UI Panel Resize Fix Verified** (1 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Relationships
 
@@ -14,11 +13,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

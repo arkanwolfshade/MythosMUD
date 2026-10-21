@@ -1,62 +1,61 @@
 # logging_file_setup.py
 
-> 102 nodes
+> 86 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **logging_file_setup.py** (37 connections) — `server/structured_logging/logging_file_setup.py`
-- **test_logging_file_setup.py** (24 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **setup_enhanced_file_logging()** (22 connections) — `server/structured_logging/logging_file_setup.py`
-- **logging_file_categories.py** (16 connections) — `server/structured_logging/logging_file_categories.py`
-- **_Handler** (15 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **add_handler_to_loggers()** (12 connections) — `server/structured_logging/logging_file_categories.py`
-- **LoggerNameFilter** (11 connections) — `server/structured_logging/logging_file_categories.py`
-- **_setup_aggregator_handlers()** (10 connections) — `server/structured_logging/logging_file_setup.py`
-- **create_handler_for_category()** (9 connections) — `server/structured_logging/logging_file_categories.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_setup_category_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
-- **_restore_root_handlers()** (9 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_root_handlers_snapshot()** (9 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_queue_listener_has_aggregator_handlers()** (9 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_warning_and_error_reach_aggregator_files()** (9 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **Queue** (9 connections)
-- **DropOldestQueueHandler** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **create_formatter()** (8 connections) — `server/structured_logging/logging_file_categories.py`
-- **_setup_console_handler()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **stop_queue_listener()** (8 connections) — `server/structured_logging/logging_file_setup.py`
-- **test_async_log_queue_is_bounded()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_async_setup_applies_category_levels()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **apply_category_levels()** (7 connections) — `server/structured_logging/logging_file_categories.py`
-- **get_queue_listener()** (7 connections) — `server/structured_logging/logging_file_setup.py`
-- **test_aggregator_handlers_on_root_when_async()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- *... and 77 more nodes in this community*
+- **ContainerService** (98 connections) — `server/services/container_service.py`
+- **test_container_service.py** (80 connections) — `server/tests/unit/services/test_container_service.py`
+- **asyncio** (29 connections)
+- **_container_data()** (27 connections) — `server/tests/unit/services/test_container_service.py`
+- **_stack()** (21 connections) — `server/tests/unit/services/test_container_service.py`
+- **MutationDecision** (17 connections) — `server/services/inventory_mutation_guard.py`
+- **_container()** (16 connections) — `server/tests/unit/services/test_container_service.py`
+- **_open_from_fixture()** (11 connections) — `server/tests/unit/services/test_container_service.py`
+- **_bank_box()** (10 connections) — `server/tests/unit/services/test_container_service.py`
+- **_allow_all_mutations()** (8 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_capacity_exceeded()** (8 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_item_not_found()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_mutation_guard_suppressed()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_reraises_unexpected_error()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_success()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_stops_on_capacity_error()** (6 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_mutation_guard_suppressed()** (6 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_player_not_found()** (6 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_success()** (6 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_lock_container_updates_state()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_continues_past_other_errors()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_open_container_already_open_is_idempotent()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_open_container_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_utilities.py](test_logging_utilities.py.md) (12 shared connections)
-- [LoggingConfig](LoggingConfig.md) (12 shared connections)
-- [test_logging_file_categories.py](test_logging_file_categories.py.md) (9 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [command_result_text](command_result_text.md) (2 shared connections)
-- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
-- [safe_run_static](safe_run_static.md) (1 shared connections)
-- [LogAggregator](LogAggregator.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (20 shared connections)
+- [CombatParticipant](CombatParticipant.md) (13 shared connections)
+- [test_look_player.py](test_look_player.py.md) (12 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (9 shared connections)
+- [ExplorationCommandFactory](ExplorationCommandFactory.md) (6 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [test_metadata.py](test_metadata.py.md) (3 shared connections)
+- [ComprehensiveLoggingMiddleware](ComprehensiveLoggingMiddleware.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\S. Petersen's Field Guide to Lovecraftian Horrors  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_S._Petersen's_Field_Guide_to_Lovecraftian_Horrors__2026-08-12.md) (2 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_categories.py`
-- `server/structured_logging/logging_file_setup.py`
-- `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- `server/services/container_service.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/tests/unit/services/test_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 235 (71%)
+- INFERRED: 96 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---

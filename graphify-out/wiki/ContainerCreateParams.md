@@ -1,64 +1,53 @@
 # ContainerCreateParams
 
-> 58 nodes
+> 41 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **ContainerCreateParams** (41 connections) — `server/persistence/container_create_params.py`
-- **test_bank_service.py** (24 connections) — `server/tests/unit/services/test_bank_service.py`
-- **get_or_create_bank_box()** (18 connections) — `server/services/bank_service.py`
-- **FakeBankPersistence** (15 connections) — `server/tests/unit/services/test_bank_service.py`
-- **container_create_params.py** (14 connections) — `server/persistence/container_create_params.py`
-- **forward_to_bank_box()** (13 connections) — `server/services/bank_service.py`
-- **BankBoxPersistence** (12 connections) — `server/services/bank_service.py`
-- **test_deleting_the_owner_leaves_an_orphaned_box_nobody_can_look_up()** (12 connections) — `server/tests/integration/test_bank_box_persistence.py`
-- **test_box_is_created_once_and_stacks_persist_in_order_without_trimming()** (11 connections) — `server/tests/integration/test_bank_box_persistence.py`
-- **test_each_owner_has_their_own_box_and_the_database_allows_only_one_each()** (11 connections) — `server/tests/integration/test_bank_box_persistence.py`
-- **_create_player()** (10 connections) — `server/tests/integration/test_bank_box_persistence.py`
-- **is_bank_room()** (8 connections) — `server/services/bank_service.py`
-- **_cleanup()** (8 connections) — `server/tests/integration/test_bank_box_persistence.py`
-- **asyncio** (7 connections)
-- **test_a_create_failure_with_no_box_to_fall_back_on_is_raised()** (6 connections) — `server/tests/unit/services/test_bank_service.py`
-- **test_forward_over_fills_a_full_box_rather_than_evicting()** (6 connections) — `server/tests/unit/services/test_bank_service.py`
-- **test_forward_creates_the_box_when_the_player_has_none()** (5 connections) — `server/tests/unit/services/test_bank_service.py`
-- **test_losing_a_create_race_uses_the_winners_box()** (5 connections) — `server/tests/unit/services/test_bank_service.py`
-- **UUID** (5 connections)
-- **async_sessionmaker** (5 connections)
-- **AsyncSession** (5 connections)
-- **test_create_container_wraps_psycopg2_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **.create_container()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
-- **test_each_player_gets_their_own_box()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
-- **test_first_use_creates_a_bank_box_owned_by_the_player()** (4 connections) — `server/tests/unit/services/test_bank_service.py`
-- *... and 33 more nodes in this community*
+- **test_websocket_handler_app_state_connection.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **resolve_and_setup_app_state_services()** (19 connections) — `server/realtime/websocket_handler_app_state.py`
+- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
+- **asyncio** (8 connections)
+- **test_handle_websocket_connection_connect_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_setup_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_state_exit()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_with_room_and_death()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_services_from_container()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- **test_cleanup_connection_leaves_mutes_alone()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_message_loop()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_container_no_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_missing_services()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_app_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_container_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_player_service()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_user_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_services_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **WebSocket app.state / container service wiring for command processing.…** (1 connections) — `server/realtime/websocket_handler_app_state.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (35 shared connections)
-- [Room](Room.md) (8 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (7 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (6 shared connections)
-- [ContainerData](ContainerData.md) (5 shared connections)
-- [ContainerRepository](ContainerRepository.md) (5 shared connections)
-- [alias_storage.py](alias_storage.py.md) (5 shared connections)
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (4 shared connections)
-- [session_factory](session_factory.md) (3 shared connections)
-- [WearableContainerService](WearableContainerService.md) (2 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (2 shared connections)
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) (2 shared connections)
+- [test_corpse_lifecycle_decay.py](test_corpse_lifecycle_decay.py.md) (6 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
+- [look_container.py](look_container.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_logging_file_categories.py](test_logging_file_categories.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_create_params.py`
-- `server/services/bank_service.py`
-- `server/tests/integration/test_bank_box_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- `server/tests/unit/services/test_bank_service.py`
-- `server/tests/unit/services/test_room_furniture_loader.py`
+- `server/realtime/websocket_handler_app_state.py`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (90%)
-- INFERRED: 20 (10%)
+- EXTRACTED: 82 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,66 +1,52 @@
 # event_handler.py
 
-> 127 nodes
+> 68 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **event_handler.py** (42 connections) — `server/realtime/event_handler.py`
-- **NPCEventHandler** (41 connections) — `server/realtime/npc_event_handlers.py`
-- **MessageBuilder** (38 connections) — `server/realtime/message_builders.py`
-- **RealTimeEventHandler** (35 connections) — `server/realtime/event_handler.py`
-- **test_npc_event_handlers_segments.py** (18 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **.call()** (15 connections) — `server/realtime/circuit_breaker.py`
-- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
-- **_named()** (9 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **._initialize_modules()** (8 connections) — `server/realtime/event_handler.py`
-- **._get_next_sequence()** (8 connections) — `server/realtime/message_builders.py`
-- **test_authored_spawn_text_stays_plain()** (8 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **_drive_npc_room_messages()** (7 connections) — `server/tests/unit/realtime/test_message_category_invariants.py`
-- **test_default_departure_line_styles_the_name_and_authored_text_does_not()** (7 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **test_default_spawn_line_styles_the_name()** (7 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **test_movement_into_the_room_styles_the_name_by_disposition()** (7 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **test_movement_out_of_the_room_styles_the_name_by_disposition()** (7 connections) — `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
-- **Any** (7 connections)
-- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_room_message()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **Any** (6 connections)
-- **._send_room_occupants_update_internal()** (5 connections) — `server/realtime/event_handler.py`
-- **.build_occupants_update_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.create_player_entered_message()** (5 connections) — `server/realtime/message_builders.py`
-- **.create_player_left_message()** (5 connections) — `server/realtime/message_builders.py`
-- *... and 102 more nodes in this community*
+- **generate_arkham_grid.py** (24 connections) — `scripts/generate_arkham_grid.py`
+- **arkham_grid_spec.py** (13 connections) — `scripts/arkham_grid_spec.py`
+- **splice_arkham_grid.py** (11 connections) — `scripts/splice_arkham_grid.py`
+- **segments()** (8 connections) — `scripts/arkham_grid_spec.py`
+- **main()** (8 connections) — `scripts/generate_arkham_grid.py`
+- **splice()** (8 connections) — `scripts/splice_arkham_grid.py`
+- **render()** (7 connections) — `scripts/arkham_grid_spec.py`
+- **build_rooms()** (7 connections) — `scripts/generate_arkham_grid.py`
+- **crossings()** (6 connections) — `scripts/arkham_grid_spec.py`
+- **Street** (6 connections) — `scripts/arkham_grid_spec.py`
+- **links_tsv()** (6 connections) — `scripts/generate_arkham_grid.py`
+- **rooms_tsv()** (6 connections) — `scripts/generate_arkham_grid.py`
+- **_tsv()** (6 connections) — `scripts/generate_arkham_grid.py`
+- **blocks_between()** (5 connections) — `scripts/arkham_grid_spec.py`
+- **Seg** (5 connections) — `scripts/arkham_grid_spec.py`
+- **Room** (5 connections) — `scripts/generate_arkham_grid.py`
+- **room_uuid()** (5 connections) — `scripts/generate_arkham_grid.py`
+- **segment_name()** (5 connections) — `scripts/generate_arkham_grid.py`
+- **zone_configurations_tsv()** (5 connections) — `scripts/generate_arkham_grid.py`
+- **numbered_segments()** (4 connections) — `scripts/arkham_grid_spec.py`
+- **subzone_at()** (4 connections) — `scripts/arkham_grid_spec.py`
+- **summary()** (4 connections) — `scripts/arkham_grid_spec.py`
+- **build_links()** (4 connections) — `scripts/generate_arkham_grid.py`
+- **Link** (4 connections) — `scripts/generate_arkham_grid.py`
+- **subzone_uuid()** (4 connections) — `scripts/generate_arkham_grid.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [NpcDisposition](NpcDisposition.md) (32 shared connections)
-- [EventBus](EventBus.md) (18 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (10 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (10 shared connections)
-- [AttributeError](AttributeError.md) (8 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (8 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (7 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (5 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (4 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
-- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/message_builders.py`
-- `server/realtime/npc_event_handlers.py`
-- `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_message_builders.py`
-- `server/tests/unit/realtime/test_message_category_invariants.py`
-- `server/tests/unit/realtime/test_npc_event_handlers_segments.py`
+- `scripts/arkham_grid_spec.py`
+- `scripts/arkham_street_voices.py`
+- `scripts/generate_arkham_grid.py`
+- `scripts/splice_arkham_grid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 291 (87%)
-- INFERRED: 43 (13%)
+- EXTRACTED: 126 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

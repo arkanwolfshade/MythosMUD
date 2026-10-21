@@ -1,35 +1,31 @@
 # test_combat_guard.py
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **test_combat_guard.py** (15 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **_fight()** (11 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **_player()** (10 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_a_protector_covers_one_ally_and_the_latest_wins()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_an_ally_has_one_protector_and_the_latest_wins()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_cover_ends_when_the_ally_leaves_the_fight()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_cover_ends_when_the_protector_drops_to_zero_dp()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_cover_ends_when_the_protector_leaves_the_fight()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_cover_holds_through_its_last_round_then_lapses()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_no_guard_by_default()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **test_set_guard_covers_the_ally_and_marks_the_protector()** (3 connections) — `server/tests/unit/models/test_combat_guard.py`
-- **#991: Protect cover is checked on read, so it lapses on its own and needs no…** (1 connections) — `server/tests/unit/models/test_combat_guard.py`
+- **Findings** (5 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY: Manual Statistical Calculations** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY: Dice Rolling and Stat Generation** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🔵 LOW PRIORITY: Type Hints and Documentation** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 1: Performance Monitor - Manual Statistics** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 2: Performance Tracker - Repeated Statistical Operations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 3: Stats Generator - Manual Dice Rolling** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 4: Stats Summary - Manual Summation** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 5: Missing NumPy Type Hints** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **✅ RESOLVED: NumPy Dependency and Usage** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_combat_guard.py`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,33 @@
 # description
 
-> 5 nodes
+> 10 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **maxLength** (1 connections) — `schemas/room_schema.json`
-- **minLength** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
+- **component_hooks.py** (6 connections) — `server/game/items/component_hooks.py`
+- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_records_prototype_components()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **Any** (1 connections)
+- **Component hook coordination for freshly minted item instances.** (1 connections) — `server/game/items/component_hooks.py`
+- **Prepare component state metadata for a new item instance. This routine…** (1 connections) — `server/game/items/component_hooks.py`
+- **Unit tests for item component hooks.** (1 connections) — `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/game/items/component_hooks.py`
+- `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

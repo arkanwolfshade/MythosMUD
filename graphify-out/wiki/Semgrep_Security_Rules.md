@@ -1,10 +1,10 @@
 # Semgrep Security Rules
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Semgrep Security Rules** (0 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **AI READING INSTRUCTION** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/tools-configs/semgrep.yaml`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

@@ -1,54 +1,67 @@
 # ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List
 
-> 22 nodes
+> 63 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List** (11 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **Package Services Design** (10 connections) — `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- **Aggro and Threat System Design** (4 connections) — `docs/architecture/aggro-threat-system.md`
-- **Subsystem Combat Design** (3 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- **ADR-023-package-ownership-and-fan-out.md** (2 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **ADR-016 Aggro and Threat Management** (2 connections) — `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
-- **Rescue Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
-- **Stability margin (10% target-switch threshold)** (2 connections) — `docs/architecture/aggro-threat-system.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **6. Methodology** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **7. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **8. Related docs** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **9. Changelog** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- **NPC Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- **Respawn Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
-- **Hate list (per-mob threat map)** (1 connections) — `docs/architecture/aggro-threat-system.md`
-- **Distributed EventBus via NATS** (1 connections) — `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
+- **NPCLeftRoom** (46 connections) — `server/events/event_types.py`
+- **test_lifecycle_manager.py** (29 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **despawn_npc_impl()** (22 connections) — `server/npc/lifecycle_despawn.py`
+- **test_lifecycle_despawn.py** (21 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **_make_manager()** (19 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **lifecycle_despawn.py** (16 connections) — `server/npc/lifecycle_despawn.py`
+- **lifecycle_types.py** (16 connections) — `server/npc/lifecycle_types.py`
+- **NPCLifecycleEvent** (13 connections) — `server/npc/lifecycle_types.py`
+- **_make_manager()** (12 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **_resolve_despawn_room_id()** (6 connections) — `server/npc/lifecycle_despawn.py`
+- **_remove_npc_from_room_on_despawn()** (5 connections) — `server/npc/lifecycle_despawn.py`
+- **test_despawn_exception_sets_error_state()** (5 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_success_with_persistence_and_room()** (5 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **._publish_movement_events()** (4 connections) — `server/npc/movement_integration.py`
+- **test_despawn_publishes_event_when_room_missing()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_stops_npc_thread_worker()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_despawn_stops_npc_thread_worker_even_without_active_instance()** (4 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- **test_handle_npc_entered_room_transitions_spawning()** (4 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **test_queue_npc_thread_stop_schedules_stop_on_thread_manager()** (4 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
+- **Any** (3 connections)
+- **.despawn_npc()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._handle_npc_left_room()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **._handle_npc_left_room()** (3 connections) — `server/npc/population_control.py`
+- **._handle_npc_left_room()** (3 connections) — `server/npc/spawning_service.py`
+- **test_despawn_prefers_current_room_over_room_id()** (3 connections) — `server/tests/unit/npc/test_lifecycle_despawn.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (4 shared connections)
-- [Services Package Design](Services_Package_Design.md) (1 shared connections)
-- [Movement Subsystem Design](Movement_Subsystem_Design.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (19 shared connections)
+- [SpellEffectType](SpellEffectType.md) (10 shared connections)
+- [SpellLearningService](SpellLearningService.md) (8 shared connections)
+- [BaseEvent](BaseEvent.md) (7 shared connections)
+- [look_container.py](look_container.py.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (6 shared connections)
+- [RoomLoader](RoomLoader.md) (5 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (5 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [aggro_threat.py](aggro_threat.py.md) (2 shared connections)
+- [._bind_event_type](_bind_event_type.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
-- `docs/architecture/aggro-threat-system.md`
-- `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
-- `docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md`
-- `docs/packages/PACKAGE_SERVICES_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
+- `server/events/event_types.py`
+- `server/npc/lifecycle_despawn.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_types.py`
+- `server/npc/movement_integration.py`
+- `server/npc/population_control.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/npc/test_lifecycle_despawn.py`
+- `server/tests/unit/npc/test_lifecycle_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (93%)
-- INFERRED: 2 (7%)
+- EXTRACTED: 184 (90%)
+- INFERRED: 21 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

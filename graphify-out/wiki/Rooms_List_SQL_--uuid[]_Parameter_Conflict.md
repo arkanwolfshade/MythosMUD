@@ -1,13 +1,11 @@
 # Rooms List SQL ::uuid[] Parameter Conflict
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **React Node Upgrade Plan** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
+- **React Node Upgrade Summary** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
 
 ## Relationships
 
@@ -15,13 +13,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

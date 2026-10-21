@@ -1,25 +1,26 @@
 # dexterity
 
-> 3 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **dexterity** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

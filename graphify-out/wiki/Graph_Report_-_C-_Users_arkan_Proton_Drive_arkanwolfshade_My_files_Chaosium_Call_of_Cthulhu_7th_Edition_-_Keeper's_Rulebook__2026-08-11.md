@@ -1,38 +1,38 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)
 
-> 16 nodes
+> 15 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Communities (17 total, 12 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 0 - "Character and Skills"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 1 - "Character and Skills (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 2 - "Core Rules"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 3 - "Core Rules (3)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 4 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **test_event_publisher_helpers.py** (9 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **fixture** (2 connections)
+- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Unit tests for event publisher helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _get_async_persistence() returns the injected persistence layer (#679:…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Code Quality Targets for AI](MythosMUD_Code_Quality_Targets_for_AI.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 17 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

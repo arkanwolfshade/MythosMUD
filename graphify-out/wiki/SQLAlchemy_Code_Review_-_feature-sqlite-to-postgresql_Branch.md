@@ -1,44 +1,43 @@
 # SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch
 
-> 22 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (6 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (2 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **SQLALCHEMY_CODE_REVIEW.md** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **1. SQL Injection Vulnerability in `update_player_stat_field()` - ✅ FIXED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **2. Missing Eager Loading for Relationships** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **3. Mixed Database Access Patterns** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **4. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **5. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **6. Long-Lived Sessions** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **7. Connection Pool Configuration** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **8. Transaction Boundaries** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **9. Error Handling in Database Operations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **✅ GOOD PRACTICES OBSERVED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Immediate Actions (This Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Long-term (Future)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **References** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Short-term (Next Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Testing Recommendations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.validator()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_path_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.zone_transition_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **fixture** (2 connections)
+- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Tests for path validator functionality. Validates room connectivity analysis…** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [asyncio](asyncio.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

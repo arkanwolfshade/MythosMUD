@@ -1,49 +1,47 @@
 # test_health_monitor.py
 
-> 27 nodes
+> 24 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **test_health_monitor.py** (26 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **asyncio** (12 connections)
-- **test_check_all_connections_health()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_player_connection_health()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_player_connection_health_no_websockets()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_player_connection_health_unhealthy()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_start_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_stop_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_all_connections_health_with_metadata()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_cleanup_stale_connections()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_health_monitor_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_periodic_health_check_task_cancel()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_process_single_connection_paths()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_validate_and_update_token()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_wait_for_task_cancellation()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_connection_stale()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_check_websocket_open()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_find_player_id_for_cleanup()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **test_start_periodic_checks_already_running()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Unit tests for health monitor. Tests the HealthMonitor class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_all_connections_health() checks all connections.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test start_periodic_checks() starts periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test stop_periodic_checks() stops periodic checks.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test HealthMonitor initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Test check_player_connection_health() returns health status.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- *... and 2 more nodes in this community*
+- **test_request_schema_security.py** (13 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_all_route_reachable_models()** (7 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_iter_body_models()** (6 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_iter_api_routes()** (5 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_iter_nested_models()** (4 connections) — `server/tests/integration/test_request_schema_security.py`
+- **BaseModel** (3 connections)
+- **_resolve_hints()** (3 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_RouteContainer** (3 connections) — `server/tests/integration/test_request_schema_security.py`
+- **_RouterHolder** (3 connections) — `server/tests/integration/test_request_schema_security.py`
+- **test_every_request_body_schema_is_secure_base_model()** (3 connections) — `server/tests/integration/test_request_schema_security.py`
+- **APIRoute** (2 connections)
+- **Protocol** (2 connections)
+- **test_secure_base_model_config_survives_subclass_json_schema_extra()** (2 connections) — `server/tests/integration/test_request_schema_security.py`
+- **BaseRoute** (1 connections)
+- **Guard: every FastAPI request-body schema must inherit SecureBaseModel. #755…** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Yield model and every BaseModel subclass reachable through its fields, once…** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Map each request-body-reachable model to the route path(s) that reach it.** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Every schema reachable from a request body must inherit SecureBaseModel.** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **A subclass that redeclares model_config only for json_schema_extra must still…** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Structural shape of fastapi.routing's internal include-router wrapper.** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Structural shape shared by Router/APIRouter/Mount: something with .routes.** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Recursively descend into every route grouping to find leaf APIRoutes.…** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Best-effort get_type_hints: resolves every annotation get_type_hints can, even…** (1 connections) — `server/tests/integration/test_request_schema_security.py`
+- **Yield each BaseModel subclass bound as a body parameter on this route.** (1 connections) — `server/tests/integration/test_request_schema_security.py`
 
 ## Relationships
 
-- [fixture](fixture.md) (5 shared connections)
-- [HealthMonitor](HealthMonitor.md) (2 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (1 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- `server/tests/integration/test_request_schema_security.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

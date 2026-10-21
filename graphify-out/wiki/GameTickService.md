@@ -1,50 +1,50 @@
 # GameTickService
 
-> 59 nodes
+> 39 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
-- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **asyncio** (13 connections)
-- **.test_tick_loop_handles_exceptions()** (5 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **test_game_tick_service.py** (5 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.start()** (4 connections) — `server/services/game_tick_service.py`
-- **.test_start_already_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_start_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_not_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_stop_task_already_done()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_cancellation()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_handles_publish_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_increments_count()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_tick_loop_publishes_events()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.set_tick_interval()** (3 connections) — `server/services/game_tick_service.py`
-- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
-- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
-- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
-- *... and 34 more nodes in this community*
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **room_validator/schemas/unified_room_schema.json** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **allOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
+- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [_GenerateOpenapiSpecModule](_GenerateOpenapiSpecModule.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/game_tick_service.py`
-- `server/tests/unit/services/test_game_tick_service.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

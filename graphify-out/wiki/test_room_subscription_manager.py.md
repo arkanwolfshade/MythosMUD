@@ -1,49 +1,50 @@
 # test_room_subscription_manager.py
 
-> 54 nodes
+> 58 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_room_subscription_manager.py** (28 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **asyncio** (6 connections)
-- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_occupants_error()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_subscribers()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_subscribers_empty()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_get_room_subscribers_error()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_add_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- *... and 29 more nodes in this community*
+- **gen_arena_migration_sql.py** (14 connections) — `scripts/gen_arena_migration_sql.py`
+- **gen_arena_dml.py** (13 connections) — `scripts/gen_arena_dml.py`
+- **strip_arena_from_dml.py** (10 connections) — `scripts/strip_arena_from_dml.py`
+- **generate_migration()** (8 connections) — `scripts/gen_arena_migration_sql.py`
+- **should_skip_line()** (8 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
+- **main()** (7 connections) — `scripts/gen_arena_dml.py`
+- **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
+- **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
+- **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_subzone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_config_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
+- **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
+- **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
+- **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
+- **get_copy_section()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_link_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `scripts/gen_arena_dml.py`
+- `scripts/gen_arena_migration_sql.py`
+- `scripts/strip_arena_from_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

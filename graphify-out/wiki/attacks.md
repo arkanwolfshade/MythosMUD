@@ -1,25 +1,26 @@
 # attacks
 
-> 4 nodes
+> 5 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **attacks** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **items** (2 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **$ref** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **check_codacy_yaml()** (3 connections) — `scripts/check_codacy_yaml.py`
+- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
+- **check_codacy_yaml.py** (2 connections) — `scripts/check_codacy_yaml.py`
+- **Return (valid, list of reasons if invalid).** (1 connections) — `scripts/check_codacy_yaml.py`
+- **Warn if .codacy/codacy.yaml is missing or invalid; never fail the commit.** (1 connections) — `scripts/check_codacy_yaml.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `scripts/check_codacy_yaml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

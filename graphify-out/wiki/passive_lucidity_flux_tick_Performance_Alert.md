@@ -1,23 +1,24 @@
 # passive_lucidity_flux_tick Performance Alert
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **passive_lucidity_flux_tick Performance Alert** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
-- **Warnings Log Investigation** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- **test_evaluate_condition_unknown()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() returns False for unknown condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

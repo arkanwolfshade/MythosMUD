@@ -1,25 +1,26 @@
 # Whisper NATS Subject Bug Fix
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Whisper NATS Subject Bug Fix** (2 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- **chat.whisper.player Subject Segment** (1 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- **Whisper Work Completed and Remaining** (1 connections) — `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
+- **behavior_engine.py** (7 connections) — `server/npc/behavior_engine.py`
+- **Behavior engine for NPCs. This module provides the deterministic behavior…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room](Room.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

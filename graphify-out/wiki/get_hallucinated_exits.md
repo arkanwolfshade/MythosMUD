@@ -1,51 +1,45 @@
 # get_hallucinated_exits
 
-> 28 nodes
+> 24 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **get_hallucinated_exits()** (16 connections) — `server/services/exit_hallucination.py`
-- **test_exit_hallucination.py** (12 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **exit_hallucination.py** (10 connections) — `server/services/exit_hallucination.py`
-- **seed_from()** (7 connections) — `server/services/exit_hallucination.py`
-- **mulberry32()** (5 connections) — `server/services/exit_hallucination.py`
-- **_hash_string()** (3 connections) — `server/services/exit_hallucination.py`
-- **_shuffle()** (3 connections) — `server/services/exit_hallucination.py`
-- **test_get_hallucinated_exits_differs_by_player()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_get_hallucinated_exits_is_stable_for_same_room_and_player()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_get_hallucinated_exits_matches_js_reference()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_get_hallucinated_exits_only_uses_the_real_direction_pool()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_mulberry32_yields_floats_in_unit_interval()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_seed_from_matches_js_reference()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **test_seed_from_order_matters()** (3 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **Server-side exit hallucination for the deranged lucidity tier (#626, #714).…** (1 connections) — `server/services/exit_hallucination.py`
-- **32-bit string hash (djb2 variant) -- port of hashString() in…** (1 connections) — `server/services/exit_hallucination.py`
-- **Combine room + player into a single seed -- order matters, port of seedFrom().** (1 connections) — `server/services/exit_hallucination.py`
-- **mulberry32: small, fast, deterministic PRNG -- port of mulberry32() in…** (1 connections) — `server/services/exit_hallucination.py`
-- **Deterministic shuffle driven by rng -- port of shuffle() (random-key sort, not…** (1 connections) — `server/services/exit_hallucination.py`
-- **Return this viewer's seeded, deterministic fake exit set for this room (#626,…** (1 connections) — `server/services/exit_hallucination.py`
-- **Unit tests for server-side exit hallucination (#626, #714). Golden values in…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **seed_from(room, player) must match the Node reference exactly (bit-for-bit…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **Room and player aren't interchangeable in the seed -- different rooms,…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **Golden values from the Node reference implementation -- see module docstring.** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- **Same (room, player) must yield the same lie every time -- stable across re-…** (1 connections) — `server/tests/unit/services/test_exit_hallucination.py`
-- *... and 3 more nodes in this community*
+- **format_markdown_file()** (13 connections) — `scripts/format_markdown_files.py`
+- **format_markdown_files.py** (11 connections) — `scripts/format_markdown_files.py`
+- **main()** (4 connections) — `scripts/format_markdown_files.py`
+- **fix_blank_lines_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_bold_items_without_list_marker()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_checklist_items()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_checkmark_items()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_code_block_spacing()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_heading_trailing_colons()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_items_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_plain_text_after_colons()** (3 connections) — `scripts/format_markdown_files.py`
+- **fix_url_formatting()** (3 connections) — `scripts/format_markdown_files.py`
+- **Path** (2 connections)
+- **Remove leading `-` from plain text items after lines ending with `:`.** (1 connections) — `scripts/format_markdown_files.py`
+- **Remove leading `-` from checklist items in certain contexts.** (1 connections) — `scripts/format_markdown_files.py`
+- **Remove trailing colons from headings.** (1 connections) — `scripts/format_markdown_files.py`
+- **Remove leading `-` from items that follow headings (not part of lists).** (1 connections) — `scripts/format_markdown_files.py`
+- **Add blank lines after headings when content follows.** (1 connections) — `scripts/format_markdown_files.py`
+- **Remove leading `-` from bold text that isn't part of a list.** (1 connections) — `scripts/format_markdown_files.py`
+- **Format a single markdown file. Returns: (changed, lines_modified): Whether file…** (1 connections) — `scripts/format_markdown_files.py`
+- **Main function to process all markdown files.** (1 connections) — `scripts/format_markdown_files.py`
+- **Remove leading `-` from checkmark/status items.** (1 connections) — `scripts/format_markdown_files.py`
+- **Add angle brackets around bare URLs in markdown.** (1 connections) — `scripts/format_markdown_files.py`
+- **Fix spacing in code blocks (e.g., `@#` -> ` @#`).** (1 connections) — `scripts/format_markdown_files.py`
 
 ## Relationships
 
-- [test_look_room.py](test_look_room.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/exit_hallucination.py`
-- `server/tests/unit/services/test_exit_hallucination.py`
+- `scripts/format_markdown_files.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

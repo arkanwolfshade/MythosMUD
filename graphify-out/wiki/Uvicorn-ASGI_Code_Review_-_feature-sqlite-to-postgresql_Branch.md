@@ -1,47 +1,45 @@
 # Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch
 
-> 26 nodes
+> 24 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch** (10 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **✅ POSITIVE FINDINGS** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Deprecated `asyncio.get_event_loop()` Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Proper Connection Pool Management** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. Good Error Handling Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. SQL Injection Risk in Field Name Construction** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Async/Await Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Connection Pool Cleanup Verification** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Blocking Operations in Async Context** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Security Considerations** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **5. Event Loop Change Detection Complexity** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **6. Missing Error Context in Some Exception Handlers** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **7. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **8. Inconsistent Async/Sync Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **9. Missing Type Hints in Some Areas** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **CONCLUSION** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Immediate Actions (Before Production)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Long-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📚 REFERENCES** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Short-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- *... and 1 more nodes in this community*
+- **Onboard Skill** (8 connections) — `.claude/skills/onboard/SKILL.md`
+- **Design Onboarding Experiences** (6 connections) — `.claude/skills/onboard/SKILL.md`
+- **Empty State Design** (6 connections) — `.claude/skills/onboard/SKILL.md`
+- **Onboarding Principles** (6 connections) — `.claude/skills/onboard/SKILL.md`
+- **Implementation Patterns** (2 connections) — `.claude/skills/onboard/SKILL.md`
+- **Assess Onboarding Needs** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Context Over Ceremony** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Contextual Help** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Documentation & Help** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Feature Discovery & Adoption** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Guided Tours & Walkthroughs** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **How to Get Started** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Initial Product Onboarding** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Interactive Tutorials** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Make It Optional (When Possible)** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Respect User Intelligence** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Show, Don't Tell** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Technical approaches:** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Time to Value** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Verify Onboarding Quality** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Visual Interest** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **What Will Be Here** (1 connections) — `.claude/skills/onboard/SKILL.md`
+- **Why It Matters** (1 connections) — `.claude/skills/onboard/SKILL.md`
 
 ## Relationships
 
-- [PYDANTIC_CODE_REVIEW.md](PYDANTIC_CODE_REVIEW.md.md) (1 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/UVICORN_CODE_REVIEW.md`
+- `.claude/skills/onboard/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

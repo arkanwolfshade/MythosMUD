@@ -1,25 +1,24 @@
 # 📊 METRICS AND SUCCESS CRITERIA
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **📊 METRICS AND SUCCESS CRITERIA** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Code Quality Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Performance Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Test Coverage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **.filter()** (3 connections) — `server/structured_logging/logging_file_categories.py`
+- **LogRecord** (1 connections)
+- **Check if the log record's logger name matches any allowed prefix. Args: record:…** (1 connections) — `server/structured_logging/logging_file_categories.py`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/structured_logging/logging_file_categories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

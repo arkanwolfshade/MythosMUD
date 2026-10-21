@@ -1,10 +1,10 @@
 # Client Test Remediation Skill
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Test Remediation Skill** (0 connections) — `.cursor/commands/client-test-remediation.md`
+- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/commands/client-test-remediation.md`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

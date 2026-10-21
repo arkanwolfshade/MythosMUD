@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **cthulhu-dark-ages-3rd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- **Admin Look Mob Stats Bug** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **is_alive Called As Function Not Property** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

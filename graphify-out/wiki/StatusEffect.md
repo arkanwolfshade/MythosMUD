@@ -1,63 +1,60 @@
 # StatusEffect
 
-> 83 nodes
+> 29 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **StatusEffect** (32 connections) — `server/models/game.py`
-- **Player** (29 connections) — `server/models/game.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_game_status_effect.py** (13 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **._status_effects_list()** (5 connections) — `server/models/game.py`
-- **.__init__()** (5 connections) — `server/models/invite.py`
-- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
-- **.add_item()** (4 connections) — `server/models/game.py`
-- **.add_status_effect()** (4 connections) — `server/models/game.py`
-- **.get_active_status_effects()** (4 connections) — `server/models/game.py`
-- **._inventory_list()** (4 connections) — `server/models/game.py`
-- **.remove_status_effect()** (4 connections) — `server/models/game.py`
-- **.is_active()** (4 connections) — `server/models/game.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **.can_carry_weight()** (3 connections) — `server/models/game.py`
-- *... and 58 more nodes in this community*
+- **NPCMovementIntegration** (52 connections) — `server/npc/movement_integration.py`
+- **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_direct_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_returns_none_without_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_available_exits_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_destination_subzone_from_room_id()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_objects_missing_destination()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_objects_missing_room()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_init_requires_persistence()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_is_npc_in_combat_true()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_move_npc_blocked_in_combat()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_move_npc_exception_returns_false()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_move_npc_to_room_success()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_publish_movement_events()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_publish_movement_events_handles_publish_error()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_publish_movement_events_skips_without_bus()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_update_npc_instance_room_tracking()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_update_room_occupancy_skips_when_already_placed()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_validate_npc_movement()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_validate_npc_movement_npc_not_in_source()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_validate_room_ids_rejects_empty_or_same()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_validate_subzone_boundary()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [Stats](Stats.md) (17 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [spell_effects_support.py](spell_effects_support.py.md) (2 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
-- [Invite](Invite.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [Interaction Design](Interaction_Design.md) (6 shared connections)
+- [BaseEvent](BaseEvent.md) (4 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [Who Command Enhancement](Who_Command_Enhancement.md) (2 shared connections)
+- [._publish_attack_event](_publish_attack_event.md) (1 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (1 shared connections)
+- [test_process_mortally_wounded_tick_already_dead](test_process_mortally_wounded_tick_already_dead.md) (1 shared connections)
+- [test_process_mortally_wounded_tick_caps_at_negative_10](test_process_mortally_wounded_tick_caps_at_negative_10.md) (1 shared connections)
+- [test_process_mortally_wounded_tick_publishes_event](test_process_mortally_wounded_tick_publishes_event.md) (1 shared connections)
+- [test_process_mortally_wounded_tick_player_not_found](test_process_mortally_wounded_tick_player_not_found.md) (1 shared connections)
+- [test_handle_learn_command_success](test_handle_learn_command_success.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/invite.py`
-- `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
-- `server/tests/unit/models/test_game_player.py`
-- `server/tests/unit/models/test_game_status_effect.py`
+- `server/npc/movement_integration.py`
+- `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 77 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

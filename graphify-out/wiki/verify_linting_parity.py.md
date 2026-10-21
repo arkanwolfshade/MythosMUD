@@ -1,48 +1,49 @@
 # verify_linting_parity.py
 
-> 28 nodes
+> 27 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **verify_linting_parity.py** (13 connections) — `scripts/verify_linting_parity.py`
-- **Suppression** (11 connections) — `scripts/verify_linting_parity.py`
-- **Path** (8 connections)
-- **check_alignment()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_pylint_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_ruff_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **find_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **main()** (6 connections) — `scripts/verify_linting_parity.py`
-- **_scan_files_for_suppressions()** (6 connections) — `scripts/verify_linting_parity.py`
-- **parse_pylint_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **parse_ruff_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **_write_detailed_report()** (5 connections) — `scripts/verify_linting_parity.py`
-- **Any** (5 connections)
-- **_has_pylint_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_has_ruff_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_print_misaligned_summary()** (4 connections) — `scripts/verify_linting_parity.py`
-- **Parse a ruff noqa comment. Pattern examples: - # noqa: E501,F401 - # noqa: E501…** (1 connections) — `scripts/verify_linting_parity.py`
-- **Find all suppressions in a file.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any ruff suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any pylint suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if pylint suppressions have ruff equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if ruff suppressions have pylint equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if suppressions are aligned between tools.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Scan all Python files in server directory for suppressions.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Print summary of misaligned suppressions to console.** (1 connections) — `scripts/verify_linting_parity.py`
-- *... and 3 more nodes in this community*
+- **Path** (7 connections)
+- **.fix_schema_issues()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.load_room_file()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.save_room_file()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.create_backup()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix self-references by adding proper flags. Args: room_database: Complete room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing exits field. Returns True if fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing optional fields. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Initialize the room fixer. Args: base_path: Base directory for room files** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing fields based on errors. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Save fixed room if changes were made.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix basic schema issues. Args: room_database: Complete room database…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create a backup of a room file. Args: file_path: Path to the file to backup…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Load a room file safely. Args: file_path: Path to the room file Returns: Room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [asyncio](asyncio.md) (13 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/verify_linting_parity.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 48 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

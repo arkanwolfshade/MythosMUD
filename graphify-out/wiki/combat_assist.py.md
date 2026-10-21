@@ -1,62 +1,62 @@
 # combat_assist.py
 
-> 81 nodes
+> 99 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **combat_assist.py** (38 connections) — `server/commands/combat_assist.py`
-- **test_combat_protect.py** (38 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **_protect()** (27 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **AssistCommandHandler** (26 connections) — `server/commands/combat_assist.py`
-- **combat_protect.py** (22 connections) — `server/commands/combat_protect.py`
-- **asyncio** (18 connections)
-- **run_handle_protect_command()** (15 connections) — `server/commands/combat_protect.py`
-- **_match()** (15 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **run_handle_assist_command()** (14 connections) — `server/commands/combat_assist.py`
-- **_fight()** (13 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **load_assister()** (11 connections) — `server/commands/combat_assist.py`
-- **find_ally_fight()** (10 connections) — `server/commands/combat_assist.py`
-- **_resolve_assisted()** (8 connections) — `server/commands/combat_assist.py`
-- **_join_if_needed()** (8 connections) — `server/commands/combat_protect.py`
-- **UUID** (8 connections)
-- **_find_assisted_foe()** (7 connections) — `server/commands/combat_assist.py`
-- **resolve_named_player()** (7 connections) — `server/commands/combat_assist.py`
-- **assisted_name_from_command()** (6 connections) — `server/commands/combat_assist.py`
-- **_foe_of()** (6 connections) — `server/commands/combat_assist.py`
-- **_resolve_party_leader()** (6 connections) — `server/commands/combat_assist.py`
-- **execute_attack_on_npc()** (6 connections) — `server/commands/combat_attack.py`
-- **_queue_protect()** (6 connections) — `server/commands/combat_protect.py`
-- **test_a_phantom_fight_cannot_be_covered()** (6 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **test_protect_replaces_whatever_you_had_queued_for_the_next_round()** (6 connections) — `server/tests/unit/commands/test_combat_protect.py`
-- **_npc_string_id()** (5 connections) — `server/commands/combat_assist.py`
-- *... and 56 more nodes in this community*
+- **DistributedEventBus** (21 connections) — `server/events/distributed_event_bus.py`
+- **event_serialization.py** (19 connections) — `server/events/event_serialization.py`
+- **NATSEventBusBridge** (18 connections) — `server/events/nats_event_bridge.py`
+- **test_distributed_event_bus.py** (15 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
+- **deserialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **serialize_event()** (14 connections) — `server/events/event_serialization.py`
+- **test_event_serialization.py** (14 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **nats_event_bridge.py** (13 connections) — `server/events/nats_event_bridge.py`
+- **distributed_event_bus.py** (11 connections) — `server/events/distributed_event_bus.py`
+- **test_nats_event_bridge.py** (9 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **asyncio** (6 connections)
+- **_convert_value_from_json()** (5 connections) — `server/events/event_serialization.py`
+- **_register_event_types()** (5 connections) — `server/events/event_serialization.py`
+- **_register_module_events()** (5 connections) — `server/events/event_serialization.py`
+- **._handle_nats_message_impl()** (5 connections) — `server/events/nats_event_bridge.py`
+- **.publish()** (5 connections) — `server/events/nats_event_bridge.py`
+- **SampleEvent** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
+- **test_publish_with_nats_bridge_publishes_to_nats()** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
+- **test_publish_without_nats_delegates_to_parent()** (5 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
+- **test_serialize_deserialize_player_died_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_entered_room()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_serialize_deserialize_player_xp_award_event()** (5 connections) — `server/tests/unit/events/test_event_serialization.py`
+- **test_handle_nats_message_injects_remote_origin()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **test_publish_adds_origin_and_calls_nats()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **.set_nats_service()** (4 connections) — `server/events/distributed_event_bus.py`
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (19 shared connections)
-- [CombatParticipant](CombatParticipant.md) (11 shared connections)
-- [CombatInstance](CombatInstance.md) (9 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (8 shared connections)
-- [TargetType](TargetType.md) (7 shared connections)
-- [test_combat_assist.py](test_combat_assist.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
-- [PartyService](PartyService.md) (3 shared connections)
-- [NpcDisposition](NpcDisposition.md) (3 shared connections)
-- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (20 shared connections)
+- [BaseEvent](BaseEvent.md) (8 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_assist.py`
-- `server/commands/combat_attack.py`
-- `server/commands/combat_protect.py`
-- `server/tests/unit/commands/test_combat_protect.py`
+- `server/events/distributed_event_bus.py`
+- `server/events/event_serialization.py`
+- `server/events/nats_event_bridge.py`
+- `server/tests/unit/events/test_distributed_event_bus.py`
+- `server/tests/unit/events/test_event_serialization.py`
+- `server/tests/unit/events/test_nats_event_bridge.py`
 
 ## Audit Trail
 
-- EXTRACTED: 252 (92%)
-- INFERRED: 23 (8%)
+- EXTRACTED: 182 (88%)
+- INFERRED: 25 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

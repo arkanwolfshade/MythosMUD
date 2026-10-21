@@ -1,23 +1,23 @@
 # psscriptanalyzer.ps1
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
-- **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **test_adjust_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() returns False for invalid index.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/psscriptanalyzer.ps1`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

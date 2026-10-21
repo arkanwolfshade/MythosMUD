@@ -1,14 +1,13 @@
 # PostgreSQL database names (MythosMUD)
 
-> 5 nodes
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **PostgreSQL database names (MythosMUD)** (4 connections) — `.claude/rules/database.md`
-- **database.md** (1 connections) — `.claude/rules/database.md`
-- **CRITICAL: Which databases may be reset** (1 connections) — `.claude/rules/database.md`
-- **Database placement (production vs test)** (1 connections) — `.claude/rules/database.md`
-- **Enforcement** (1 connections) — `.claude/rules/database.md`
+- **main()** (3 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
+- **e2e_reset_corruption_cooldowns.py** (2 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
+- **_reset_corruption_cooldowns()** (2 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
+- **Entry point: run corruption cooldown reset via anyio.** (1 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
 
 ## Relationships
 
@@ -16,12 +15,12 @@
 
 ## Source Files
 
-- `.claude/rules/database.md`
+- `scripts/e2e_reset_corruption_cooldowns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

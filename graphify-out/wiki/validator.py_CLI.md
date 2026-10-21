@@ -1,33 +1,28 @@
 # validator.py CLI
 
-> 9 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **validator.py CLI** (5 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Path Validator Test Failures** (3 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- **core/path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/reporter.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/room_loader.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/schema_validator.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **click CLI dependency** (1 connections) — `tools/room_toolkit/room_validator/requirements.txt`
-- **Graph Building Issues** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- **Room Validator Test Suite** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **P3 · Findings Verified Directly** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D3 · Inbound links to archived documents — DEVIATED (7 instances, one root cause)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D5 · The DI system's architecture doc is archived, not live — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D6 · `docs/DEVELOPMENT_AI.md` is not valid text — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V1 · Sync PersistenceLayer removal — CONFORMS (reverses a P0 row)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V2 · sqlite3 imports survive in migration scripts — STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
-- `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- `tools/room_toolkit/room_validator/requirements.txt`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

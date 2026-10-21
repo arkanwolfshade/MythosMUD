@@ -1,22 +1,22 @@
 # days
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **days** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **4. Common Fix Patterns** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **Authentication Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Database Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Game Logic Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **WebSocket Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
+- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 

@@ -1,59 +1,54 @@
 # test_event_handler.py
 
-> 54 nodes
+> 55 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_event_handler.py** (41 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **asyncio** (16 connections)
-- **event_handler()** (7 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_npc_entered()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_npc_left()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_delirium_respawned()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_died()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_dp_decay()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_dp_updated()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_entered()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_left()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_respawned()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_handle_player_xp_awarded()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update_internal_error()** (4 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **mock_task_registry()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_create_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_create_player_left_message()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_occupants_snapshot_to_player()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update_internal_personalizes()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **test_event_handler_send_room_occupants_update_internal_success()** (3 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- *... and 29 more nodes in this community*
+- **test_inventory_display_helpers.py** (25 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **format_metadata()** (20 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (15 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (9 connections)
+- **build_container_metadata()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_inventory_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **filter_non_equipped_inventory()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **_build_equipped_slot_lines()** (6 connections) — `server/commands/inventory_display_helpers.py`
+- **get_equipped_item_identifiers()** (6 connections) — `server/commands/inventory_display_helpers.py`
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **_build_container_item_lines()** (4 connections) — `server/commands/inventory_display_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_build_container_metadata_with_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_container_metadata_without_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_with_container_items()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_inventory_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [event_handler.py](event_handler.py.md) (5 shared connections)
-- [EventBus](EventBus.md) (5 shared connections)
-- [PlayerDPUpdated](PlayerDPUpdated.md) (4 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [TargetType](TargetType.md) (6 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_handler.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/tests/unit/commands/test_inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (83%)
-- INFERRED: 17 (17%)
+- EXTRACTED: 109 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

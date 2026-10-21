@@ -1,24 +1,23 @@
 # test_process_mortally_wounded_tick_player_not_found
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_process_mortally_wounded_tick_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test process_mortally_wounded_tick() returns False when player not found.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **.get_available_exits()** (2 connections) — `server/npc/movement_integration.py`
+- **Get available exits from a room. Args: room_id: ID of the room Returns:…** (1 connections) — `server/npc/movement_integration.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `server/npc/movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

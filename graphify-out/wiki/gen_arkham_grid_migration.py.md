@@ -1,31 +1,29 @@
 # gen_arkham_grid_migration.py
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **gen_arkham_grid_migration.py** (8 connections) — `scripts/gen_arkham_grid_migration.py`
-- **build()** (7 connections) — `scripts/gen_arkham_grid_migration.py`
-- **lit()** (3 connections) — `scripts/gen_arkham_grid_migration.py`
-- **baseline_dml()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
-- **boolean()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
-- **copy_block()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
-- **main()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
-- **num()** (2 connections) — `scripts/gen_arkham_grid_migration.py`
-- **Generate the #829 Arkham street-grid migration for existing databases. The base…** (1 connections) — `scripts/gen_arkham_grid_migration.py`
-- **A pg_dump COPY field as a SQL literal.** (1 connections) — `scripts/gen_arkham_grid_migration.py`
+- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [load_world_seed.py](load_world_seed.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/gen_arkham_grid_migration.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

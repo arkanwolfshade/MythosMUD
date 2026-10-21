@@ -1,33 +1,37 @@
 # enum
 
-> 12 nodes
+> 15 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **required** (9 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (9 connections) — `schemas/calendar/holiday.schema.json`
+- **day** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **id** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **month** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **name** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **season** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **bonus_tags** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **day** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **duration_hours** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **id** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **month** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **name** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **season** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **tradition** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `db/static/schemas/holidays.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

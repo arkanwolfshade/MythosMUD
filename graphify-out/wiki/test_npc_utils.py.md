@@ -1,57 +1,61 @@
 # test_npc_utils.py
 
-> 95 nodes
+> 149 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_npc_utils.py** (37 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **get_zone_key_from_room_id()** (17 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_npc()** (15 connections) — `server/npc/npc_utils.py`
-- **npc_utils.py** (14 connections) — `server/npc/npc_utils.py`
-- **extract_definition_id_from_npc()** (12 connections) — `server/npc/npc_utils.py`
-- **extract_npc_metadata()** (12 connections) — `server/npc/npc_utils.py`
-- **spawn_npc_via_population_controller()** (11 connections) — `server/npc/npc_utils.py`
-- **extract_room_id_from_lifecycle_record()** (8 connections) — `server/npc/npc_utils.py`
-- **.despawn_npc()** (8 connections) — `server/npc/population_control.py`
-- **._get_active_npcs_from_lifecycle_manager()** (6 connections) — `server/npc/population_control.py`
-- **Any** (6 connections)
-- **.cleanup_inactive_npcs()** (5 connections) — `server/npc/population_control.py`
-- **._get_zone_key_from_room_id()** (5 connections) — `server/npc/population_control.py`
-- **._should_remove_inactive_npc()** (5 connections) — `server/npc/population_control.py`
-- **.is_required()** (4 connections) — `server/models/npc.py`
-- **_room_id_from_lifecycle_event()** (4 connections) — `server/npc/npc_utils.py`
-- **._update_population_stats_for_despawn()** (4 connections) — `server/npc/population_control.py`
-- **_stable_room_id_for_zone()** (3 connections) — `server/npc/npc_utils.py`
-- **.get_zone_population_summary()** (3 connections) — `server/npc/population_control.py`
-- **test_extract_definition_id_from_npc_from_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_has_definition_id()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_lifecycle_manager_no_definition()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_lifecycle_manager_no_record()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_no_manager()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- **test_extract_definition_id_from_npc_non_int()** (3 connections) — `server/tests/unit/npc/test_npc_utils.py`
-- *... and 70 more nodes in this community*
+- **test_connection_establishment.py** (57 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_as_mgr()** (44 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_make_manager()** (42 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **connection_establishment.py** (41 connections) — `server/realtime/connection_establishment.py`
+- **establish_websocket_connection()** (25 connections) — `server/realtime/connection_establishment.py`
+- **_EstablishmentConnectionManager** (25 connections) — `server/realtime/connection_establishment.py`
+- **_FakeWebSocket** (23 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_connection_establishment_ws.py** (23 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- **_as_ws()** (21 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **UUID** (16 connections)
+- **_track_player_presence()** (13 connections) — `server/realtime/connection_establishment.py`
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **_setup_player_and_room()** (11 connections) — `server/realtime/connection_establishment.py`
+- **_meta()** (11 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **asyncio** (11 connections)
+- **asyncio** (11 connections)
+- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
+- **test_establish_websocket_connection_first_session_does_not_replace()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- **test_establish_websocket_connection_missing_session_id_does_not_replace()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- **test_establish_websocket_connection_new_session_disconnects_prior()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- **test_establish_websocket_connection_same_session_appends()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- **_bind_accepted_websocket()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_failed_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_connection_metadata()** (9 connections) — `server/realtime/connection_establishment.py`
+- *... and 124 more nodes in this community*
 
 ## Relationships
 
-- [NPCPopulationController](NPCPopulationController.md) (9 shared connections)
-- [EventBus](EventBus.md) (8 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (5 shared connections)
-- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (3 shared connections)
-- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (9 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (9 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (3 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/npc_utils.py`
-- `server/npc/population_control.py`
-- `server/tests/unit/npc/test_npc_utils.py`
+- `server/realtime/connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_establishment_ws.py`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 442 (99%)
+- INFERRED: 6 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

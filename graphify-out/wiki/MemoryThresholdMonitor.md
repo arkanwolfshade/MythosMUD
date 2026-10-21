@@ -1,53 +1,57 @@
 # MemoryThresholdMonitor
 
-> 35 nodes
+> 62 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
-- **test_memory_cleanup_service.py** (21 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **asyncio** (9 connections)
-- **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
-- **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
-- **test_task_four_spec_factory()** (5 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_get_active_task_count_with_loop()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_get_memory_status_report()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_managed_task_cleanup_execution_failure()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_managed_task_cleanup_skips_on_cooldown()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_managed_task_cleanup_skips_when_below_threshold()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_managed_task_cleanup_success()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_managed_task_cleanup_timeout()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **Create an instance of the MemoryThresholdMonitor with user-specified…** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Factory function returning implementation conforming to Task 4.3 Specified…** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Runtime monitor for detecting memory threshold violations requiring cleanup.…** (1 connections) — `server/app/memory_cleanup_service.py`
-- **Unit tests for memory threshold monitoring and managed task cleanup.** (1 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **Threshold breach triggers orphan cleanup via tracked manager.** (1 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **Cleanup timeout returns -1.** (1 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **Unexpected cleanup errors return -2.** (1 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- *... and 10 more nodes in this community*
+- **party_commands.py** (26 connections) — `server/commands/party_commands.py`
+- **handle_party_command()** (25 connections) — `server/commands/party_commands.py`
+- **test_party_commands.py** (25 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **asyncio** (16 connections)
+- **_party_request()** (14 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **Any** (11 connections)
+- **_get_party_command_context()** (7 connections) — `server/commands/party_commands.py`
+- **_handle_party_chat()** (7 connections) — `server/commands/party_commands.py`
+- **_resolve_target_for_party_action()** (7 connections) — `server/commands/party_commands.py`
+- **_get_member_display()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_invite()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_kick()** (6 connections) — `server/commands/party_commands.py`
+- **_handle_party_leave()** (5 connections) — `server/commands/party_commands.py`
+- **test_handle_party_command_invite_no_player_service()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_invite_no_target()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_invite_success()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_kick_not_leader()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_kick_success()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_kick_target_resolve_failed()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_leave()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_list_not_in_party()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_list_with_members()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_player_not_in_game()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **test_handle_party_command_unknown_subcommand()** (5 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **_get_container()** (4 connections) — `server/commands/party_commands.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [.get_memory_status_report](get_memory_status_report.md) (4 shared connections)
-- [monitor](monitor.md) (2 shared connections)
-- [.__init__](__init__.md) (2 shared connections)
-- [._flush_memory_indexes_cache](_flush_memory_indexes_cache.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (10 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [ADR-026: Item Catalog Metadata Contracts](ADR-026-_Item_Catalog_Metadata_Contracts.md) (1 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_cleanup_service.py`
-- `server/tests/unit/app/test_memory_cleanup_service.py`
+- `server/commands/party_commands.py`
+- `server/tests/unit/commands/test_party_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (84%)
-- INFERRED: 12 (16%)
+- EXTRACTED: 148 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,14 +1,12 @@
 # Magic and Spellcasting System
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Magic and Spellcasting System** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Effects System Reference** (2 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
-- **EffectList Pattern** (1 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
-- **Magic Points MP** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
-- **Spell Registry** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Manually managed codacy.yaml** (2 connections) — `.codacy/README.md`
+- **Grype and Trivy CVE scanning** (1 connections) — `.codacy/README.md`
+- **Run codacy_cli_analyze after every edit** (1 connections) — `.github/instructions/codacy.instructions.md`
 
 ## Relationships
 
@@ -16,13 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
-- `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- `.codacy/README.md`
+- `.github/instructions/codacy.instructions.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,24 +1,22 @@
 # test_broadcast_combat_attack
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_broadcast_combat_attack()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack broadcasts attack event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **migrate.ps1** (0 connections) — `scripts/migrate.ps1`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `scripts/migrate.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

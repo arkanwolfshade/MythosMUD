@@ -1,10 +1,10 @@
 # playwright.config.d.ts
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
+- **1. Overview** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/playwright.config.d.ts`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

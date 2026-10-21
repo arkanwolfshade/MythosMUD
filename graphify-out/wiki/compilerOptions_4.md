@@ -1,47 +1,39 @@
 # compilerOptions
 
-> 33 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **compilerOptions** (19 connections) — `client/tsconfig.build.json`
-- **exclude** (8 connections) — `client/tsconfig.build.json`
-- **lib** (4 connections) — `client/tsconfig.build.json`
-- **tsconfig.build.json** (3 connections) — `client/tsconfig.build.json`
-- **include** (2 connections) — `client/tsconfig.build.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.build.json`
-- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.build.json`
-- **jsx** (1 connections) — `client/tsconfig.build.json`
-- **module** (1 connections) — `client/tsconfig.build.json`
-- **moduleDetection** (1 connections) — `client/tsconfig.build.json`
-- **moduleResolution** (1 connections) — `client/tsconfig.build.json`
-- **noEmit** (1 connections) — `client/tsconfig.build.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.build.json`
-- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.build.json`
-- **noUnusedLocals** (1 connections) — `client/tsconfig.build.json`
-- **noUnusedParameters** (1 connections) — `client/tsconfig.build.json`
-- **skipLibCheck** (1 connections) — `client/tsconfig.build.json`
-- **strict** (1 connections) — `client/tsconfig.build.json`
-- **target** (1 connections) — `client/tsconfig.build.json`
-- **tsBuildInfoFile** (1 connections) — `client/tsconfig.build.json`
-- **useDefineForClassFields** (1 connections) — `client/tsconfig.build.json`
-- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.build.json`
-- **DOM** (1 connections) — `client/tsconfig.build.json`
-- **DOM.Iterable** (1 connections) — `client/tsconfig.build.json`
-- **ES2022** (1 connections) — `client/tsconfig.build.json`
-- *... and 8 more nodes in this community*
+- **compilerOptions** (11 connections) — `client/tsconfig.app.json`
+- **types** (5 connections) — `client/tsconfig.test.json`
+- **types** (3 connections) — `client/tsconfig.app.json`
+- **composite** (1 connections) — `client/tsconfig.app.json`
+- **declarationDir** (1 connections) — `client/tsconfig.app.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.app.json`
+- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.app.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.app.json`
+- **noEmit** (1 connections) — `client/tsconfig.app.json`
+- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.app.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.app.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.app.json`
+- **node** (1 connections) — `client/tsconfig.app.json`
+- **vite/client** (1 connections) — `client/tsconfig.app.json`
+- **node** (1 connections) — `client/tsconfig.test.json`
+- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_email_utils.py](test_email_utils.py.md) (2 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.build.json`
+- `client/tsconfig.app.json`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

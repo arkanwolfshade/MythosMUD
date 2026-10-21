@@ -1,59 +1,55 @@
 # test_websocket_handler_app_state_connection.py
 
-> 86 nodes
+> 50 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_websocket_handler_app_state_connection.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **handle_websocket_connection()** (21 connections) — `server/realtime/websocket_handler.py`
-- **asyncio** (20 connections)
-- **handle_chat_message()** (17 connections) — `server/realtime/websocket_handler.py`
-- **asyncio** (8 connections)
-- **test_handle_websocket_connection_connect_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_initial_setup_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_initial_state_exit()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_shutdown_rejected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_websocket_connection_with_room_and_death()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- **test_handle_chat_message_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_runtime_error_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_runtime_error_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_connect_failed()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_full_flow()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_setup_fails()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_welcome_fails()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_exception_in_message_loop()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_websocket_command_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_cleanup_connection_leaves_mutes_alone()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- *... and 61 more nodes in this community*
+- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
+- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
+- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **get_subscription_pattern()** (12 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **subscription_patterns.py** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_chat_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
+- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
+- **patterns.py** (3 connections) — `server/services/nats_subject_manager/patterns.py`
+- **Any** (3 connections)
+- **test_get_chat_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_chat_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_event_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_multiple_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_no_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **test_get_subscription_pattern_single_param()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **Any** (2 connections)
+- **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (17 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (9 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (3 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (17 shared connections)
+- [test_instance_manager.py](test_instance_manager.py.md) (8 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `server/services/nats_subject_manager/manager.py`
+- `server/services/nats_subject_manager/patterns.py`
+- `server/services/nats_subject_manager/subscription_patterns.py`
+- `server/services/nats_subject_manager/validation.py`
+- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 98 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

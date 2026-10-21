@@ -1,10 +1,10 @@
 # Whisper Location Independence
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Whisper Location Independence** (0 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- **hadolint.ps1** (0 connections) — `scripts/hadolint.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- `scripts/hadolint.ps1`
 
 ## Audit Trail
 

@@ -1,44 +1,42 @@
 # tutorial-instance-lifecycle.spec.ts
 
-> 17 nodes
+> 16 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **tutorial-instance-lifecycle.spec.ts** (25 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
-- **tutorial.ts** (24 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **relogTutorialCharacter()** (9 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **runE2eScript()** (5 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **startFreshTutorial()** (5 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **readE2ePlayerState()** (4 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **resetTutorialCharacterInDatabase()** (4 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **dropSlingAndLeave()** (4 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
-- **awFindsNoSlingInChest()** (3 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
-- **clearStoredSession()** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **latestMessage()** (2 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
-- **BANK_LOOK_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **BANK_ROOM_ID** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **EMPTY_FLOOR_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **TUTORIAL_BEDROOM_LOOK_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **TUTORIAL_USERNAME** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- **E2ePlayerState** (1 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
+- **test_connection_utils.py** (9 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Get NPC name from the actual NPC instance, preserving original case from…** (1 connections) — `server/realtime/connection_utils.py`
+- **Unit tests for connection utils. Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns NPC name when found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (13 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (11 shared connections)
-- [executeCommand](executeCommand.md) (5 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (4 shared connections)
-- [player.ts](player.ts.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/tutorial.ts`
-- `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
+- `server/realtime/connection_utils.py`
+- `server/tests/unit/realtime/test_connection_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

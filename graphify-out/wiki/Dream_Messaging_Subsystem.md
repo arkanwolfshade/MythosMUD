@@ -1,10 +1,10 @@
 # Dream Messaging Subsystem
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dream Messaging Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
+- **deploy_monitoring.ps1** (0 connections) — `scripts/deploy_monitoring.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_DREAM_MESSAGING_DESIGN.md`
+- `scripts/deploy_monitoring.ps1`
 
 ## Audit Trail
 

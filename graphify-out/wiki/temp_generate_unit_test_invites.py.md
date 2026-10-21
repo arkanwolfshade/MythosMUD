@@ -1,10 +1,10 @@
 # temp_generate_unit_test_invites.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **temp_generate_unit_test_invites.py** (0 connections) — `scripts/temp_generate_unit_test_invites.py`
+- **MythosMUD COPPA Checklist Skill** (0 connections) — `.cursor/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_generate_unit_test_invites.py`
+- `.cursor/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Audit Trail
 

@@ -1,68 +1,51 @@
 # Frontend Design Skill
 
-> 33 nodes
+> 33 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Frontend Design Skill** (30 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Frontend Design Skill** (7 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Color & Contrast** (6 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Contrast & Accessibility** (5 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **interaction-design.md** (5 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
-- **Normalize Skill** (5 connections) — `.claude/skills/normalize/SKILL.md`
-- **Building Functional Palettes** (4 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **color-and-contrast.md** (3 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Theming: Light & Dark Mode** (3 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **motion-design.md** (3 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
-- **responsive-design.md** (3 connections) — `.claude/skills/frontend-design/reference/responsive-design.md`
-- **ux-writing.md** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Alpha Is A Design Smell** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Color Spaces: Use OKLCH** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Dangerous Color Combinations** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Dark Mode Is Not Inverted Light Mode** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Never Use Pure Gray or Pure Black** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Palette Structure** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Testing** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **The 60-30-10 Rule (Applied Correctly)** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **The Tinted Neutral Trap** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Token Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **WCAG Requirements** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Context Gathering Protocol** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Design Direction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **test_event_publisher.py** (25 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **asyncio** (13 connections)
+- **test_publish_game_tick_uses_metadata_tick_number()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Unit tests for event publisher. Tests the EventPublisher class.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test get_next_sequence_number() returns and increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test reset_sequence_number() resets sequence to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Same persistence name resolution path for player_left.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **tick_number from additional_metadata should win over sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 - *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Typography](Typography.md) (2 shared connections)
-- [Spatial Design](Spatial_Design.md) (2 shared connections)
-- [Interaction Design](Interaction_Design.md) (1 shared connections)
-- [Motion Design](Motion_Design.md) (1 shared connections)
-- [Responsive Design](Responsive_Design.md) (1 shared connections)
-- [UX Writing](UX_Writing.md) (1 shared connections)
-- [Frontend Aesthetics Guidelines](Frontend_Aesthetics_Guidelines.md) (1 shared connections)
-- [Adapt Skill](Adapt_Skill.md) (1 shared connections)
-- [Animate Skill](Animate_Skill.md) (1 shared connections)
-- [Improve Layout Systematically](Improve_Layout_Systematically.md) (1 shared connections)
-- [Generate Comprehensive Report](Generate_Comprehensive_Report.md) (1 shared connections)
-- [Amplify the Design](Amplify_the_Design.md) (1 shared connections)
+- [MythosMUD Code Quality Targets for AI](MythosMUD_Code_Quality_Targets_for_AI.md) (7 shared connections)
+- [day](day.md) (3 shared connections)
+- [test_websocket_handler_disconnect.py](test_websocket_handler_disconnect.py.md) (3 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/frontend-design/SKILL.md`
-- `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- `.claude/skills/frontend-design/reference/interaction-design.md`
-- `.claude/skills/frontend-design/reference/motion-design.md`
-- `.claude/skills/frontend-design/reference/responsive-design.md`
-- `.claude/skills/frontend-design/reference/ux-writing.md`
-- `.claude/skills/normalize/SKILL.md`
-- `.cursor/skills/frontend-design/SKILL.md`
-- `.playwright-mcp/combat-verification-screenshot.png`
-- `.playwright-mcp/death-respawn-ui-test.png`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 53 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

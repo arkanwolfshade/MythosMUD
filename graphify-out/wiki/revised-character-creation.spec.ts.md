@@ -1,53 +1,48 @@
 # revised-character-creation.spec.ts
 
-> 35 nodes
+> 54 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **revised-character-creation.spec.ts** (21 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **character-cleanup.ts** (19 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **LoginPage** (8 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- **readSkillsMessageText()** (5 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **recoverCharacterSelectionAfterCreation()** (5 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **tryDeleteOneTestCharacter()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **.login()** (5 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- **pollUntilCharacterListed()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **cleanupE2ECharacters()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **confirmCharacterDeletion()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **deleteCharacterFromCard()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isDeletableTestCharacter()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **loginToCharacterSelection()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **assertCharacterVisibleOnList()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **deleteRevisedTestCharacterToMakeRoom()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **domClick()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **.navigate()** (3 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- **LoginPage.ts** (3 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- **needsRecoveryFromWrongCreationScreen()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **openStatsRollingFromLogin()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- **escapeRegExp()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **getCharacterNameFromCard()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isProtected()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isTestCharacter()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- **isLoginPost()** (2 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
-- *... and 10 more nodes in this community*
+- **test_room_subscription_manager.py** (28 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **asyncio** (6 connections)
+- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants_empty()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_occupants_error()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_empty()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_get_room_subscribers_error()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_existing_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_multiple()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_not_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_room_subscription_manager_init()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_set_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_subscribe_to_room_multiple_players()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_unsubscribe_from_room_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (12 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
-- [waitForMessage](waitForMessage.md) (2 shared connections)
-- [executeCommand](executeCommand.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (3 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
-- `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
-- `client/tests/e2e/runtime/pages/LoginPage.ts`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 60 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

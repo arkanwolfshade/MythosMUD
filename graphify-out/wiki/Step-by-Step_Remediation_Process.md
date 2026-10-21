@@ -1,25 +1,25 @@
 # Step-by-Step Remediation Process
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Step-by-Step Remediation Process** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **1. Initial Assessment** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **2. Categorize Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Room Subscription Timing Race** (1 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- **Connection Message Not Broadcast** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
 
 ## Relationships
 
-- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- `e2e-tests/scenarios/scenario-01-basic-connection.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

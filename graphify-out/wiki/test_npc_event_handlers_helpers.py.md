@@ -1,49 +1,45 @@
 # test_npc_event_handlers_helpers.py
 
-> 26 nodes
+> 23 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_npc_event_handlers_helpers.py** (14 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **npc_event_handler()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **mock_message_builder()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_determine_direction_from_rooms_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **fixture** (3 connections)
-- **test_extract_spawn_message_from_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_extract_spawn_message_from_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_departure_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_name()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **test_get_npc_spawn_message_custom()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **asyncio** (2 connections)
-- **Unit tests for NPC event handlers helper functions. Tests the helper functions…** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() determines direction.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _determine_direction_from_rooms() returns None when direction not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_departure_message() returns departure message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create a mock message builder.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Create an NPCEventHandler instance.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() extracts spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _extract_spawn_message_from_config() returns None when not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **Test _get_npc_spawn_message() returns custom spawn message.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- *... and 1 more nodes in this community*
+- **verify_migration.py** (11 connections) — `scripts/verify_migration.py`
+- **_validate_database_data()** (8 connections) — `scripts/verify_migration.py`
+- **verify_database()** (8 connections) — `scripts/verify_migration.py`
+- **Connection** (7 connections)
+- **_check_foreign_keys()** (4 connections) — `scripts/verify_migration.py`
+- **_check_null_values()** (4 connections) — `scripts/verify_migration.py`
+- **_check_table_exists()** (4 connections) — `scripts/verify_migration.py`
+- **_print_sample_data()** (4 connections) — `scripts/verify_migration.py`
+- **_validate_json_data()** (4 connections) — `scripts/verify_migration.py`
+- **_validate_table_schema()** (4 connections) — `scripts/verify_migration.py`
+- **_print_json_validation_results()** (3 connections) — `scripts/verify_migration.py`
+- **_print_verification_summary()** (3 connections) — `scripts/verify_migration.py`
+- **main()** (2 connections) — `scripts/verify_migration.py`
+- **Validate JSON data integrity in players table.** (1 connections) — `scripts/verify_migration.py`
+- **Check for NULL values in required fields.** (1 connections) — `scripts/verify_migration.py`
+- **Validate database data (JSON, NULLs, sample).** (1 connections) — `scripts/verify_migration.py`
+- **Print JSON validation results.** (1 connections) — `scripts/verify_migration.py`
+- **Print sample player data.** (1 connections) — `scripts/verify_migration.py`
+- **Check foreign key constraints.** (1 connections) — `scripts/verify_migration.py`
+- **Print verification summary and return result.** (1 connections) — `scripts/verify_migration.py`
+- **Verify a single database.** (1 connections) — `scripts/verify_migration.py`
+- **Check if players table exists.** (1 connections) — `scripts/verify_migration.py`
+- **Validate table schema against expected columns.** (1 connections) — `scripts/verify_migration.py`
 
 ## Relationships
 
-- [event_handler.py](event_handler.py.md) (2 shared connections)
-- [NpcDisposition](NpcDisposition.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- `scripts/verify_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

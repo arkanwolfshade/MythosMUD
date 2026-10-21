@@ -1,55 +1,49 @@
 # handle_read_command
 
-> 51 nodes
+> 56 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **handle_read_command()** (24 connections) — `server/commands/read_command.py`
-- **read_command.py** (18 connections) — `server/commands/read_command.py`
-- **test_read_command.py** (18 connections) — `server/tests/unit/commands/test_read_command.py`
-- **asyncio** (15 connections)
-- **_process_spellbook_read()** (8 connections) — `server/commands/read_command.py`
-- **Any** (8 connections)
-- **_format_learn_spell_message()** (5 connections) — `server/commands/read_command.py`
-- **_learn_single_spell()** (5 connections) — `server/commands/read_command.py`
-- **_learn_specific_spell()** (5 connections) — `server/commands/read_command.py`
-- **_find_item_in_inventory()** (4 connections) — `server/commands/read_command.py`
-- **_list_spells_in_book()** (4 connections) — `server/commands/read_command.py`
-- **_validate_spellbook()** (4 connections) — `server/commands/read_command.py`
-- **test_handle_read_command()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_empty_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_inventory_json_error()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_item_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_multiple_spells()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_spell_learning_service()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_target()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_not_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_single_spell_learn()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_specific_spell()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- *... and 26 more nodes in this community*
+- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **fixture** (2 connections)
+- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_validate_room_integrity_calculates_occupancy()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [command_error](command_error.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [Player](Player.md) (5 shared connections)
+- [MutationDecision](MutationDecision.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/read_command.py`
-- `server/tests/unit/commands/test_read_command.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 63 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

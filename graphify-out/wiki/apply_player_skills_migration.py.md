@@ -1,10 +1,10 @@
 # apply_player_skills_migration.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_player_skills_migration.py** (0 connections) — `scripts/apply_player_skills_migration.py`
+- **MythosMudProcessScope.Tests.ps1** (0 connections) — `scripts/tests/MythosMudProcessScope.Tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_player_skills_migration.py`
+- `scripts/tests/MythosMudProcessScope.Tests.ps1`
 
 ## Audit Trail
 

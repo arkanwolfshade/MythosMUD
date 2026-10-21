@@ -1,43 +1,45 @@
 # fix_markdown_line_length.py
 
-> 21 nodes
+> 17 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **fix_markdown_line_length.py** (10 connections) — `scripts/fix_markdown_line_length.py`
-- **wrap_line()** (7 connections) — `scripts/fix_markdown_line_length.py`
-- **fix_markdown_file()** (6 connections) — `scripts/fix_markdown_line_length.py`
-- **main()** (5 connections) — `scripts/fix_markdown_line_length.py`
-- **wrap_plain_text()** (5 connections) — `scripts/fix_markdown_line_length.py`
-- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_line_length.py`
-- **wrap_list_item()** (4 connections) — `scripts/fix_markdown_line_length.py`
-- **should_skip_line()** (3 connections) — `scripts/fix_markdown_line_length.py`
-- **wrap_header()** (3 connections) — `scripts/fix_markdown_line_length.py`
-- **wrap_line_with_links()** (3 connections) — `scripts/fix_markdown_line_length.py`
-- **Path** (3 connections)
-- **is_in_code_block()** (2 connections) — `scripts/fix_markdown_line_length.py`
-- **Wrap a line that contains markdown links.** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Wrap plain text at word boundaries.** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Fix line length issues in a markdown file. Returns: (changed, lines_modified):…** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Check if a line should be skipped (code blocks, tables, etc.).** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Parse markdownlint output file to get list of files with line length issues.…** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Main function to fix markdown line length issues.** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Check if we're currently inside a code block.** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Wrap a long line intelligently. Returns a list of wrapped lines.** (1 connections) — `scripts/fix_markdown_line_length.py`
-- **Wrap a list item with proper indentation.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **asyncio** (12 connections)
+- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_no_party_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast_no_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Gateways_to_Terror__2026-08-12.md) (8 shared connections)
+- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (6 shared connections)
+- [TestCheckCastingState](TestCheckCastingState.md) (2 shared connections)
+- [zone_and_subzone](zone_and_subzone.md) (2 shared connections)
+- [usePanelContext.ts](usePanelContext.ts.md) (1 shared connections)
+- [test_db_connectivity_create_and_read_user](test_db_connectivity_create_and_read_user.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_markdown_line_length.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (82%)
+- INFERRED: 7 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

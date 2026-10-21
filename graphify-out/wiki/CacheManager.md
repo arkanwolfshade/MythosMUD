@@ -1,42 +1,37 @@
 # CacheManager
 
-> 17 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
-- **.create_cache()** (5 connections) — `server/caching/lru_cache.py`
-- **.get_cache()** (4 connections) — `server/caching/lru_cache.py`
-- **Any** (4 connections)
-- **.get_all_stats()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
-- **._initialize_default_caches()** (3 connections) — `server/caching/lru_cache.py`
-- **.delete_cache()** (2 connections) — `server/caching/lru_cache.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/lru_cache.py`
-- **.get_cache_names()** (1 connections) — `server/caching/lru_cache.py`
-- **Centralized cache manager for MythosMUD server. Manages multiple LRU caches for…** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize default caches with appropriate configurations.** (1 connections) — `server/caching/lru_cache.py`
-- **Get a cache by name. Args: name: The name of the cache Returns: The cache…** (1 connections) — `server/caching/lru_cache.py`
-- **Create a new cache. Args: name: The name of the cache max_size: Maximum number…** (1 connections) — `server/caching/lru_cache.py`
-- **Delete a cache. Args: name: The name of the cache to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
-- **Get statistics for all caches. Returns: Dictionary mapping cache names to their…** (1 connections) — `server/caching/lru_cache.py`
+- **P4 · Intent Sweep — Core Feature Issues** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **CLOSED BUT NOT BUILT** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **P4-Intent-Core-Issues.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#17 · Party — one of three bullets built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#21 · Admin commands — "ban" was in the issue title and never built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#29 · Cultist faction and PvP — zero implementation** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#30 · Branching quests and morality — two of three bullets absent** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#62 · Tick-rate validation — not built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **#9 · The xterm.js substitution — real, user-facing, unrecorded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **Conforming, worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **CRITICAL · Authentication has no brute-force protection** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **Out-of-corpus (design exists, outside the audited 29)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **Partial deliveries** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **Silent renames — features built under different names than requested** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **Undocumented systems (no design doc anywhere in `docs/`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
 
 ## Relationships
 
-- [LRUCache](LRUCache.md) (3 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

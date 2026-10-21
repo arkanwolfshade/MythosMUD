@@ -1,24 +1,24 @@
 # parse_lint_findings
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **parse_lint_findings()** (2 connections) — `scripts/parse_lint_findings.py`
-- **parse_lint_findings.py** (1 connections) — `scripts/parse_lint_findings.py`
-- **Parse C901 complexity findings from lint output.** (1 connections) — `scripts/parse_lint_findings.py`
+- **test_validate_room_exists_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/parse_lint_findings.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

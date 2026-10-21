@@ -1,22 +1,23 @@
 # add_npc_name_constraint.sql
 
-> 1 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **add_npc_name_constraint.sql** (0 connections) — `server/scripts/add_npc_name_constraint.sql`
+- **test_create_cleanse_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_cleanse_command delegates to player_state factory (#804).** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/add_npc_name_constraint.sql`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

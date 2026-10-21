@@ -1,49 +1,61 @@
 # .load_room_data
 
-> 37 nodes
+> 62 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Path** (8 connections)
-- **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.load_config_file()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_required_fields()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_room_structure()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._check_intersection_references_rooms()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.count_config_subzones()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._extract_location_from_path()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.generate_room_id()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.parse_room_filename()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.validate_file_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Generate room ID from parsed filename and location data. Args: parsed_filename:…** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Recursively scan directory for all room JSON files. Args: base_path: Optional…** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate basic room structure.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Extract plane, zone, sub_zone from file path.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate or update room ID based on filename and location.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate required fields are present.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- *... and 12 more nodes in this community*
+- **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers.py** (21 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
+- **command_helpers.py** (16 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers_functions.py** (13 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_get_username_from_user_empty_dict()** (4 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_invalid()** (4 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_none()** (4 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_dict()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_get_username_from_user_with_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_get_username_from_user_with_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_format_string()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_python_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_safe()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_shell_metacharacters()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_sql_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_validate_command_safety_xss()** (3 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_dict_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_name_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_player_object()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_priority_player_over_username()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_get_username_from_user_username_attribute()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_format_string_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_validate_command_safety_python_injection()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (18 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [CommandFactory](CommandFactory.md) (3 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (2 shared connections)
+- [QuestService](QuestService.md) (2 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (2 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `server/tests/unit/utils/test_command_helpers.py`
+- `server/tests/unit/utils/test_command_helpers_functions.py`
+- `server/utils/command_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 106 (76%)
+- INFERRED: 34 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

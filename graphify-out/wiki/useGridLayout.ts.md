@@ -1,29 +1,26 @@
 # useGridLayout.ts
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **useGridLayout.ts** (6 connections) — `client/src/hooks/useGridLayout.ts`
-- **useGridLayout()** (2 connections) — `client/src/hooks/useGridLayout.ts`
-- **useGridLayout.test.ts** (2 connections) — `client/src/hooks/__tests__/useGridLayout.test.ts`
-- **PanelState** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **UseGridLayoutReturn** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **layoutConfig** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **STORAGE_KEYS** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **items** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **bonus_tags** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useGridLayout.test.ts`
-- `client/src/hooks/useGridLayout.ts`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

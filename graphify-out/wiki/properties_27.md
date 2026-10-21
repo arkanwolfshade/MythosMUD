@@ -1,38 +1,37 @@
 # properties
 
-> 17 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/room_schema.json`
-- **exits** (5 connections) — `schemas/room_schema.json`
-- **down** (2 connections) — `schemas/room_schema.json`
-- **east** (2 connections) — `schemas/room_schema.json`
-- **north** (2 connections) — `schemas/room_schema.json`
-- **south** (2 connections) — `schemas/room_schema.json`
-- **up** (2 connections) — `schemas/room_schema.json`
-- **west** (2 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **Any** (8 connections)
+- **.get_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.get_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.get_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_mechanical_effects()** (3 connections) — `server/models/profession.py`
+- **.set_skill_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_modifiers()** (3 connections) — `server/models/profession.py`
+- **.set_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **Set profession stat requirements from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get profession mechanical effects as dictionary.** (1 connections) — `server/models/profession.py`
+- **Set profession mechanical effects from dictionary.** (1 connections) — `server/models/profession.py`
+- **Get stat modifiers as list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Set stat modifiers from list of {stat, value}.** (1 connections) — `server/models/profession.py`
+- **Get skill modifiers as list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
+- **Set skill modifiers from list of {skill_key, value}.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [properties](properties.md) (7 shared connections)
+- [Mansions of Madness_ Vol 1 - Behind Closed Doors (source summary)](Mansions_of_Madness__Vol_1_-_Behind_Closed_Doors_source_summary.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

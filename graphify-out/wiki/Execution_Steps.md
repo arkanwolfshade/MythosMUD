@@ -1,47 +1,49 @@
 # Execution Steps
 
-> 37 nodes
+> 26 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Execution Steps** (18 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Scenario 25: Wearable Container Management **[REQUIRES MULTI-PLAYER]**** (11 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **🤖 MANDATORY AI EXECUTION CONTRACT 🤖** (5 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Testing Approach Rationale** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **scenario-25-container-wearable-management.md** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **CONFIRMATION CHECKLIST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **EXECUTION AFFIRMATION (Type this before proceeding)** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ Scenario Completion Verification** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ SCENARIO FILE CREATED** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ Step 1 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **STEP 1 of 8: Setup - Player Connected** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ Step 2 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **STEP 2 of 8: Check Inventory for Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ Step 3 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **STEP 3 of 8: Equip Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- **✅ Step 4 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
-- *... and 12 more nodes in this community*
+- **PostgreSQL & SQL Audit Report** (13 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **10. Prioritized Fixes** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **7. Security / Prepared Statements** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1. Naming Conventions** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5. Time Handling** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **9. Broader Risk Areas** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **2. SQL Formatting (Keywords Lowercase)** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **6. Legacy Constructs** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **8. Tests and Fixtures** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **11. Summary Table** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1.1. Snake_case (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1.2. Quoted Identifier** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **2.1. Uppercase SQL Keywords** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5.1. `timestamp with time zone` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5.2. `BETWEEN` on Timestamps** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **6.1. Rules / Table Inheritance** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **7.1. Parameterized Queries (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **7.2. Raw SQL Formatting** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **7.3. Hardcoded Schema/Table Names** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **8.1. Outdated Patterns** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **9.1. Schema Drift** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **9.2. Index Naming** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **Executive Summary** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **High Priority** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **Low Priority** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_monitoring_init.py](test_monitoring_init.py.md) (1 shared connections)
+- [Recommendation for MythosMUD](Recommendation_for_MythosMUD.md) (1 shared connections)
+- [📚 REFERENCES AND RESOURCES](📚_REFERENCES_AND_RESOURCES.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

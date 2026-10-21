@@ -1,25 +1,25 @@
 # Critical File Coverage Improvement
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() handles exceptions gracefully.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
-- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

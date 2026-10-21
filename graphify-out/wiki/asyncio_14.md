@@ -1,45 +1,45 @@
 # asyncio
 
-> 17 nodes
+> 19 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **asyncio** (29 connections)
-- **test_handle_cast_command_wrapper_no_magic_service()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_spells_command_wrapper_no_spell_registry()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_announce_spell_cast_no_chat_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_cast_command_blocked_when_incapacitated()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_cast_command_cast_failure()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_cast_command_no_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_learn_command_no_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **test_handle_learn_command_no_spell_name()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when player is not found.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Cast command returns incapacitated message when player has 0 to -9 DP (prone,…** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test cast command when casting fails.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when spell learning service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command when no spell name is provided.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test announce spell cast when chat service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_cast_command wrapper when magic service is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test handle_spells_command wrapper when spell registry is not available.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **resolve_npc_attack_damage()** (16 connections) — `server/game/npcs/attack_damage.py`
+- **attack_damage.py** (12 connections) — `server/game/npcs/attack_damage.py`
+- **test_attack_damage.py** (12 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **armor_points_from_base_stats()** (6 connections) — `server/game/npcs/attack_damage.py`
+- **_damage_from_attack()** (6 connections) — `server/game/npcs/attack_damage.py`
+- **Random** (4 connections)
+- **_roll_int_bounds()** (3 connections) — `server/game/npcs/attack_damage.py`
+- **_first_attack()** (2 connections) — `server/game/npcs/attack_damage.py`
+- **_legacy_behavior_damage()** (2 connections) — `server/game/npcs/attack_damage.py`
+- **test_apply_damage_subtracts_armor_points()** (2 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **test_armor_points_from_base_stats()** (2 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **test_resolve_falls_back_to_behavior_attack_damage()** (2 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **test_resolve_falls_back_to_min_max_without_expr()** (2 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **test_resolve_prefers_damage_expr()** (2 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
+- **Resolve NPC outgoing attack damage from base_stats / behavior (ADR-027 Phase 3).** (1 connections) — `server/game/npcs/attack_damage.py`
+- **Return damage from one attack entry, or None if it has no usable fields.** (1 connections) — `server/game/npcs/attack_damage.py`
+- **Roll NPC damage: damage_expr if present, else min/max ints, else behavior, else…** (1 connections) — `server/game/npcs/attack_damage.py`
+- **Return armor_points from nested base_stats.armor, or 0.** (1 connections) — `server/game/npcs/attack_damage.py`
+- **Unit tests for NPC attack damage resolution (ADR-027 Phase 3).** (1 connections) — `server/tests/unit/game/npcs/test_attack_damage.py`
 
 ## Relationships
 
-- [test_magic_commands.py](test_magic_commands.py.md) (13 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (2 shared connections)
-- [test_announce_spell_cast_no_player_id](test_announce_spell_cast_no_player_id.md) (1 shared connections)
-- [test_handle_cast_command_success](test_handle_cast_command_success.md) (1 shared connections)
-- [test_handle_cast_command_with_target](test_handle_cast_command_with_target.md) (1 shared connections)
-- [test_handle_learn_command_no_player](test_handle_learn_command_no_player.md) (1 shared connections)
-- [test_handle_learn_command_success](test_handle_learn_command_success.md) (1 shared connections)
-- [test_handle_learn_command_with_corruption](test_handle_learn_command_with_corruption.md) (1 shared connections)
-- [test_handle_learn_command_wrapper_success](test_handle_learn_command_wrapper_success.md) (1 shared connections)
-- [test_handle_spell_command_no_player](test_handle_spell_command_no_player.md) (1 shared connections)
-- [test_handle_spell_command_spell_not_found](test_handle_spell_command_spell_not_found.md) (1 shared connections)
-- [test_handle_spell_command_success](test_handle_spell_command_success.md) (1 shared connections)
+- [catalog_commands.py](catalog_commands.py.md) (3 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
+- [CorruptionRepository](CorruptionRepository.md) (2 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
+- [DatabaseManager](DatabaseManager.md) (2 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
+- [ground_channel.py](ground_channel.py.md) (1 shared connections)
+- [quest_rewards.py](quest_rewards.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/game/npcs/attack_damage.py`
+- `server/tests/unit/game/npcs/test_attack_damage.py`
 
 ## Audit Trail
 

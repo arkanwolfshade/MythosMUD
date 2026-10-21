@@ -1,36 +1,34 @@
 # TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Disconnect Grace Period** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **30-Second Disconnect Grace Period** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **LOGIN_WARDED Effect** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Disconnect Grace Period and Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **Effects System ADR and Implementation** (2 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
-- **Effects System Implementation** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Zombie Linkdead State** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
-- **ADR-009 Effects System Architecture** (1 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
+- **Implementation Phases** (7 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Phase 1: Core Infrastructure Enhancement** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Phase 5: Authentication and Security** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.1 Enhance CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.2 Create CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **1.3 Add Configuration Support** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **5.1 Authentication Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **5.2 Rate Limiting Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (1 shared connections)
-- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (1 shared connections)
+- [lint_imports.py](lint_imports.py.md) (1 shared connections)
+- [Test Suite Analysis](Test_Suite_Analysis.md) (1 shared connections)
+- [Modern Testing Patterns](Modern_Testing_Patterns.md) (1 shared connections)
+- [Test Modernization Checklist](Test_Modernization_Checklist.md) (1 shared connections)
+- [Real-Time Communication (WebSocket)](Real-Time_Communication_WebSocket.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
-- `.cursor/plans/effects_system_implementation.plan.md`
-- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (82%)
-- INFERRED: 2 (18%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

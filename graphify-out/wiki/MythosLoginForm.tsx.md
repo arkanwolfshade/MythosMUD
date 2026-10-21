@@ -1,14 +1,13 @@
 # MythosLoginForm.tsx
 
-> 5 nodes
+> 4 nodes · cohesion 0.83
 
 ## Key Concepts
 
-- **MythosLoginForm.tsx** (4 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginFormProps** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginActions()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginInputs()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginForm()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **verify_schema_match.sh script** (3 connections) — `scripts/verify_schema_match.sh`
+- **verify_schema_match.sh** (3 connections) — `scripts/verify_schema_match.sh`
+- **find_pg_dump()** (2 connections) — `scripts/verify_schema_match.sh`
+- **find_pg_isready()** (2 connections) — `scripts/verify_schema_match.sh`
 
 ## Relationships
 
@@ -16,11 +15,11 @@
 
 ## Source Files
 
-- `client/src/mythosApp/MythosLoginForm.tsx`
+- `scripts/verify_schema_match.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

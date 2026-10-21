@@ -1,33 +1,31 @@
 # multiplayer-browser-helpers.bundle.js
 
-> 24 nodes
+> 22 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.bundle.js** (23 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isElementVisible()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoAnyMessageInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasTickMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **recordPresenceEvent()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **installPresenceRecorder()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **Performance Profiler Subagent** (11 connections) — `.claude/agents/performance-profiler.md`
+- **Capabilities** (6 connections) — `.claude/agents/performance-profiler.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/performance-profiler.md`
+- **Performance Monitoring** (4 connections) — `.claude/agents/performance-profiler.md`
+- **Database Performance** (2 connections) — `.claude/agents/performance-profiler.md`
+- **performance-profiler.md** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Bottleneck Identification** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Code Performance Review** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Database Query Optimization** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Enhanced Logging Integration** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Game Loop Performance** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Integration** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Log Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Leak Detection** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Profiling** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Methodology** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Notes** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Output Format** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Performance Best Practices** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Purpose** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Usage** (1 connections) — `.claude/agents/performance-profiler.md`
 
 ## Relationships
 
@@ -35,11 +33,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- `.claude/agents/performance-profiler.md`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

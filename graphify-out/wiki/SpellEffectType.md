@@ -1,65 +1,59 @@
 # SpellEffectType
 
-> 126 nodes
+> 65 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **SpellEffectType** (47 connections) — `server/models/spell.py`
-- **SpellSchool** (37 connections) — `server/models/spell.py`
-- **SpellTargetType** (34 connections) — `server/models/spell.py`
-- **SpellRangeType** (32 connections) — `server/models/spell.py`
-- **test_spell.py** (30 connections) — `server/tests/unit/models/test_spell.py`
-- **spell.py** (29 connections) — `server/models/spell.py`
-- **test_spell_targeting.py** (28 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **SpellMaterial** (25 connections) — `server/models/spell.py`
-- **test_spell_materials.py** (22 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **test_spell_costs.py** (20 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_spell_registry.py** (18 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **_spell()** (15 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **_spell()** (10 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_get_combat_target_auto_selects_opponent()** (10 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **_spell()** (9 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **self_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **test_spell_with_materials()** (8 connections) — `server/tests/unit/models/test_spell.py`
-- **asyncio** (8 connections)
-- **base_spell()** (7 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **area_spell()** (7 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **entity_spell()** (7 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **test_spell_default_values()** (7 connections) — `server/tests/unit/models/test_spell.py`
-- **test_spell_is_mythos_false()** (7 connections) — `server/tests/unit/models/test_spell.py`
-- **test_spell_is_mythos_true()** (7 connections) — `server/tests/unit/models/test_spell.py`
-- **test_spell_lucidity_cost_validation_negative()** (7 connections) — `server/tests/unit/models/test_spell.py`
-- *... and 101 more nodes in this community*
+- **test_lifecycle_periodic.py** (42 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **NPCLifecycleState** (24 connections) — `server/npc/lifecycle_types.py`
+- **lifecycle_periodic.py** (21 connections) — `server/npc/lifecycle_periodic.py`
+- **check_optional_npc_spawns_impl()** (13 connections) — `server/npc/lifecycle_periodic.py`
+- **_attempt_optional_npc_spawn()** (11 connections) — `server/npc/lifecycle_periodic.py`
+- **run_periodic_maintenance_impl()** (11 connections) — `server/npc/lifecycle_periodic.py`
+- **NPCMaintenanceConfig** (10 connections) — `server/config/npc_config.py`
+- **cleanup_old_records_impl()** (10 connections) — `server/npc/lifecycle_periodic.py`
+- **_check_spawn_conditions_for_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **get_zone_key_for_definition()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **_should_skip_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **get_spawn_room_for_definition()** (8 connections) — `server/npc/lifecycle_periodic.py`
+- **Any** (8 connections)
+- **npc_config.py** (5 connections) — `server/config/npc_config.py`
+- **_make_record()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_cleanup_old_records_removes_stale_despawned()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_cleanup_old_records_removes_stale_error()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
+- **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **test_attempt_optional_npc_spawn_success_routes_through_population_controller()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_should_not_skip_when_interval_elapsed()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
+- **StrEnum** (2 connections)
+- **test_attempt_optional_npc_spawn_no_controller()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (31 shared connections)
-- [SpellEffects](SpellEffects.md) (16 shared connections)
-- [magic_service.py](magic_service.py.md) (15 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (11 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (7 shared connections)
-- [SpellTargetingService](SpellTargetingService.md) (7 shared connections)
-- [SpellMaterialsService](SpellMaterialsService.md) (4 shared connections)
-- [TargetType](TargetType.md) (4 shared connections)
-- [test_utility_threat.py](test_utility_threat.py.md) (3 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [ADR-023: Package Ownership (`game/` vs `services/` vs `npc/`) and Fan-Out Watch List](ADR-023-_Package_Ownership_`game-`_vs_`services-`_vs_`npc-`_and_Fan-Out_Watch_List.md) (10 shared connections)
+- [CombatInstance](CombatInstance.md) (9 shared connections)
+- [SpellLearningService](SpellLearningService.md) (6 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [ErrorType](ErrorType.md) (3 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/spell.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
-- `server/tests/unit/game/magic/test_spell_costs.py`
-- `server/tests/unit/game/magic/test_spell_materials.py`
-- `server/tests/unit/game/magic/test_spell_registry.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/models/test_spell.py`
+- `server/config/npc_config.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_periodic.py`
+- `server/npc/lifecycle_types.py`
+- `server/tests/unit/npc/test_lifecycle_periodic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 290 (71%)
-- INFERRED: 117 (29%)
+- EXTRACTED: 148 (92%)
+- INFERRED: 13 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

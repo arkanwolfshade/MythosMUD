@@ -1,25 +1,24 @@
 # plane
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition - Keeper's Rulebook** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- **call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

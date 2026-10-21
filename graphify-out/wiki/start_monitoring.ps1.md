@@ -1,10 +1,10 @@
 # start_monitoring.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **start_monitoring.ps1** (0 connections) — `scripts/start_monitoring.ps1`
+- **Critique Skill** (0 connections) — `.cursor/skills/critique/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/start_monitoring.ps1`
+- `.cursor/skills/critique/SKILL.md`
 
 ## Audit Trail
 

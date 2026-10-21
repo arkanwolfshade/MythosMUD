@@ -1,27 +1,25 @@
 # Modern Testing Patterns
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Modern Testing Patterns** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 1: Container-Based Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 2: Mock Container for Unit Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 3: Parametrized Integration Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 4: Fixture Factories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 5: Async Test Context Managers** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: File System Operations** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.1 Room Loading Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.2 Player Data File Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

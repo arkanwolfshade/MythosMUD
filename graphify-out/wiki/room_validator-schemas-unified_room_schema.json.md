@@ -1,29 +1,37 @@
 # room_validator/schemas/unified_room_schema.json
 
-> 7 nodes
+> 10 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **room_validator/schemas/unified_room_schema.json** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **allOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Lucidity.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
+- **Pulp Sanity.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
+- **Using Luck (Pulp).md** (5 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
+- **Pandora's Box (Pulp campaign).md** (4 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
+- **Pulp Cthulhu (7th edition Call of Cthulhu).md** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
+- **Lucidity** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
+- **Pandora's Box (Pulp campaign)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
+- **Using Luck (Pulp)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
+- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
+- **Pulp Sanity** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (5 shared connections)
+- [RescueBanner.tsx](RescueBanner.tsx.md) (2 shared connections)
+- [npc_base_stats.schema.json](npc_base_stats.schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
+- `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

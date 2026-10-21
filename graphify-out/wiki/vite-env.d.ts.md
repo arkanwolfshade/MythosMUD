@@ -1,10 +1,10 @@
 # vite-env.d.ts
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **vite-env.d.ts** (0 connections) — `client/src/vite-env.d.ts`
+- **1. Overview** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/src/vite-env.d.ts`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

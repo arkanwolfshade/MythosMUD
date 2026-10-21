@@ -1,43 +1,40 @@
 # audit_suppressions.py
 
-> 21 nodes
+> 15 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **audit_suppressions.py** (9 connections) — `scripts/audit_suppressions.py`
-- **main()** (8 connections) — `scripts/audit_suppressions.py`
-- **Any** (7 connections)
-- **find_suppressions()** (6 connections) — `scripts/audit_suppressions.py`
-- **scan_all_files()** (6 connections) — `scripts/audit_suppressions.py`
-- **print_summary_report()** (5 connections) — `scripts/audit_suppressions.py`
-- **write_report_file()** (5 connections) — `scripts/audit_suppressions.py`
-- **calculate_statistics()** (4 connections) — `scripts/audit_suppressions.py`
-- **group_by_file()** (4 connections) — `scripts/audit_suppressions.py`
-- **group_by_tool()** (4 connections) — `scripts/audit_suppressions.py`
-- **Path** (4 connections)
-- **has_explanation()** (3 connections) — `scripts/audit_suppressions.py`
-- **Scan all Python and TypeScript files for suppressions. Args: workspace_root:…** (1 connections) — `scripts/audit_suppressions.py`
-- **Calculate summary statistics from suppressions. Args: all_suppressions: List of…** (1 connections) — `scripts/audit_suppressions.py`
-- **Group suppressions by file path. Args: all_suppressions: List of all…** (1 connections) — `scripts/audit_suppressions.py`
-- **Group suppressions by tool and calculate statistics. Args: all_suppressions:…** (1 connections) — `scripts/audit_suppressions.py`
-- **Write the report to a JSON file. Args: workspace_root: Root directory of the…** (1 connections) — `scripts/audit_suppressions.py`
-- **Print the summary report to stdout. Args: report: Report dictionary…** (1 connections) — `scripts/audit_suppressions.py`
-- **Main entry point for the suppression audit.** (1 connections) — `scripts/audit_suppressions.py`
-- **Check if a suppression line has an explanation. Args: line: The full line…** (1 connections) — `scripts/audit_suppressions.py`
-- **Find all suppressions in a file. Args: file_path: Path to the file to scan…** (1 connections) — `scripts/audit_suppressions.py`
+- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **test_time_commands.py** (8 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **asyncio** (5 connections)
+- **test_handle_time_command_holiday_service_error()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holiday_service()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_success()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_with_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Any** (1 connections)
+- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
+- **Unit tests for time command handlers. Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **Test handle_time_command() includes active holidays.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command_parser.py](command_parser.py.md) (5 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/audit_suppressions.py`
+- `server/commands/time_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 29 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

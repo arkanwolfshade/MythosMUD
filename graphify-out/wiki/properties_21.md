@@ -1,42 +1,39 @@
 # properties
 
-> 21 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **properties** (6 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **canonical_id** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **era** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **namespace** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **source_key** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **variant_of** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **maxLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minLength** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **holiday.schema.json** (8 connections) — `schemas/calendar/holiday.schema.json`
+- **holiday** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **holidays** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **items** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **properties** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$id** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$ref** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$schema** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **title** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [catalogMetadata](catalogMetadata.md) (1 shared connections)
+- [Schemas Package Design](Schemas_Package_Design.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

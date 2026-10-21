@@ -1,30 +1,29 @@
 # 🟡 HIGH PRIORITY ISSUES
 
-> 9 nodes
+> 7 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **🟡 HIGH PRIORITY ISSUES** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **10. Loading All Players Instead of Active Only** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **11. NATS Connection Pool Not Used by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **12. No TLS Configuration for NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **13. Event Loop Change Detection Edge Cases** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **14. Missing Transaction Rollback on Critical Failures** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **7. Missing Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **8. Incomplete Migration to Async Persistence** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **9. Multiple Database Flushes Before Commit** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **useGridLayout.ts** (6 connections) — `client/src/hooks/useGridLayout.ts`
+- **useGridLayout.test.ts** (2 connections) — `client/src/hooks/__tests__/useGridLayout.test.ts`
+- **useGridLayout()** (2 connections) — `client/src/hooks/useGridLayout.ts`
+- **layoutConfig** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **PanelState** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **STORAGE_KEYS** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **UseGridLayoutReturn** (1 connections) — `client/src/hooks/useGridLayout.ts`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `client/src/hooks/__tests__/useGridLayout.test.ts`
+- `client/src/hooks/useGridLayout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

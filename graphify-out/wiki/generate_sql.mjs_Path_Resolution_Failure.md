@@ -1,10 +1,10 @@
 # generate_sql.mjs Path Resolution Failure
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **generate_sql.mjs Path Resolution Failure** (0 connections) — `scripts/static_data/temp_debug.txt`
+- **Delight Skill** (0 connections) — `.cursor/skills/delight/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/static_data/temp_debug.txt`
+- `.cursor/skills/delight/SKILL.md`
 
 ## Audit Trail
 

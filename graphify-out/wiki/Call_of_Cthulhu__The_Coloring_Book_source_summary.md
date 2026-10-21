@@ -1,26 +1,26 @@
 # Call of Cthulhu_ The Coloring Book (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Call of Cthulhu_ The Coloring Book (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
-- **Call of Cthulhu_ The Coloring Book.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
+- **Test Suite Stall After Performance Comparison** (2 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- **Docker Build mythos_unitql Typo** (1 connections) — `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
+- **thread.join Without Timeout Hang** (1 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu_ The Coloring Book.md`
+- `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
+- `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

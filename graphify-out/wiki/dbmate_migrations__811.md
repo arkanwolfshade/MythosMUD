@@ -1,10 +1,10 @@
 # dbmate migrations (#811)
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **dbmate migrations (#811)** (0 connections) — `db/migrations/README.md`
+- **command_handler_v2** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/README.md`
+- `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Audit Trail
 

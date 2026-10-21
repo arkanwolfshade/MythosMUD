@@ -1,31 +1,31 @@
 # test_check_codacy_yaml.py
 
-> 9 nodes
+> 7 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **_CheckCodacyYamlModule** (5 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **test_check_codacy_yaml.py** (5 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **_load_module()** (4 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **test_pinned_runtime_is_accepted()** (2 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **test_stale_311_runtime_is_flagged_with_the_pinned_version()** (2 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **._content_is_valid()** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **Protocol** (1 connections)
-- **Tests for the Python-runtime guard in scripts/check_codacy_yaml.py (#748).** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
-- **Shape of scripts/check_codacy_yaml.py, loaded dynamically below (not a static…** (1 connections) — `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- **test_get_dead_players_debug_only_when_found()** (7 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_mortally_wounded_players_debug_only_when_found()** (7 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **_session_with_players()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **parametrize** (2 connections)
+- **Async session whose select(Player) returns the given players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **#912: runs every tick; an empty result must not emit a debug line.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **#912: runs every game-second; an empty result must not emit a debug line.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Dependency Upgrade Strategy - Implementation Summary](MythosMUD_Dependency_Upgrade_Strategy_-_Implementation_Summary.md) (5 shared connections)
+- [Test Suite Analyzer Subagent](Test_Suite_Analyzer_Subagent.md) (2 shared connections)
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_check_codacy_yaml.py`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

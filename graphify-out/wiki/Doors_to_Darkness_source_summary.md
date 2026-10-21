@@ -1,26 +1,26 @@
 # Doors to Darkness (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Doors to Darkness (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **Doors to Darkness.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- `.cursor/plans/logging_aggregator_verification.plan.md`
+- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

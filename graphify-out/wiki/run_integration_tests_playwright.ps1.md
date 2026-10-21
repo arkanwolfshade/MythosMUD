@@ -1,10 +1,10 @@
 # run_integration_tests_playwright.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **run_integration_tests_playwright.ps1** (0 connections) — `scripts/run_integration_tests_playwright.ps1`
+- **Adapt Skill** (0 connections) — `.cursor/skills/adapt/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/run_integration_tests_playwright.ps1`
+- `.cursor/skills/adapt/SKILL.md`
 
 ## Audit Trail
 

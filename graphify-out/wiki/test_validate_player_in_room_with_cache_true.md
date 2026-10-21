@@ -1,24 +1,23 @@
 # test_validate_player_in_room_with_cache_true
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_validate_player_in_room_with_cache_true()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns True when player in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_attack_strength_target_significantly_stronger()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength when target is significantly stronger.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

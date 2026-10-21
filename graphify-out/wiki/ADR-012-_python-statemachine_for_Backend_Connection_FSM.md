@@ -1,46 +1,47 @@
 # ADR-012: python-statemachine for Backend Connection FSM
 
-> 23 nodes
+> 22 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **ADR-012: python-statemachine for Backend Connection FSM** (14 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **4. Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **7. Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **6. Implementation Details** (3 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **ADR-012-python-statemachine-backend.md** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **10. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **11. Changelog** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **2. Context and Problem Statement** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **3. Decision Drivers** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **5. Decision Outcome** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **8. Validation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **9. References** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Integration with NATS Service** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Negative** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 1: python-statemachine** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 2: transitions** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Option 3: Manual Implementation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **State Machine Definition** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
-- **ADR-011: XState for Frontend Connection State Machine** (1 connections) — `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
+- **test_player_repository_room.py** (14 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
+- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
+- **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **player_repository_room.py** (8 connections) — `server/persistence/repositories/player_repository_room.py`
+- **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **Any** (3 connections)
+- **Player** (3 connections)
+- **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_tutorial_bedroom()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_already_at_fallback()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_fallback_missing_in_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_moves_to_foyer()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_valid()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **Player room validation helpers for PlayerRepository. Validates and fixes…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Return True if room validation should be skipped (cache empty, instanced, or…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate player's current room and fix if invalid. Args: room_cache: Shared…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate and fix player room, persisting the fix if needed. Args: room_cache:…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **asyncio** (1 connections)
+- **Unit tests for player_repository_room helpers.** (1 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fixtures/auth.ts](fixtures-auth.ts.md) (4 shared connections)
+- [endpoints.py](endpoints.py.md) (4 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
-- `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- `server/persistence/repositories/player_repository_room.py`
+- `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

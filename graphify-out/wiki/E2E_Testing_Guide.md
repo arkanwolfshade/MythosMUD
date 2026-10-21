@@ -1,10 +1,10 @@
 # E2E Testing Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **E2E Testing Guide** (0 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Pydantic Anti-Patterns Remediation (3ee32154)** (0 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/E2E_TESTING_GUIDE.md`
+- `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
 
 ## Audit Trail
 

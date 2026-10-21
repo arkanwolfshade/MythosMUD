@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Call of Cthulhu Starter Set
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Starter Set** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
-- **call-of-cthulhu-starter-set/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **E2E Multiplayer Playbook Findings** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
+- **Session Loss On Peer Tab Closure** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

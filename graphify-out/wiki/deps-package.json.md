@@ -1,23 +1,24 @@
 # deps/package.json
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **deps/package.json** (1 connections) — `client/.vite/deps/package.json`
-- **type** (1 connections) — `client/.vite/deps/package.json`
+- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() uses cache when available.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/.vite/deps/package.json`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

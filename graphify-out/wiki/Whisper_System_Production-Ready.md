@@ -1,10 +1,10 @@
 # Whisper System Production-Ready
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Whisper System Production-Ready** (0 connections) — `e2e-tests/WHISPER_TESTING_COMPLETE.md`
+- **load_seed_data_safe.ps1** (0 connections) — `scripts/load_seed_data_safe.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/WHISPER_TESTING_COMPLETE.md`
+- `scripts/load_seed_data_safe.ps1`
 
 ## Audit Trail
 

@@ -1,38 +1,39 @@
 # test_seed_e2e_users.py
 
-> 17 nodes
+> 17 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_seed_e2e_users.py** (7 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **_RecordingConnection** (6 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **_load_script()** (6 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **_SeedScript** (4 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **test_reseeding_a_deleted_character_reuses_its_player_id()** (4 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **test_ids_are_stable_across_imports()** (3 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **test_ids_are_distinct_per_account_and_kind()** (2 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **.execute()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **.fetchrow()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **.__init__()** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **Protocol** (1 connections)
-- **Regression tests for scripts/seed_e2e_users.py deterministic account ids…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **Attributes of scripts/seed_e2e_users.py read after dynamic import (not on the…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **Import a fresh copy of the script, like a new seed process would.** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **Stands in for asyncpg.Connection: no existing character, records every…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **A fresh process (fresh import) must derive the same ids, or a re-seed creates…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
-- **The #969 scenario: the character row is gone, the seed recreates it, the…** (1 connections) — `server/tests/unit/scripts/test_seed_e2e_users.py`
+- **._get_next_sequence()** (8 connections) — `server/realtime/message_builders.py`
+- **Any** (6 connections)
+- **.build_occupants_update_message()** (5 connections) — `server/realtime/message_builders.py`
+- **.create_player_entered_message()** (5 connections) — `server/realtime/message_builders.py`
+- **.create_player_left_message()** (5 connections) — `server/realtime/message_builders.py`
+- **.build_room_state_message()** (4 connections) — `server/realtime/message_builders.py`
+- **.build_room_update_message()** (4 connections) — `server/realtime/message_builders.py`
+- **.__init__()** (3 connections) — `server/realtime/message_builders.py`
+- **NpcOccupant** (1 connections)
+- **Build the room occupants update message. Args: room_id_str: Room ID as string…** (1 connections) — `server/realtime/message_builders.py`
+- **Build a room update message. Args: room_id: The room ID room_data: The room…** (1 connections) — `server/realtime/message_builders.py`
+- **Build a single authoritative room_state message (room metadata + occupants).…** (1 connections) — `server/realtime/message_builders.py`
+- **Initialize the message builder. Args: sequence_counter: Callable that returns…** (1 connections) — `server/realtime/message_builders.py`
+- **Get the next sequence number.** (1 connections) — `server/realtime/message_builders.py`
+- **Get the next sequence number (public API). Returns: The next sequence number…** (1 connections) — `server/realtime/message_builders.py`
+- **Create a real-time message for player entering a room. Args: event: The…** (1 connections) — `server/realtime/message_builders.py`
+- **Create a real-time message for player leaving a room. Args: event: The…** (1 connections) — `server/realtime/message_builders.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [look_container.py](look_container.py.md) (7 shared connections)
+- [BaseEvent](BaseEvent.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_seed_e2e_users.py`
+- `server/realtime/message_builders.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

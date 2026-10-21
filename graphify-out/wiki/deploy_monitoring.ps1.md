@@ -1,10 +1,10 @@
 # deploy_monitoring.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **deploy_monitoring.ps1** (0 connections) — `scripts/deploy_monitoring.ps1`
+- **unit/api/__init__.py** (0 connections) — `server/tests/unit/api/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/deploy_monitoring.ps1`
+- `server/tests/unit/api/__init__.py`
 
 ## Audit Trail
 

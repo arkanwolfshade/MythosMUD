@@ -1,47 +1,40 @@
 # test_mp_regeneration_service.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **test_mp_regeneration_service.py** (33 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_mp_regeneration_service_init_custom_rate()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_default_position()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_lying()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_sitting()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_get_regen_multiplier_standing()** (2 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Unit tests for MP regeneration service. Tests the MPRegenerationService class…** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns 1.0 for standing position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns REST multiplier for sitting.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() returns enhanced REST multiplier for lying.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test _get_regen_multiplier() defaults to 1.0 when position not specified.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test MPRegenerationService initialization with custom regen_rate.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **PERSISTENCE_REFACTORING_COMPLETE.md** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Persistence Async Migration Plan** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gradual File-by-File Async Migration** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **PersistenceLayer Sync Facade** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PlayerRepository** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Sync-to-Async Delegation** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PERSISTENCE_EXTRACTION_COMPLETE.md** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Implementation Pattern** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PERSISTENCE_REFACTORING_SUMMARY.md** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Opt-In Async Persistence** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **HealthRepository** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Seven Async Repositories** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (8 shared connections)
-- [mp_regeneration_service](mp_regeneration_service.md) (4 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_process_tick_regeneration_fractional_accumulation](test_process_tick_regeneration_fractional_accumulation.md) (1 shared connections)
-- [test_restore_mp_from_rest_player_not_found](test_restore_mp_from_rest_player_not_found.md) (1 shared connections)
-- [test_restore_mp_from_rest_at_max](test_restore_mp_from_rest_at_max.md) (1 shared connections)
-- [test_restore_mp_from_rest_restores_mp](test_restore_mp_from_rest_restores_mp.md) (1 shared connections)
-- [test_restore_mp_from_rest_calculates_max_from_power](test_restore_mp_from_rest_calculates_max_from_power.md) (1 shared connections)
-- [test_restore_mp_from_meditation_higher_than_rest](test_restore_mp_from_meditation_higher_than_rest.md) (1 shared connections)
-- [test_restore_mp_from_item_player_not_found](test_restore_mp_from_item_player_not_found.md) (1 shared connections)
-- [test_restore_mp_from_item_restores_mp](test_restore_mp_from_item_restores_mp.md) (1 shared connections)
+- [applies_to](applies_to.md) (2 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

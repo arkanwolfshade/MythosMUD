@@ -1,51 +1,59 @@
 # test_websocket_handler_helpers_extended.py
 
-> 55 nodes
+> 83 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_websocket_handler_helpers_extended.py** (34 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **asyncio** (21 connections)
-- **test_handle_generic_exception_disconnected()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_generic_exception_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_validation_failed()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_close_message()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_send_error_response_runtime_error_disconnected()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_validate_message_failure()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_generic()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_logs_close_code_and_reason()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_validator()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_handle_message_loop_exception_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_process_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **test_validate_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **fixture** (3 connections)
-- **test_handle_runtime_error_disconnected()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- *... and 30 more nodes in this community*
+- **test_metrics_endpoints.py** (37 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **api/metrics.py** (30 connections) — `server/api/metrics.py`
+- **replay_dlq_message()** (14 connections) — `server/api/metrics.py`
+- **_admin_user()** (14 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **asyncio** (14 connections)
+- **metrics/metrics.py** (12 connections) — `server/schemas/metrics/metrics.py`
+- **delete_dlq_message()** (11 connections) — `server/api/metrics.py`
+- **get_metrics()** (11 connections) — `server/api/metrics.py`
+- **reset_circuit_breaker()** (11 connections) — `server/api/metrics.py`
+- **get_dlq_messages()** (10 connections) — `server/api/metrics.py`
+- **get_metrics_summary()** (10 connections) — `server/api/metrics.py`
+- **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
+- **DLQReplayResponse** (10 connections) — `server/schemas/metrics/metrics.py`
+- **Any** (9 connections)
+- **reset_metrics()** (9 connections) — `server/api/metrics.py`
+- **verify_admin_access()** (9 connections) — `server/api/metrics.py`
+- **metrics/__init__.py** (9 connections) — `server/schemas/metrics/__init__.py`
+- **StatusMessageResponse** (9 connections) — `server/schemas/metrics/metrics.py`
+- **_handle_replay_error()** (8 connections) — `server/api/metrics.py`
+- **DLQMessagesResponse** (8 connections) — `server/schemas/metrics/metrics.py`
+- **MetricsSummaryResponse** (8 connections) — `server/schemas/metrics/metrics.py`
+- **_replay_message_safely()** (7 connections) — `server/api/metrics.py`
+- **MetricsResponse** (7 connections) — `server/schemas/metrics/metrics.py`
+- **Path** (7 connections)
+- **_get_nats_handler()** (6 connections) — `server/api/metrics.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (17 shared connections)
-- [ValueError](ValueError.md) (3 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (15 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (14 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/api/metrics.py`
+- `server/schemas/metrics/__init__.py`
+- `server/schemas/metrics/metrics.py`
+- `server/schemas/metrics/metrics_data.py`
+- `server/tests/unit/api/test_metrics_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (87%)
-- INFERRED: 13 (13%)
+- EXTRACTED: 236 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

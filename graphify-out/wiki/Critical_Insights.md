@@ -1,33 +1,31 @@
 # Critical Insights
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Critical Insights** (12 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **1. Infrastructure Tests are the Main Optimization Target** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **2. Regression Tests are 100% High-Value** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **3. Coverage Tests Written for Metrics, Not Quality** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **4. No Parametrized Tests (Major Opportunity)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **5. Critical Gaps in New Architecture** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example Low-Value Test** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Examples** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Opportunity** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **P4 · Intent Sweep — Plan Documents** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **P4-Intent-Plan-Docs.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Conforming — substantial features that check out** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Correction to a prior audit finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **CRITICAL · The guard that was supposed to prevent raw SQL was never connected** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **HIGH · ADR-009 number collision — code cites a decision that does not exist** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Meta-finding · plan status is unreliable in *both* directions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **PLAN CLAIMED COMPLETE, CODE ABSENT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **PLANNED BUT NOT BUILT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Unverifiable — do not read as passing** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

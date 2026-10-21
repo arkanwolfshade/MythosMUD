@@ -1,49 +1,48 @@
 # ErrorMonitor
 
-> 28 nodes
+> 27 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **ErrorMonitor** (13 connections) — `scripts/error_monitoring.py`
-- **.calculate_error_rate()** (9 connections) — `scripts/error_monitoring.py`
-- **._parse_recent_errors()** (7 connections) — `scripts/error_monitoring.py`
-- **Any** (7 connections)
-- **.check_alerts()** (6 connections) — `scripts/error_monitoring.py`
-- **.detect_error_trends()** (5 connections) — `scripts/error_monitoring.py`
-- **._find_recent_error_logs()** (5 connections) — `scripts/error_monitoring.py`
-- **.monitor_continuously()** (5 connections) — `scripts/error_monitoring.py`
-- **._categorize_error()** (4 connections) — `scripts/error_monitoring.py`
-- **._determine_severity()** (4 connections) — `scripts/error_monitoring.py`
-- **.__init__()** (4 connections) — `scripts/error_monitoring.py`
-- **._parse_log_line()** (4 connections) — `scripts/error_monitoring.py`
-- **main()** (4 connections) — `scripts/error_monitoring.py`
-- **error_monitoring.py** (4 connections) — `scripts/error_monitoring.py`
-- **Path** (4 connections)
-- **datetime** (3 connections)
-- **Detect error trends over time. Returns trend analysis results.** (1 connections) — `scripts/error_monitoring.py`
-- **Check for alert conditions. Returns list of active alerts.** (1 connections) — `scripts/error_monitoring.py`
-- **Monitor errors continuously for a specified duration. Args: log_dir: Directory…** (1 connections) — `scripts/error_monitoring.py`
-- **Real-time error monitoring system for MythosMUD. This monitor can track error…** (1 connections) — `scripts/error_monitoring.py`
-- **Find error log files that have been modified since the given time.** (1 connections) — `scripts/error_monitoring.py`
-- **Parse recent errors from a log file.** (1 connections) — `scripts/error_monitoring.py`
-- **Parse a single log line and extract error information.** (1 connections) — `scripts/error_monitoring.py`
-- **Categorize an error based on its content.** (1 connections) — `scripts/error_monitoring.py`
-- **Initialize the error monitor. Args: log_dir: Directory containing log files…** (1 connections) — `scripts/error_monitoring.py`
-- *... and 3 more nodes in this community*
+- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **asyncio** (11 connections)
+- **test_handle_player_left_disconnecting()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_handle_player_left_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_broadcast_player_left_message_not_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_invalid_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_string_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_unsubscribe_player_from_room_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Unit tests for player room event handlers (player left / unsubscribe /…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test _log_occupants_info() logs occupant information.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [deque](deque.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (7 shared connections)
 
 ## Source Files
 
-- `scripts/error_monitoring.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 38 (88%)
+- INFERRED: 5 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

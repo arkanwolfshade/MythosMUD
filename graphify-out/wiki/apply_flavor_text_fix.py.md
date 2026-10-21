@@ -1,10 +1,10 @@
 # apply_flavor_text_fix.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **apply_flavor_text_fix.py** (0 connections) — `scripts/apply_flavor_text_fix.py`
+- **clean_logs.Tests.ps1** (0 connections) — `scripts/tests/clean_logs.Tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_flavor_text_fix.py`
+- `scripts/tests/clean_logs.Tests.ps1`
 
 ## Audit Trail
 

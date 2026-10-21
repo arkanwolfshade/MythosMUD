@@ -1,41 +1,41 @@
 # channel_broadcasting_strategies.py
 
-> 13 nodes
+> 17 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **ABC** (2 connections)
-- **Channel Broadcasting Strategies for NATS Message Handler. This module…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Register a new strategy for a channel type. Args: channel_type: Channel type to…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
+- **.create_cache()** (5 connections) — `server/caching/lru_cache.py`
+- **.get_cache()** (4 connections) — `server/caching/lru_cache.py`
+- **Any** (4 connections)
+- **.get_all_stats()** (3 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
+- **._initialize_default_caches()** (3 connections) — `server/caching/lru_cache.py`
+- **.delete_cache()** (2 connections) — `server/caching/lru_cache.py`
+- **.clear_all_caches()** (1 connections) — `server/caching/lru_cache.py`
+- **.get_cache_names()** (1 connections) — `server/caching/lru_cache.py`
+- **Centralized cache manager for MythosMUD server. Manages multiple LRU caches for…** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
+- **Initialize default caches with appropriate configurations.** (1 connections) — `server/caching/lru_cache.py`
+- **Get a cache by name. Args: name: The name of the cache Returns: The cache…** (1 connections) — `server/caching/lru_cache.py`
+- **Create a new cache. Args: name: The name of the cache max_size: Maximum number…** (1 connections) — `server/caching/lru_cache.py`
+- **Delete a cache. Args: name: The name of the cache to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
+- **Get statistics for all caches. Returns: Dictionary mapping cache names to their…** (1 connections) — `server/caching/lru_cache.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (6 shared connections)
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (6 shared connections)
-- [UUID](UUID.md) (4 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (3 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (3 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (3 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

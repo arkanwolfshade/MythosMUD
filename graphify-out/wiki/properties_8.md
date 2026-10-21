@@ -1,40 +1,51 @@
 # properties
 
-> 11 nodes
+> 33 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **revised-character-creation.spec.ts** (21 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **character-cleanup.ts** (19 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **LoginPage** (8 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **recoverCharacterSelectionAfterCreation()** (5 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **tryDeleteOneTestCharacter()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **.login()** (5 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **pollUntilCharacterListed()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **cleanupE2ECharacters()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **confirmCharacterDeletion()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **deleteCharacterFromCard()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isDeletableTestCharacter()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **loginToCharacterSelection()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **assertCharacterVisibleOnList()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **deleteRevisedTestCharacterToMakeRoom()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **domClick()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **LoginPage.ts** (3 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **.navigate()** (3 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **needsRecoveryFromWrongCreationScreen()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **openStatsRollingFromLogin()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **escapeRegExp()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **getCharacterNameFromCard()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isProtected()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isTestCharacter()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isLoginPost()** (2 connections) — `client/tests/e2e/runtime/pages/LoginPage.ts`
+- **acceptStatsAndSelectFirstProfession()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [room_hierarchy_schema.json](room_hierarchy_schema.json.md) (1 shared connections)
-- [name](name.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (15 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- `client/tests/e2e/runtime/pages/LoginPage.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 66 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

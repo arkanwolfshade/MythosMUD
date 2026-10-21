@@ -1,10 +1,10 @@
 # command_handler_v2
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **command_handler_v2** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
+- **Feature Request Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_unified_command_handler.md`
+- `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Audit Trail
 

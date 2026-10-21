@@ -1,55 +1,62 @@
 # test_game.py
 
-> 80 nodes
+> 130 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_game.py** (20 connections) — `server/tests/unit/api/test_game.py`
-- **broadcast_message()** (18 connections) — `server/api/game.py`
-- **get_mythos_time()** (15 connections) — `server/api/game.py`
-- **TestGetMythosTime** (11 connections) — `server/tests/unit/api/test_game.py`
-- **BroadcastMessageResponse** (8 connections) — `server/schemas/game/game.py`
-- **GameStatusResponse** (8 connections) — `server/schemas/game/game.py`
-- **MythosTimeResponse** (8 connections) — `server/schemas/game/game.py`
-- **get_game_status()** (8 connections) — `server/api/game.py`
-- **schemas/game/__init__.py** (8 connections) — `server/schemas/game/__init__.py`
-- **game/game.py** (7 connections) — `server/schemas/game/game.py`
+- **websocket_helpers.py** (38 connections) — `server/realtime/websocket_helpers.py`
+- **test_websocket_helpers.py** (38 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_websocket_helpers_player.py** (28 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **validate_occupant_name()** (16 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **prepare_player_data()** (13 connections) — `server/realtime/websocket_helpers.py`
+- **check_shutdown_and_reject()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **get_npc_name_from_instance()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **is_client_disconnected_exception()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **get_player_service_from_connection_manager()** (8 connections) — `server/realtime/websocket_helpers.py`
+- **_bind_get_stats()** (8 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
+- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
 - **asyncio** (7 connections)
-- **BroadcastStats** (6 connections) — `server/schemas/game/game.py`
-- **TestBroadcastMessage** (5 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetMythosTimeEdgeCases** (5 connections) — `server/tests/unit/api/test_game.py`
-- **TestGetGameStatus** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_broadcast_error()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_no_recipients()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_success()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_broadcast_stats_structure()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_empty_stats()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_logs_info()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_broadcast_message_missing_stats_key()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **.test_get_mythos_time_with_holidays()** (4 connections) — `server/tests/unit/api/test_game.py`
-- **BaseModel** (4 connections)
-- **TestBroadcastMessageEdgeCases** (3 connections) — `server/tests/unit/api/test_game.py`
-- *... and 55 more nodes in this community*
+- **test_prepare_player_data_service_error()** (7 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **asyncio** (7 connections)
+- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **UUID** (6 connections)
+- **test_get_player_and_room_adds_player_to_room()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_get_player_and_room_success()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_prepare_player_data_no_service()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **test_prepare_player_data_with_service()** (6 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- **_connection_manager_with_app()** (5 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
-- [HolidayEntry](HolidayEntry.md) (3 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (2 shared connections)
-- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (2 shared connections)
-- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (19 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (11 shared connections)
+- [security.ts](security.ts.md) (6 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
+- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
+- [command_parser.py](command_parser.py.md) (2 shared connections)
+- [look_container.py](look_container.py.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
+- [coerce_int](coerce_int.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
-- `server/tests/unit/api/test_game.py`
+- `server/models/alias.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 144 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 278 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

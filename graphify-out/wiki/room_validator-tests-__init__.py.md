@@ -1,11 +1,10 @@
 # room_validator/tests/__init__.py
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **room_validator/tests/__init__.py** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
-- **Test suite for the MythosMUD room validator. This module contains comprehensive…** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
+- **20260914_npc_catalog_scaffold_e2e.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_scaffold_e2e.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/__init__.py`
+- `data/npc_catalog/generated/20260914_npc_catalog_scaffold_e2e.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

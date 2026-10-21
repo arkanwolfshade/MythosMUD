@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Call of Cthulhu 7th Edition Keeper Screen Pack
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition Keeper Screen Pack** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
-- **call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

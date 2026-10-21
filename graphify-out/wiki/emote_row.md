@@ -1,32 +1,32 @@
 # emote_row
 
-> 10 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **emote_row()** (6 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **test_get_emote_aliases_joins_owning_emote()** (5 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **test_get_emotes_includes_the_new_row()** (5 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **test_emotes_procedures.py** (4 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **async_sessionmaker** (3 connections)
-- **AsyncSession** (3 connections)
-- **asyncio** (2 connections)
-- **fixture** (1 connections)
-- **Integration tests for db/procedures/emotes.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **Create one emote with one alias. Yields (stable_id, alias).** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **.__call__()** (8 connections) — `server/middleware/correlation_middleware.py`
+- **_get_header()** (6 connections) — `server/middleware/correlation_middleware.py`
+- **Scope** (2 connections)
+- **test_get_header_case_insensitive()** (2 connections) — `server/tests/unit/middleware/test_correlation_middleware.py`
+- **Receive** (1 connections)
+- **Send** (1 connections)
+- **Return first header value for name (case-insensitive) from ASGI scope.** (1 connections) — `server/middleware/correlation_middleware.py`
+- **ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…** (1 connections) — `server/middleware/correlation_middleware.py`
 
 ## Relationships
 
-- [session_factory](session_factory.md) (3 shared connections)
+- [test_player_repository_room.py](test_player_repository_room.py.md) (4 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_emotes_procedures.py`
+- `server/middleware/correlation_middleware.py`
+- `server/tests/unit/middleware/test_correlation_middleware.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (82%)
-- INFERRED: 3 (18%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

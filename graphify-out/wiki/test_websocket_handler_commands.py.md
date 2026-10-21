@@ -1,62 +1,60 @@
 # test_websocket_handler_commands.py
 
-> 68 nodes
+> 50 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **test_websocket_handler_commands.py** (41 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **websocket_handler_commands.py** (36 connections) — `server/realtime/websocket_handler_commands.py`
-- **handle_game_command()** (32 connections) — `server/realtime/websocket_handler_commands.py`
-- **process_websocket_command()** (20 connections) — `server/realtime/websocket_handler_commands.py`
-- **resolve_and_setup_app_state_services()** (19 connections) — `server/realtime/websocket_handler_app_state.py`
-- **asyncio** (18 connections)
-- **create_websocket_request_context()** (11 connections) — `server/realtime/request_context.py`
-- **Path** (11 connections)
-- **resolve_websocket_connection_manager()** (10 connections) — `server/realtime/websocket_handler_commands.py`
-- **_run_game_command_with_unified_result()** (10 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **validate_player_and_persistence()** (9 connections) — `server/realtime/websocket_handler_commands.py`
-- **_websocket_unified_command_result()** (9 connections) — `server/realtime/websocket_handler_commands.py`
-- **_attach_room_state_to_result()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **parse_game_command_tokens()** (8 connections) — `server/realtime/websocket_handler_commands.py`
-- **_player_cm()** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_command_response_keeps_system_error_from_command_error()** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **_resolve_get_room_state_callable()** (6 connections) — `server/realtime/websocket_handler_commands.py`
-- **test_command_response_carries_the_handlers_segments_untouched()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_command_response_defaults_to_command_output_category()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_command_response_keeps_a_handler_supplied_category()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_process_websocket_command_attaches_room_state()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_process_websocket_command_room_state_get_room_fails_softly()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_room_broadcast_defaults_to_command_output_category()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_room_broadcast_uses_broadcast_category_override()** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- **test_process_websocket_command_room_changed_no_player_handler_skips_room_state()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_commands.py`
-- *... and 43 more nodes in this community*
+- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
+- **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **handle_debrief_command()** (18 connections) — `server/commands/debrief_command.py`
+- **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
+- **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
+- **asyncio** (9 connections)
+- **Any** (8 connections)
+- **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
+- **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
+- **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
+- **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
+- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
+- **test_handle_debrief_command_success()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_perform_therapy_on_cooldown()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_check_debrief_availability_not_pending()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_handle_debrief_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_handle_debrief_command_not_available()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_perform_therapy_if_not_requested()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_perform_therapy_success()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_validate_debrief_context_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_validate_debrief_context_player_missing()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_exception_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_no_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_generate_narrative_recap_with_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_get_catatonia_registry_from_state_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (17 shared connections)
-- [MessageCategory](MessageCategory.md) (12 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (6 shared connections)
-- [ErrorType](ErrorType.md) (6 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (6 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (5 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [look_command.py](look_command.py.md) (2 shared connections)
+- [PopulationStats](PopulationStats.md) (6 shared connections)
+- [test_command_registry_consistency.py](test_command_registry_consistency.py.md) (3 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
+- [ItemFactory](ItemFactory.md) (2 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [scripts](scripts.md) (2 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
+- [inventory_item_matching.py](inventory_item_matching.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/request_context.py`
-- `server/realtime/websocket_handler_app_state.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_commands.py`
+- `server/commands/debrief_command.py`
+- `server/tests/unit/commands/test_debrief_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 213 (87%)
-- INFERRED: 33 (13%)
+- EXTRACTED: 116 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

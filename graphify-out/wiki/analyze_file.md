@@ -1,32 +1,32 @@
 # analyze_file
 
-> 11 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **analyze_file()** (5 connections) — `scripts/analyze_comments.py`
-- **analyze_comments.py** (4 connections) — `scripts/analyze_comments.py`
-- **extract_function_and_class_names()** (3 connections) — `scripts/analyze_comments.py`
-- **main()** (3 connections) — `scripts/analyze_comments.py`
-- **check_comment_references_nonexistent_code()** (2 connections) — `scripts/analyze_comments.py`
-- **Path** (2 connections)
-- **Any** (1 connections)
-- **Analyze a single file for comment issues. Args: file_path: Path to file to…** (1 connections) — `scripts/analyze_comments.py`
-- **Main entry point for comment analysis.** (1 connections) — `scripts/analyze_comments.py`
-- **Extract function and class names from a Python file. Args: file_path: Path to…** (1 connections) — `scripts/analyze_comments.py`
-- **Check if a comment references a function or class that doesn't exist. Args:…** (1 connections) — `scripts/analyze_comments.py`
+- **fixture** (5 connections)
+- **follow_service()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
+- **connection_manager()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **event_bus()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **movement_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **user_manager()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
+- **No event bus so we don't need to run the loop; we call handlers directly.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **Mock movement service; move_player returns True by default.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **Mock user manager; not muted by default.** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **Mock connection manager (optional for most tests).** (1 connections) — `server/tests/unit/game/test_follow_service.py`
+- **FollowService with mocks. connection_manager=None avoids scheduling real…** (1 connections) — `server/tests/unit/game/test_follow_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [SchemaValidator](SchemaValidator.md) (6 shared connections)
 
 ## Source Files
 
-- `scripts/analyze_comments.py`
+- `server/tests/unit/game/test_follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

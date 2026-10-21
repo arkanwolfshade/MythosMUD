@@ -1,10 +1,10 @@
 # seed.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **seed.sql** (0 connections) — `data/db/seed.sql`
+- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/db/seed.sql`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

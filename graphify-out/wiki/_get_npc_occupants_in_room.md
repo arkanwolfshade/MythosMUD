@@ -1,43 +1,52 @@
 # _get_npc_occupants_in_room
 
-> 16 nodes
+> 25 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **_get_npc_occupants_in_room()** (16 connections) — `server/commands/look_npc.py`
-- **test_look_npc_occupants.py** (13 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **test_an_unrecognised_type_is_listed_as_a_passive_mob()** (7 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **test_lists_each_live_npc_in_the_room_with_its_disposition()** (6 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **_get_npcs_in_room()** (5 connections) — `server/commands/look_npc.py`
-- **_lifecycle()** (5 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **_npc()** (5 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **test_skips_the_dead_and_the_unnamed()** (5 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **test_the_names_helper_is_the_same_list_without_dispositions()** (5 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **asyncio** (5 connections)
-- **test_no_lifecycle_manager_means_no_npcs()** (3 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **NpcOccupant** (1 connections)
-- **Get list of NPC names in a room from lifecycle manager.** (1 connections) — `server/commands/look_npc.py`
-- **The NPCs in a room as ``{name, disposition}``, from the lifecycle manager…** (1 connections) — `server/commands/look_npc.py`
-- **`_get_npc_occupants_in_room`: the room's live NPCs as {name, disposition}…** (1 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
-- **One bad definition row must not drop an NPC from the room.** (1 connections) — `server/tests/unit/commands/test_look_npc_occupants.py`
+- **Scenario 22: Invite-Only Registration Enforcement** (10 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Execution Steps** (7 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **MythosMUD Server** (4 connections) — `server/README.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **scenario-22-invite-registration.md** (2 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Server Realtime Module** (2 connections) — `server/realtime/README.md`
+- **Who Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **✅ EXECUTED - ALL STEPS PASSED** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Execution Record** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 1: Switch to registration mode** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 2: Blank invite code is rejected client-side, no request sent** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 3: Invalid invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 4: Expired invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 5: Already-used invite code is rejected by the server** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Step 6: Valid invite code succeeds (control case)** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- **Persistence Repositories** (1 connections) — `server/persistence/repositories/README.md`
+- **MythosMUD Test Suite** (1 connections) — `server/tests/README.md`
 
 ## Relationships
 
-- [NpcDisposition](NpcDisposition.md) (7 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (4 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (1 shared connections)
-- [_should_include_npc](_should_include_npc.md) (1 shared connections)
-- [test_look_room.py](test_look_room.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc_occupants.py`
+- `docs/subsystems/SUBSYSTEM_WHO_DESIGN.md`
+- `e2e-tests/scenarios/scenario-22-invite-registration.md`
+- `server/README.md`
+- `server/persistence/repositories/README.md`
+- `server/realtime/README.md`
+- `server/tests/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (91%)
-- INFERRED: 4 (9%)
+- EXTRACTED: 20 (83%)
+- INFERRED: 4 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

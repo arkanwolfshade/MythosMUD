@@ -1,37 +1,38 @@
 # Adapt Skill
 
-> 16 nodes
+> 15 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **Implement Adaptations** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Plan Adaptation Strategy** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Adapt Skill** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Assess Adaptation Challenge** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Content Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Desktop Adaptation (Mobile → Desktop)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Email Adaptation (Web → Email)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Layout Adaptation Techniques** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Mobile Adaptation (Desktop → Mobile)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Navigation Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Print Adaptation (Screen → Print)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Responsive Breakpoints** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Tablet Adaptation (Hybrid Approach)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Touch Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Verify Adaptations** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **is_safe_filename()** (10 connections) — `server/security_utils.py`
+- **test_is_safe_filename_empty()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_unicode()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_forward_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_is_safe_filename_with_special_chars()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Check if a filename is safe (no path traversal, no special characters). Args:…** (1 connections) — `server/security_utils.py`
+- **Test is_safe_filename with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename with empty string (considered safe).** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with forward slash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename rejects filenames with backslash.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test is_safe_filename with Unicode characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [ascii_map_exits.py](ascii_map_exits.py.md) (8 shared connections)
+- [P3 · container-di + client + domain](P3_·_container-di_+_client_+_domain.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/adapt/SKILL.md`
+- `server/security_utils.py`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

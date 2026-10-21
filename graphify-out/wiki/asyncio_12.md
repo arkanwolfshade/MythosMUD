@@ -1,39 +1,45 @@
 # asyncio
 
-> 15 nodes
+> 23 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_cancels_pending_invite_as_inviter()** (4 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_on_player_disconnect_cancels_pending_invite_as_target()** (4 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Disconnect of the inviter cancels their pending invite to the target.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Disconnect of the invite target cancels the pending invite.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **generate_html_visualization.py** (11 connections) — `scripts/generate_html_visualization.py`
+- **generate_html_visualization()** (8 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_list_html()** (5 connections) — `scripts/generate_html_visualization.py`
+- **_format_exits()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_intersection_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
+- **main()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_edge_data()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_generate_intersection_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_get_subzone_colors()** (3 connections) — `scripts/generate_html_visualization.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization.py`
+- **Generate edge data for JavaScript.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Format exits data for display.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate room items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate intersection items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate room list HTML.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Get color scheme for subzones.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate node data for rooms.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate node data for intersections.** (1 connections) — `scripts/generate_html_visualization.py`
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (7 shared connections)
-- [PartyService](PartyService.md) (3 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `scripts/generate_html_visualization.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

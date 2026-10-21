@@ -1,10 +1,10 @@
 # Wiki Page Template
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Wiki Page Template** (0 connections) — `data/MythosMUD-Obsidian/_templates/wiki-page.md`
+- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/_templates/wiki-page.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

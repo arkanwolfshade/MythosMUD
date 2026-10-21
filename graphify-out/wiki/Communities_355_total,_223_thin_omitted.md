@@ -1,48 +1,58 @@
 # Communities (355 total, 223 thin omitted)
 
-> 133 nodes
+> 159 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **Communities (355 total, 223 thin omitted)** (133 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 0 - "Nyarlathotep Avatars"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 100 - "Call Daoloth / Daoloth"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 101 - "Call Nyogtha / Clutch of Nyogtha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 102 - "Call Saaitii / Saaitii"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 103 - "Call Zu-Che-Quon / Enchant Bells of Horror"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 104 - "Cast Out Shan / Shaggai"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 105 - "Casting the Runes / Elder Sign"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 106 - "Byatis / Contact Byatis"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 107 - "Call of Cthulhu Rulebook / The Grand Grimoire of Cthulhu Mythos Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 108 - "Chaugnar Faugn / Contact Chaugnar Faugn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 109 - "City in the Sands / Contact Flying Polyp"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 10 - "Named Baneful Spells"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 110 - "Contact Zoth-Ommog / Ponape Figurine"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 111 - "Create Curse Whistle / Pipes Of Madness"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 112 - "Create Gate / Create Gate Window"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 113 - "Create Sign of Barzai / Strange Legends of New England"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 114 - "Brew Paut / Enchant Magic Staves"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 115 - "Dampen Light / Enchant Pipes"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 116 - "Destroy Spawn of Yig / spawn of Yig"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 117 - "Detect Enchantment / Evil Eye"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 118 - "Eibon's Wheel of Mist / Enchant Dagger of Nyarlathotep"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 119 - "Enchant Book / star vampire"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 11 - "Gate Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 120 - "Cthulhu / Grasp of Cthulhu"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- *... and 108 more nodes in this community*
+- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
+- **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Any** (14 connections)
+- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
+- **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
+- **UUID** (8 connections)
+- **._try_fallback_name_sources()** (7 connections) — `server/realtime/player_name_utils.py`
+- **._is_uuid_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **.extract_player_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._log_uuid_validation_failure()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_player_username()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_user_object_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_basic()** (5 connections) — `server/realtime/player_name_utils.py`
+- **.validate_player_name_not_uuid()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **.test_try_user_object_name_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
+- *... and 134 more nodes in this community*
 
 ## Relationships
 
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_The_Grand_Grimoire_of_Cthulhu_Mythos_Magic__2026-08-12.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (8 shared connections)
+- [ChatLogger](ChatLogger.md) (6 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [ResourceManager](ResourceManager.md) (4 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
+- [look_container.py](look_container.py.md) (1 shared connections)
+- [PlayerRespawnWrapper](PlayerRespawnWrapper.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- `server/realtime/player_name_utils.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 282 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

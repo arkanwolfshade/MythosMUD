@@ -1,28 +1,25 @@
 # main
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
-- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
-- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Alone Against the Frost (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Alone Against the Frost.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/generate_html_visualization_fixed.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,49 +1,48 @@
 # TestHierarchicalSchema
 
-> 47 nodes
+> 43 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **TestHierarchicalSchema** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **._validate_room()** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **test_hierarchical_schema.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **ValidationResult** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.setUp()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_environment_inheritance_logic()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_environment_value()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_exits_fail_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_missing_description_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_missing_exits_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_subzone_environment()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_zone_type()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_exits_pass_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_hierarchical_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_subzone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_zone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **Any** (1 connections)
-- **Tests for hierarchical room schema validation. This module tests the new…** (1 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- *... and 22 more nodes in this community*
+- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.service()** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.mock_config()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **fixture** (2 connections)
+- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_scope_override_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_global()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_player()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_room()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_temporary()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration_invalid_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (4 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (7 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 46 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

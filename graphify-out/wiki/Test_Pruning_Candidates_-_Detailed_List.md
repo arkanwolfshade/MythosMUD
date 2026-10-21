@@ -1,47 +1,58 @@
 # Test Pruning Candidates - Detailed List
 
-> 33 nodes
+> 32 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Test Pruning Candidates - Detailed List** (10 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Recommended Pruning Order** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Specific Test Removal Justifications** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **High-Impact Consolidations** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Immediate Pruning Candidates (High Confidence)** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Category A: Infrastructure Tests Testing Framework Behavior** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Category B: Coverage Tests Written for Metrics** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Total Impact Estimate** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Category C: Model Property Tests** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Consolidation Candidates** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Coverage Impact Analysis** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **1. Command Validation Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **2. Error Response Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **3. Permission Check Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Aggressive Estimate (Full Optimization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Conclusion** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Conservative Estimate (Implement Phase A + Basic Parametrization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **File: `server/tests/coverage/test_command_handler_coverage.py` (1,039 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **File: `server/tests/coverage/test_error_logging_coverage.py` (691 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **File: `server/tests/unit/infrastructure/test_dependency_injection.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **File: `server/tests/unit/infrastructure/test_lifespan.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Files: `server/tests/unit/models/test_*.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Pattern 1: Testing Python Language Features** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Pattern 2: Testing Framework Behavior** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Pattern 3: Tests with No Real Assertions** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- *... and 8 more nodes in this community*
+- **tutorial-instance-lifecycle.spec.ts** (25 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
+- **tutorial.ts** (24 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **inventory-logging.spec.ts** (15 connections) — `client/tests/e2e/runtime/containers/inventory-logging.spec.ts`
+- **E2E_PROJECT_ROOT** (9 connections) — `client/src/test/e2e-bootstrap.ts`
+- **relogTutorialCharacter()** (9 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **server-logs.ts** (8 connections) — `client/tests/e2e/runtime/fixtures/server-logs.ts`
+- **server-logs.test.ts** (7 connections) — `client/src/test/server-logs.test.ts`
+- **runE2eScript()** (5 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **startFreshTutorial()** (5 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **message-match.ts** (4 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **escapeRegExpLiteral()** (4 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **logOffset()** (4 connections) — `client/tests/e2e/runtime/fixtures/server-logs.ts`
+- **waitForLogLine()** (4 connections) — `client/tests/e2e/runtime/fixtures/server-logs.ts`
+- **readE2ePlayerState()** (4 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **resetTutorialCharacterInDatabase()** (4 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **dropSlingAndLeave()** (4 connections) — `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
+- **message-match.test.ts** (3 connections) — `client/src/test/message-match.test.ts`
+- **toMessageMatchPattern()** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **logPath()** (3 connections) — `client/tests/e2e/runtime/fixtures/server-logs.ts`
+- **BANK_LOOK_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **BANK_ROOM_ID** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **clearStoredSession()** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **EMPTY_FLOOR_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **TUTORIAL_BEDROOM_LOOK_CUE** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- **TUTORIAL_USERNAME** (2 connections) — `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (13 shared connections)
+- [ChatModeration](ChatModeration.md) (13 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (12 shared connections)
+- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (8 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- `client/src/test/e2e-bootstrap.ts`
+- `client/src/test/message-match.test.ts`
+- `client/src/test/server-logs.test.ts`
+- `client/tests/e2e/runtime/containers/inventory-logging.spec.ts`
+- `client/tests/e2e/runtime/fixtures/message-match.ts`
+- `client/tests/e2e/runtime/fixtures/server-logs.ts`
+- `client/tests/e2e/runtime/fixtures/tutorial.ts`
+- `client/tests/e2e/runtime/tutorial/tutorial-instance-lifecycle.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 106 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

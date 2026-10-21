@@ -1,10 +1,10 @@
 # temp_init_e2e_npc.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **temp_init_e2e_npc.py** (0 connections) — `scripts/temp_init_e2e_npc.py`
+- **MythosMUD OpenAPI Workflow Skill** (0 connections) — `.cursor/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_init_e2e_npc.py`
+- `.cursor/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Audit Trail
 

@@ -1,25 +1,25 @@
 # Cthulhu Dark Ages - 3rd Edition (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Cthulhu Dark Ages - 3rd Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **Cthulhu Dark Ages - 3rd Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

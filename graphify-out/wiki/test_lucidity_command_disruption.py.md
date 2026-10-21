@@ -1,42 +1,39 @@
 # test_lucidity_command_disruption.py
 
-> 19 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **test_lucidity_command_disruption.py** (14 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **should_involuntary_flee()** (7 connections) — `server/services/lucidity_command_disruption.py`
-- **should_misfire_command()** (7 connections) — `server/services/lucidity_command_disruption.py`
-- **can_perform_action()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **get_misfire_message()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **test_should_involuntary_flee_deranged_high_damage()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_fractured_miss()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_fractured_roll()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **patch** (3 connections)
-- **test_can_perform_action()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_get_misfire_messages_by_tier()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_involuntary_flee_wrong_tier_or_low_damage()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_catatonic_always()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_ignores_simple_commands()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **Check if a command should misfire based on tier and command type. Args:…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Get the misfire message for a failed command. Args: command_type: Type of…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Check if player should involuntarily flee. Args: tier: Current lucidity tier…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Check if player can perform actions (motor lock check). Args: tier: Current…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Unit tests for lucidity command disruption.** (1 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **Animate Skill** (7 connections) — `.claude/skills/animate/SKILL.md`
+- **Implement Animations** (7 connections) — `.claude/skills/animate/SKILL.md`
+- **Technical Implementation** (6 connections) — `.claude/skills/animate/SKILL.md`
+- **Accessibility** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Assess Animation Opportunities** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **CSS Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Delight Moments** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Entrance Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Feedback & Guidance** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **JavaScript Animation** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Micro-interactions** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Navigation & Flow** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Performance** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Plan Animation Strategy** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **State Transitions** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Timing & Easing** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Verify Quality** (1 connections) — `.claude/skills/animate/SKILL.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/unit/services/test_lucidity_command_disruption.py`
+- `.claude/skills/animate/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

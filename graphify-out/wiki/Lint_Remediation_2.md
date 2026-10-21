@@ -1,23 +1,20 @@
 # Lint Remediation
 
-> 14 nodes
+> 11 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Lint Remediation** (5 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Fix patterns by tier** (4 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Lint Remediation — Reference** (4 connections) — `.claude/skills/lint-remediation/reference.md`
-- **lint-remediation/SKILL.md** (2 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **lint-remediation/reference.md** (2 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🔴 Critical — compilation errors** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Error code table** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🟡 High — code quality** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🟢 Medium — style** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Entry point** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Fix-verify loop** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Priority** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **test_test_runner_cli.py** (8 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **_run()** (8 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **Path** (3 connections)
+- **test_missing_pyproject_exits_nonzero()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **test_mode_flags_select_runner_method()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **test_project_root_override_is_passed_to_runner()** (3 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **test_no_flags_runs_all_tests()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **test_paths_markers_and_pytest_args_are_forwarded()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **test_project_root_defaults_to_nearest_pyproject()** (2 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
+- **parametrize** (1 connections)
+- **Tests for scripts/test_runner.py CLI parsing (typed argparse namespace).…** (1 connections) — `server/tests/unit/scripts/test_test_runner_cli.py`
 
 ## Relationships
 
@@ -25,12 +22,11 @@
 
 ## Source Files
 
-- `.claude/skills/lint-remediation/SKILL.md`
-- `.claude/skills/lint-remediation/reference.md`
+- `server/tests/unit/scripts/test_test_runner_cli.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

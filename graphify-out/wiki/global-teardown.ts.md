@@ -1,26 +1,28 @@
 # global-teardown.ts
 
-> 5 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **global-teardown.ts** (4 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **globalTeardown()** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__dirname** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__filename** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **projectRoot** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **✅ Positive Findings** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Consistent Pattern Application** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Proper Async Propagation** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Exception Handling Preserved** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Resource Cleanup Maintained** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Proper Import Organization** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Documentation Added** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [HealthService](HealthService.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/global-teardown.ts`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

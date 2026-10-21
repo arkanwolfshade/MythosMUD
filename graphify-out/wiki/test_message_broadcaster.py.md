@@ -1,53 +1,49 @@
 # test_message_broadcaster.py
 
-> 78 nodes
+> 42 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_message_broadcaster.py** (22 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster.py** (15 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **asyncio** (15 connections)
-- **UUID** (9 connections)
-- **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_batch_delivery_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_global_batch_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_global_individual()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_individual_send()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_global_targets_and_stats()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 53 more nodes in this community*
+- **TestHierarchicalSchema** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **._validate_room()** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **ValidationResult** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.setUp()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_environment_inheritance_logic()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_environment_value()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_exits_fail_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_missing_description_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_missing_exits_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_subzone_environment()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_zone_type()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_exits_pass_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_hierarchical_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_subzone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_zone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **Any** (1 connections)
+- **Test that invalid environment values fail validation.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **Test that a valid zone configuration passes validation.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (4 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
-- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 64 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

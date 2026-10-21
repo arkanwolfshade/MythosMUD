@@ -1,24 +1,22 @@
 # test_get_mortally_wounded_players_finds_mortally_wounded
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_get_mortally_wounded_players_finds_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() finds mortally wounded players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **shellcheck.ps1** (0 connections) — `scripts/shellcheck.ps1`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `scripts/shellcheck.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

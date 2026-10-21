@@ -1,10 +1,10 @@
 # 20261002150000_tutorial_bedroom_fixtures.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20261002150000_tutorial_bedroom_fixtures.sql** (0 connections) — `db/migrations/20261002150000_tutorial_bedroom_fixtures.sql`
+- **Migration 019 Testing Guide** (0 connections) — `docs/archive/MIGRATION_019_TESTING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/20261002150000_tutorial_bedroom_fixtures.sql`
+- `docs/archive/MIGRATION_019_TESTING_GUIDE.md`
 
 ## Audit Trail
 

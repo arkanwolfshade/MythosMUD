@@ -1,31 +1,32 @@
 # .__init__
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **RoomDropStore** (5 connections) — `server/services/instance_flush_service.py`
-- **.__init__()** (5 connections) — `server/services/instance_flush_service.py`
-- **.pop_room_drops_with_prefix()** (2 connections) — `server/services/instance_flush_service.py`
-- **Protocol** (1 connections)
-- **Where floor drops live (RoomSubscriptionManager).** (1 connections) — `server/services/instance_flush_service.py`
-- **Remove and return the drops of every room whose id starts with prefix.** (1 connections) — `server/services/instance_flush_service.py`
-- **Wire the instance store, the floor-drop store, and bank box persistence.** (1 connections) — `server/services/instance_flush_service.py`
+- **Models Package Design** (11 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **2. Members** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_MODELS_DESIGN.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/instance_flush_service.py`
+- `docs/packages/PACKAGE_MODELS_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

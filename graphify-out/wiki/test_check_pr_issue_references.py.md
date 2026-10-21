@@ -1,38 +1,38 @@
 # test_check_pr_issue_references.py
 
-> 16 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **test_check_pr_issue_references.py** (15 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_bare_reference_is_not_linked()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_closes_keyword_links_the_issue()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_closes_links_multiple_comma_separated_issues()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_fixes_and_resolved_keywords_link_case_insensitively()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_empty_candidates_short_circuits()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_filters_to_open_only()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_returns_none_on_lookup_failure()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_keyword_linked_and_bare_reference_coexist()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_clean_when_no_references()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_degrades_gracefully_when_gh_lookup_fails()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_emits_github_annotation_in_ci()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_silent_when_referenced_issue_already_closed()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_warns_on_open_bare_reference()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_no_references_at_all()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **Tests for scripts/check_pr_issue_references.py. Covers the closing-keyword…** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **NATS Anti-Patterns Remediation Summary** (11 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Code Quality Improvements** (4 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **After Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Before Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Configuration Options** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Exception Hierarchy** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Metrics & Observability** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Next Steps (Optional)** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Performance Impact** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Remaining Medium-Priority Issues** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [1. Enhanced ChatPanel (New Chat Input Panel)](1._Enhanced_ChatPanel_New_Chat_Input_Panel.md) (1 shared connections)
+- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
+- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

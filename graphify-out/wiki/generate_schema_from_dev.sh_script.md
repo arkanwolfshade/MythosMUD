@@ -1,23 +1,24 @@
 # generate_schema_from_dev.sh script
 
-> 2 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **generate_schema_from_dev.sh script** (1 connections) — `scripts/generate_schema_from_dev.sh`
-- **generate_schema_from_dev.sh** (1 connections) — `scripts/generate_schema_from_dev.sh`
+- **test_extract_occupant_names_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_occupant_names_valid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test extract_occupant_names() with valid names.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/generate_schema_from_dev.sh`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

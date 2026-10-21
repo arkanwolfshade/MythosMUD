@@ -1,30 +1,26 @@
 # Respawn Death Screen Loop Limbo ID Mismatch
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Respawn Death Screen Loop Limbo ID Mismatch** (3 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
-- **Respawn Persistence JSONB Mutation Failure** (2 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **Death Threshold and Posture Bugs** (2 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
-- **limbo_death_void vs limbo_death_void_limbo_death_void** (1 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
-- **SQLAlchemy JSONB Mutation Detection** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- **HP -10 Limbo Transition Delay** (1 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
+- **🔬 Lessons Learned** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Challenges Encountered** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Solutions Applied** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **What Worked Well** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [author_sanitarium_coords.py](author_sanitarium_coords.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
-- `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
-- `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,19 +1,19 @@
 # test_generate_room_id_from_zone_data_needs_generation
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_generate_room_id_from_zone_data_needs_generation()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _generate_room_id_from_zone_data when room ID needs generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_combat_victory_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_victory_message returns victory message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 

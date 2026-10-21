@@ -1,28 +1,26 @@
 # Test Coverage Requirements
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Test Coverage Requirements** (4 connections) — `.claude/rules/test-coverage.md`
-- **Test Quality Standards** (3 connections) — `.claude/rules/test-coverage.md`
-- **test-coverage.md** (1 connections) — `.claude/rules/test-coverage.md`
-- **Coverage Measurement** (1 connections) — `.claude/rules/test-coverage.md`
-- **Forbidden Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
-- **Minimum Coverage Standard** (1 connections) — `.claude/rules/test-coverage.md`
-- **Required Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
+- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [✨ Key Achievements](✨_Key_Achievements.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/test-coverage.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # Troubleshooting Guide for MythosMUD
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Troubleshooting Guide for MythosMUD** (0 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
+- **get_project_root.py** (0 connections) — `scripts/get_project_root.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/TROUBLESHOOTING_GUIDE.md`
+- `scripts/get_project_root.py`
 
 ## Audit Trail
 

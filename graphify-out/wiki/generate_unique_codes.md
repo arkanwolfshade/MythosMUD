@@ -1,28 +1,25 @@
 # generate_unique_codes
 
-> 7 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invites.py** (4 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Doors to Darkness (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **Doors to Darkness.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
 
 ## Relationships
 
-- [CombatService](CombatService.md) (2 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

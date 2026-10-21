@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
-- **call-of-cthulhu-the-coloring-book/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

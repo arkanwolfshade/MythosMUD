@@ -1,26 +1,27 @@
 # ._handle_hunt_target
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Hunt a specific target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Handle hunting target action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
+- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

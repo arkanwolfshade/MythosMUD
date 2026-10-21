@@ -1,48 +1,49 @@
 # _SpecModule
 
-> 67 nodes
+> 71 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **_SpecModule** (32 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **test_arkham_grid_spec.py** (18 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **_VoicesModule** (9 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestVoices** (8 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestExtras** (6 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **Protocol** (6 connections)
-- **TestStreets** (5 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **_room_cells()** (5 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **_Seg** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **_Street** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestCoordinates** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestRiver** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestSubZones** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **spec()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_no_two_rooms_share_a_cell()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_every_extra_attaches_to_a_real_room()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_long_streets_have_enough_variants()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **voices()** (4 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **TestSanitarium** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **_load()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_every_segment_lies_between_its_own_crossings()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_extra_directions_are_supported()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_extras_do_not_attach_to_each_other_in_a_cycle()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_only_the_island_uses_a_vertical_exit()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- **.test_exactly_three_streets_cross_the_miskatonic()** (3 connections) — `server/tests/unit/data/test_arkham_grid_spec.py`
-- *... and 42 more nodes in this community*
+- **CombatAuditLogger** (30 connections) — `server/structured_logging/combat_audit.py`
+- **test_combat_audit.py** (25 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **combat_audit.py** (11 connections) — `server/structured_logging/combat_audit.py`
+- **_ts()** (10 connections) — `server/structured_logging/combat_audit.py`
+- **CombatParties** (8 connections) — `server/structured_logging/combat_audit.py`
+- **CombatMonitoringAlert** (7 connections) — `server/structured_logging/combat_audit.py`
+- **datetime** (7 connections)
+- **_parties()** (7 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **CombatSecurityEvent** (6 connections) — `server/structured_logging/combat_audit.py`
+- **CombatAttackDetails** (5 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_death()** (5 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_end()** (5 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_start()** (5 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_validation_failure()** (5 connections) — `server/structured_logging/combat_audit.py`
+- **test_combat_audit_logger_log_combat_attack()** (5 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **.log_combat_attack()** (4 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_monitoring_alert()** (4 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_rate_limit()** (4 connections) — `server/structured_logging/combat_audit.py`
+- **.log_combat_security_event()** (4 connections) — `server/structured_logging/combat_audit.py`
+- **test_combat_audit_logger_log_combat_death()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_log_combat_end()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_log_combat_monitoring_alert_high()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_log_combat_monitoring_alert_low()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_log_combat_monitoring_alert_with_player()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- **test_combat_audit_logger_log_combat_security_event()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room](Room.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/data/test_arkham_grid_spec.py`
+- `server/structured_logging/combat_audit.py`
+- `server/tests/unit/structured_logging/test_combat_audit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 112 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 128 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

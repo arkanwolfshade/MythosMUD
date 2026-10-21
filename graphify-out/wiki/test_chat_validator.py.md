@@ -1,51 +1,57 @@
 # test_chat_validator.py
 
-> 26 nodes
+> 41 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_chat_validator.py** (21 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **validate_chat_message()** (12 connections) — `server/game/chat_validator.py`
-- **chat_validator.py** (10 connections) — `server/game/chat_validator.py`
-- **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
-- **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
-- **test_contains_malicious_content_detects_patterns()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_empty_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_malicious_script()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_missing_sender()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_too_long_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_contains_malicious_content_allows_safe_text()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_contains_malicious_content_fails_safe_on_type_error()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_accepts_valid_room()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_allows_none_room_for_system()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_rejects_blank_room_id()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **ChatMessage** (1 connections)
-- **parametrize** (1 connections)
-- **Chat message validation utilities. This module provides validation functions…** (1 connections) — `server/game/chat_validator.py`
-- **Validate chat message before transmission. Args: chat_message: The chat message…** (1 connections) — `server/game/chat_validator.py`
-- **Validate sender has access to the room. Args: sender_id: ID of the message…** (1 connections) — `server/game/chat_validator.py`
-- **Check for malicious content patterns. Args: content: The message content to…** (1 connections) — `server/game/chat_validator.py`
-- *... and 1 more nodes in this community*
+- **correct_patterns.py** (20 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
+- **Result** (5 connections) — `scripts/run_test_ci.py`
+- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_performance_logging()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **database** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **.execute()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **.create_user()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **.execute()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_database_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **.query()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct WebSocket logging patterns.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (10 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (3 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (3 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [migration_examples.py](migration_examples.py.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
+- [format_occupant_display_name](format_occupant_display_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_validator.py`
-- `server/tests/unit/game/test_chat_validator.py`
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/migration_examples.py`
+- `scripts/run_test_ci.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 52 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

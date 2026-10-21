@@ -1,52 +1,48 @@
 # test_logging_processors.py
 
-> 82 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_logging_processors.py** (37 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **enhance_player_ids()** (19 connections) — `server/structured_logging/logging_processors.py`
-- **set_global_player_service()** (18 connections) — `server/structured_logging/logging_processors.py`
-- **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
-- **logging_processors.py** (13 connections) — `server/structured_logging/logging_processors.py`
-- **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
-- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
-- **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **EventDict** (5 connections)
-- **_enhance_one_player_id()** (4 connections) — `server/structured_logging/logging_processors.py`
-- **test_enhance_player_ids_invalid_uuid_format()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_persistence_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_id_field()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_no_player_service()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_non_string_value()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_no_name_attribute()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_player_not_found()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_prevents_recursion()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_enhance_player_ids_swallows_database_error_without_importing_it()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **_EnhancePlayerIdsTls** (3 connections) — `server/structured_logging/logging_processors.py`
-- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 57 more nodes in this community*
+- **Domain Model Anemic Anti-Pattern Audit** (10 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2. High Priority – Domain Logic in Services** (6 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3. Medium Priority – Partial Enrichment** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4. Low Priority – Acceptable Service Logic** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **Anemic Domain Model Anti-Pattern** (4 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **DOMAIN_MODEL_ANEMIC_AUDIT.md** (2 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **1. Already Addressed (Prior Work)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.1 Player Death Service – DP Decay** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.2 Combat Turn Processor – “Can Act” Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.3 Combat HP Sync – Death Threshold Logic** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.4 Combat Persistence Handler – Same Patterns** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **2.5 Player Respawn Service – Stats Restoration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.1 Wearable Container Service – Capacity Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.2 Inventory Service – Slot Capacity** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.3 NPC Combat Data Provider – Stats Extraction** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **3.4 Combat Event Handler / Publisher – DP in Events** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.1 Container Service** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.2 Combat Initialization** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.3 Combat Service, Combat Messaging Integration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **4.4 NPC Instance Service, NPC Combat Integration Service (Done)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **5. Models Already Rich (No Action)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **6. Recommended Implementation Order** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **7. Services Reviewed (No Domain Logic to Move)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **8. Summary Table** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **CombatParticipant** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [LoggingConfig](LoggingConfig.md) (4 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/structured_logging/logging_processors.py`
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

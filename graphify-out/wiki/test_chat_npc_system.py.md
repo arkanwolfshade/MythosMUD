@@ -1,66 +1,56 @@
 # test_chat_npc_system.py
 
-> 122 nodes
+> 56 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_chat_npc_system.py** (50 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **chat_npc_system.py** (43 connections) — `server/game/chat_npc_system.py`
-- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
-- **send_npc_say_to_room()** (15 connections) — `server/game/chat_npc_system.py`
-- **NPCSpoke** (14 connections) — `server/events/event_types.py`
-- **deliver_personal_system()** (14 connections) — `server/game/chat_npc_system.py`
-- **send_fake_npc_whisper()** (14 connections) — `server/game/chat_npc_system.py`
-- **send_personal_system_message()** (14 connections) — `server/game/chat_npc_system.py`
-- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
-- **deliver_fake_npc_whisper()** (11 connections) — `server/game/chat_npc_system.py`
-- **schedule_npc_room_speech()** (10 connections) — `server/game/chat_npc_system.py`
-- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
-- **asyncio** (10 connections)
-- **deliver_npc_room_speech()** (9 connections) — `server/game/chat_npc_system.py`
-- **subscribe_npc_spoke_to_chat()** (9 connections) — `server/game/chat_npc_system.py`
-- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
-- **_mock_chat_service()** (9 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **_ChatDeliveryService** (8 connections) — `server/game/chat_npc_system.py`
-- **set_chat_service_for_npc_system()** (8 connections) — `server/game/chat_npc_system.py`
-- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **.initialize()** (7 connections) — `server/container/bundles/chat.py`
-- **npc_sender_id()** (7 connections) — `server/game/chat_npc_system.py`
-- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 97 more nodes in this community*
+- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **asyncio** (24 connections)
+- **test_clear_player_inventory_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_active_players_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_name_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_players_in_room_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_profession_by_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_os_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_success()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_success()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_list_players_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_save_players_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_async_list_rooms_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_close()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_delete_player_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_profession_by_id_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_professions_empty()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_get_user_by_username_case_insensitive_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **test_update_player_last_active_delegates()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (23 shared connections)
-- [EventBus](EventBus.md) (14 shared connections)
-- [get_username_from_user](get_username_from_user.md) (11 shared connections)
-- [NpcDisposition](NpcDisposition.md) (9 shared connections)
-- [QuestService](QuestService.md) (7 shared connections)
-- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (6 shared connections)
-- [quest_service.py](quest_service.py.md) (6 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (6 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [ChatService](ChatService.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (9 shared connections)
+- [test_party_service.py](test_party_service.py.md) (5 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
+- [properties](properties.md) (4 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/chat.py`
-- `server/events/event_types.py`
-- `server/game/chat_npc_system.py`
-- `server/game/quest/quest_chat_notify.py`
-- `server/npc/npc_base.py`
-- `server/npc/npc_display_names.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
-- `server/tests/unit/realtime/test_chat_segments.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
 
 ## Audit Trail
 
-- EXTRACTED: 336 (96%)
-- INFERRED: 14 (4%)
+- EXTRACTED: 92 (86%)
+- INFERRED: 15 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

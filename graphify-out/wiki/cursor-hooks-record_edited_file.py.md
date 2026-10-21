@@ -1,46 +1,56 @@
 # .cursor/hooks/record_edited_file.py
 
-> 25 nodes
+> 24 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **.cursor/hooks/record_edited_file.py** (11 connections) — `.cursor/hooks/record_edited_file.py`
-- **_is_test_file()** (7 connections) — `.cursor/hooks/record_edited_file.py`
-- **main()** (7 connections) — `.cursor/hooks/record_edited_file.py`
-- **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`
-- **Path** (5 connections)
-- **_is_client_test_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_load_payload()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_load_state()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_write_state_atomic()** (4 connections) — `.cursor/hooks/record_edited_file.py`
-- **_is_agent_config_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
-- **_is_server_test_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
-- **Any** (2 connections)
-- **Return True if we should not record (missing data or test file).** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Return workspace-relative path for pattern matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **True if path is under server/tests/.** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Load state from file; return empty dict on failure.** (1 connections) — `.cursor/hooks/record_edited_file.py`
-- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **test_behavior_engine.py** (54 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_condition_equality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_condition_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_condition_inequality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_greater_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_greater_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_less_equal()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_numeric_comparison_less_than()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_applicable_rules_no_matching()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_get_rules()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Unit tests for behavior engine. Tests the BehaviorEngine class.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test BehaviorEngine initialization.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() handles > operator.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles equality.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns empty list when no rules match.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns matching rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() returns False when fields missing.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test add_rule() replaces existing rule with same name.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test evaluate_condition() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_rules() returns copy of rules.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (21 shared connections)
+- [Whisper NATS Subject Bug Fix](Whisper_NATS_Subject_Bug_Fix.md) (1 shared connections)
+- [Magic Subsystem Design](Magic_Subsystem_Design.md) (1 shared connections)
+- [Chat Messages Not Displayed to Sender (Bug #2)](Chat_Messages_Not_Displayed_to_Sender_Bug__2.md) (1 shared connections)
+- [Mute Command Server Error (Bug #1)](Mute_Command_Server_Error_Bug__1.md) (1 shared connections)
+- [Playwright MCP core-tabs Capability](Playwright_MCP_core-tabs_Capability.md) (1 shared connections)
+- [Playwright MCP Timing Limitation](Playwright_MCP_Timing_Limitation.md) (1 shared connections)
+- [Mandatory AI Execution Contract](Mandatory_AI_Execution_Contract.md) (1 shared connections)
+- [Room Subscription Timing Race](Room_Subscription_Timing_Race.md) (1 shared connections)
+- [CodeQL Configuration](CodeQL_Configuration.md) (1 shared connections)
+- [AGENTS.md Authoritative Guidance](AGENTS.md_Authoritative_Guidance.md) (1 shared connections)
+- [Issue Template Config](Issue_Template_Config.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/hooks/record_edited_file.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 80 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

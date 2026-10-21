@@ -1,24 +1,23 @@
 # test_handle_learn_command_success
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_handle_learn_command_success()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test learn command success.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **.find_path_between_rooms()** (2 connections) — `server/npc/movement_integration.py`
+- **Find a path between two rooms. This is a simple implementation that could be…** (1 connections) — `server/npc/movement_integration.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/npc/movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

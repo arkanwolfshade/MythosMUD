@@ -1,30 +1,44 @@
 # zone_schema.json
 
-> 9 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **zone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **required** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **zone_type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **environment** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **ContainerRepository and ItemRepository: Review and Full Async Migration Plan** (10 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **4. Full Async Migration Plan** (6 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1. Review Summary** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **3. Migration Options** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2. Scope of Migration** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.1 Current Architecture** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.2 Impact of Current Wrappers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.3 Recommendation** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.1 Functions to Migrate** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.2 Callers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **5. File Checklist** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **6. Risks and Mitigations** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **7. Success Criteria** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **8. Phase 1 Audit Results (Completed)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **9. Implementation Status** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option A: SQLAlchemy Async (Recommended)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option B: asyncpg Raw** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option C: Keep Wrappers, Add Sync Connection Pool** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 1: Preparation (no behavior change)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 2: Async implementation (container)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 3: Async implementation (item)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 4: Cleanup** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 5: Verification** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,26 @@
 # Phase 2: Database Layer Integration
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Phase 2: Database Layer Integration** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **2.1 Persistence Layer Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **2.2 Database Connection Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **2.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **fixture** (1 connections)
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

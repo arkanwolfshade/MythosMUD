@@ -1,12 +1,11 @@
 # Lucidity Tiers
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Lucidity Tiers** (2 connections) — `docs/archive/lucidity-system.md`
-- **Catatonic Rescue Window** (1 connections) — `docs/archive/lucidity-system.md`
-- **Lucidity System (LCD)** (1 connections) — `docs/archive/lucidity-system.md`
+- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/lucidity-system.md`
+- `scripts/psscriptanalyzer.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

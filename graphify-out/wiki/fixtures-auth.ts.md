@@ -1,75 +1,65 @@
 # fixtures/auth.ts
 
-> 71 nodes
+> 180 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **fixtures/auth.ts** (107 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **loginPlayer()** (46 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **test-data.ts** (33 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
-- **multiplayer-ready.ts** (28 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **multiplayer-contexts.ts** (26 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **waitForPlayableSession()** (19 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **recoverPlayableSession()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **TEST_TIMEOUTS** (16 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
-- **isVisibleWithin()** (14 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **logoutPlayer()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **reopenClosedPage()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **assertCommandChannelReady()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **respawn-occupants.spec.ts** (9 connections) — `client/tests/e2e/runtime/character/respawn-occupants.spec.ts`
-- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **room-editor.spec.ts** (8 connections) — `client/tests/e2e/runtime/admin/room-editor.spec.ts`
-- **command-registry-routing.spec.ts** (8 connections) — `client/tests/e2e/runtime/commands/command-registry-routing.spec.ts`
-- **assertNoRestDisconnectPollution()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **recoverPlayableViaSpaNavigation()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **createInstrumentedContext()** (7 connections) — `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
-- **catalog-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/catalog-visibility.spec.ts`
-- **skills-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
-- **e2e-browser-helpers.ts** (7 connections) — `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
-- **panel-minimize-dock.spec.ts** (7 connections) — `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
-- **getLivePageForUsername()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **isPageConnected()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- *... and 46 more nodes in this community*
+- **Player** (281 connections) — `server/models/player.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **CorruptionCooldown** (13 connections) — `server/models/corruption.py`
+- **.get_stats()** (13 connections) — `server/models/player.py`
+- **player_repository_mappers.py** (11 connections) — `server/persistence/repositories/player_repository_mappers.py`
+- **CorruptionAdjustmentLog** (9 connections) — `server/models/corruption.py`
+- **asyncio** (9 connections)
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **.damage_player()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.heal_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (5 connections)
+- **test_cold_damage_resistance_reduces_damage()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **test_damage_defaults_current_dp_to_20_when_missing()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- **_convert_legacy_stats_string()** (4 connections) — `server/models/player.py`
+- *... and 155 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (80 shared connections)
-- [player.ts](player.ts.md) (45 shared connections)
-- [executeCommand](executeCommand.md) (30 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (25 shared connections)
-- [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (12 shared connections)
-- [tutorial-instance-lifecycle.spec.ts](tutorial-instance-lifecycle.spec.ts.md) (11 shared connections)
-- [authenticated.ts](authenticated.ts.md) (7 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (6 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (2 shared connections)
-- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (45 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (17 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (13 shared connections)
+- [FollowService](FollowService.md) (13 shared connections)
+- [endpoints.py](endpoints.py.md) (12 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (12 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (12 shared connections)
+- [test_party_service.py](test_party_service.py.md) (11 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (9 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (9 shared connections)
+- [retry.py](retry.py.md) (8 shared connections)
+- [TargetMatch](TargetMatch.md) (7 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/admin/room-editor.spec.ts`
-- `client/tests/e2e/runtime/character/catalog-visibility.spec.ts`
-- `client/tests/e2e/runtime/character/character-deletion.spec.ts`
-- `client/tests/e2e/runtime/character/character-name-uniqueness.spec.ts`
-- `client/tests/e2e/runtime/character/character-selection.spec.ts`
-- `client/tests/e2e/runtime/character/multi-character-creation.spec.ts`
-- `client/tests/e2e/runtime/character/respawn-occupants.spec.ts`
-- `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
-- `client/tests/e2e/runtime/commands/command-registry-routing.spec.ts`
-- `client/tests/e2e/runtime/commands/look-command-game-info.spec.ts`
-- `client/tests/e2e/runtime/connection/login-bootstrap.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- `client/tests/e2e/runtime/fixtures/test-data.ts`
-- `client/tests/e2e/runtime/quest/quest-log-visible.spec.ts`
-- `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
+- `server/models/corruption.py`
+- `server/models/player.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 380 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 402 (74%)
+- INFERRED: 140 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

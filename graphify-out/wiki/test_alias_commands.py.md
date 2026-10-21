@@ -1,61 +1,57 @@
 # test_alias_commands.py
 
-> 77 nodes
+> 67 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_alias_commands.py** (36 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
-- **handle_alias_command()** (26 connections) — `server/commands/alias_commands.py`
-- **asyncio** (25 connections)
-- **alias_commands.py** (17 connections) — `server/commands/alias_commands.py`
-- **handle_unalias_command()** (14 connections) — `server/commands/alias_commands.py`
-- **handle_aliases_command()** (12 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (6 connections) — `server/commands/alias_commands.py`
-- **test_handle_unalias_command_remove_failure()** (6 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_rejected_reports_failure()** (5 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **mock_alias_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_circular_reference()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_update_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 52 more nodes in this community*
+- **LogAggregator** (37 connections) — `server/structured_logging/log_aggregator.py`
+- **log_aggregator.py** (21 connections) — `server/structured_logging/log_aggregator.py`
+- **test_log_aggregator.py** (18 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **LogEntry** (17 connections) — `server/structured_logging/log_aggregator.py`
+- **LogQueryFilter** (11 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
+- **_entry()** (10 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **.export_logs()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **aggregate_log_entry()** (7 connections) — `server/structured_logging/log_aggregator.py`
+- **_query_filter_from_mapping()** (6 connections) — `server/structured_logging/log_aggregator.py`
+- **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_error_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_user_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_warning_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.__init__()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._log_matches_filter()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **test_export_logs_json()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **test_get_logs_after_flush()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **.add_log_entry()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **Path** (4 connections)
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (11 shared connections)
-- [alias_storage.py](alias_storage.py.md) (7 shared connections)
-- [command_service.py](command_service.py.md) (6 shared connections)
-- [command_error](command_error.md) (5 shared connections)
-- [MessageCategory](MessageCategory.md) (4 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [Alias](Alias.md) (2 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (2 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
-- [system_commands.py](system_commands.py.md) (2 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (3 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (1 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/__init__.py`
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/structured_logging/log_aggregator.py`
+- `server/tests/unit/structured_logging/test_log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 155 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,14 +1,13 @@
 # MythosMUD COPPA Checklist
 
-> 5 nodes
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **_resolved_npm()** (3 connections) — `scripts/precommit_run_npm.py`
+- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
+- **main()** (2 connections) — `scripts/precommit_run_npm.py`
+- **Return absolute path to npm (prefer npm.cmd on Windows), or None if not found.** (1 connections) — `scripts/precommit_run_npm.py`
 
 ## Relationships
 
@@ -16,7 +15,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- `scripts/precommit_run_npm.py`
 
 ## Audit Trail
 

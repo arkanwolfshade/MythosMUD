@@ -1,26 +1,25 @@
 # test_validate_secure_path_path_traversal_commonpath
 
-> 4 nodes
+> 4 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **test_validate_secure_path_path_traversal_commonpath()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_validate_secure_path_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path normalizes backslashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test validate_secure_path detects path traversal via commonpath check.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
+- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
+- **main()** (2 connections) — `scripts/apply_players_migration.py`
+- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
 
 ## Relationships
 
-- [validate_secure_path](validate_secure_path.md) (2 shared connections)
-- [test_security_utils.py](test_security_utils.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_security_utils.py`
+- `scripts/apply_players_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

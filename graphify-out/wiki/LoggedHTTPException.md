@@ -1,78 +1,62 @@
 # LoggedHTTPException
 
-> 1245 nodes
+> 143 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **LoggedHTTPException** (379 connections) — `server/exceptions.py`
-- **User** (331 connections) — `server/models/user.py`
-- **_Request** (200 connections) — `server/tests/unit/test_integration_cleanup_gate.py`
-- **server/dependencies.py** (112 connections) — `server/dependencies.py`
-- **players.py** (77 connections) — `server/api/players.py`
-- **models/user.py** (76 connections) — `server/models/user.py`
-- **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
-- **api/character_creation.py** (66 connections) — `server/api/character_creation.py`
-- **rooms.py** (66 connections) — `server/api/rooms.py`
-- **api/monitoring.py** (60 connections) — `server/api/monitoring.py`
-- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
-- **test_players_api_coverage.py** (59 connections) — `server/tests/unit/api/test_players_api_coverage.py`
-- **factory.py** (57 connections) — `server/app/factory.py`
-- **command_handler_unified.py** (55 connections) — `server/command_handler_unified.py`
-- **get_admin_auth_service()** (54 connections) — `server/services/admin_auth_service.py`
-- **users.py** (50 connections) — `server/auth/users.py`
-- **players/__init__.py** (48 connections) — `server/schemas/players/__init__.py`
-- **PlayerRead** (47 connections) — `server/schemas/players/player.py`
-- **SkillService** (45 connections) — `server/game/skill_service.py`
-- **api/container_helpers.py** (45 connections) — `server/api/container_helpers.py`
-- **RateLimitError** (44 connections) — `server/exceptions.py`
-- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **get_container()** (40 connections) — `server/dependencies.py`
-- **rooms_helpers.py** (39 connections) — `server/api/rooms_helpers.py`
-- **AdminAction** (38 connections) — `server/services/admin_auth_service.py`
-- *... and 1220 more nodes in this community*
+- **handle_transfer_items_exceptions()** (29 connections) — `server/api/container_exception_handlers.py`
+- **test_container_exception_handlers.py** (27 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **handle_open_container_exceptions()** (24 connections) — `server/api/container_exception_handlers.py`
+- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
+- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
+- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
+- **TestHandleTransferItemsExceptions** (12 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_raise_container_http()** (10 connections) — `server/api/container_exception_handlers.py`
+- **TestHandleOpenContainerExceptions** (10 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleLootAllExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **Exception** (7 connections)
+- **_raise_unexpected_container_error()** (7 connections) — `server/api/container_exception_handlers.py`
+- **TestExceptionChaining** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestExceptionHandlerContext** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestExceptionHandlerLoggerCalls** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleCloseContainerExceptions** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleTransferItemsExceptionsEdgeCases** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_raise_for_transfer_service_error()** (6 connections) — `server/api/container_exception_handlers.py`
+- **UUID** (5 connections)
+- **TestHandleCloseContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **.test_handle_open_container_exceptions_open_by_another_player()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleOpenContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestCreateErrorContext** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_close_container_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- *... and 118 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (224 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (182 shared connections)
-- [RoomService](RoomService.md) (125 shared connections)
-- [endpoints.py](endpoints.py.md) (110 shared connections)
-- [PlayerService](PlayerService.md) (106 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (80 shared connections)
-- [ContainerComponent](ContainerComponent.md) (53 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (48 shared connections)
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (47 shared connections)
-- [test_command_admin.py](test_command_admin.py.md) (46 shared connections)
-- [LootAllRequest](LootAllRequest.md) (37 shared connections)
-- [test_player_respawn_api.py](test_player_respawn_api.py.md) (35 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (39 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (14 shared connections)
+- [test_look_player.py](test_look_player.py.md) (10 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [generate_arkham_grid.py](generate_arkham_grid.py.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/__init__.py`
-- `server/api/admin/__init__.py`
-- `server/api/admin/dialogue_definitions_api.py`
-- `server/api/admin/dialogue_schemas.py`
-- `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
-- `server/api/admin/npc_definitions_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/character_creation.py`
+- `server/api/container_exception_handlers.py`
 - `server/api/container_helpers.py`
-- `server/api/game.py`
-- `server/api/help.py`
-- `server/api/item_catalog.py`
-- `server/api/metrics.py`
-- `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
-- `server/api/player_respawn.py`
-- `server/api/player_router.py`
-- `server/api/players.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4227 (92%)
-- INFERRED: 361 (8%)
+- EXTRACTED: 272 (83%)
+- INFERRED: 56 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

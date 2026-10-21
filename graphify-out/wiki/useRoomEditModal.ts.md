@@ -1,53 +1,49 @@
 # useRoomEditModal.ts
 
-> 37 nodes
+> 37 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **useRoomEditModal.ts** (17 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModal.tsx** (16 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalForm.tsx** (16 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalProps** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModal()** (4 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **fieldBorderClass()** (3 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **buildInitialFormData()** (3 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditFormData** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditDescriptionField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalForm()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditNameField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalTabs()** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
-- **toFormValue()** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModalTabs.tsx** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
-- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalFormProps** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **EditableRoomField** (1 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModalContent()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalFooter()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **FieldError()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditDescriptionHint()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **asyncio** (15 connections)
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **nats_config()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_cancel_background_tasks()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_cancel_background_tasks_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_disconnect_removes_all_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_flush_batch_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_flush_batch_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_error()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_no_client()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_timeout()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_publish_batch_adds_to_batch()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_publish_batch_flushes_when_full()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_service_restart_no_duplicate_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_stop_health_monitoring()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_stop_health_monitoring_no_task()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_get_connection_stats()** (3 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **fixture** (2 connections)
+- **NATS health-check, batch flush, and subscription-lifecycle tests.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _stop_health_monitoring() stops health check task.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _stop_health_monitoring() handles no task.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test publish_batch() adds message to batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test publish_batch() flushes when batch is full.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (5 shared connections)
-- [RoomNodeData](RoomNodeData.md) (2 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (17 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (5 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/RoomEditModal.tsx`
-- `client/src/components/map/RoomEditModalForm.tsx`
-- `client/src/components/map/RoomEditModalTabs.tsx`
-- `client/src/components/map/useRoomEditModal.ts`
+- `server/tests/unit/services/test_nats_service_health.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 59 (80%)
+- INFERRED: 15 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

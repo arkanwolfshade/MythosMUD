@@ -1,41 +1,48 @@
 # TestVerificationSqlUsersPlayers
 
-> 20 nodes
+> 17 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **TestVerificationSqlUsersPlayers** (6 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **TestNpcNameConstraintScript** (5 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **test_postgres_sql_scripts.py** (3 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_npc_constraint_script_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_npc_constraint_script_no_sqlite_pragma()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_npc_constraint_script_uses_postgresql_constraint()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_verification_sql_file_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_verification_sql_references_users_and_players()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_verification_sql_uses_explicit_joins()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **.test_verification_sql_uses_live_tables_only()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **PostgreSQL-focused tests for verification and maintenance SQL scripts.…** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Tests for db/verification/users_players.sql alignment with current schema.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Verification SQL file must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Verification SQL must not reference staging tables or select obsolete columns.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Verification SQL must use explicit join syntax for multi-table queries.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Verification SQL must reference users and players tables.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Tests for server/scripts/add_npc_name_constraint.sql (PostgreSQL-only).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **NPC name constraint script must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Script must not contain SQLite-specific pragma.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
-- **Script must use PostgreSQL constraint (CHECK or ALTER TABLE).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Petersen's Abominations.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **Voice on the Phone.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- **Dimensional Shambler.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
+- **Mohole.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- **Formless Spawn.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- **Hotel Hell.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- **Cosmic Horror** (4 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- **Petersen's Abominations** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Petersen's Abominations (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **Hotel Hell** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- **Mohole** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- **Formless Spawn** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- **Chaosium catalog notes** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- **Voice on the Phone** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- **Dimensional Shambler** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
+- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [RescueBanner.tsx](RescueBanner.tsx.md) (6 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (6 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
+- [test_follow_flow.py](test_follow_flow.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

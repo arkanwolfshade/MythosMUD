@@ -1,28 +1,26 @@
 # static_data/package.json
 
-> 19 nodes
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **static_data/package.json** (8 connections) — `scripts/static_data/package.json`
-- **dependencies** (4 connections) — `scripts/static_data/package.json`
-- **scripts** (4 connections) — `scripts/static_data/package.json`
-- **ajv** (2 connections) — `scripts/static_data/package.json`
-- **ajv-formats** (2 connections) — `scripts/static_data/package.json`
-- **uuid** (2 connections) — `scripts/static_data/package.json`
-- **overrides** (2 connections) — `scripts/static_data/package.json`
-- **description** (1 connections) — `scripts/static_data/package.json`
-- **name** (1 connections) — `scripts/static_data/package.json`
-- **fast-uri** (1 connections) — `scripts/static_data/package.json`
-- **private** (1 connections) — `scripts/static_data/package.json`
-- **build** (1 connections) — `scripts/static_data/package.json`
-- **generate-sql** (1 connections) — `scripts/static_data/package.json`
-- **validate** (1 connections) — `scripts/static_data/package.json`
-- **type** (1 connections) — `scripts/static_data/package.json`
-- **version** (1 connections) — `scripts/static_data/package.json`
-- **ajv** (1 connections) — `scripts/static_data/package.json`
-- **ajv-formats** (1 connections) — `scripts/static_data/package.json`
-- **uuid** (1 connections) — `scripts/static_data/package.json`
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **scenario-06-admin-teleportation.md** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Relationships
 
@@ -30,11 +28,11 @@
 
 ## Source Files
 
-- `scripts/static_data/package.json`
+- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

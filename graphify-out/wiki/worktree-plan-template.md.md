@@ -1,29 +1,27 @@
 # worktree-plan-template.md
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **worktree-plan-template.md** (7 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Cleanup Checklist** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Context** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Design Notes** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Metadata** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Plan / Todos** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Risks and Edge Cases** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Testing** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **aliases** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **items** (3 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Python Code Coverage Status](Python_Code_Coverage_Status.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- `db/static/schemas/emotes.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -2,7 +2,7 @@
 
 > God node · 379 connections · `server/exceptions.py`
 
-**Community:** [LoggedHTTPException](LoggedHTTPException.md)
+**Community:** [test_security_validator.py](test_security_validator.py.md)
 
 ## Connections by Relation
 

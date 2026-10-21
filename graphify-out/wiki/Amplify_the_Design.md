@@ -1,33 +1,34 @@
 # Amplify the Design
 
-> 12 nodes
+> 11 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **Amplify the Design** (7 connections) — `.claude/skills/bolder/SKILL.md`
-- **Bolder Skill** (6 connections) — `.claude/skills/bolder/SKILL.md`
-- **Assess Current State** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Color Intensification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Composition Boldness** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Motion & Animation** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Plan Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Spatial Drama** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Typography Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Verify Quality** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Visual Effects** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **_EventPersistence** (6 connections) — `server/realtime/event_publisher.py`
+- **.__init__()** (5 connections) — `server/realtime/event_publisher.py`
+- **_NatsPublish** (5 connections) — `server/realtime/event_publisher.py`
+- **_Named** (4 connections) — `server/realtime/event_publisher.py`
+- **.get_player_by_id()** (3 connections) — `server/realtime/event_publisher.py`
+- **Protocol** (3 connections)
+- **.get_room_by_id()** (2 connections) — `server/realtime/event_publisher.py`
+- **UUID** (2 connections)
+- **.is_connected()** (1 connections) — `server/realtime/event_publisher.py`
+- **.publish()** (1 connections) — `server/realtime/event_publisher.py`
+- **Initialize EventPublisher service. Args: nats_service: NATS service instance…** (1 connections) — `server/realtime/event_publisher.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [MythosMUD Code Quality Targets for AI](MythosMUD_Code_Quality_Targets_for_AI.md) (2 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/bolder/SKILL.md`
+- `server/realtime/event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

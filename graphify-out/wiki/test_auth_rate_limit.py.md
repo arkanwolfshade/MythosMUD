@@ -1,49 +1,51 @@
 # test_auth_rate_limit.py
 
-> 20 nodes
+> 31 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **test_auth_rate_limit.py** (25 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **auth_client_key()** (11 connections) — `server/middleware/auth_rate_limit.py`
-- **auth_rate_limit_response()** (11 connections) — `server/middleware/auth_rate_limit.py`
-- **_post_request()** (9 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **is_auth_rate_limited_path()** (5 connections) — `server/middleware/auth_rate_limit.py`
-- **test_auth_rate_limit_response_returns_429_when_exceeded()** (5 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_rejects_non_ip_xff()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_uses_xff_when_trusted()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_rate_limit_response_maps_rate_limit_error()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_assert_auth_rate_limit_paths_registered_ok()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_ignores_xff_by_default()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_uses_ip()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_rate_limit_response_skips_other_paths()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **_ok_post()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_is_auth_rate_limited_path()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **MonkeyPatch** (2 connections)
-- **Return 429 when an auth POST exceeds the limiter; otherwise None.** (1 connections) — `server/middleware/auth_rate_limit.py`
-- **Return True if path is an unauthenticated auth POST covered by the limiter.** (1 connections) — `server/middleware/auth_rate_limit.py`
-- **Key the limiter by client IP. Default uses the TCP peer (request.client.host).…** (1 connections) — `server/middleware/auth_rate_limit.py`
-- **Unit tests for auth HTTP rate limiting.** (1 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **.set_player_skills()** (10 connections) — `server/game/skill_service.py`
+- **Any** (9 connections)
+- **UUID** (8 connections)
+- **._validate_occupation_slots()** (7 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (7 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (7 connections) — `server/game/skill_service.py`
+- **.roll_best_skill_check()** (6 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (6 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (5 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (5 connections) — `server/game/skill_service.py`
+- **Skill** (4 connections)
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **Raise ValueError if occupation_slots are not exactly one 70, two 60, three 50,…** (1 connections) — `server/game/skill_service.py`
+- **Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique.** (1 connections) — `server/game/skill_service.py`
+- **Raise ValueError if any skill_id appears in both occupation and personal…** (1 connections) — `server/game/skill_service.py`
+- **Build skill_key -> total modifier from profession skill_modifiers (supports…** (1 connections) — `server/game/skill_service.py`
+- **Compute final skill_id -> value: base + profession mod, then occupation…** (1 connections) — `server/game/skill_service.py`
+- **Validate skills allocation without persisting. Raises ValueError if invalid.…** (1 connections) — `server/game/skill_service.py`
+- **Set all skills for a character at creation. Validates occupation_slots (9…** (1 connections) — `server/game/skill_service.py`
+- **Return list of {skill_id, skill_key, skill_name, value} for the player. If the…** (1 connections) — `server/game/skill_service.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [auth_rate_limit.py](auth_rate_limit.py.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [create_app](create_app.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
-- [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (14 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (5 shared connections)
+- [Reporter](Reporter.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 
 ## Source Files
 
-- `server/middleware/auth_rate_limit.py`
-- `server/tests/unit/middleware/test_auth_rate_limit.py`
+- `server/game/skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 63 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

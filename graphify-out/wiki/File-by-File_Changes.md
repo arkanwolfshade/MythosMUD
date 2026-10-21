@@ -1,48 +1,52 @@
 # File-by-File Changes
 
-> 35 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **File-by-File Changes** (11 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Pydantic Anti-Patterns Remediation Plan** (8 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Critical Issues Identified** (6 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Phase 1: Critical Security Fixes (High Priority)** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Remediation Strategy** (4 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Phase 2: Type Safety Improvements (Medium Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Phase 3: Code Organization (Low Priority)** (3 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Implementation Details** (2 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **pydantic_anti-patterns_remediation_5139237e.plan.md** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **1. Mutable Default Values (Rule 3 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **2. Unsafe `dict[str, Any]` Types (Rule 2 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **3. Old-Style model_config (Rule 1 Violation)** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **4. Missing Security Configuration** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **5. Missing model_config Entirely** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Executive Summary** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **Risk Assessment** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/api/admin/npc.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/alias.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/command_base.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/container.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/models/game.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/calendar.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/nats_messages.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/player.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- **`server/schemas/profession.py`** (1 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
-- *... and 10 more nodes in this community*
+- **test_command_exploration.py** (20 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **LookCommand** (18 connections) — `server/models/command_exploration.py`
+- **test_go_command_all_directions()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_required_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_missing_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_go_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_instance_number_validation_min()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Command for looking around, in a specific direction, or at an NPC.** (1 connections) — `server/models/command_exploration.py`
+- **Unit tests for exploration command models. Tests the LookCommand and GoCommand…** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test GoCommand validates valid direction.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test GoCommand rejects invalid direction.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test GoCommand accepts all valid directions.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test GoCommand requires direction (cannot be None).** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test LookCommand has correct default values.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test LookCommand can be created with a direction.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- **Test LookCommand validates valid direction.** (1 connections) — `server/tests/unit/models/test_command_exploration.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (12 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (7 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/pydantic_anti-patterns_remediation_5139237e.plan.md`
+- `server/models/command_exploration.py`
+- `server/tests/unit/models/test_command_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (89%)
+- INFERRED: 7 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

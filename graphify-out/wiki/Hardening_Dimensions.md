@@ -1,34 +1,39 @@
 # Hardening Dimensions
 
-> 12 nodes
+> 13 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- **Hardening Dimensions** (8 connections) — `.claude/skills/harden/SKILL.md`
-- **Harden Skill** (5 connections) — `.claude/skills/harden/SKILL.md`
-- **Accessibility Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Assess Hardening Needs** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Edge Cases & Boundary Conditions** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Error Handling** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Input Validation & Sanitization** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Internationalization (i18n)** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Performance Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Testing Strategies** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Text Overflow & Wrapping** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Verify Hardening** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **resolve_tier()** (9 connections) — `server/services/lucidity_helpers.py`
+- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **UUID** (5 connections)
+- **AsyncSession** (4 connections)
+- **Tier** (2 connections)
+- **Any** (1 connections)
+- **Check if hallucination should trigger on room entry (Uneasy tier). Args:…** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Check if hallucination should trigger based on time (Fractured/Deranged tiers).…** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Check if a hallucination should trigger based on tier and frequency rules.…** (1 connections) — `server/services/hallucination_frequency_service.py`
+- **Derive tier label based on LCD thresholds.** (1 connections) — `server/services/lucidity_helpers.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (5 shared connections)
+- [PopulationStats](PopulationStats.md) (5 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [FollowService](FollowService.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/harden/SKILL.md`
+- `server/services/hallucination_frequency_service.py`
+- `server/services/lucidity_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (87%)
+- INFERRED: 4 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

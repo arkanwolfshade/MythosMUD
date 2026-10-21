@@ -1,25 +1,24 @@
 # Success Criteria
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Success Criteria** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Non-Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **User Experience Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **parse_lint_findings()** (2 connections) — `scripts/parse_lint_findings.py`
+- **parse_lint_findings.py** (1 connections) — `scripts/parse_lint_findings.py`
+- **Parse C901 complexity findings from lint output.** (1 connections) — `scripts/parse_lint_findings.py`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `scripts/parse_lint_findings.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

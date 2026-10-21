@@ -1,24 +1,22 @@
 # CRITICAL · WebSocket authentication bypass on `/ws`
 
-> 7 nodes
+> 5 nodes · cohesion 0.70
 
 ## Key Concepts
 
-- **CRITICAL · WebSocket authentication bypass on `/ws`** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **AGENT-REPORTED, NOT YET VERIFIED BY ME — `/ws/{player_id}`** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Documentation status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Issue #472 status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Recommended fix — one guard, not three** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **VERIFIED — anonymous WebSocket connection via query parameter** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **VERIFIED — CSRF validation fails open** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- **snapshot_source_pack_graphify.ps1** (4 connections) — `scripts/snapshot_source_pack_graphify.ps1`
+- **Export-PackSnapshot()** (4 connections) — `scripts/snapshot_source_pack_graphify.ps1`
+- **Get-GraphCount()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
+- **Get-HonestyNote()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
+- **Get-SourcePackSlug()** (2 connections) — `scripts/snapshot_source_pack_graphify.ps1`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- `scripts/snapshot_source_pack_graphify.ps1`
 
 ## Audit Trail
 

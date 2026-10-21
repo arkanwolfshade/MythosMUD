@@ -1,10 +1,10 @@
 # Obsidian Wiki Index
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Obsidian Wiki Index** (0 connections) — `data/MythosMUD-Obsidian/index.md`
+- **stop_monitoring.ps1** (0 connections) — `scripts/stop_monitoring.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/index.md`
+- `scripts/stop_monitoring.ps1`
 
 ## Audit Trail
 

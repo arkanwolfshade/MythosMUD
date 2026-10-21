@@ -1,29 +1,35 @@
 # ._background_audit_cycle
 
-> 6 nodes
+> 11 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **._do_full_cleanup_audit()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **.schedule_periodic_auditing()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Core capability for granular investigation cycles. Repeated universal analysis…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Start the background auditing scheduler responsible for identifying orphan…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Primary background cycle consuming auditor implementation. Executes periodic…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **test_npc_combat_integration_service_aggro_logging.py** (13 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **_attack_raising()** (6 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **test_already_dead_is_a_debug_skip_not_an_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **test_already_in_combat_is_a_debug_skip_not_an_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **test_unexpected_value_error_is_still_logged_as_error()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **MonkeyPatch** (4 connections)
+- **asyncio** (3 connections)
+- **Log-level tests for NPCCombatIntegrationService.handle_npc_attack_on_player.…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **The pre-existing sibling case: attacking an already-dead player is also a…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **Narrowing the skip must not swallow genuine failures from the combat path.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
+- **Regression: a second aggressive NPC refused because the player is already…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
 
 ## Relationships
 
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [_complete_tutorial_with_rewards](_complete_tutorial_with_rewards.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [name](name.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_aggro_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (85%)
+- INFERRED: 4 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

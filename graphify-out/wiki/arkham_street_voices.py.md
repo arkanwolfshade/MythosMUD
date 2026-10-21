@@ -1,26 +1,29 @@
 # arkham_street_voices.py
 
-> 5 nodes
+> 8 nodes · cohesion 0.46
 
 ## Key Concepts
 
-- **Voice** (3 connections) — `scripts/arkham_street_voices.py`
-- **arkham_street_voices.py** (3 connections) — `scripts/arkham_street_voices.py`
-- **NamedTuple** (1 connections)
-- **Prose source for the Arkham street grid (#829). Every street gets a written…** (1 connections) — `scripts/arkham_street_voices.py`
-- **One street's written character.** (1 connections) — `scripts/arkham_street_voices.py`
+- **cli.sh** (7 connections) — `.codacy/cli.sh`
+- **cli.sh script** (4 connections) — `.codacy/cli.sh`
+- **download()** (3 connections) — `.codacy/cli.sh`
+- **download_cli()** (3 connections) — `.codacy/cli.sh`
+- **get_latest_version()** (3 connections) — `.codacy/cli.sh`
+- **download_file()** (2 connections) — `.codacy/cli.sh`
+- **get_version_from_yaml()** (2 connections) — `.codacy/cli.sh`
+- **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
 
 ## Relationships
 
-- [generate_arkham_grid.py](generate_arkham_grid.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/arkham_street_voices.py`
+- `.codacy/cli.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

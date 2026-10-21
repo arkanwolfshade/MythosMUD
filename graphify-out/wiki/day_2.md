@@ -1,26 +1,28 @@
 # day
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **day** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Magic and Spellcasting System** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Effects System Reference** (2 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **EffectList Pattern** (1 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **Magic Points MP** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Spell Registry** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

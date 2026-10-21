@@ -1,60 +1,37 @@
 # multiplayer-colocated.ts
 
-> 31 nodes
+> 15 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **multiplayer-colocated.ts** (45 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **resyncE2ePlayersAfterDatabaseReset()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **executeCommandTrusted()** (10 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **pages/index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
-- **resetE2ePlayerRoomsInDatabase()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **runCoLocateTeleportAttempt()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **CharacterSelectionPage** (7 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- **MotdPage** (7 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
-- **ensureMultiplayerReadyForCoLocate()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **CharacterSelectionPage.ts** (6 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- **throwOtherPlayersNotSeen()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **.selectCharacterByName()** (5 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- **retryCoLocateUntilSameRoom()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **throwOccupantsWaitTimeout()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **waitForSharedLocation()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **.enterRealm()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
-- **.waitForGameReady()** (4 connections) — `client/tests/e2e/runtime/pages/MotdPage.ts`
-- **assertNotStuckOnLogin()** (3 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **captureOccupantsSnapshot()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **formatOccupantsSnapshotForError()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **forceLogoutPlayer()** (2 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
-- **capturePresenceEvents()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **resolveOtherCharacterName()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **.isVisible()** (2 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- **.selectFirstCharacter()** (2 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- *... and 6 more nodes in this community*
+- **test_realtime_bundle_nats.py** (10 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **_config()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **test_connect_nats_e2e_raises_on_timeout()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **test_connect_nats_e2e_raises_when_connect_returns_false()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **test_connect_nats_local_continues_without_nats_on_timeout()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **asyncio** (4 connections)
+- **test_handle_nats_unavailable_unit_test_soft()** (4 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **test_handle_nats_unavailable_e2e_raises()** (3 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **Any** (1 connections)
+- **RealtimeBundle NATS connect policy: e2e hard-fails; soft fail only for non-e2e.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **e2e_test must not soft-mock missing NATS (avoids silent chat failures in…** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **e2e_test hard-fails when NATS connect times out (e.g. TLS mismatch).** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **Non-e2e local may soft-continue without NATS when connect fails.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **unit_test combat path still soft-mocks unavailable NATS.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **e2e_test combat path raises when NATS is unavailable (is_testing=False).** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (25 shared connections)
-- [waitForMessage](waitForMessage.md) (24 shared connections)
-- [executeCommand](executeCommand.md) (8 shared connections)
-- [player.ts](player.ts.md) (8 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (5 shared connections)
-- [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (4 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (2 shared connections)
-- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (8 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- `client/tests/e2e/runtime/pages/MotdPage.ts`
-- `client/tests/e2e/runtime/pages/index.ts`
+- `server/tests/unit/container/test_realtime_bundle_nats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 24 (86%)
+- INFERRED: 4 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,26 @@
 # Who Command Enhancement
 
-> 3 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
-- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
-- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
+- **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
+- **.validate_subzone_boundary()** (3 connections) — `server/npc/movement_integration.py`
+- **Resolve the subzone ID for a destination room (from room attribute or room_id).…** (1 connections) — `server/npc/movement_integration.py`
+- **Validate that a destination room is within the NPC's allowed subzone. This…** (1 connections) — `server/npc/movement_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [StatusEffect](StatusEffect.md) (2 shared connections)
+- [TestCombatConfiguration](TestCombatConfiguration.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/WHO_COMMAND_FRD.md`
-- `docs/archive/WHO_COMMAND_TASKS.md`
+- `server/npc/movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

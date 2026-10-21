@@ -1,25 +1,25 @@
 # e2e_player_state.py
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **main()** (2 connections) — `scripts/e2e_player_state.py`
-- **_print_state()** (2 connections) — `scripts/e2e_player_state.py`
-- **e2e_player_state.py** (2 connections) — `scripts/e2e_player_state.py`
+- **test_get_local_chat_scope_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_local_chat_scope() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/e2e_player_state.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,19 +1,17 @@
 # skills.sql
 
-> 10 nodes
+> 8 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **skills.sql** (9 connections) — `db/procedures/skills.sql`
-- **schema_name.delete_player_skills_for_player()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.get_all_skills()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.get_player_skills_with_skill()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.get_skill_by_id()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.get_skill_by_key()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.get_skill_ids_used_at_level()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.insert_player_skills_many()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.record_skill_use()** (1 connections) — `db/procedures/skills.sql`
-- **schema_name.update_player_skill_value()** (1 connections) — `db/procedures/skills.sql`
+- **MythosMUD Message of the Day** (5 connections) — `data/local/motd.html`
+- **Arkham City (MOTD Zone)** (2 connections) — `data/local/motd.html`
+- **Welcome to the Dreamlands** (2 connections) — `data/local/motd.html`
+- **The Yellow Sign** (2 connections) — `data/local/motd.html`
+- **Arkham Sanitarium Room DAG** (2 connections) — `data/local/sanitarium_dag.html`
+- **Innsmouth (MOTD Zone)** (1 connections) — `data/local/motd.html`
+- **Katmandu** (1 connections) — `data/local/motd.html`
+- **Sanitarium Eastern Hallway Branch** (1 connections) — `data/local/sanitarium_dag.html`
 
 ## Relationships
 
@@ -21,12 +19,13 @@
 
 ## Source Files
 
-- `db/procedures/skills.sql`
+- `data/local/motd.html`
+- `data/local/sanitarium_dag.html`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

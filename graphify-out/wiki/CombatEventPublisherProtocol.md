@@ -1,36 +1,37 @@
 # CombatEventPublisherProtocol
 
-> 9 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
-- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
-- **Protocol** (2 connections)
-- **Publish a PlayerAttackedEvent to the combat event stream.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Typed surface for npc_combat_service.handle_npc_attack_on_player.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Handle an NPC attack against a player via the main combat service.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Combat event publisher (avoids importing CombatEventPublisher).** (1 connections) — `server/npc/combat_integration_protocols.py`
+- **properties** (5 connections) — `schemas/items/item_prototype.schema.json`
+- **tomeMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **sanity_loss_expr** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **mythos_gain** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **study_hours** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (3 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [lint_optional_auth_no_guard.py](lint_optional_auth_no_guard.py.md) (1 shared connections)
+- [test_inventory_mutation_guard_sync.py](test_inventory_mutation_guard_sync.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_protocols.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

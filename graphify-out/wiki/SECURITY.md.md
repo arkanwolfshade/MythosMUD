@@ -1,10 +1,10 @@
 # SECURITY.md
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **SECURITY.md** (0 connections) — `SECURITY.md`
+- **jsonschema dependency** (0 connections) — `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `SECURITY.md`
+- `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Audit Trail
 

@@ -1,45 +1,35 @@
 # HealthMonitor
 
-> 15 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **HealthMonitor** (25 connections) — `server/realtime/monitoring/health_monitor.py`
-- **.check_player_connection_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._check_single_websocket_health()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._determine_overall_health()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **._wait_for_task_cancellation()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Any** (4 connections)
-- **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
-- **test_health_monitor_init_custom_intervals()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
-- **Classify overall connection health from healthy/unhealthy websocket counts.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check the health of all connections for a player. Args: player_id: The player's…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Monitors connection health and manages periodic health checks. This class…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Stop the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Wait for a task to be cancelled, with timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Check one WebSocket's health, updating health_status in place and cleaning up…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
-- **Test HealthMonitor initialization with custom intervals.** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Communities (17 total, 16 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **doors-to-darkness/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [UUID](UUID.md) (7 shared connections)
-- [._process_single_connection](_process_single_connection.md) (5 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_health_monitor.py](test_health_monitor.py.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
-- [PerformanceTracker](PerformanceTracker.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/monitoring/health_monitor.py`
-- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

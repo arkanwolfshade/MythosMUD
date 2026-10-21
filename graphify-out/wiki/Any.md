@@ -1,36 +1,51 @@
 # Any
 
-> 11 nodes
+> 32 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_by_id()** (3 connections) — `server/game/chat_moderation.py`
-- **.resolve_player_name()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
-- **Protocol** (2 connections)
-- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
-- **Resolve player name to player object.** (1 connections) — `server/game/chat_moderation.py`
-- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
+- **test_logout_commands_helpers.py** (15 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **_get_player_position_from_connection_manager()** (14 connections) — `server/commands/logout_commands.py`
+- **_sync_player_position()** (12 connections) — `server/commands/logout_commands.py`
+- **test_get_player_position_from_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_get_player_position_from_connection_manager_by_name()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_get_player_position_from_connection_manager_no_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_get_player_position_from_connection_manager_not_found()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_sync_player_position()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_sync_player_position_no_change()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_sync_player_position_none()** (3 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **test_get_player_position_from_connection_manager_by_id()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_position_from_connection_manager_by_name()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_position_from_connection_manager_no_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_position_from_connection_manager_not_found()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_sync_player_position_no_change()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_sync_player_position_none_value()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_sync_player_position_updates_stats()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Get player's current position from connection manager. Args:…** (1 connections) — `server/commands/logout_commands.py`
+- **Synchronize player's position from connection manager to player stats. Args:…** (1 connections) — `server/commands/logout_commands.py`
+- **Unit tests for logout_commands helper functions. Tests helper functions in…** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _sync_player_position() does nothing when position is None.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _get_player_position_from_connection_manager() returns position.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _get_player_position_from_connection_manager() finds by display name.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _get_player_position_from_connection_manager() returns None when player…** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- **Test _sync_player_position() updates player stats.** (1 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (3 shared connections)
-- [UserManagerProtocol](UserManagerProtocol.md) (3 shared connections)
-- [._format_mute_entry](_format_mute_entry.md) (2 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (9 shared connections)
+- [test_players_procedures.py](test_players_procedures.py.md) (7 shared connections)
+- [P4 · Intent Sweep — Core Feature Issues](P4_·_Intent_Sweep_—_Core_Feature_Issues.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/commands/logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 60 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,31 @@
 # MythosMUD Testing Strategy (Greenfield Suite)
 
-> 10 nodes
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **MythosMUD Testing Strategy (Greenfield Suite)** (9 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **TESTING_GREENFIELD.md** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Coverage policy** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Fixtures/layout** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Isolation rules** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Logging and diagnostics** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Markers** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Mocking standards** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Tiers and commands** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **What to run when** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **NumPy Code Review - MythosMUD Codebase** (6 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Code Quality Improvements Achieved** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Completed Actions** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **✅ Implementation Status** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Testing Considerations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Relationships
 
-- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
-- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
+- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- [test_combat_guard.py](test_combat_guard.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TESTING_GREENFIELD.md`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # Impeccable design context
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Impeccable design context** (2 connections) — `.impeccable.md`
-- **Legibility under pressure** (1 connections) — `.impeccable.md`
-- **Dark terminal-first aesthetic** (1 connections) — `.impeccable.md`
+- **check_invites_schema.py** (1 connections) — `server/scripts/check_invites_schema.py`
+- **main()** (1 connections) — `server/scripts/check_invites_schema.py`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `.impeccable.md`
+- `server/scripts/check_invites_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

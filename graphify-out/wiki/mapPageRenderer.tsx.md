@@ -1,63 +1,45 @@
 # mapPageRenderer.tsx
 
-> 28 nodes
+> 21 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **mapPageRenderer.tsx** (21 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **LucidityTier** (11 connections) — `client/src/types/lucidity.ts`
-- **mapPageState.ts** (11 connections) — `client/src/pages/mapPageState.ts`
-- **MapPage.tsx** (10 connections) — `client/src/pages/MapPage.tsx`
-- **lucidityTierRelay.ts** (8 connections) — `client/src/utils/lucidityTierRelay.ts`
-- **renderMapPageState()** (6 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **MapPage()** (5 connections) — `client/src/pages/MapPage.tsx`
-- **useMapPageState()** (5 connections) — `client/src/pages/mapPageState.ts`
-- **useCrossTabLucidityTier()** (5 connections) — `client/src/utils/lucidityTierRelay.ts`
-- **MapPage.test.tsx** (5 connections) — `client/src/pages/__tests__/MapPage.test.tsx`
-- **publishTier()** (4 connections) — `client/src/utils/lucidityTierRelay.ts`
-- **mapPageStatusViews.tsx** (4 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **RoomMapViewerProps** (3 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **lucidityTierRelay.test.ts** (3 connections) — `client/src/utils/__tests__/lucidityTierRelay.test.ts`
-- **AuthenticatedMapProps** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **MapPageState** (2 connections) — `client/src/pages/mapPageState.ts`
-- **renderAuthenticatedMapView()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **renderStatusGate()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **resolveMapViewProps()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **fetchFallbackCurrentRoom()** (2 connections) — `client/src/pages/mapPageState.ts`
-- **parseMapRouteParams()** (2 connections) — `client/src/pages/mapPageState.ts`
-- **MapPageAuthRequiredView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPageErrorView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPageLoadingView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **readTier()** (2 connections) — `client/src/utils/lucidityTierRelay.ts`
-- *... and 3 more nodes in this community*
+- **test_support_helpers.py** (10 connections) — `server/tests/unit/test_support_helpers.py`
+- **calls_of()** (6 connections) — `server/tests/support.py`
+- **mock_of()** (6 connections) — `server/tests/support.py`
+- **support.py** (5 connections) — `server/tests/support.py`
+- **async_mock_of()** (5 connections) — `server/tests/support.py`
+- **_Subject** (5 connections) — `server/tests/unit/test_support_helpers.py`
+- **test_async_mock_of_returns_awaitable_members()** (4 connections) — `server/tests/unit/test_support_helpers.py`
+- **test_calls_of_rejects_a_non_mock()** (4 connections) — `server/tests/unit/test_support_helpers.py`
+- **test_mock_of_answers_the_subject_interface()** (3 connections) — `server/tests/unit/test_support_helpers.py`
+- **test_mock_of_uses_spec_set_so_unknown_attributes_are_rejected()** (3 connections) — `server/tests/unit/test_support_helpers.py`
+- **T** (2 connections)
+- **.resolve()** (2 connections) — `server/tests/unit/test_support_helpers.py`
+- **Typed mock helpers shared across the server test suite (#784).…** (1 connections) — `server/tests/support.py`
+- **A ``MagicMock`` restricted to ``cls``'s interface, typed as ``cls``.…** (1 connections) — `server/tests/support.py`
+- **``mock_of`` for classes whose methods are coroutines.…** (1 connections) — `server/tests/support.py`
+- **Recover the ``MagicMock`` assertion API from a double typed as its subject. The…** (1 connections) — `server/tests/support.py`
+- **asyncio** (1 connections)
+- **Tests for the typed mock helpers in server/tests/support.py (#784).** (1 connections) — `server/tests/unit/test_support_helpers.py`
+- **Stand-in for a service under test.** (1 connections) — `server/tests/unit/test_support_helpers.py`
+- **spec_set (not spec) is the whole point: a renamed attribute must fail loudly.** (1 connections) — `server/tests/unit/test_support_helpers.py`
+- **Guards against calls_of() silently handing back a real object typed as a mock.** (1 connections) — `server/tests/unit/test_support_helpers.py`
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (5 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (4 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [map/types.ts](map-types.ts.md) (2 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (1 shared connections)
+- [test_command_communication.py](test_command_communication.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/AppRouter.tsx`
-- `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/pages/MapPage.tsx`
-- `client/src/pages/__tests__/MapPage.test.tsx`
-- `client/src/pages/mapPageRenderer.tsx`
-- `client/src/pages/mapPageState.ts`
-- `client/src/pages/mapPageStatusViews.tsx`
-- `client/src/types/lucidity.ts`
-- `client/src/utils/__tests__/lucidityTierRelay.test.ts`
-- `client/src/utils/lucidityTierRelay.ts`
+- `server/tests/support.py`
+- `server/tests/unit/test_support_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

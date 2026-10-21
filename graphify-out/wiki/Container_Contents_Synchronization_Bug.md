@@ -1,14 +1,12 @@
 # Container Contents Synchronization Bug
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Container Contents Synchronization Bug** (3 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
-- **slot_type backpack Assignment** (2 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
-- **Dual Inventory Storage Architecture** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
-- **Inventory Slot Calculation Bug** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
-- **Fail-Fast Container Error Philosophy** (1 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **call-of-cthulhu-the-coloring-book/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
 
 ## Relationships
 
@@ -16,13 +14,12 @@
 
 ## Source Files
 
-- `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
-- `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

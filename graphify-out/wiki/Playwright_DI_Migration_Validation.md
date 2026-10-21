@@ -1,27 +1,25 @@
 # Playwright DI Migration Validation
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room() returns None when room not found in persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

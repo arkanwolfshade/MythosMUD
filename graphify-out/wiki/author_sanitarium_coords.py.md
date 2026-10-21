@@ -1,33 +1,36 @@
 # author_sanitarium_coords.py
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **author_sanitarium_coords.py** (6 connections) — `scripts/author_sanitarium_coords.py`
-- **main()** (5 connections) — `scripts/author_sanitarium_coords.py`
-- **assign()** (4 connections) — `scripts/author_sanitarium_coords.py`
-- **_read_dml()** (4 connections) — `scripts/author_sanitarium_coords.py`
-- **_write_dml()** (4 connections) — `scripts/author_sanitarium_coords.py`
-- **parse_block()** (2 connections) — `scripts/author_sanitarium_coords.py`
-- **Path** (2 connections)
-- **Give the Sanitarium's interior rooms map coordinates (#829). Not cosmetic.…** (1 connections) — `scripts/author_sanitarium_coords.py`
-- **Walk the Sanitarium's own exit graph and hand every room a unique cell.** (1 connections) — `scripts/author_sanitarium_coords.py`
-- **Read a seed file, returning its text with LF endings and whether it was CRLF.…** (1 connections) — `scripts/author_sanitarium_coords.py`
-- **Write back in whatever ending the file already used.** (1 connections) — `scripts/author_sanitarium_coords.py`
+- **Coverage Improvement Summary - Plan 2 Execution** (13 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📊 Expected Final Results** (2 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **🏆 Achievement Highlights** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **✅ COMPLETED & VERIFIED (6 modules)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📝 CREATED & READY (6 modules)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📚 Documentation Created** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Executive Summary** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📞 Support** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **When All Tests Run Successfully** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- [deque](deque.md) (1 shared connections)
+- [fix_markdown_file](fix_markdown_file.md) (1 shared connections)
+- [test_skill_service.py](test_skill_service.py.md) (1 shared connections)
+- [NPC Combat Start Race Condition](NPC_Combat_Start_Race_Condition.md) (1 shared connections)
+- [rename_used_to_is_active.py](rename_used_to_is_active.py.md) (1 shared connections)
+- [Respawn Death Screen Loop Limbo ID Mismatch](Respawn_Death_Screen_Loop_Limbo_ID_Mismatch.md) (1 shared connections)
+- [Round-Based Combat](Round-Based_Combat.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/author_sanitarium_coords.py`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

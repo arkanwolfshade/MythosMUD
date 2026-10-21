@@ -1,37 +1,36 @@
 # test_update_container_found_returns_the_id
 
-> 15 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **test_update_container_found_returns_the_id()** (7 connections) — `server/tests/integration/test_containers_procedures.py`
-- **test_update_container_null_fields_leave_them_unchanged()** (7 connections) — `server/tests/integration/test_containers_procedures.py`
-- **container_row()** (6 connections) — `server/tests/integration/test_containers_procedures.py`
-- **test_update_container_missing_container_returns_null()** (6 connections) — `server/tests/integration/test_containers_procedures.py`
-- **test_containers_procedures.py** (6 connections) — `server/tests/integration/test_containers_procedures.py`
-- **async_sessionmaker** (4 connections)
-- **AsyncSession** (4 connections)
-- **asyncio** (3 connections)
-- **UUID** (3 connections)
-- **fixture** (1 connections)
-- **Integration tests for db/procedures/containers.sql's update_container() return-…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
-- **Create one container row. Yields its container_instance_id.** (1 connections) — `server/tests/integration/test_containers_procedures.py`
-- **update_container() on an existing container returns its id, and the row is…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
-- **update_container() on a nonexistent container_instance_id returns NULL, no…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
-- **NULL p_lock_state/p_metadata_json leave the existing values alone (COALESCE),…** (1 connections) — `server/tests/integration/test_containers_procedures.py`
+- **Entries** (5 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Summary (from Codacy UI snapshot)** (4 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **codacy_high_critical_baseline.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Codacy High/Critical Baseline – MythosMUD** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **codacy_high_critical_progress.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Codacy High/Critical Remediation Progress** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Distribution notes** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Example issue types** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Top code patterns by issue count** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **2026-02-24 — Wave 3 (Backend security) completed** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 4 (Frontend security) verified** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 5 (Complexity refactors)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 6 (Metrics and hardening)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Relationships
 
-- [session_factory](session_factory.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_containers_procedures.py`
+- `docs/archive/investigations/codacy_high_critical_baseline.md`
+- `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (86%)
-- INFERRED: 4 (14%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,32 @@
 # Unique Pylint Findings Analysis
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **Unique Pylint Findings Analysis** (8 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Summary of Recommendations** (4 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4. WARNINGS Findings (5 findings)** (3 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Linting Complexity Alignment** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **2. ERROR Findings (33 findings)** (2 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **2.1 No Name in Module (E0611)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.1 Unused Variable (W0612)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.2 Unused Argument (W0613)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Configure Ruff to Catch (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Executive Summary** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Fix Manually (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Next Steps** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Suppress in `.pylintrc` (Majority of findings)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **P3 · container-di + client + domain** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **P3-Cluster-DI-Client-Domain.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Further P0 reversals** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H10 · ADR-011 declares completed work as "planned"** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H7 · The global-singleton leak grew rather than shrank** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H8 · Twelve modules bypass the persistence facade — and the two docs disagree about whether that's allowed** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H9 · ADR-008 styling claim is wholly counterfactual** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Low / STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Notable CONFORMS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Register corrections** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Relationships
 
-- [3. REFACTOR Findings (935 findings)](3._REFACTOR_Findings_935_findings.md) (1 shared connections)
-- [1. CONVENTION Findings (260 findings)](1._CONVENTION_Findings_260_findings.md) (1 shared connections)
-- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (1 shared connections)
-- [Ruff to Pylint Rule Mapping](Ruff_to_Pylint_Rule_Mapping.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

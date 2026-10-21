@@ -1,55 +1,59 @@
 # test_passive_corruption_flux_rate_overrides.py
 
-> 48 nodes
+> 54 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **test_passive_corruption_flux_rate_overrides.py** (34 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **CorruptionOverride** (24 connections) — `server/services/passive_corruption_flux/config.py`
-- **passive_corruption_flux/rate_overrides.py** (20 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_process_override_row()** (13 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_async_load_corruption_overrides()** (10 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_extract_corruption_override()** (10 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **load_corruption_overrides()** (8 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_mock_row()** (8 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **_CorruptionOverrideLoadResult** (7 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_parse_special_rules_from_raw()** (7 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_empty_result()** (7 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_async_load_corruption_overrides_success()** (7 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **_normalize_database_url()** (6 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **_parse_zone_stable_id()** (6 connections) — `server/services/passive_corruption_flux/rate_overrides.py`
-- **test_async_load_corruption_overrides_missing_database_url()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_process_override_row_subzone_level()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_process_override_row_zone_level()** (5 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_load_corruption_overrides_success()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_process_override_row_missing_keys_is_skipped()** (4 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_extract_corruption_override_both()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_extract_corruption_override_rate_only()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_extract_corruption_override_target_only()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **test_load_corruption_overrides_returns_empty_on_error()** (3 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- **MonkeyPatch** (3 connections)
-- **test_extract_corruption_override_neither_returns_none()** (2 connections) — `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
-- *... and 23 more nodes in this community*
+- **AliasGraph** (22 connections) — `server/utils/alias_graph.py`
+- **alias_expansion.py** (19 connections) — `server/command_handler/alias_expansion.py`
+- **test_alias_expansion.py** (17 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
+- **test_alias_graph.py** (11 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
+- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
+- **alias_graph.py** (9 connections) — `server/utils/alias_graph.py`
+- **asyncio** (5 connections)
+- **asyncio** (5 connections)
+- **test_alias_graph_build_graph()** (5 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_clear()** (5 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_detect_cycle_no_cycle()** (5 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_get_expansion_depth()** (5 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_alias_graph_is_safe_to_expand()** (5 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_check_alias_safety_cycle_detected()** (4 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_depth_too_deep()** (4 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_ok()** (4 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_handle_expanded_command_depth_limit()** (4 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_alias_graph_init()** (4 connections) — `server/tests/unit/utils/test_alias_graph.py`
+- **test_handle_expanded_command_delegates()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
+- **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
+- **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
+- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [test_passive_corruption_flux_service.py](test_passive_corruption_flux_service.py.md) (7 shared connections)
-- [test_rate_overrides.py](test_rate_overrides.py.md) (4 shared connections)
-- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (3 shared connections)
-- [passive_corruption_flux/config.py](passive_corruption_flux-config.py.md) (3 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (13 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [QuestService](QuestService.md) (5 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (4 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (3 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
+- [test_logging_file_categories.py](test_logging_file_categories.py.md) (1 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_corruption_flux/config.py`
-- `server/services/passive_corruption_flux/rate_overrides.py`
-- `server/tests/unit/services/test_passive_corruption_flux_rate_overrides.py`
+- `server/command_handler/alias_expansion.py`
+- `server/tests/unit/commands/test_alias_expansion.py`
+- `server/tests/unit/utils/test_alias_graph.py`
+- `server/utils/alias_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 112 (88%)
+- INFERRED: 15 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

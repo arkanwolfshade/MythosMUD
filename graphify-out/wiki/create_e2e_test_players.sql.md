@@ -1,10 +1,10 @@
 # create_e2e_test_players.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **create_e2e_test_players.sql** (0 connections) — `scripts/create_e2e_test_players.sql`
+- **add_npc_name_constraint.sql** (0 connections) — `server/scripts/add_npc_name_constraint.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/create_e2e_test_players.sql`
+- `server/scripts/add_npc_name_constraint.sql`
 
 ## Audit Trail
 

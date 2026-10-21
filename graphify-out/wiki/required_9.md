@@ -1,29 +1,33 @@
 # required
 
-> 8 nodes
+> 12 nodes · cohesion 0.21
 
 ## Key Concepts
 
-- **required** (8 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **exits** (1 connections) — `schemas/intersection_schema.json`
-- **id** (1 connections) — `schemas/intersection_schema.json`
-- **name** (1 connections) — `schemas/intersection_schema.json`
-- **plane** (1 connections) — `schemas/intersection_schema.json`
-- **sub_zone** (1 connections) — `schemas/intersection_schema.json`
-- **zone** (1 connections) — `schemas/intersection_schema.json`
+- **TestSymbolTables** (7 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **parametrize** (4 connections)
+- **.test_every_style_can_draw_a_room_and_the_player()** (3 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **.test_every_style_can_draw_an_intersection()** (3 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **.test_every_style_has_room_player_and_exit_colours()** (2 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **.test_styles_match_the_colour_table()** (2 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **.test_symbols_are_single_characters()** (2 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **.test_the_player_is_distinct_from_every_room_symbol()** (2 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **`_get_room_symbol` falls back to "default", and the player marker is how you…** (1 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **Arkham is 153 intersections; they must not fall back to the default glyph.** (1 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **_determine_map_style only accepts a style present in `symbols`; a style with no…** (1 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
+- **The grid allocates one column per room; a wider glyph shifts the whole row.** (1 connections) — `server/tests/unit/services/test_ascii_map_symbols.py`
 
 ## Relationships
 
-- [intersection_schema.json](intersection_schema.json.md) (1 shared connections)
+- [mock_container](mock_container.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/services/test_ascii_map_symbols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

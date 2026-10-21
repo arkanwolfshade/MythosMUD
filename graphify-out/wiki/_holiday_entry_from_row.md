@@ -1,43 +1,37 @@
 # _holiday_entry_from_row
 
-> 17 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
-- **._async_load_from_database()** (8 connections) — `server/services/holiday_service.py`
-- **_string_list_from_row()** (5 connections) — `server/services/holiday_service.py`
-- **.test_async_load_from_database()** (5 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **_HolidayLoadResult** (3 connections) — `server/services/holiday_service.py`
-- **.test_holiday_entry_from_row()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **.test_string_list_from_row()** (3 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **Record** (1 connections)
-- **TypedDict** (1 connections)
-- **asyncio** (1 connections)
-- **MonkeyPatch** (1 connections)
-- **Async helper to load holidays from PostgreSQL database.** (1 connections) — `server/services/holiday_service.py`
-- **Normalize nullable PostgreSQL array columns to string values.** (1 connections) — `server/services/holiday_service.py`
-- **Build a HolidayEntry from a calendar_holidays row.** (1 connections) — `server/services/holiday_service.py`
-- **Helper normalizes nullable PostgreSQL array columns.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **Row dict maps to HolidayEntry.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **Regression: asyncpg load builds HolidayCollection from rows.** (1 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **PARALLEL EXECUTION RESULTS (2025-11-05)** (15 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **After Parallelization** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Before Parallelization** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Benefits** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Changes Implemented** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Comprehensive Tests (Serial + Long-Running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Daily Development Tests (Parallel)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Excluded from Fast Suite** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **FINAL METRICS** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **✅ **IMPLEMENTATION COMPLETE**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Performance Analysis** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Recommendations for Future** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Test Categorization Strategy** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Tests: 2,065 pure unit tests passing** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Workers: 8 (auto-detected)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [HolidayEntry](HolidayEntry.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [Dreamlands.md](Dreamlands.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/holiday_service.py`
-- `server/tests/unit/services/test_holiday_service.py`
+- `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

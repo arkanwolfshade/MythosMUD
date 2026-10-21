@@ -1,25 +1,27 @@
 # Call of Cthulhu 7th Edition Keeper Screen Pack (source summary)
 
-> 4 nodes
+> 6 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Call of Cthulhu 7th Edition Keeper Screen Pack (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
-- **Call of Cthulhu 7th Edition Keeper Screen Pack.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **.async_list_rooms()** (3 connections) — `server/async_persistence.py`
+- **.get_room_by_id()** (3 connections) — `server/async_persistence.py`
+- **.list_rooms()** (3 connections) — `server/async_persistence.py`
+- **Room** (3 connections)
+- **Get a room by ID. Checks instance manager first, then cache. Instanced room IDs…** (1 connections) — `server/async_persistence.py`
+- **List all rooms from the cache. Delegates to RoomRepository. Returns:…** (1 connections) — `server/async_persistence.py`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (3 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

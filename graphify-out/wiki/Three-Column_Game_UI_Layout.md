@@ -1,16 +1,14 @@
 # Three-Column Game UI Layout
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Three-Column Game UI Layout** (6 connections) — `client/wireframe.png`
-- **Character Info Panel** (1 connections) — `client/wireframe.png`
-- **Chat History Panel** (1 connections) — `client/wireframe.png`
-- **Command History and Input** (1 connections) — `client/wireframe.png`
-- **Game Info Panel** (1 connections) — `client/wireframe.png`
-- **Location Room Description Occupants** (1 connections) — `client/wireframe.png`
-- **MythosMUD Client UI Wireframe** (1 connections) — `client/wireframe.png`
+- **HADS tooling (MythosMUD)** (4 connections) — `scripts/hads/README.md`
+- **hads/README.md** (1 connections) — `scripts/hads/README.md`
+- **Policy** (1 connections) — `scripts/hads/README.md`
+- **Source pin** (1 connections) — `scripts/hads/README.md`
+- **Usage** (1 connections) — `scripts/hads/README.md`
 
 ## Relationships
 
@@ -18,11 +16,11 @@
 
 ## Source Files
 
-- `client/wireframe.png`
+- `scripts/hads/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

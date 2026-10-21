@@ -1,58 +1,47 @@
 # MetricsCollector
 
-> 36 nodes
+> 25 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
-- **Lock** (8 connections)
-- **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.get_lock()** (3 connections) — `server/services/inventory_mutation_guard.py`
-- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
-- **test_circuit_state_change_trims_history()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_get_summary()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **Any** (2 connections)
-- **Record a circuit breaker state change. Args: old_state: Previous circuit state…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record message processing time. Args: duration_ms: Processing duration in…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
-- *... and 11 more nodes in this community*
+- **fix_fstring_logging.py** (11 connections) — `scripts/fix_fstring_logging.py`
+- **_create_replacement_for_fstring()** (8 connections) — `scripts/fix_fstring_logging.py`
+- **fix_fstring_logging_in_file()** (7 connections) — `scripts/fix_fstring_logging.py`
+- **Path** (5 connections)
+- **main()** (4 connections) — `scripts/fix_fstring_logging.py`
+- **_read_file_content()** (4 connections) — `scripts/fix_fstring_logging.py`
+- **_validate_file()** (4 connections) — `scripts/fix_fstring_logging.py`
+- **_write_file_if_changed()** (4 connections) — `scripts/fix_fstring_logging.py`
+- **_build_structured_params()** (3 connections) — `scripts/fix_fstring_logging.py`
+- **_clean_message()** (3 connections) — `scripts/fix_fstring_logging.py`
+- **create_structured_log_message()** (3 connections) — `scripts/fix_fstring_logging.py`
+- **extract_variables_from_fstring()** (3 connections) — `scripts/fix_fstring_logging.py`
+- **_handle_no_variables_case()** (3 connections) — `scripts/fix_fstring_logging.py`
+- **Match** (1 connections)
+- **Create replacement string for f-string logging call.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Write file if content has changed.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Fix f-string logging violations in a single file. Args: file_path: Path to the…** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Main function to fix f-string logging violations.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Extract variable names from f-string content. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Create structured logging message and parameters. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Validate that file exists and is a Python file.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Read file content with error handling.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Handle case where f-string has no variables.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Build structured parameters list from variables.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Clean message by removing variable placeholders.** (1 connections) — `scripts/fix_fstring_logging.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/metrics_collector.py`
-- `server/npc/threading.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/tests/unit/middleware/test_metrics_collector.py`
+- `scripts/fix_fstring_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

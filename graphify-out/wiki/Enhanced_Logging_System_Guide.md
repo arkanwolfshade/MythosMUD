@@ -1,22 +1,23 @@
 # Enhanced Logging System Guide
 
-> 1 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Enhanced Logging System Guide** (0 connections) — `server/structured_logging/README.md`
+- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/README.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

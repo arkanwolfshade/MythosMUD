@@ -1,23 +1,22 @@
 # test_take_room_drop_error_handling
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_take_room_drop_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **UI-v2 Components** (0 connections) — `client/src/components/ui-v2`
 
 ## Relationships
 
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `client/src/components/ui-v2`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

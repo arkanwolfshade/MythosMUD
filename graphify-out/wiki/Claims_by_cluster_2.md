@@ -1,32 +1,33 @@
 # Claims by cluster
 
-> 11 nodes
+> 11 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **P2 · ADR Claim Register** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **client — ADR-008, ADR-011, ADR-017** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **config-api — ADR-013** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **container-di / layering — ADR-001, ADR-002, ADR-007** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **domain — ADR-009, ADR-010, ADR-016** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **events-nats — ADR-003, ADR-014** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **persistence-db — ADR-005, ADR-006, ADR-015** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **Priority contradictions to test first** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **realtime-connection — ADR-004, ADR-012, ADR-018** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
-- **Structural observations (findings in their own right)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
+- **datetime** (7 connections)
+- **._cleanup_expired_mutes()** (6 connections) — `server/services/user_manager.py`
+- **._cleanup_channel_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_global_mutes()** (4 connections) — `server/services/user_manager.py`
+- **._cleanup_player_mutes()** (4 connections) — `server/services/user_manager.py`
+- **.get_system_stats()** (3 connections) — `server/services/user_manager.py`
+- **Get system-wide user management statistics. Returns: Dictionary with system…** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired player mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired channel mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired global mutes.** (1 connections) — `server/services/user_manager.py`
+- **Clean up expired mutes from all storage.** (1 connections) — `server/services/user_manager.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [asyncio](asyncio.md) (8 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-ADR-Claims.md`
+- `server/services/user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

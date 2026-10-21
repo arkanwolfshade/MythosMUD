@@ -1,51 +1,51 @@
 # whisper-movement.spec.ts
 
-> 21 nodes
+> 34 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **whisper-movement.spec.ts** (37 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **waitForLookReflectedInUi()** (17 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **attemptEastHop()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **lookAndWaitForUi()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **moveAwToEasternHallway()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **sendCrossRoomWhisper()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **whisperUntilSenderAck()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **primeBothForCoLocate()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- **primeBothForCoLocate()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- **deliverWhisperAcrossRooms()** (4 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **hopEastUntilHallway()** (4 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **primeBothForCoLocate()** (4 connections) — `client/tests/e2e/runtime/follow/follow-commands.spec.ts`
-- **focusCommandInput()** (3 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **prepareWhisperPair()** (3 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **assertNeitherPlayerInVoid()** (2 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **bringFrontAndAssertPlayerBanner()** (2 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **nudgeStandBothPlayers()** (2 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **pageIsInDeathVoid()** (2 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **pageShowsEasternHallway()** (2 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **characterNameFromPage()** (1 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **escapeRegExp()** (1 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **UUID** (18 connections)
+- **.get_active_player_effects()** (4 connections) — `server/async_persistence.py`
+- **.get_player_by_id()** (4 connections) — `server/async_persistence.py`
+- **.get_players_batch()** (4 connections) — `server/async_persistence.py`
+- **.update_player_last_active()** (4 connections) — `server/async_persistence.py`
+- **.award_player_xp()** (3 connections) — `server/async_persistence.py`
+- **.clear_player_inventory()** (3 connections) — `server/async_persistence.py`
+- **.delete_player()** (3 connections) — `server/async_persistence.py`
+- **.get_bank_container()** (3 connections) — `server/async_persistence.py`
+- **.get_container()** (3 connections) — `server/async_persistence.py`
+- **.get_containers_by_entity_id()** (3 connections) — `server/async_persistence.py`
+- **.get_decayed_containers()** (3 connections) — `server/async_persistence.py`
+- **.get_player_effect_remaining_ticks()** (3 connections) — `server/async_persistence.py`
+- **.has_player_effect()** (3 connections) — `server/async_persistence.py`
+- **.remove_player_effect_by_id()** (3 connections) — `server/async_persistence.py`
+- **.soft_delete_player()** (3 connections) — `server/async_persistence.py`
+- **datetime** (3 connections)
+- **.delete_container()** (2 connections) — `server/async_persistence.py`
+- **.update_container()** (2 connections) — `server/async_persistence.py`
+- **Get a player by ID. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Soft delete a player (sets is_deleted=True). Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Empty a player's carried and equipped items only. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Get multiple players by IDs in a single batch query. This method uses a single…** (1 connections) — `server/async_persistence.py`
+- **Delete a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- **Update the last_active timestamp for a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (32 shared connections)
-- [executeCommand](executeCommand.md) (10 shared connections)
-- [player.ts](player.ts.md) (6 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (2 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (17 shared connections)
+- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [command_guards.py](command_guards.py.md) (1 shared connections)
+- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- `client/tests/e2e/runtime/follow/follow-commands.spec.ts`
+- `server/async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,23 @@
 # lucidity.sql
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **lucidity.sql** (1 connections) — `db/procedures/lucidity.sql`
-- **schema_name.get_lucidity_rate_overrides()** (1 connections) — `db/procedures/lucidity.sql`
+- **test_parse_exits_json_other_type()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with non-string, non-list value.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/lucidity.sql`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

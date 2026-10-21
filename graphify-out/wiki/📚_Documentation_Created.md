@@ -1,27 +1,25 @@
 # 📚 Documentation Created
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **📚 Documentation Created** (6 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **1. Comprehensive Audit Report** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **2. Executive Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **3. Developer Quick Reference** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **4. Migration Tracker** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **5. Test Suite** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Success Criteria** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Non-Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **User Experience Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

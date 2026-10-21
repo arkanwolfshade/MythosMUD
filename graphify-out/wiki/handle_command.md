@@ -1,50 +1,50 @@
 # handle_command
 
-> 23 nodes
+> 39 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **handle_command()** (13 connections) — `server/command_handler_unified.py`
-- **CommandRequest** (9 connections) — `server/command_handler_unified.py`
-- **asyncio** (7 connections)
-- **TestHandleCommand** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestLegacyFunctions** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_success()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_unauthorized()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **test_command_request_rejects_unknown_field()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Depends** (1 connections)
-- **post** (1 connections)
-- **Handle incoming HTTP command requests.** (1 connections) — `server/command_handler_unified.py`
-- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
-- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command raises HTTPException when not authenticated.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command successfully processes command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **#755: CommandRequest inherits SecureBaseModel - an extra field must be rejected.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() delegates to help system.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test get_help_content() with None command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **handle_quest_command()** (21 connections) — `server/commands/quest_commands.py`
+- **test_quest_commands.py** (20 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **asyncio** (13 connections)
+- **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **ExitStack** (5 connections)
+- **test_journal_character_not_found()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_journal_returns_log_when_available()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_journal_returns_unavailable_when_no_container()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_failure_message()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_success()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_no_quest_name()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_no_subcommand()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_abandon_usage_when_wrong_subcommand()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_usage_when_no_npc()** (4 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **current_user()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **fixture** (2 connections)
+- **Handle quest command subcommands: abandon, ask, turnin. Usage: quest abandon…** (1 connections) — `server/commands/quest_commands.py`
+- **Unit tests for quest commands: journal/quests (quest log) and quest abandon.…** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Journal returns error when character not found.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **Quest command returns usage when args empty or not 'abandon'.** (1 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (12 shared connections)
-- [MessageCategory](MessageCategory.md) (6 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (1 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (11 shared connections)
+- [command_parser.py](command_parser.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
+- `server/commands/quest_commands.py`
+- `server/tests/unit/commands/test_quest_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 82 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # lazyLoading.test.tsx
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **lazyLoading.test.tsx** (0 connections) — `client/src/components/map/__tests__/lazyLoading.test.tsx`
+- **7. Changelog** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/src/components/map/__tests__/lazyLoading.test.tsx`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

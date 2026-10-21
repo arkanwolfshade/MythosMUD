@@ -1,10 +1,10 @@
 # Async Anti-Patterns Quick Reference
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Async Anti-Patterns Quick Reference** (0 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- **Grype SCA exclude paths** (0 connections) — `.grype.yaml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- `.grype.yaml`
 
 ## Audit Trail
 

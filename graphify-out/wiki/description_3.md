@@ -1,26 +1,30 @@
 # description
 
-> 5 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **fixture** (4 connections)
+- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

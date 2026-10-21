@@ -1,33 +1,31 @@
 # e2e_reset_players.py
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **_reset_e2e_players()** (5 connections) — `scripts/e2e_reset_players.py`
-- **e2e_reset_players.py** (5 connections) — `scripts/e2e_reset_players.py`
-- **_clear_folk_tonic_cooldowns()** (4 connections) — `scripts/e2e_reset_players.py`
-- **_reset_tutorial_character()** (4 connections) — `scripts/e2e_reset_players.py`
-- **_load_default_respawn_room()** (3 connections) — `scripts/e2e_reset_players.py`
-- **main()** (3 connections) — `scripts/e2e_reset_players.py`
-- **Connection** (2 connections)
-- **Forget the folk tonic cooldown (30 min) for the shared E2E players, so reruns…** (1 connections) — `scripts/e2e_reset_players.py`
-- **Entry point: run E2E player reset via anyio.** (1 connections) — `scripts/e2e_reset_players.py`
-- **Load DEFAULT_RESPAWN_ROOM from disk so analyzers do not need to resolve the…** (1 connections) — `scripts/e2e_reset_players.py`
-- **Put E2ETutorial back at the start of the tutorial, holding one Sling, with…** (1 connections) — `scripts/e2e_reset_players.py`
+- **Positive Findings ✅** (9 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **5. **TLS Configuration Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **6. **Connection Pooling Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **7. **Message Acknowledgment Support**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **8. **Async Mute Data Loading**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_inventory_mutation_guard_async.py](test_inventory_mutation_guard_async.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/e2e_reset_players.py`
+- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

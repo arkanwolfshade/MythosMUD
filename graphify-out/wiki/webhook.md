@@ -1,27 +1,25 @@
 # webhook
 
-> 3 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **webhook()** (5 connections) — `monitoring/webhook-receiver.py`
-- **post** (1 connections)
-- **Receive and log alert webhooks** (1 connections) — `monitoring/webhook-receiver.py`
+- **Lucidity Tiers** (2 connections) — `docs/archive/lucidity-system.md`
+- **Catatonic Rescue Window** (1 connections) — `docs/archive/lucidity-system.md`
+- **Lucidity System (LCD)** (1 connections) — `docs/archive/lucidity-system.md`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `monitoring/webhook-receiver.py`
+- `docs/archive/lucidity-system.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (80%)
-- INFERRED: 1 (20%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

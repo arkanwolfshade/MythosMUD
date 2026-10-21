@@ -1,54 +1,62 @@
 # CombatAttackHandler
 
-> 91 nodes
+> 142 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **CombatAttackHandler** (43 connections) — `server/services/combat_attack_handler.py`
-- **test_combat_attack_handler.py** (39 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **.validate_and_get_combat_participants()** (9 connections) — `server/services/combat_attack_handler.py`
-- **_bind_get_combat_by_participant()** (8 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **._apply_damage()** (7 connections) — `server/services/combat_attack_handler.py`
-- **test_apply_attack_damage()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_attacker_not_found()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_success()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_target_dead()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_target_not_found()** (7 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **asyncio** (7 connections)
-- **._cap_damage_for_no_death_room()** (6 connections) — `server/services/combat_attack_handler.py`
-- **._find_combat_target()** (6 connections) — `server/services/combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_caps_damage()** (6 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_apply_damage_player_no_death_room_zero_damage_when_at_zero()** (6 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_inactive_combat()** (6 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **fixture** (6 connections)
-- **_CombatAttackService** (5 connections) — `server/services/combat_attack_handler.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_attack_handler.py`
-- **._validate_attack()** (5 connections) — `server/services/combat_attack_handler.py`
-- **test_validate_and_get_combat_participants_not_in_combat()** (5 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **._room_has_no_death()** (4 connections) — `server/services/combat_attack_handler.py`
-- **._validate_target_can_be_attacked()** (4 connections) — `server/services/combat_attack_handler.py`
-- **attack_handler()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- **mock_attacker()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
-- *... and 66 more nodes in this community*
+- **NATSService** (157 connections) — `server/services/nats_service.py`
+- **test_nats_service.py** (62 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_helpers.py** (59 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **asyncio** (26 connections)
+- **asyncio** (23 connections)
+- **NATSUnsubscribeError** (14 connections) — `server/services/nats_exceptions.py`
+- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
+- **_mock_create_tracked_task()** (7 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **_assert_tracked_coro_closed()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_start_health_monitoring_creates_task()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_nats_service_init_with_config()** (6 connections) — `server/tests/unit/services/test_nats_service.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_service_init_with_subject_manager()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_publish_no_available_connections()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_publish_not_initialized()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_request_timeout()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_subscribe_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_subscribe_not_running()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_unsubscribe_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_unsubscribe_not_found()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.get_connection_stats()** (4 connections) — `server/services/nats_service.py`
+- **.publish()** (4 connections) — `server/services/nats_service.py`
+- **.request()** (4 connections) — `server/services/nats_service.py`
+- *... and 117 more nodes in this community*
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (28 shared connections)
-- [CombatInstance](CombatInstance.md) (20 shared connections)
-- [CombatService](CombatService.md) (13 shared connections)
-- [SpellEffects](SpellEffects.md) (4 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [real_time.py](real_time.py.md) (1 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (40 shared connections)
+- [arkham_grid_spec.py](arkham_grid_spec.py.md) (18 shared connections)
+- [test_combat_death_handler.py](test_combat_death_handler.py.md) (18 shared connections)
+- [useRoomEditModal.ts](useRoomEditModal.ts.md) (17 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (6 shared connections)
+- [test_rate_overrides.py](test_rate_overrides.py.md) (5 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (3 shared connections)
+- [GameMechanicsService](GameMechanicsService.md) (3 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [NPCPopulationController](NPCPopulationController.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [combat_assist.py](combat_assist.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_attack_handler.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
+- `server/services/nats_exceptions.py`
+- `server/services/nats_service.py`
+- `server/tests/unit/services/test_nats_service.py`
+- `server/tests/unit/services/test_nats_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (86%)
-- INFERRED: 29 (14%)
+- EXTRACTED: 303 (72%)
+- INFERRED: 117 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

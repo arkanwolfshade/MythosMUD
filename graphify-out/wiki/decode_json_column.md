@@ -1,34 +1,34 @@
 # decode_json_column
 
-> 8 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **decode_json_column()** (7 connections) — `server/container/utils.py`
-- **._decode_json_column()** (4 connections) — `server/container/main.py`
-- **.get_service()** (4 connections) — `server/container/main.py`
-- **Any** (3 connections)
-- **Any** (1 connections)
-- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
-- **Get a service by name.** (1 connections) — `server/container/main.py`
-- **Decode a JSON column value, returning the type's default on failure. Used by…** (1 connections) — `server/container/utils.py`
+- **TRACK C · The interactive review — 8 decisions** (12 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C1 · What are the ADRs *for*?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C2 · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C3 · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C4 · Is `APPLICATION_CONTAINER_ANALYSIS.md` restored or left archived?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C5 · Four doc↔doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C6 · Contract drift from one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C7 · Closed-but-not-built — six features** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C8 · Undocumented systems worth an ADR** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **C9 · The effects ADR and its number collision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **Caveats carried into review** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **Deliberately not findings** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
 
 ## Relationships
 
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/main.py`
-- `server/container/utils.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

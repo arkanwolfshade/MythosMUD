@@ -1,78 +1,68 @@
 # get_logger
 
-> 1269 nodes
+> 102 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **get_logger()** (559 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (534 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **DatabaseError** (297 connections) — `server/exceptions.py`
-- **server/exceptions.py** (271 connections) — `server/exceptions.py`
-- **log_and_raise()** (195 connections) — `server/utils/error_logging.py`
-- **connection_manager.py** (137 connections) — `server/realtime/connection_manager.py`
-- **models/player.py** (122 connections) — `server/models/player.py`
-- **get_session_maker()** (111 connections) — `server/database.py`
-- **time.py** (107 connections) — `server/container/bundles/time.py`
-- **async_persistence.py** (105 connections) — `server/async_persistence.py`
-- **server/models/__init__.py** (90 connections) — `server/models/__init__.py`
-- **database.py** (89 connections) — `server/database.py`
-- **get_async_session()** (68 connections) — `server/database.py`
-- **Base** (65 connections) — `server/models/base.py`
-- **error_logging.py** (62 connections) — `server/utils/error_logging.py`
-- **models/room.py** (58 connections) — `server/models/room.py`
-- **MythosMUDError** (55 connections) — `server/exceptions.py`
-- **player_service.py** (55 connections) — `server/game/player_service.py`
-- **test_auth_utils.py** (52 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **player_respawn_service.py** (51 connections) — `server/services/player_respawn_service.py`
-- **bundles/game.py** (48 connections) — `server/container/bundles/game.py`
-- **movement_service.py** (47 connections) — `server/game/movement_service.py`
-- **threading.py** (47 connections) — `server/npc/threading.py`
-- **server/services/__init__.py** (43 connections) — `server/services/__init__.py`
-- **test_exceptions.py** (43 connections) — `server/tests/unit/test_exceptions.py`
-- *... and 1244 more nodes in this community*
+- **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
+- **npc_schemas.py** (29 connections) — `server/api/admin/npc_schemas.py`
+- **npc_instances_api.py** (28 connections) — `server/api/admin/npc_instances_api.py`
+- **shared/base.py** (26 connections) — `server/schemas/shared/base.py`
+- **test_npc_instances_api.py** (24 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **schemas/admin/__init__.py** (16 connections) — `server/schemas/admin/__init__.py`
+- **spawn_npc_instance()** (15 connections) — `server/api/admin/npc_instances_api.py`
+- **npc_admin.py** (15 connections) — `server/schemas/admin/npc_admin.py`
+- **despawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **move_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **test_user_schemas.py** (13 connections) — `server/tests/unit/schemas/test_user_schemas.py`
+- **get_npc_instances()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_stats()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- **BaseModel** (10 connections)
+- **UserUpdate** (9 connections) — `server/schemas/auth/user.py`
+- **NPCSpawnRequest** (8 connections) — `server/api/admin/npc_schemas.py`
+- **AdminAuditLogResponse** (8 connections) — `server/schemas/admin/npc_admin.py`
+- **AdminSessionsResponse** (8 connections) — `server/schemas/admin/npc_admin.py`
+- **auth/user.py** (8 connections) — `server/schemas/auth/user.py`
+- **UserBase** (8 connections) — `server/schemas/auth/user.py`
+- **UserCreate** (8 connections) — `server/schemas/auth/user.py`
+- **asyncio** (8 connections)
+- **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
+- **AdminCleanupSessionsResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCDespawnResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (224 shared connections)
-- [EventBus](EventBus.md) (105 shared connections)
-- [ContainerComponent](ContainerComponent.md) (86 shared connections)
-- [CombatService](CombatService.md) (83 shared connections)
-- [session](session.md) (75 shared connections)
-- [alias_storage.py](alias_storage.py.md) (55 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (54 shared connections)
-- [ErrorContext](ErrorContext.md) (54 shared connections)
-- [Player](Player.md) (54 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (51 shared connections)
-- [Room](Room.md) (45 shared connections)
-- [ValidationError](ValidationError.md) (45 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (39 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (16 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (15 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (13 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (11 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (10 shared connections)
+- [command_parser.py](command_parser.py.md) (7 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (6 shared connections)
+- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (6 shared connections)
+- [generate_arkham_grid.py](generate_arkham_grid.py.md) (5 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [test_item_catalog.py](test_item_catalog.py.md) (4 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/get_invite_codes.py`
-- `monitoring/webhook-receiver.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/api/containers.py`
-- `server/api/player_helpers.py`
-- `server/app/memory_cleanup_service.py`
-- `server/app/memory_lifespan_coordinator.py`
-- `server/app/tracked_task_manager.py`
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/async_persistence_direct_queries.py`
-- `server/async_persistence_room_facade.py`
-- `server/async_persistence_room_loader.py`
-- `server/async_persistence_types.py`
-- `server/auth/argon2_utils.py`
-- `server/auth/invites.py`
-- `server/auth_utils.py`
-- `server/commands/container_helpers_inventory_logging.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/schemas/__init__.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/schemas/auth/user.py`
+- `server/schemas/shared/base.py`
+- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/tests/unit/schemas/test_user_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6220 (95%)
-- INFERRED: 322 (5%)
+- EXTRACTED: 356 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

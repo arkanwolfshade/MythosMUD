@@ -1,39 +1,42 @@
 # Teach Impeccable Skill
 
-> 11 nodes
+> 9 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- **Teach Impeccable Skill** (7 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
-- **Overdrive Skill** (3 connections) — `.cursor/skills/overdrive/SKILL.md`
-- **Polish Skill** (3 connections) — `.cursor/skills/polish/SKILL.md`
-- **Quieter Skill** (3 connections) — `.cursor/skills/quieter/SKILL.md`
-- **Onboard Skill** (2 connections) — `.cursor/skills/onboard/SKILL.md`
-- **Optimize Skill** (2 connections) — `.cursor/skills/optimize/SKILL.md`
-- **Typeset Skill** (2 connections) — `.cursor/skills/typeset/SKILL.md`
-- **Aha Moment Onboarding** (1 connections) — `.cursor/skills/onboard/SKILL.md`
-- **Core Web Vitals Performance** (1 connections) — `.cursor/skills/optimize/SKILL.md`
-- **Design Context Persistence (.impeccable.md)** (1 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
-- **Overdrive Mode** (1 connections) — `.cursor/skills/overdrive/SKILL.md`
+- **test_room_subscription_manager_drops.py** (34 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_add_room_drop()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_add_room_drop_error_handling()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_add_room_drop_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_take_room_drop_invalid_index()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Unit tests for room subscription manager drop functions. Tests the room drop…** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test add_room_drop() adds drop to room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test take_room_drop() returns None for invalid index.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [Phase 3: Real-Time Communication Protection](Phase_3-_Real-Time_Communication_Protection.md) (2 shared connections)
+- [psscriptanalyzer.ps1](psscriptanalyzer.ps1.md) (1 shared connections)
+- [run_extended_idle_memory_monitor.ps1](run_extended_idle_memory_monitor.ps1.md) (1 shared connections)
+- [_scan_dml_blank_before_terminator.py](_scan_dml_blank_before_terminator.py.md) (1 shared connections)
+- [@types/react-dom](@types-react-dom.md) (1 shared connections)
+- [typescript-eslint](typescript-eslint.md) (1 shared connections)
+- [server/constants/__init__.py](server-constants-__init__.py.md) (1 shared connections)
+- [server/game/magic/__init__.py](server-game-magic-__init__.py.md) (1 shared connections)
+- [server/game/npcs/__init__.py](server-game-npcs-__init__.py.md) (1 shared connections)
+- [Phase 2: Database Layer Integration](Phase_2-_Database_Layer_Integration.md) (1 shared connections)
+- [vite](vite.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/onboard/SKILL.md`
-- `.cursor/skills/optimize/SKILL.md`
-- `.cursor/skills/overdrive/SKILL.md`
-- `.cursor/skills/polish/SKILL.md`
-- `.cursor/skills/quieter/SKILL.md`
-- `.cursor/skills/teach-impeccable/SKILL.md`
-- `.cursor/skills/typeset/SKILL.md`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (77%)
-- INFERRED: 3 (23%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

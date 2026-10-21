@@ -1,31 +1,31 @@
 # Complexity Checking Alignment: Ruff C901 vs Pylint
 
-> 12 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Complexity Checking Alignment: Ruff C901 vs Pylint** (9 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Recommended Strategy** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Current State Analysis** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Key Differences** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **1. Use Ruff for Cyclomatic Complexity ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **2. Suppress Pylint Complexity Metrics ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **3. Align Inline Suppressions** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Conclusion** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example Comparison** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Executive Summary** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint R0911-R0915 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **ignoreDependencies** (5 connections) — `client/knip.json`
+- **cross-env** (2 connections) — `client/package.json`
+- **markdownlint-cli** (2 connections) — `client/package.json`
+- **@stoplight/spectral-cli** (2 connections) — `client/package.json`
+- **stylelint** (2 connections) — `client/package.json`
+- **markdownlint-cli** (2 connections) — `package.json`
+- **cross-env** (1 connections) — `client/package.json`
+- **markdownlint-cli** (1 connections) — `client/knip.json`
+- **@stoplight/spectral-cli** (1 connections) — `client/package.json`
+- **stylelint** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [What They Measure](What_They_Measure.md) (2 shared connections)
-- [Unique Pylint Findings Analysis](Unique_Pylint_Findings_Analysis.md) (1 shared connections)
-- [Implementation Plan](Implementation_Plan.md) (1 shared connections)
+- [NPCStartupService](NPCStartupService.md) (4 shared connections)
+- [NATS Medium-Priority Remediation Summary](NATS_Medium-Priority_Remediation_Summary.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `client/knip.json`
+- `client/package.json`
+- `package.json`
 
 ## Audit Trail
 

@@ -1,78 +1,55 @@
 # alias_storage.py
 
-> 398 nodes
+> 21 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **alias_storage.py** (81 connections) — `server/alias_storage.py`
-- **command_results.py** (60 connections) — `server/commands/command_results.py`
-- **inventory_command_helpers.py** (54 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_equip_command.py** (50 connections) — `server/commands/inventory_equip_command.py`
-- **inventory_pickup_command.py** (39 connections) — `server/commands/inventory_pickup_command.py`
-- **admin_summon_command.py** (37 connections) — `server/commands/admin_summon_command.py`
-- **inventory_unequip_command.py** (37 connections) — `server/commands/inventory_unequip_command.py`
-- **test_inventory_equip_command.py** (36 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- **persist_player()** (34 connections) — `server/commands/inventory_command_helpers.py`
-- **inventory_service.py** (34 connections) — `server/services/inventory_service.py`
-- **bank_commands.py** (33 connections) — `server/commands/bank_commands.py`
-- **inventory_use_command.py** (33 connections) — `server/commands/inventory_use_command.py`
-- **equipment_helpers.py** (32 connections) — `server/commands/equipment_helpers.py`
-- **inventory_commands.py** (32 connections) — `server/commands/inventory_commands.py`
-- **inventory_drop_command.py** (29 connections) — `server/commands/inventory_drop_command.py`
-- **test_equipment_helpers.py** (27 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **emit_inventory_updated()** (26 connections) — `server/services/inventory_websocket_events.py`
-- **inventory_put_command.py** (26 connections) — `server/commands/inventory_put_command.py`
-- **test_inventory_helpers_extended.py** (26 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
-- **test_inventory_put_command.py** (24 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
-- **resolve_state_and_player()** (23 connections) — `server/commands/inventory_command_helpers.py`
-- **test_inventory_commands_more_helpers.py** (23 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
-- **get_shared_services()** (21 connections) — `server/commands/inventory_service_helpers.py`
-- **InventoryCapacityError** (20 connections) — `server/services/inventory_service.py`
-- **clone_inventory()** (20 connections) — `server/commands/inventory_command_helpers.py`
-- *... and 373 more nodes in this community*
+- **connection_utils.py** (28 connections) — `server/realtime/connection_utils.py`
+- **get_npc_disposition_from_instance()** (22 connections) — `server/utils/npc_disposition_lookup.py`
+- **npc_disposition_lookup.py** (17 connections) — `server/utils/npc_disposition_lookup.py`
+- **npc_occupant()** (13 connections) — `server/utils/npc_disposition_lookup.py`
+- **npc_disposition_from_type()** (12 connections) — `server/utils/npc_disposition_lookup.py`
+- **npc_disposition_from_row()** (11 connections) — `server/utils/npc_disposition_lookup.py`
+- **_npc_instance_service()** (4 connections) — `server/utils/npc_disposition_lookup.py`
+- **_NpcInstanceService** (4 connections) — `server/utils/npc_disposition_lookup.py`
+- **NpcDisposition** (4 connections)
+- **_LifecycleManager** (3 connections) — `server/utils/npc_disposition_lookup.py`
+- **Protocol** (2 connections)
+- **Utility functions for connection management. This module provides helper…** (1 connections) — `server/realtime/connection_utils.py`
+- **NpcOccupant** (1 connections)
+- **Resolve and wrap an NPC's wire disposition (#1025, #1036). A leaf module (it…** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **Map an NPC instance's ``npc_type`` (an ``NPCDefinitionType`` value) to its wire…** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **Disposition carried on an NPC occupant row (``disposition``); the NPC id is…** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **One entry of a payload's ``npcs`` list.** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **The slice of the NPC lifecycle manager this lookup reads.** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **The slice of the NPC instance service this lookup reads.** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **The NPC instance service, imported on demand. Uses importlib so this leaf…** (1 connections) — `server/utils/npc_disposition_lookup.py`
+- **Disposition of the live NPC instance ``npc_id``; the default when the instance…** (1 connections) — `server/utils/npc_disposition_lookup.py`
 
 ## Relationships
 
-- [command_result_text](command_result_text.md) (83 shared connections)
-- [get_logger](get_logger.md) (55 shared connections)
-- [command_error](command_error.md) (44 shared connections)
-- [equipment_service.py](equipment_service.py.md) (31 shared connections)
-- [AliasStorage](AliasStorage.md) (30 shared connections)
-- [Player](Player.md) (29 shared connections)
-- [InventoryService](InventoryService.md) (23 shared connections)
-- [ContainerComponent](ContainerComponent.md) (15 shared connections)
-- [command_service.py](command_service.py.md) (14 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (14 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (12 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (10 shared connections)
+- [security.ts](security.ts.md) (11 shared connections)
+- [look_container.py](look_container.py.md) (8 shared connections)
+- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (6 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [session](session.md) (4 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (4 shared connections)
+- [asyncio](asyncio.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
+- [test_database_helpers.py](test_database_helpers.py.md) (3 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/alias_storage.py`
-- `server/commands/admin_summon_command.py`
-- `server/commands/bank_commands.py`
-- `server/commands/command_results.py`
-- `server/commands/equipment_helpers.py`
-- `server/commands/exploration_commands.py`
-- `server/commands/inventory_command_coercion.py`
-- `server/commands/inventory_command_contracts.py`
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_drop_command.py`
-- `server/commands/inventory_equip_command.py`
-- `server/commands/inventory_item_matching.py`
-- `server/commands/inventory_pickup_command.py`
-- `server/commands/inventory_put_command.py`
-- `server/commands/inventory_service_helpers.py`
-- `server/commands/inventory_unequip_command.py`
-- `server/commands/inventory_use_command.py`
-- `server/services/inventory_service.py`
-- `server/services/inventory_websocket_events.py`
+- `server/realtime/connection_utils.py`
+- `server/utils/npc_disposition_lookup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1378 (94%)
-- INFERRED: 81 (6%)
+- EXTRACTED: 73 (74%)
+- INFERRED: 25 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,63 +1,63 @@
 # NPCSpawnRule
 
-> 126 nodes
+> 63 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **NPCSpawnRule** (47 connections) — `server/models/npc.py`
-- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_JSONDict** (10 connections)
-- **NPCRelationship** (9 connections) — `server/models/npc.py`
-- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_loads_json_dict()** (7 connections) — `server/models/npc.py`
-- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **Base** (6 connections) — `server/models/npc.py`
-- **.get_base_stats()** (6 connections) — `server/models/npc.py`
-- **._check_dict_condition()** (6 connections) — `server/models/npc.py`
-- **._spawn_value_allows_spawn()** (6 connections) — `server/models/npc.py`
-- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (6 connections)
-- **.get_spawn_conditions()** (5 connections) — `server/models/npc.py`
-- **._single_spawn_condition_ok()** (5 connections) — `server/models/npc.py`
-- **._validate_spawn_rule_inputs()** (5 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.get_ai_integration_stub()** (4 connections) — `server/models/npc.py`
-- **.get_behavior_config()** (4 connections) — `server/models/npc.py`
-- **.check_spawn_conditions()** (4 connections) — `server/models/npc.py`
-- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **.set_ai_integration_stub()** (3 connections) — `server/models/npc.py`
-- **.set_base_stats()** (3 connections) — `server/models/npc.py`
-- *... and 101 more nodes in this community*
+- **lifespan.py** (51 connections) — `server/app/lifespan.py`
+- **test_lifespan_helpers.py** (28 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **_startup_application()** (18 connections) — `server/app/lifespan.py`
+- **lifespan()** (16 connections) — `server/app/lifespan.py`
+- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
+- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
+- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
+- **asyncio** (10 connections)
+- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
+- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
+- **update_logging_with_player_service()** (8 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
+- **_cleanup_dead_letter_queue_periodically()** (7 connections) — `server/app/lifespan.py`
+- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
+- **_persist_metrics_to_file()** (6 connections) — `server/app/lifespan.py`
+- **auth/conftest.py** (6 connections) — `server/tests/unit/auth/conftest.py`
+- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
+- **FastAPI** (4 connections)
+- **_mock_task_registry()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_cleanup_dead_letter_queue_periodically_runs_cleanup()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_cleanup_dead_letter_queue_periodically_swallows_cleanup_errors()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_persist_metrics_to_file_writes_json()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_startup_application_minimal()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **test_startup_application_registers_dlq_cleanup_when_nats_available()** (4 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
+- **set_auth_epoch_for_tests()** (4 connections) — `server/tests/unit/auth/conftest.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (30 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (5 shared connections)
-- [SecureBaseModel](SecureBaseModel.md) (3 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [test_npc_service.py](test_npc_service.py.md) (1 shared connections)
-- [NPCService](NPCService.md) (1 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [NPCPopulationController](NPCPopulationController.md) (1 shared connections)
-- [NPCDefinitionCRUDMixin](NPCDefinitionCRUDMixin.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [Room](Room.md) (9 shared connections)
+- [ValueError](ValueError.md) (7 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (7 shared connections)
+- [._create_grid_map](_create_grid_map.md) (6 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
+- [useGameClientV2ContainerNetworkPhase.ts](useGameClientV2ContainerNetworkPhase.ts.md) (4 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (3 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (3 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/population_control.py`
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
-- `server/tests/unit/models/test_npc_models.py`
+- `server/app/lifespan.py`
+- `server/auth/token_epoch.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/app/test_lifespan_helpers.py`
+- `server/tests/unit/auth/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 188 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Git Submodule Setup for MythosMUD
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Git Submodule Setup for MythosMUD** (0 connections) — `docs/SUBMODULE_SETUP.md`
+- **cursor-cli-agent.ps1** (0 connections) — `scripts/cursor-cli-agent.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/SUBMODULE_SETUP.md`
+- `scripts/cursor-cli-agent.ps1`
 
 ## Audit Trail
 

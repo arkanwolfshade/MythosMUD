@@ -1,47 +1,59 @@
 # 🧪 MythosMUD E2E Testing Strategy
 
-> 41 nodes
+> 42 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **🧪 MythosMUD E2E Testing Strategy** (10 connections) — `docs/archive/PLANNING_e2e.md`
-- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_e2e.md`
-- **Implementation Timeline** (6 connections) — `docs/archive/PLANNING_e2e.md`
-- **E2E Testing Strategy** (4 connections) — `docs/archive/PLANNING_e2e.md`
-- **Phase 2: Core E2E Test Implementation** (4 connections) — `docs/archive/PLANNING_e2e.md`
-- **Phase 3: Advanced Testing Features** (4 connections) — `docs/archive/PLANNING_e2e.md`
-- **Technical Specifications** (4 connections) — `docs/archive/PLANNING_e2e.md`
-- **Current State Analysis** (3 connections) — `docs/archive/PLANNING_e2e.md`
-- **Phase 1: Infrastructure Consolidation** (3 connections) — `docs/archive/PLANNING_e2e.md`
-- **Risk Mitigation** (3 connections) — `docs/archive/PLANNING_e2e.md`
-- **Success Metrics** (3 connections) — `docs/archive/PLANNING_e2e.md`
-- **PLANNING_e2e.md** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **1.1 Unified Test Environment** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **1.2 Test Framework Architecture** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **2.1 Authentication Testing (Priority 1)** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **2.2 Movement System Testing (Priority 2)** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **2.3 Chat System Testing (Priority 3)** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **3.1 Performance & Reliability** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **3.2 Debugging & Failure Analysis** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **3.3 Test Data Management** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **Client-Side Testing 🔄** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **Conclusion** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **False Positive Prevention** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **Immediate Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- **Long-term Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
-- *... and 16 more nodes in this community*
+- **HeaderBar.tsx** (31 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **types/mythosTime.ts** (20 connections) — `client/src/types/mythosTime.ts`
+- **MythosTimeState** (16 connections) — `client/src/types/mythosTime.ts`
+- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- **utils/mythosTime.ts** (11 connections) — `client/src/utils/mythosTime.ts`
+- **mythosTime.test.ts** (10 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
+- **headerHeight.ts** (7 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
+- **headerHeightClass()** (7 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
+- **useHeaderBarDisplay()** (6 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **isMythosTimePayload()** (6 connections) — `client/src/types/mythosTime.ts`
+- **hasFlavorRow()** (5 connections) — `client/src/components/ui-v2/utils/headerHeight.ts`
+- **headerHeight.test.ts** (5 connections) — `client/src/components/ui-v2/utils/__tests__/headerHeight.test.ts`
+- **MythosTimePayload** (5 connections) — `client/src/types/mythosTime.ts`
+- **buildMythosTimeState()** (5 connections) — `client/src/utils/mythosTime.ts`
+- **formatMythosTime12Hour()** (5 connections) — `client/src/utils/mythosTime.ts`
+- **HeaderBar()** (4 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **HeaderBar.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
+- **HeaderBarProps** (3 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **ActiveEffectsRow()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **connectionStatusLabel()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **daypartAccent()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **ExpandedHeaderTitleRowProps** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **FlavorRow()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **formatRemaining()** (2 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
+- **UseMythosTimeBootstrapParams** (2 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [equipment_service.py](equipment_service.py.md) (9 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (7 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (7 shared connections)
+- [party_commands.py](party_commands.py.md) (6 shared connections)
+- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (4 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_e2e.md`
+- `client/src/components/ui-v2/HeaderBar.tsx`
+- `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
+- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
+- `client/src/components/ui-v2/utils/__tests__/headerHeight.test.ts`
+- `client/src/components/ui-v2/utils/headerHeight.ts`
+- `client/src/types/mythosTime.ts`
+- `client/src/utils/__tests__/mythosTime.test.ts`
+- `client/src/utils/mythosTime.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 117 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

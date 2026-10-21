@@ -1,30 +1,30 @@
 # ✅ Verified Already Implemented
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **✅ Verified Already Implemented** (8 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **10. TLS Configuration** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **4. Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **5. Mute Data Caching** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **6. F-String Logging** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **7. Database Flush Operations** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **8. Active Player Filtering** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **9. NATS Connection Pooling** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **NPC Startup Duplication Analysis** (4 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
+- **NPC Population Controller** (2 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
+- **NPC Duplication Bug Fix Plan** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
+- **NPC Population Field Rename** (1 connections) — `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
+- **NPC Lifecycle Manager** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
+- **NPC Startup Service** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
+- `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
+- `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

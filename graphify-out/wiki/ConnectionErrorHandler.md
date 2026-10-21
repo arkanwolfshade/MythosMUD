@@ -1,54 +1,60 @@
 # ConnectionErrorHandler
 
-> 43 nodes
+> 44 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **ConnectionErrorHandler** (28 connections) — `server/realtime/errors/error_handler.py`
-- **test_connection_error_handler.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **initialize_error_handler()** (9 connections) — `server/realtime/connection_initialization.py`
-- **.detect_and_handle_error_state()** (9 connections) — `server/realtime/errors/error_handler.py`
-- **UUID** (9 connections)
-- **asyncio** (9 connections)
-- **ConnectionErrorHandlerCallbacks** (7 connections) — `server/realtime/errors/error_handler.py`
-- **Any** (7 connections)
-- **.get_error_statistics()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.handle_authentication_error()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.handle_security_violation()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.handle_websocket_error()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **._terminate_connections_for_error()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **._write_error_log_entry()** (5 connections) — `server/realtime/errors/error_handler.py`
-- **.recover_from_error()** (4 connections) — `server/realtime/errors/error_handler.py`
-- **handler()** (4 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **.__init__()** (3 connections) — `server/realtime/errors/error_handler.py`
-- **test_connection_specific_error()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_disconnect_failure_records_error()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_fatal_error_force_disconnect()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_handle_authentication_error()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_handle_security_violation()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_handle_websocket_critical_error()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_non_fatal_error_keeps_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **test_recover_connections_only()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- *... and 18 more nodes in this community*
+- **test_logout_commands.py** (42 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **handle_logout_command()** (26 connections) — `server/commands/logout_commands.py`
+- **asyncio** (18 connections)
+- **_get_player_for_logout()** (17 connections) — `server/commands/logout_commands.py`
+- **_disconnect_player_connections()** (9 connections) — `server/commands/logout_commands.py`
+- **test_get_player_for_logout_persistence_error()** (5 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_quit_command_persistence_error()** (5 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_disconnect_player_connections_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_disconnect_player_connections_no_manager()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_disconnect_player_connections_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_corrupted_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_persistence_returns_coroutine()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_no_player()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_syncs_position()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_quit_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_quit_command_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_update_and_save_player_last_active_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_update_and_save_player_last_active_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Disconnect player from all connections. Args: connection_manager: Connection…** (1 connections) — `server/commands/logout_commands.py`
+- **Handle the logout command for cleanly disconnecting from the game. This command…** (1 connections) — `server/commands/logout_commands.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [connection_initialization.py](connection_initialization.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [test_players_procedures.py](test_players_procedures.py.md) (20 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (8 shared connections)
+- [P4 · Intent Sweep — Core Feature Issues](P4_·_Intent_Sweep_—_Core_Feature_Issues.md) (5 shared connections)
+- [test_test_runner_cli.py](test_test_runner_cli.py.md) (4 shared connections)
+- [session_factory](session_factory.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (1 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_initialization.py`
-- `server/realtime/errors/__init__.py`
-- `server/realtime/errors/error_handler.py`
-- `server/tests/unit/realtime/test_connection_error_handler.py`
+- `server/commands/logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (89%)
-- INFERRED: 11 (11%)
+- EXTRACTED: 121 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

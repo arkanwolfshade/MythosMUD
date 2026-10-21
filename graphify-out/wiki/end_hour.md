@@ -1,21 +1,23 @@
 # end_hour
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **end_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **Advanced Chat Channels Specification** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Global Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Local Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Advanced Chat Channels Tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
+- **Whisper Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
 
 ## Audit Trail
 

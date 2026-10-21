@@ -1,24 +1,22 @@
 # test_delete_player_preferences_not_found
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_delete_player_preferences_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test deleting player preferences when not found.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Gladiator Ring (Arena)** (0 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

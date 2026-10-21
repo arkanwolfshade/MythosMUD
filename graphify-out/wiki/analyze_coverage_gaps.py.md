@@ -1,25 +1,23 @@
 # analyze_coverage_gaps.py
 
-> 16 nodes
+> 14 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **generate_status_doc()** (7 connections) — `scripts/analyze_coverage_gaps.py`
-- **analyze_coverage_gaps.py** (7 connections) — `scripts/analyze_coverage_gaps.py`
-- **main()** (5 connections) — `scripts/analyze_coverage_gaps.py`
-- **parse_coverage_xml()** (5 connections) — `scripts/analyze_coverage_gaps.py`
-- **Any** (5 connections)
-- **categorize_files()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_critical_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_normal_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_priority_recommendations()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **Path** (3 connections)
-- **Categorize files into critical below threshold, normal below threshold, and…** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write critical files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write normal files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write priority recommendations section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Generate coverage status markdown document.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Parse coverage.xml and return detailed file coverage information.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Lint Remediation** (5 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **Fix patterns by tier** (4 connections) — `.claude/skills/lint-remediation/reference.md`
+- **Lint Remediation — Reference** (4 connections) — `.claude/skills/lint-remediation/reference.md`
+- **lint-remediation/reference.md** (2 connections) — `.claude/skills/lint-remediation/reference.md`
+- **lint-remediation/SKILL.md** (2 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **🔴 Critical — compilation errors** (1 connections) — `.claude/skills/lint-remediation/reference.md`
+- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/lint-remediation/reference.md`
+- **Error code table** (1 connections) — `.claude/skills/lint-remediation/reference.md`
+- **🟡 High — code quality** (1 connections) — `.claude/skills/lint-remediation/reference.md`
+- **🟢 Medium — style** (1 connections) — `.claude/skills/lint-remediation/reference.md`
+- **Entry point** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **Fix-verify loop** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **Priority** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
 
 ## Relationships
 
@@ -27,11 +25,12 @@
 
 ## Source Files
 
-- `scripts/analyze_coverage_gaps.py`
+- `.claude/skills/lint-remediation/SKILL.md`
+- `.claude/skills/lint-remediation/reference.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

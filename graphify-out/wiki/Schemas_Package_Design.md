@@ -1,32 +1,31 @@
 # Schemas Package Design
 
-> 11 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Schemas Package Design** (11 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **2. Members** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- **holidays.schema.json** (7 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **$id** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **$schema** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **title** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **holidays** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/packages/PACKAGE_SCHEMAS_DESIGN.md`
+- `db/static/schemas/holidays.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

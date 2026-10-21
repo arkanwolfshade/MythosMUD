@@ -1,36 +1,35 @@
 # PARALLEL EXECUTION RESULTS (2025-11-05)
 
-> 15 nodes
+> 14 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **PARALLEL EXECUTION RESULTS (2025-11-05)** (15 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **After Parallelization** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Before Parallelization** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Benefits** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Changes Implemented** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Comprehensive Tests (Serial + Long-Running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Daily Development Tests (Parallel)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Excluded from Fast Suite** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **FINAL METRICS** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **✅ **IMPLEMENTATION COMPLETE**** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Performance Analysis** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Recommendations for Future** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Test Categorization Strategy** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Tests: 2,065 pure unit tests passing** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
-- **Workers: 8 (auto-detected)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **asyncio** (3 connections)
+- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **fixture** (2 connections)
+- **Unit tests for websocket handler rate limiting. Tests the rate limiting…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Relationships
 
-- [Test Timing Analysis - Optimization Targets](Test_Timing_Analysis_-_Optimization_Targets.md) (1 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_TIMING_ANALYSIS.md`
+- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

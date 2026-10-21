@@ -1,10 +1,10 @@
 # 20260914_npc_catalog_core_era_unit.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20260914_npc_catalog_core_era_unit.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_core_era_unit.sql`
+- **Dependency Upgrade Report** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/npc_catalog/generated/20260914_npc_catalog_core_era_unit.sql`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
 
 ## Audit Trail
 

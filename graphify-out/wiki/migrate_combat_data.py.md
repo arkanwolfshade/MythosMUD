@@ -1,57 +1,49 @@
 # migrate_combat_data.py
 
-> 75 nodes
+> 69 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **migrate_combat_data.py** (28 connections) — `server/scripts/migrate_combat_data.py`
-- **test_combat_schema.py** (20 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **validate_npc_combat_data()** (13 connections) — `server/schemas/combat/combat_schema.py`
-- **CombatSchemaValidationError** (12 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_behavior_config_combat_data()** (12 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_base_stats_combat_data()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **validate_combat_messages()** (11 connections) — `server/schemas/combat/combat_schema.py`
-- **combat/__init__.py** (10 connections) — `server/schemas/combat/__init__.py`
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
-- **add_default_combat_data_to_config()** (8 connections) — `server/schemas/combat/combat_schema.py`
-- **migrate_npc_combat_data()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **_rollback_one_npc()** (7 connections) — `server/scripts/migrate_combat_data.py`
-- **get_combat_stats_summary()** (6 connections) — `server/schemas/combat/combat_schema.py`
-- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **validate_migration_results()** (6 connections) — `server/scripts/migrate_combat_data.py`
-- **MigrationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **RollbackResults** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **ValidationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **_record_npc_error()** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **_strip_combat_data_from_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
-- **Any** (5 connections)
-- **AsyncSession** (5 connections)
-- *... and 50 more nodes in this community*
+- **test_nats_message_handler_subzone_events.py** (36 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **asyncio** (24 connections)
+- **test_cleanup_empty_subzone_subscriptions_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_event_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_combat_ended_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_combat_started_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_event_message()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_npc_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_npc_died_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_npc_took_damage_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_different_subzone()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_new_subzone_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_old_subzone_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_movement_same_subzone()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_no_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_subscribe_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_event_subjects_partial()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_decrease_count()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_not_subscribed()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (17 shared connections)
-- [test_aggression.py](test_aggression.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [npc_database.py](npc_database.py.md) (3 shared connections)
-- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
-- [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
-- [_MigrationArgs](_MigrationArgs.md) (1 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (7 shared connections)
+- [test_npc_combat_integration_join.py](test_npc_combat_integration_join.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/__init__.py`
-- `server/schemas/combat/combat_schema.py`
-- `server/scripts/migrate_combat_data.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 93 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

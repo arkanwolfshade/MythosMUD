@@ -1,49 +1,50 @@
 # TestLogoutCommand
 
-> 29 nodes
+> 27 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Any** (8 connections)
-- **asyncio** (8 connections)
-- **.test_logout_command_connection_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_general_error_handling()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_no_persistence()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persistence_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_persists_position()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_success()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.test_logout_command_with_args()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_alias_storage()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_current_user()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **.mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **fixture** (3 connections)
-- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command when player is not found in persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **Test logout command with general error handling.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
-- *... and 4 more nodes in this community*
+- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **weather_patterns** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (8 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [test_lint_container_get_instance.py](test_lint_container_get_instance.py.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [test_database.py](test_database.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_command.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (85%)
-- INFERRED: 8 (15%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

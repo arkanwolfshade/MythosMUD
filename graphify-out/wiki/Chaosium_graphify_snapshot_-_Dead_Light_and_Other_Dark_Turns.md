@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Dead Light and Other Dark Turns
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Dead Light and Other Dark Turns** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
-- **dead-light-and-other-dark-turns/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

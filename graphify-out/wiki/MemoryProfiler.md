@@ -1,53 +1,56 @@
 # MemoryProfiler
 
-> 73 nodes
+> 75 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **MemoryProfiler** (33 connections) — `server/utils/memory_profiler.py`
-- **test_memory_profiler.py** (21 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **memory_profiler.py** (10 connections) — `server/utils/memory_profiler.py`
-- **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
-- **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
-- **Any** (8 connections)
-- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
-- **.measure_model_serialization()** (7 connections) — `server/utils/memory_profiler.py`
-- **.get_current_memory_usage()** (6 connections) — `server/utils/memory_profiler.py`
-- **.get_memory_delta()** (6 connections) — `server/utils/memory_profiler.py`
-- **.start_profiling()** (5 connections) — `server/utils/memory_profiler.py`
-- **.stop_profiling()** (5 connections) — `server/utils/memory_profiler.py`
-- **SampleModel** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_serialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **.get_memory_usage_summary()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **OtherModel** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_compare_models_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 48 more nodes in this community*
+- **test_player_service_mutations.py** (46 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **asyncio** (31 connections)
+- **test_update_player_location_allows_instance_clone()** (7 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_refuses_instance_template()** (6 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_success()** (5 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **_template_bedroom()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_persistence_fails()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_lost_race_does_not_touch_online_players_roster()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_lost_race_returns_already_deleted()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_prunes_online_players_roster()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_wrong_user()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **_async_session_gen()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (4 shared connections)
-- [Alias](Alias.md) (2 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [StatusEffect](StatusEffect.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (11 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (8 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (3 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_memory_profiler.py`
-- `server/utils/memory_profiler.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 120 (86%)
+- INFERRED: 20 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

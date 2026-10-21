@@ -1,34 +1,40 @@
 # Phase 3: Polish and Optimization
 
-> 13 nodes
+> 18 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Phase 3: Polish and Optimization** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 3.1: Improve Visual Design and Theming** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 3.2: Add Advanced Chat Features** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 3.3: Implement Chat Search and Filtering** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 3.4: Add Chat Export Functionality** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
+- **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
+- **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
+- **performanceTester.test.ts** (5 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
+- **.generateReport()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **.runTest()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **.getResults()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.runComponentRenderTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.runMemoryTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceTestResult** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.getAverageResults()** (2 connections) — `client/src/utils/performanceTester.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceMemory** (1 connections) — `client/src/utils/performanceTester.ts`
+- **PerformanceTestConfig** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.clearResults()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.exportResults()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **.getResultsByName()** (1 connections) — `client/src/utils/performanceTester.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
 
 ## Relationships
 
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- [test_n_player_combat.py](test_n_player_combat.py.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `client/src/utils/__tests__/performanceTester.test.ts`
+- `client/src/utils/performanceTester.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

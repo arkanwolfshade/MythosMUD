@@ -1,47 +1,52 @@
 # submitAuth.ts
 
-> 17 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
-- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **useMythosAuthForm.ts** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
-- **useMythosAuthForm()** (8 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
-- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
-- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
-- **persistTokensAndApplySession()** (4 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
-- **sanitizeLoginInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
-- **sanitizeRegisterInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
-- **AuthSessionSetters** (2 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **AuthSuccessPayload** (2 connections) — `client/src/mythosApp/submitAuth.ts`
-- **SetBool** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SetChars** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SetStep** (1 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
-- **SanitizedCredentials** (1 connections) — `client/src/mythosApp/submitAuth.ts`
+- **Code Review: Import Analysis and Anti-Patterns** (10 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Code Review Import Analysis** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Files Reviewed** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Recommendations** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Additional Findings** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Critical Issues Found** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Import Pattern Analysis** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **get_logger** (3 connections) — `docs/LOGGING_BEST_PRACTICES.md`
+- **F-String Logging Anti-Pattern** (2 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Best Practices Analysis** (2 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
+- **1. **Import Inconsistency in `server/persistence.py`**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **2. **Import Organization Pattern**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Conclusion** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Configuration Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Container Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Database Migration Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Executive Summary** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Files Using Absolute Imports (`from server.`)** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Files Using Relative Imports (`from .`)** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **✅ Good Practices Found** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **High Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **isort Import Grouping** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Low Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- **Medium Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (7 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (4 shared connections)
-- [CatalogPage.tsx](CatalogPage.tsx.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
+- [._attack_target_impl](_attack_target_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/applyAuthenticatedSession.ts`
-- `client/src/mythosApp/mapServerCharacters.ts`
-- `client/src/mythosApp/submitAuth.ts`
-- `client/src/mythosApp/useMythosAuthForm.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `docs/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 29 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

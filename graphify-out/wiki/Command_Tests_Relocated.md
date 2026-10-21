@@ -1,11 +1,11 @@
 # Command Tests Relocated
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **server/tests/unit/commands/** (1 connections) — `server/commands/__tests__/README.md`
-- **Command Tests Relocated** (1 connections) — `server/commands/__tests__/README.md`
+- **infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/commands/__tests__/README.md`
+- `server/tests/unit/infrastructure/__init__.py`
 
 ## Audit Trail
 

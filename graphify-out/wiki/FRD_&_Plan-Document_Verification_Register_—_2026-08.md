@@ -1,46 +1,43 @@
 # FRD & Plan-Document Verification Register — 2026-08
 
-> 21 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **FRD & Plan-Document Verification Register — 2026-08** (10 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **3. Claim verification (FRD sweep, re-run)** (4 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **ADR-022 ui-v2 Client Transition** (4 connections) — `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
-- **2. FRD corpus — reconstructed and enumerated** (3 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **5. Disposition** (3 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **FRD_PLAN_VERIFICATION_REGISTER_2026-08.md** (2 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **1. Purpose** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **2.1 In corpus (17)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **2.2 Candidates considered, excluded (delta, with reasons)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **3.1 Findings confirmed, refuted, or superseded since the original pass** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **3.2 New verification — previously unrecorded** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **3.3 Unverifiable — genuinely, with citation** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **4. §4.7 rows 3–4 — resolved directly (plan-sweep named unverifiables)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **5.1 Fixed inline (doc-text corrections, drifted names, unmarked supersessions)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **5.2 Filed (unbuilt-feature / data-integrity classes, deduped against open issues)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **6. Coverage summary** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **7. Related documentation** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **8. Changelog** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- **client ui-v2 architecture (GameClientV2Container/PanelSystem)** (1 connections) — `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
-- **Dead Code Definition and Tooling** (1 connections) — `docs/dead-code.md`
+- **TestVerificationSqlUsersPlayers** (6 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **TestNpcNameConstraintScript** (5 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **test_postgres_sql_scripts.py** (3 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_no_sqlite_pragma()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_uses_postgresql_constraint()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_file_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_references_users_and_players()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_explicit_joins()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_live_tables_only()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **PostgreSQL-focused tests for verification and maintenance SQL scripts.…** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for db/verification/users_players.sql alignment with current schema.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL file must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must not reference staging tables or select obsolete columns.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must use explicit join syntax for multi-table queries.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must reference users and players tables.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for server/scripts/add_npc_name_constraint.sql (PostgreSQL-only).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **NPC name constraint script must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must not contain SQLite-specific pragma.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must use PostgreSQL constraint (CHECK or ALTER TABLE).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Relationships
 
-- [packages/README.md](packages-README.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
-- `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
-- `docs/dead-code.md`
+- `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
-- AMBIGUOUS: 1 (5%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

@@ -1,10 +1,10 @@
 # GitHub Actions Runner Parity Container
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **GitHub Actions Runner Parity Container** (0 connections) — `docs/GHA_RUNNER_CONTAINER.md`
+- **Tailwind CSS Anti-Pattern Remediation** (0 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/GHA_RUNNER_CONTAINER.md`
+- `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
 
 ## Audit Trail
 

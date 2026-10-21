@@ -1,40 +1,38 @@
 # Delight Techniques
 
-> 19 nodes
+> 17 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **Delight Techniques** (9 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Skill** (7 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Principles** (5 connections) — `.claude/skills/delight/SKILL.md`
-- **Appropriate to Context** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Assess Delight Opportunities** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Celebration Moments** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Compound Over Time** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Amplifies, Never Blocks** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Easter Eggs & Hidden Delights** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Illustrations & Visual Personality** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Implementation Patterns** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Loading & Waiting States** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Micro-interactions & Animation** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Personality in Copy** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Satisfying Interactions** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Sound Design** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Surprise and Discovery** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Verify Delight Quality** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **test_dml_room_graph.py** (12 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **_load()** (10 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **_dml_path()** (4 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **_stable_id_by_room_id()** (4 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **test_every_room_link_has_an_exact_reciprocal()** (4 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **_parse_copy_blocks()** (3 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **test_no_duplicate_from_room_direction()** (3 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **test_no_isolated_rooms_beyond_the_known_baseline()** (3 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **RoomRow** (2 connections)
+- **test_dml_file_parses_and_is_nonempty()** (2 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **test_no_dangling_room_link_references()** (2 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **LinkRow** (1 connections)
+- **Path** (1 connections)
+- **Guards the `rooms` / `room_links` seed data in `data/db/seed.sql` against the…** (1 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **The #823 bug class: a one-way exit, or a reciprocal that points at the wrong…** (1 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **Return every `COPY <schema>.<table> (...) FROM stdin; ... \\.` block, keyed by…** (1 connections) — `server/tests/unit/data/test_dml_room_graph.py`
+- **Mirrors the DDL's own `UNIQUE (from_room_id, direction)` constraint at the text…** (1 connections) — `server/tests/unit/data/test_dml_room_graph.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [start_grace_period](start_grace_period.md) (3 shared connections)
 
 ## Source Files
 
-- `.claude/skills/delight/SKILL.md`
+- `server/tests/unit/data/test_dml_room_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,27 +1,28 @@
 # command
 
-> 7 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **command** (6 connections) — `server/help/help_schema.json`
-- **required** (5 connections) — `server/help/help_schema.json`
-- **name** (2 connections) — `server/help/help_schema.json`
-- **additionalProperties** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **usage** (1 connections) — `server/help/help_schema.json`
-- **category** (1 connections) — `server/help/help_schema.json`
+- **App Package Design** (11 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **2. Members** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_APP_DESIGN.md`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
-- [guide](guide.md) (1 shared connections)
-- [RoomLoader](RoomLoader.md) (1 shared connections)
-- [help_schema.json](help_schema.json.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `docs/packages/PACKAGE_APP_DESIGN.md`
 
 ## Audit Trail
 

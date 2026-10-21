@@ -1,48 +1,50 @@
 # ascii_map_exits.py
 
-> 29 nodes
+> 28 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **ascii_map_exits.py** (15 connections) — `server/services/ascii_map_exits.py`
-- **build_departures()** (5 connections) — `server/services/ascii_map_exits.py`
-- **build_exit_bridges()** (5 connections) — `server/services/ascii_map_exits.py`
-- **get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_exits.py`
-- **get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_exits.py`
-- **horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_exits.py`
-- **_index_room_positions()** (4 connections) — `server/services/ascii_map_exits.py`
-- **_room_id()** (4 connections) — `server/services/ascii_map_exits.py`
-- **vertical_exit_char_between()** (4 connections) — `server/services/ascii_map_exits.py`
-- **_departing_directions()** (3 connections) — `server/services/ascii_map_exits.py`
-- **_horizontal_bridge_cells()** (3 connections) — `server/services/ascii_map_exits.py`
-- **_vertical_bridge_cells()** (3 connections) — `server/services/ascii_map_exits.py`
-- **ExitLookup** (3 connections)
-- **reverse_direction()** (2 connections) — `server/services/ascii_map_exits.py`
-- **ExitInfo** (2 connections)
-- **Grid** (2 connections)
-- **Exit geometry for the ASCII map. Extracted from `ascii_map_renderer.py` to…** (1 connections) — `server/services/ascii_map_exits.py`
-- **Exit character shown on the row between (x, y) and the room below it, or None.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Stable identifier for `room`, or "" when it has none.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Room ids present in this view, and the map cell each positioned one occupies.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Directions of `room`'s exits whose target is not part of this view.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Directions in which each room has an exit leading OUT of the loaded area. A map…** (1 connections) — `server/services/ascii_map_exits.py`
-- **Cells strictly between (x, y) and an east/west target more than one column away.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Cells strictly between (x, y) and a north/south target more than one row away.** (1 connections) — `server/services/ascii_map_exits.py`
-- **Cells lying strictly between two rooms joined by a single exit. A grid cell is…** (1 connections) — `server/services/ascii_map_exits.py`
-- *... and 4 more nodes in this community*
+- **test_security_utils.py** (39 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **validate_secure_path()** (16 connections) — `server/security_utils.py`
+- **test_validate_secure_path_absolute_base()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch_with_mock()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_different_drives_windows()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_empty_user_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_nested_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_path_traversal_commonpath()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_leading_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_tilde()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Validate and sanitize a user-provided path to prevent path traversal attacks.…** (1 connections) — `server/security_utils.py`
+- **Unit tests for security utilities. Tests path validation and file security…** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles different drives on Windows.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path rejects path traversal with ..** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with nested valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with empty user path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles leading slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path normalizes base path to absolute.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with path containing spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [RoomService](RoomService.md) (1 shared connections)
-- [test_ascii_map_exits.py](test_ascii_map_exits.py.md) (1 shared connections)
+- [directionHallucination.ts](directionHallucination.ts.md) (11 shared connections)
+- [Adapt Skill](Adapt_Skill.md) (8 shared connections)
+- [P3 · container-di + client + domain](P3_·_container-di_+_client_+_domain.md) (6 shared connections)
 
 ## Source Files
 
-- `server/services/ascii_map_exits.py`
+- `server/security_utils.py`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 67 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

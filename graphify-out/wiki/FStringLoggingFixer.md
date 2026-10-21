@@ -1,48 +1,49 @@
 # FStringLoggingFixer
 
-> 33 nodes
+> 32 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **FStringLoggingFixer** (16 connections) — `scripts/automated_fstring_fixer.py`
-- **.fix_fstring_logging_in_file()** (7 connections) — `scripts/automated_fstring_fixer.py`
-- **Path** (6 connections)
-- **.extract_variables_from_fstring()** (5 connections) — `scripts/automated_fstring_fixer.py`
-- **._handle_complex_pattern_replacement()** (5 connections) — `scripts/automated_fstring_fixer.py`
-- **.process_files()** (5 connections) — `scripts/automated_fstring_fixer.py`
-- **.fix_simple_pattern()** (4 connections) — `scripts/automated_fstring_fixer.py`
-- **._read_file_content()** (4 connections) — `scripts/automated_fstring_fixer.py`
-- **._validate_file()** (4 connections) — `scripts/automated_fstring_fixer.py`
-- **._write_file_if_changed()** (4 connections) — `scripts/automated_fstring_fixer.py`
-- **main()** (4 connections) — `scripts/automated_fstring_fixer.py`
-- **._build_complex_params()** (3 connections) — `scripts/automated_fstring_fixer.py`
-- **.create_structured_message()** (3 connections) — `scripts/automated_fstring_fixer.py`
-- **.fix_complex_pattern()** (3 connections) — `scripts/automated_fstring_fixer.py`
-- **.generate_report()** (3 connections) — `scripts/automated_fstring_fixer.py`
-- **automated_fstring_fixer.py** (2 connections) — `scripts/automated_fstring_fixer.py`
-- **Any** (2 connections)
-- **.__init__()** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Match** (1 connections)
-- **Validate that file exists and is a Python file.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Read file content with error handling.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Build parameters list for complex patterns.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Handle replacement for complex f-string patterns with additional parameters.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Write file if content has changed.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- **Fix f-string logging violations in a single file.** (1 connections) — `scripts/automated_fstring_fixer.py`
-- *... and 8 more nodes in this community*
+- **monitoring_models.py** (22 connections) — `server/api/monitoring_models.py`
+- **BaseModel** (19 connections)
+- **AlertResolveResponse** (5 connections) — `server/api/monitoring_models.py`
+- **AlertsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **ConnectionHealthStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **DualConnectionStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **EventBusMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **IntegrityResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MemoryAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MemoryLeakMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **MetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **PerformanceStatsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **PerformanceSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
+- **SystemAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **SystemHealthResponse** (5 connections) — `server/api/monitoring_models.py`
+- **SystemMonitoringSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
+- **TaskMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
+- **Monitoring API response models for MythosMUD. This module contains Pydantic…** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for connection health statistics.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for EventBus metrics.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for TaskRegistry metrics.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for comprehensive memory leak metrics.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for movement metrics.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for performance summary endpoint.** (1 connections) — `server/api/monitoring_models.py`
+- **Response model for system health check.** (1 connections) — `server/api/monitoring_models.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player](Player.md) (29 shared connections)
+- [ValueError](ValueError.md) (11 shared connections)
 
 ## Source Files
 
-- `scripts/automated_fstring_fixer.py`
+- `server/api/monitoring_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 85 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

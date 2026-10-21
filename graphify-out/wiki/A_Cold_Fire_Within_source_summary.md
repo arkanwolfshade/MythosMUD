@@ -1,26 +1,27 @@
 # A Cold Fire Within (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **A Cold Fire Within (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **A Cold Fire Within.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- **Scenario 20 Logout Errors** (2 connections) — `e2e-tests/scenarios/scenario-20-logout-errors.md`
+- **Scenario 19 Logout Button** (1 connections) — `e2e-tests/scenarios/scenario-19-logout-button.md`
+- **Scenario 21 Logout Accessibility** (1 connections) — `e2e-tests/scenarios/scenario-21-logout-accessibility.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- `e2e-tests/scenarios/scenario-19-logout-button.md`
+- `e2e-tests/scenarios/scenario-20-logout-errors.md`
+- `e2e-tests/scenarios/scenario-21-logout-accessibility.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

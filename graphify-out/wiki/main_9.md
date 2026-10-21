@@ -1,13 +1,11 @@
 # main
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **main()** (3 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
-- **_reset_corruption_cooldowns()** (2 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
-- **e2e_reset_corruption_cooldowns.py** (2 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
-- **Entry point: run corruption cooldown reset via anyio.** (1 connections) — `scripts/e2e_reset_corruption_cooldowns.py`
+- **Pylint E0611 No Name in Module** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Pylint Convention Suppressions** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Relationships
 
@@ -15,12 +13,12 @@
 
 ## Source Files
 
-- `scripts/e2e_reset_corruption_cooldowns.py`
+- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

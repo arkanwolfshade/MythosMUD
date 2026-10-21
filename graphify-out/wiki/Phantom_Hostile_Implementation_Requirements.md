@@ -1,10 +1,10 @@
 # Phantom Hostile Implementation Requirements
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Phantom Hostile Implementation Requirements** (0 connections) — `docs/archive/phantom-hostile-requirements.md`
+- **Bug Report issue template** (0 connections) — `.github/ISSUE_TEMPLATE/bug_report.yml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/phantom-hostile-requirements.md`
+- `.github/ISSUE_TEMPLATE/bug_report.yml`
 
 ## Audit Trail
 

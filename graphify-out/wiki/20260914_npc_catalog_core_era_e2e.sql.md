@@ -1,10 +1,10 @@
 # 20260914_npc_catalog_core_era_e2e.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20260914_npc_catalog_core_era_e2e.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_core_era_e2e.sql`
+- **datetime.utcnow Deprecation Fix** (0 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/npc_catalog/generated/20260914_npc_catalog_core_era_e2e.sql`
+- `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Audit Trail
 

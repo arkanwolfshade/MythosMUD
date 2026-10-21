@@ -1,25 +1,24 @@
 # Architecture Remediation Implementation Summary
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Architecture Remediation Implementation Summary** (1 connections) — `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
-- **Architecture Remediation Plan** (1 connections) — `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
+- **test_process_exits_for_room_no_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exits_for_room skips exits without direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
-- `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

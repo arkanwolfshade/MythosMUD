@@ -1,10 +1,10 @@
 # get_project_root.py
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **get_project_root.py** (0 connections) — `scripts/get_project_root.py`
+- **unit/constants/__init__.py** (0 connections) — `server/tests/unit/constants/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/get_project_root.py`
+- `server/tests/unit/constants/__init__.py`
 
 ## Audit Trail
 

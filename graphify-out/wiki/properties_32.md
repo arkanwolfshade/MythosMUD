@@ -1,36 +1,30 @@
 # properties
 
-> 15 nodes
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **properties** (6 connections) — `schemas/items/item_prototype.schema.json`
-- **metadata** (5 connections) — `schemas/items/item_prototype.schema.json`
-- **armor** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **catalog** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **equipment** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **tome** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **weapon** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.1: Add Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.2: Complete Async Persistence Migration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.3: Optimize Database Flush Operations** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.4: Load Only Active Players** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.5: Use NATS Connection Pool by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.6: Add TLS Configuration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.7: Improve Event Loop Change Detection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.8: Review Transaction Error Handling** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [subzone_with_override](subzone_with_override.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

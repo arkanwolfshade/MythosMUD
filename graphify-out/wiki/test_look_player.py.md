@@ -1,58 +1,66 @@
 # test_look_player.py
 
-> 105 nodes
+> 203 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_look_player.py** (37 connections) — `server/tests/unit/commands/test_look_player.py`
-- **look_player.py** (30 connections) — `server/commands/look_player.py`
-- **_format_player_look_display()** (26 connections) — `server/commands/look_player.py`
-- **_select_target_player()** (17 connections) — `server/commands/look_player.py`
-- **_get_players_in_room()** (13 connections) — `server/commands/look_player.py`
-- **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
-- **asyncio** (13 connections)
-- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
-- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **Any** (10 connections)
-- **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
-- **_apply_grace_period_labels()** (6 connections) — `server/commands/look_player.py`
-- **_normalize_room_player_ids()** (4 connections) — `server/commands/look_player.py`
-- **_player_id_uuid()** (4 connections) — `server/commands/look_player.py`
-- **_resolve_room_player()** (4 connections) — `server/commands/look_player.py`
-- **test_find_matching_players_no_match()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_find_matching_players_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_format_player_look_display_marked_or_worse_adds_prose()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_empty()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_non_iterable()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 80 more nodes in this community*
+- **api/container_helpers.py** (45 connections) — `server/api/container_helpers.py`
+- **test_container_helpers.py** (43 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TransferContainerRequest** (40 connections) — `server/api/container_models.py`
+- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
+- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
+- **get_container_service()** (26 connections) — `server/api/container_helpers.py`
+- **test_containers.py** (26 connections) — `server/tests/unit/api/test_containers.py`
+- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **handle_container_service_error()** (20 connections) — `server/api/container_helpers.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **asyncio** (17 connections)
+- **container_models.py** (16 connections) — `server/api/container_models.py`
+- **OpenContainerRequest** (14 connections) — `server/api/container_models.py`
+- **get_current_user()** (13 connections) — `docs/examples/logging/fastapi_integration.py`
+- **execute_transfer()** (11 connections) — `server/api/container_helpers.py`
+- **CloseContainerRequest** (11 connections) — `server/api/container_models.py`
+- **TestOpenContainer** (11 connections) — `server/tests/unit/api/test_containers.py`
+- **TestTransferItems** (11 connections) — `server/tests/unit/api/test_containers.py`
+- **apply_rate_limiting_for_close_container()** (10 connections) — `server/api/container_helpers.py`
+- **apply_rate_limiting_for_open_container()** (10 connections) — `server/api/container_helpers.py`
+- **apply_rate_limiting_for_transfer()** (10 connections) — `server/api/container_helpers.py`
+- **validate_user_for_close_container()** (10 connections) — `server/api/container_helpers.py`
+- **validate_user_for_open_container()** (10 connections) — `server/api/container_helpers.py`
+- **validate_user_for_transfer()** (10 connections) — `server/api/container_helpers.py`
+- **test_container_models.py** (10 connections) — `server/tests/unit/api/test_container_models.py`
+- *... and 178 more nodes in this community*
 
 ## Relationships
 
-- [look_helpers.py](look_helpers.py.md) (12 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [look_command.py](look_command.py.md) (5 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [CorruptionTier](CorruptionTier.md) (2 shared connections)
+- [CombatParticipant](CombatParticipant.md) (27 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (24 shared connections)
+- [generate_arkham_grid.py](generate_arkham_grid.py.md) (23 shared connections)
+- [AttributeError](AttributeError.md) (20 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (19 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (18 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (16 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (16 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (12 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
+- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (7 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (6 shared connections)
 
 ## Source Files
 
-- `server/commands/look_player.py`
-- `server/tests/unit/commands/test_look_player.py`
-- `server/tests/unit/commands/test_look_player_helpers.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/services/container_service.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_models.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 222 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 528 (91%)
+- INFERRED: 54 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

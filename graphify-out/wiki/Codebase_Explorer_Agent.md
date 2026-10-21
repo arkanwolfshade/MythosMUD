@@ -1,10 +1,10 @@
 # Codebase Explorer Agent
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Codebase Explorer Agent** (0 connections) — `.claude/agents/codebase-explorer.md`
+- **Database Roles** (0 connections) — `db/roles/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/codebase-explorer.md`
+- `db/roles/README.md`
 
 ## Audit Trail
 

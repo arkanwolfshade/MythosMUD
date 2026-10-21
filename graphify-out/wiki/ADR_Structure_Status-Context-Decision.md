@@ -1,11 +1,10 @@
 # ADR Structure (Status/Context/Decision)
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR Structure (Status/Context/Decision)** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **MythosMUD ADR Authoring Skill** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **Innsmouth** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

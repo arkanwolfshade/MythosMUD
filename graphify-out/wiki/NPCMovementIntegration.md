@@ -1,58 +1,64 @@
 # NPCMovementIntegration
 
-> 62 nodes
+> 67 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **NPCMovementIntegration** (52 connections) — `server/npc/movement_integration.py`
-- **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
-- **.__init__()** (6 connections) — `server/npc/idle_movement.py`
-- **.__init__()** (6 connections) — `server/npc/movement_integration.py`
-- **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
-- **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
-- **._is_npc_in_combat()** (4 connections) — `server/npc/movement_integration.py`
-- **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
-- **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
-- **._validate_room_ids()** (3 connections) — `server/npc/movement_integration.py`
-- **.validate_subzone_boundary()** (3 connections) — `server/npc/movement_integration.py`
-- **.find_path_between_rooms()** (2 connections) — `server/npc/movement_integration.py`
-- **.get_available_exits()** (2 connections) — `server/npc/movement_integration.py`
-- **.get_npc_room()** (2 connections) — `server/npc/movement_integration.py`
-- **.get_room_npcs()** (2 connections) — `server/npc/movement_integration.py`
-- **.validate_npc_movement()** (2 connections) — `server/npc/movement_integration.py`
-- **persistence()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_find_path_direct_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_find_path_returns_none_without_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_available_exits_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_destination_subzone_from_room_id()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- *... and 37 more nodes in this community*
+- **player.ts** (67 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **ensurePlayableAlive()** (30 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **ensureStanding()** (29 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **corruption-cleanse.spec.ts** (27 connections) — `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
+- **admin-set-stat-command.spec.ts** (25 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- **room-flux-purification.spec.ts** (24 connections) — `client/tests/e2e/runtime/corruption/room-flux-purification.spec.ts`
+- **despawnSanitariumCultists()** (19 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **container-multi-user-looting.spec.ts** (17 connections) — `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
+- **container-corpse-looting.spec.ts** (14 connections) — `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
+- **clickWithoutStability()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **killPlayerViaCombat()** (13 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **dismissDeathInterstitial()** (11 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **goEastFromFoyer()** (11 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **ensureNotInCombat()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **relogInAtSpawn()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **listSanitariumCultistIds()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **waitUntil()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **isPlayerDead()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **killPlayerAndProduceCorpse()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (87 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (63 shared connections)
+- [look_command.py](look_command.py.md) (50 shared connections)
+- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (6 shared connections)
+- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (2 shared connections)
+- [lint_pyright_suppressions.py](lint_pyright_suppressions.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
-- `server/npc/movement_integration.py`
-- `server/tests/unit/npc/test_movement_integration.py`
+- `client/src/contexts/ThemeContext.tsx`
+- `client/src/utils/__tests__/deathVoidLocation.test.ts`
+- `client/src/utils/deathVoidLocation.ts`
+- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
+- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
+- `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
+- `client/tests/e2e/runtime/corruption/corruption-cleanse.spec.ts`
+- `client/tests/e2e/runtime/corruption/room-flux-purification.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/player.ts`
+- `client/tests/e2e/runtime/fixtures/test-data.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 110 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 387 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

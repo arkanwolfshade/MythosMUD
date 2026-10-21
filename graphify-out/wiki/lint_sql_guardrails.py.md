@@ -1,23 +1,21 @@
 # lint_sql_guardrails.py
 
-> 14 nodes
+> 12 nodes · cohesion 0.23
 
 ## Key Concepts
 
-- **lint_sql_guardrails.py** (7 connections) — `scripts/lint_sql_guardrails.py`
-- **check_select_star()** (6 connections) — `scripts/lint_sql_guardrails.py`
-- **check_not_in_subquery()** (5 connections) — `scripts/lint_sql_guardrails.py`
-- **main()** (5 connections) — `scripts/lint_sql_guardrails.py`
-- **_strip_block_comments()** (4 connections) — `scripts/lint_sql_guardrails.py`
-- **_collect_sql_files()** (3 connections) — `scripts/lint_sql_guardrails.py`
-- **_strip_line_comment()** (3 connections) — `scripts/lint_sql_guardrails.py`
-- **Path** (3 connections)
-- **Lightweight guardrails for hand-maintained PostgreSQL SQL. Warns on: - select *…** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Return line with line comment removed (-- ...).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Return content with block comments /* ... */ removed (simple, no nested).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Warn on select * outside comments.** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Warn on 'not in (' when followed by a subquery (select).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Run SQL guardrail checks and return 1 if any issues found, 0 otherwise.** (1 connections) — `scripts/lint_sql_guardrails.py`
+- **statusParser.ts** (11 connections) — `client/src/utils/statusParser.ts`
+- **statusParser.test.ts** (4 connections) — `client/src/utils/__tests__/statusParser.test.ts`
+- **convertToPlayerInterface()** (3 connections) — `client/src/utils/statusParser.ts`
+- **buildPlayerStats()** (2 connections) — `client/src/utils/statusParser.ts`
+- **ParsedPlayerData** (2 connections) — `client/src/utils/statusParser.ts`
+- **parseStatusResponse()** (2 connections) — `client/src/utils/statusParser.ts`
+- **ensureProfession()** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseIntField()** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseSlashPair()** (1 connections) — `client/src/utils/statusParser.ts`
+- **PlayerWithProfession** (1 connections) — `client/src/utils/statusParser.ts`
+- **STATUS_LINE_HANDLERS** (1 connections) — `client/src/utils/statusParser.ts`
+- **StatusLineHandler** (1 connections) — `client/src/utils/statusParser.ts`
 
 ## Relationships
 
@@ -25,11 +23,12 @@
 
 ## Source Files
 
-- `scripts/lint_sql_guardrails.py`
+- `client/src/utils/__tests__/statusParser.test.ts`
+- `client/src/utils/statusParser.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,68 +1,73 @@
 # test_security_validator.py
 
-> 276 nodes
+> 214 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_security_validator.py** (101 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **security_validator.py** (37 connections) — `server/validators/security_validator.py`
-- **validate_player_name()** (29 connections) — `server/validators/security_validator.py`
-- **validate_message_content()** (23 connections) — `server/validators/security_validator.py`
-- **comprehensive_sanitize_input()** (20 connections) — `server/validators/security_validator.py`
-- **validate_combat_target()** (18 connections) — `server/validators/security_validator.py`
-- **command_validator.py** (17 connections) — `server/validators/command_validator.py`
-- **strip_ansi_codes()** (13 connections) — `server/validators/security_validator.py`
-- **validate_action_content()** (12 connections) — `server/validators/security_validator.py`
-- **validate_alias_name()** (11 connections) — `server/validators/security_validator.py`
-- **validate_reason_content()** (11 connections) — `server/validators/security_validator.py`
-- **validate_command_content()** (10 connections) — `server/validators/security_validator.py`
-- **validate_pose_content()** (10 connections) — `server/validators/security_validator.py`
-- **field_validator** (10 connections)
-- **sanitize_unicode_input()** (9 connections) — `server/validators/security_validator.py`
-- **validate_filter_name()** (9 connections) — `server/validators/security_validator.py`
-- **validate_help_topic()** (9 connections) — `server/validators/security_validator.py`
-- **validate_target_player()** (9 connections) — `server/validators/security_validator.py`
-- **server/validators/__init__.py** (9 connections) — `server/validators/__init__.py`
-- **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
-- **validate_security_comprehensive()** (8 connections) — `server/validators/security_validator.py`
-- **field_validator** (8 connections)
-- **field_validator** (7 connections)
-- **check_dangerous_characters()** (6 connections) — `server/validators/security_validator.py`
-- **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
-- *... and 251 more nodes in this community*
+- **LoggedHTTPException** (379 connections) — `server/exceptions.py`
+- **PlayerService** (113 connections) — `server/game/player_service.py`
+- **players.py** (77 connections) — `server/api/players.py`
+- **test_players_api_coverage.py** (59 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **_user()** (32 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **asyncio** (30 connections)
+- **api/player_respawn.py** (28 connections) — `server/api/player_respawn.py`
+- **get_player_quests()** (18 connections) — `server/api/players.py`
+- **skills.py** (18 connections) — `server/api/skills.py`
+- **test_player_respawn_api.py** (17 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **FastAPIRequest** (16 connections)
+- **_start_login_grace_period_body()** (16 connections) — `server/api/players.py`
+- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
+- **delete_player()** (15 connections) — `server/api/players.py`
+- **get_player()** (15 connections) — `server/api/players.py`
+- **select_character()** (15 connections) — `server/api/players.py`
+- **test_player_respawn_handlers.py** (14 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_skills.py** (14 connections) — `server/tests/unit/api/test_skills.py`
+- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
+- **create_player()** (13 connections) — `server/api/players.py`
+- **delete_character()** (13 connections) — `server/api/players.py`
+- **get_player_skills()** (13 connections) — `server/api/players.py`
+- **UUID** (13 connections)
+- **_validate_character_access()** (13 connections) — `server/api/players.py`
+- **test_players_quests.py** (13 connections) — `server/tests/unit/api/test_players_quests.py`
+- *... and 189 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (45 shared connections)
-- [ValueError](ValueError.md) (14 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (14 shared connections)
-- [processing.py](processing.py.md) (4 shared connections)
-- [test_command_admin.py](test_command_admin.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_command_communication.py](test_command_communication.py.md) (3 shared connections)
-- [test_command_alias.py](test_command_alias.py.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [CommandService](CommandService.md) (1 shared connections)
-- [AliasGraph](AliasGraph.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (80 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (61 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (60 shared connections)
+- [test_look_player.py](test_look_player.py.md) (24 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (22 shared connections)
+- [Player](Player.md) (19 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (19 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (17 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (16 shared connections)
+- [AttributeError](AttributeError.md) (15 shared connections)
+- [CombatParticipant](CombatParticipant.md) (15 shared connections)
+- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (15 shared connections)
 
 ## Source Files
 
-- `server/models/command_combat.py`
-- `server/models/command_communication.py`
-- `server/models/command_moderation.py`
-- `server/models/command_player_state.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/__init__.py`
-- `server/validators/command_validator.py`
-- `server/validators/security_validator.py`
+- `server/api/player_respawn.py`
+- `server/api/players.py`
+- `server/api/skills.py`
+- `server/exceptions.py`
+- `server/game/player_service.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/players/player_respawn.py`
+- `server/schemas/players/skill.py`
+- `server/tests/unit/api/test_player_respawn_api.py`
+- `server/tests/unit/api/test_player_respawn_handlers.py`
+- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/tests/unit/api/test_players_quests.py`
+- `server/tests/unit/api/test_skills.py`
 
 ## Audit Trail
 
-- EXTRACTED: 488 (96%)
-- INFERRED: 22 (4%)
+- EXTRACTED: 938 (83%)
+- INFERRED: 186 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,65 +1,73 @@
 # test_message_handlers.py
 
-> 167 nodes
+> 210 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_message_handlers.py** (35 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **message_handler_factory.py** (32 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory.py** (29 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **message_handlers.py** (27 connections) — `server/realtime/message_handlers.py`
-- **websocket_messages.py** (26 connections) — `server/schemas/realtime/websocket_messages.py`
-- **schemas/realtime/__init__.py** (25 connections) — `server/schemas/realtime/__init__.py`
-- **test_websocket_message_schema_registry.py** (23 connections) — `server/tests/unit/realtime/test_websocket_message_schema_registry.py`
-- **MessageHandlerFactory** (19 connections) — `server/realtime/message_handler_factory.py`
-- **CommandMessage** (17 connections) — `server/schemas/realtime/websocket_messages.py`
-- **ChatMessage** (16 connections) — `server/schemas/realtime/websocket_messages.py`
-- **CommandData** (16 connections) — `server/schemas/realtime/websocket_messages.py`
-- **handle_follow_response_message()** (15 connections) — `server/realtime/message_handlers.py`
-- **asyncio** (15 connections)
-- **FollowResponseMessage** (14 connections) — `server/schemas/realtime/websocket_messages.py`
-- **PartyInviteResponseMessage** (14 connections) — `server/schemas/realtime/websocket_messages.py`
-- **ClientErrorReportMessage** (13 connections) — `server/schemas/realtime/websocket_messages.py`
-- **GameCommandMessage** (13 connections) — `server/schemas/realtime/websocket_messages.py`
-- **PingMessage** (13 connections) — `server/schemas/realtime/websocket_messages.py`
-- **handle_party_invite_response_message()** (13 connections) — `server/realtime/message_handlers.py`
-- **MessageHandler** (12 connections) — `server/realtime/message_handler_factory.py`
-- **handle_command_message()** (12 connections) — `server/realtime/message_handlers.py`
-- **CommandMessageHandler** (10 connections) — `server/realtime/message_handler_factory.py`
-- **ChatData** (10 connections) — `server/schemas/realtime/websocket_messages.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **_discriminator_values()** (10 connections) — `server/tests/unit/realtime/test_websocket_message_schema_registry.py`
-- *... and 142 more nodes in this community*
+- **ApplicationContainer** (162 connections) — `server/container/main.py`
+- **test_container_bundles.py** (72 connections) — `server/tests/unit/container/test_container_bundles.py`
+- **GameBundle** (61 connections) — `server/container/bundles/game.py`
+- **bundles/game.py** (48 connections) — `server/container/bundles/game.py`
+- **container/main.py** (42 connections) — `server/container/main.py`
+- **CombatBundle** (36 connections) — `server/container/bundles/combat.py`
+- **RealtimeBundle** (33 connections) — `server/container/bundles/realtime.py`
+- **asyncio** (25 connections)
+- **magic.py** (21 connections) — `server/container/bundles/magic.py`
+- **NPCBundle** (21 connections) — `server/container/bundles/npc.py`
+- **TimeBundle** (21 connections) — `server/container/bundles/time.py`
+- **bundles/combat.py** (20 connections) — `server/container/bundles/combat.py`
+- **bundles/npc.py** (20 connections) — `server/container/bundles/npc.py`
+- **core.py** (19 connections) — `server/container/bundles/core.py`
+- **bundles/__init__.py** (19 connections) — `server/container/bundles/__init__.py`
+- **CoreBundle** (18 connections) — `server/container/bundles/core.py`
+- **container/__init__.py** (18 connections) — `server/container/__init__.py`
+- **._init_player_quest_layer()** (17 connections) — `server/container/bundles/game.py`
+- **MonitoringBundle** (17 connections) — `server/container/bundles/monitoring.py`
+- **test_application_container_main.py** (17 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **_create_registry_and_targeting()** (16 connections) — `server/container/bundles/magic.py`
+- **bundles/monitoring.py** (14 connections) — `server/container/bundles/monitoring.py`
+- **bundles/realtime.py** (14 connections) — `server/container/bundles/realtime.py`
+- **MagicBundle** (13 connections) — `server/container/bundles/magic.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- *... and 185 more nodes in this community*
 
 ## Relationships
 
-- [SecureBaseModel](SecureBaseModel.md) (14 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (11 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (10 shared connections)
-- [real_time.py](real_time.py.md) (6 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (5 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (2 shared connections)
-- [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (31 shared connections)
+- [Room](Room.md) (26 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (18 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (16 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (12 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (11 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (11 shared connections)
+- [start_grace_period](start_grace_period.md) (9 shared connections)
+- [CombatInstance](CombatInstance.md) (9 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (8 shared connections)
+- [endpoints.py](endpoints.py.md) (7 shared connections)
+- [BaseEvent](BaseEvent.md) (7 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
-- `server/realtime/message_handlers.py`
-- `server/schemas/realtime/__init__.py`
-- `server/schemas/realtime/websocket_messages.py`
-- `server/tests/unit/realtime/test_message_handler_factory.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
-- `server/tests/unit/realtime/test_websocket_message_schema_registry.py`
+- `server/container/__init__.py`
+- `server/container/bundles/__init__.py`
+- `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
+- `server/container/bundles/core.py`
+- `server/container/bundles/game.py`
+- `server/container/bundles/magic.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/npc.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
+- `server/container/main.py`
+- `server/container/utils.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/container/test_container_bundles.py`
 
 ## Audit Trail
 
-- EXTRACTED: 405 (88%)
-- INFERRED: 57 (12%)
+- EXTRACTED: 735 (86%)
+- INFERRED: 122 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # Status Effects Subsystem
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Status Effects Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- **find_priority_files.py** (0 connections) — `scripts/find_priority_files.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
+- `scripts/find_priority_files.py`
 
 ## Audit Trail
 

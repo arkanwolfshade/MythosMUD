@@ -1,12 +1,11 @@
 # Comprehensive System Audit
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Comprehensive System Audit** (2 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- **CI/CD Enhanced Logging Validation** (1 connections) — `docs/archive/CI_CD_LOGGING_VALIDATION.md`
-- **Database Migration Guide** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
+- **bootstrap_e2e_database.ps1** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
+- **Invoke-Step()** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/CI_CD_LOGGING_VALIDATION.md`
-- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
-- `docs/archive/DATABASE_MIGRATION.md`
+- `scripts/bootstrap_e2e_database.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

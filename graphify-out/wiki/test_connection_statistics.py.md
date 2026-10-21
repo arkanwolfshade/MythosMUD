@@ -1,54 +1,52 @@
 # test_connection_statistics.py
 
-> 50 nodes
+> 51 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_connection_statistics.py** (24 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
-- **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
-- **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
-- **get_presence_statistics_impl()** (8 connections) — `server/realtime/connection_statistics.py`
-- **get_online_player_by_display_name_method()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **Any** (5 connections)
-- **.get_presence_statistics()** (3 connections) — `server/realtime/connection_manager.py`
-- **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_no_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_presence_statistics_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_presence_statistics_impl_no_players()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl_empty_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_online_but_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- *... and 25 more nodes in this community*
+- **handle_read_command()** (24 connections) — `server/commands/read_command.py`
+- **read_command.py** (18 connections) — `server/commands/read_command.py`
+- **test_read_command.py** (18 connections) — `server/tests/unit/commands/test_read_command.py`
+- **asyncio** (15 connections)
+- **_process_spellbook_read()** (8 connections) — `server/commands/read_command.py`
+- **Any** (8 connections)
+- **_format_learn_spell_message()** (5 connections) — `server/commands/read_command.py`
+- **_learn_single_spell()** (5 connections) — `server/commands/read_command.py`
+- **_learn_specific_spell()** (5 connections) — `server/commands/read_command.py`
+- **_find_item_in_inventory()** (4 connections) — `server/commands/read_command.py`
+- **_list_spells_in_book()** (4 connections) — `server/commands/read_command.py`
+- **_validate_spellbook()** (4 connections) — `server/commands/read_command.py`
+- **test_handle_read_command()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_empty_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_inventory_json_error()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_item_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_multiple_spells()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_spell_learning_service()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_target()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_not_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_single_spell_learn()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_specific_spell()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (8 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (8 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_methods.py`
-- `server/realtime/connection_statistics.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
-- `server/tests/unit/realtime/test_connection_statistics.py`
+- `server/commands/read_command.py`
+- `server/tests/unit/commands/test_read_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 104 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

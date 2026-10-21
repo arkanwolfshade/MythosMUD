@@ -1,23 +1,23 @@
 # autoprefixer
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **autoprefixer** (2 connections) — `client/package.json`
-- **autoprefixer** (1 connections) — `client/package.json`
+- **Temporal NPC Schedules** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **Schedule Service** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `docs/archive/temporal-npc-schedule-integration-status.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

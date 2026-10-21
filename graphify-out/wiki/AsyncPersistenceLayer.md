@@ -1,67 +1,48 @@
 # AsyncPersistenceLayer
 
-> 215 nodes
+> 41 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **AsyncPersistenceLayer** (197 connections) — `server/async_persistence.py`
-- **test_async_persistence_delegates.py** (36 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **asyncio** (24 connections)
-- **Player** (19 connections)
-- **UUID** (18 connections)
-- **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
-- **test_wearable_container_persistence.py** (12 connections) — `server/tests/integration/test_wearable_container_persistence.py`
-- **validate_exit()** (11 connections) — `server/game/movement_helpers.py`
-- **validate_player_room_membership()** (11 connections) — `server/game/movement_helpers.py`
-- **check_combat_state()** (10 connections) — `server/game/movement_helpers.py`
-- **check_player_posture()** (8 connections) — `server/game/movement_helpers.py`
-- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
-- **.__init__()** (8 connections) — `server/services/schedule_service.py`
-- **_create_player()** (8 connections) — `server/tests/integration/test_wearable_container_persistence.py`
-- **test_equip_creates_one_row_reuses_it_and_unequip_reads_it_back()** (8 connections) — `server/tests/integration/test_wearable_container_persistence.py`
-- **InstanceRoomLookup** (7 connections) — `server/async_persistence_types.py`
-- **._validate_movement_rooms()** (7 connections) — `server/game/movement_service.py`
-- **async_persistence_access.py** (7 connections) — `server/container/async_persistence_access.py`
-- **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
-- **_ContainerWithPersistence** (5 connections) — `server/container/async_persistence_access.py`
-- **.create_container()** (5 connections) — `server/async_persistence.py`
-- **._load_from_database()** (5 connections) — `server/services/schedule_service.py`
-- **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_fear_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **test_apply_lucidity_loss_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- *... and 190 more nodes in this community*
+- **test_message_broadcaster.py** (22 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **asyncio** (15 connections)
+- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **fixture** (3 connections)
+- **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster. Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() when no players online.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (54 shared connections)
-- [Player](Player.md) (18 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (11 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
-- [CombatService](CombatService.md) (8 shared connections)
-- [RoomCacheLoader](RoomCacheLoader.md) (8 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (7 shared connections)
-- [ContainerCreateParams](ContainerCreateParams.md) (7 shared connections)
-- [real_time.py](real_time.py.md) (5 shared connections)
-- [MovementService](MovementService.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [authenticated.ts](authenticated.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_types.py`
-- `server/container/async_persistence_access.py`
-- `server/game/movement_helpers.py`
-- `server/game/movement_service.py`
-- `server/services/schedule_service.py`
-- `server/tests/integration/test_wearable_container_persistence.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 453 (86%)
-- INFERRED: 71 (14%)
+- EXTRACTED: 59 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

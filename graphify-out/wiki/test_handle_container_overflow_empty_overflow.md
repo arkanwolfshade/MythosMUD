@@ -1,24 +1,23 @@
 # test_handle_container_overflow_empty_overflow
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_handle_container_overflow_empty_overflow()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles empty overflow list.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_create_sit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_sit_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

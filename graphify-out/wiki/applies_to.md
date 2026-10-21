@@ -1,35 +1,41 @@
 # applies_to
 
-> 13 nodes
+> 19 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Persistence Layer Extraction - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Next Steps** (5 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Migration Path for Callers** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Results** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Cleanup** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Architecture Changes** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Benefits** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **File Size Reduction** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Files Modified** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 1: Continue Using Sync Interface** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 2: Migrate to Async Interface (Recommended)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 2: API Endpoints (6 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 3: Real-time Handlers (8 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 4: Services (15 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 5-7: Game, NPC, and Test files** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Removed Deprecated Code** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Summary** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Validation** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Relationships
 
-- [properties](properties.md) (3 shared connections)
-- [enum](enum_2.md) (1 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (2 shared connections)
+- [10. Grace Period Persistence](10._Grace_Period_Persistence.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

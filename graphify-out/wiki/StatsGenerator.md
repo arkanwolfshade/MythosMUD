@@ -1,54 +1,50 @@
 # StatsGenerator
 
-> 65 nodes
+> 28 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **StatsGenerator** (45 connections) — `server/game/stats_generator.py`
-- **test_stats_generator.py** (19 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **Stats** (12 connections)
-- **generate_random_stats()** (11 connections) — `server/game/stats_generator.py`
-- **stats_generator_summary.py** (9 connections) — `server/game/stats_generator_summary.py`
-- **build_stat_summary()** (8 connections) — `server/game/stats_generator_summary.py`
-- **.roll_stats()** (7 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
-- **_ProfessionStatRequirementsSource** (6 connections) — `server/game/stats_generator.py`
-- **._roll_until_profession_requirements_met()** (6 connections) — `server/game/stats_generator.py`
-- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
-- **._resolve_profession_stat_requirements()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
-- **._roll_size()** (5 connections) — `server/game/stats_generator.py`
-- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
-- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
-- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_4d6_drop_lowest()** (4 connections) — `server/game/stats_generator.py`
-- **._roll_point_buy()** (4 connections) — `server/game/stats_generator.py`
-- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
-- **_build_attribute_summary()** (4 connections) — `server/game/stats_generator_summary.py`
-- **_core_stat_values_by_field()** (4 connections) — `server/game/stats_generator_summary.py`
-- **_stat_value_for_summary()** (3 connections) — `server/game/stats_generator_summary.py`
-- **test_check_profession_requirements_maps_wisdom_to_power()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_check_profession_requirements_unknown_stat_fails()** (3 connections) — `server/tests/unit/game/test_stats_generator.py`
-- *... and 40 more nodes in this community*
+- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
+- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
+- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (19 shared connections)
-- [Stats](Stats.md) (11 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [test_inventory_mutation_guard_sync.py](test_inventory_mutation_guard_sync.py.md) (2 shared connections)
+- [test_lint_container_get_instance.py](test_lint_container_get_instance.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/stats_generator.py`
-- `server/game/stats_generator_summary.py`
-- `server/tests/unit/game/test_stats_generator.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 31 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,32 @@
 # help_schema.json
 
-> 13 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **help_schema.json** (8 connections) — `server/help/help_schema.json`
-- **$defs** (5 connections) — `server/help/help_schema.json`
-- **htmlLines** (3 connections) — `server/help/help_schema.json`
-- **topicName** (3 connections) — `server/help/help_schema.json`
-- **additionalProperties** (1 connections) — `server/help/help_schema.json`
-- **description** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **$id** (1 connections) — `server/help/help_schema.json`
-- **$schema** (1 connections) — `server/help/help_schema.json`
-- **title** (1 connections) — `server/help/help_schema.json`
-- **pattern** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
-- **type** (1 connections) — `server/help/help_schema.json`
+- **Middleware Package Design** (11 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **1. Overview** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **2. Members** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **3. Boundary contract** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **4. Key design decisions** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **5. Constraints** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **6. Developer guide** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **7. Troubleshooting** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **8. Related docs** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **9. Changelog** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
 
 ## Relationships
 
-- [$ref]($ref.md) (1 shared connections)
-- [command](command.md) (1 shared connections)
-- [guide](guide.md) (1 shared connections)
-- [type](type.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/help_schema.json`
+- `docs/packages/PACKAGE_MIDDLEWARE_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,27 @@
 # P3 · config-api
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **P3 · config-api** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **P3-Cluster-ConfigAPI.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H11 · Config fail-fast is defeated at app construction, degrading to dev CORS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H12 · The `/v1` prefix exists in no design document, and every ADR endpoint path is wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H13 · The API specification document specifies no API** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **Medium / Low** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **Prior finding resolved** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **Common Mistakes and How to Fix Them** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 1: Forgetting to Update Imports** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 2: Using Deprecated Context Parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 3: String Formatting in Log Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 4: Missing Context in Error Logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 5: Wrong Log Levels** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [test_integration_cleanup_gate.py](test_integration_cleanup_gate.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

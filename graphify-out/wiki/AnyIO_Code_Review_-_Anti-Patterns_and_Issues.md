@@ -1,35 +1,32 @@
 # AnyIO Code Review - Anti-Patterns and Issues
 
-> 11 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **AnyIO Code Review - Anti-Patterns and Issues** (7 connections) — `docs/archive/anyio_code_review.md`
-- **Migration Priority** (4 connections) — `docs/archive/anyio_code_review.md`
-- **anyio_code_review.md** (2 connections) — `docs/archive/anyio_code_review.md`
-- **anyio_vs_asyncio_comparison.md** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Executive Summary** (1 connections) — `docs/archive/anyio_code_review.md`
-- **High Priority (Entry Points)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Low Priority (Complex Refactoring)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Medium Priority (Core Primitives)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Notes** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Recommendations** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Testing Considerations** (1 connections) — `docs/archive/anyio_code_review.md`
+- **TestMinimapExplorationInvestigationDoc** (5 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **test_minimap_exploration_documentation.py** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **.test_doc_describes_uuid_vs_stable_id_mismatch()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **.test_doc_explains_impact_on_non_admin_users()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **.test_investigation_doc_exists()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **Guardrails for minimap / exploration documentation. Ensures the investigation…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **Content checks for the minimap explored-rooms investigation document.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **The session document must remain present for traceability.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **Documentation must state that explored room identifiers are UUIDs, not…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **Documentation must tie the bug to non-admin minimap behavior (not only admins).** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
 
 ## Relationships
 
-- [Critical Issues](Critical_Issues.md) (1 shared connections)
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_code_review.md`
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

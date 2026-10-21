@@ -1,59 +1,59 @@
 # InventoryMutationGuard
 
-> 30 nodes
+> 61 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **InventoryMutationGuard** (33 connections) — `server/services/inventory_mutation_guard.py`
-- **.acquire()** (8 connections) — `server/services/inventory_mutation_guard.py`
-- **.acquire_async()** (8 connections) — `server/services/inventory_mutation_guard.py`
-- **_AsyncPlayerGuardState** (6 connections) — `server/services/inventory_mutation_guard.py`
-- **_PlayerGuardState** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._emit_duplicate_mutation_alert()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_async_global_lock()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_async_state()** (5 connections) — `server/services/inventory_mutation_guard.py`
-- **._cleanup_async_state()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._enforce_limit()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._enforce_limit_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._get_state()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._prune_tokens()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._prune_tokens_async()** (4 connections) — `server/services/inventory_mutation_guard.py`
-- **._cleanup_state()** (3 connections) — `server/services/inventory_mutation_guard.py`
-- **.__init__()** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Acquire sync mutation guard.** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Acquire async mutation guard.** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Get or create per-player guard state for sync contexts. Uses thread-safe…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Get or create per-player guard state for async contexts. Uses async lock to…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Clean up per-player guard state when no longer needed (sync context). Removes…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Clean up per-player guard state when no longer needed (async context). Removes…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Remove expired idempotency tokens from the guard state (sync context). Tokens…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Remove expired idempotency tokens from the guard state (async context). Tokens…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- **Enforce maximum token cache size by removing oldest entries (sync context).…** (1 connections) — `server/services/inventory_mutation_guard.py`
-- *... and 5 more nodes in this community*
+- **quest_rewards.py** (18 connections) — `server/game/quest/quest_rewards.py`
+- **test_quest_rewards.py** (15 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **QuestRewardsMixin** (13 connections) — `server/game/quest/quest_rewards.py`
+- **UUID** (11 connections)
+- **QuestRewardSchema** (10 connections) — `server/schemas/quest/quest.py`
+- **_Host** (9 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **._apply_item_reward()** (8 connections) — `server/game/quest/quest_rewards.py`
+- **._apply_rewards()** (8 connections) — `server/game/quest/quest_rewards.py`
+- **test_malformed_or_unservable_rewards_are_skipped()** (8 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **_config_value()** (7 connections) — `server/game/quest/quest_rewards.py`
+- **SpellLearner** (7 connections) — `server/game/quest/quest_rewards.py`
+- **XpGranter** (7 connections) — `server/game/quest/quest_rewards.py`
+- **_Inventory** (7 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **test_rewards_grant_xp_spell_and_item()** (7 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **PlayerStore** (6 connections) — `server/game/quest/quest_rewards.py`
+- **._apply_respawn_room_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
+- **._apply_spell_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
+- **._apply_xp_reward()** (6 connections) — `server/game/quest/quest_rewards.py`
+- **_inventory_has_slot()** (5 connections) — `server/game/quest/quest_rewards.py`
+- **._turn_in_inventory_full_error()** (5 connections) — `server/game/quest/quest_rewards.py`
+- **_definition()** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **_Levels** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **UUID** (5 connections)
+- **_Spells** (5 connections) — `server/tests/unit/game/test_quest_rewards.py`
+- **.get_player_by_id()** (4 connections) — `server/game/quest/quest_rewards.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [MutationDecision](MutationDecision.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [MetricsCollector](MetricsCollector.md) (2 shared connections)
-- [test_inventory_mutation_guard_async.py](test_inventory_mutation_guard_async.py.md) (2 shared connections)
-- [test_inventory_mutation_guard_error_handling.py](test_inventory_mutation_guard_error_handling.py.md) (2 shared connections)
-- [test_inventory_mutation_guard_internal.py](test_inventory_mutation_guard_internal.py.md) (2 shared connections)
-- [test_inventory_mutation_guard_sync.py](test_inventory_mutation_guard_sync.py.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [ContainerService](ContainerService.md) (1 shared connections)
-- [InventoryService](InventoryService.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [item_catalog_repository.py](item_catalog_repository.py.md) (8 shared connections)
+- [mcp.json](mcp.json.md) (3 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (2 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [properties](properties.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/inventory_mutation_guard.py`
+- `server/game/quest/quest_rewards.py`
+- `server/npc/npc_base.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/game/test_quest_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (88%)
-- INFERRED: 9 (12%)
+- EXTRACTED: 129 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

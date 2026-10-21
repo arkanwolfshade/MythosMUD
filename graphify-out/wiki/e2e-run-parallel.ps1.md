@@ -1,10 +1,10 @@
 # e2e-run-parallel.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **e2e-run-parallel.ps1** (0 connections) — `scripts/e2e-run-parallel.ps1`
+- **unit/app/__init__.py** (0 connections) — `server/tests/unit/app/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/e2e-run-parallel.ps1`
+- `server/tests/unit/app/__init__.py`
 
 ## Audit Trail
 

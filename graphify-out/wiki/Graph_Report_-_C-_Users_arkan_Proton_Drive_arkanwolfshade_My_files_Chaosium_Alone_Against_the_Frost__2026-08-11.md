@@ -1,34 +1,37 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Frost  (2026-08-11)
 
-> 12 nodes
+> 11 nodes · cohesion 0.18
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Frost  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Communities (2 total, 1 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **alone-against-the-frost/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Community 0 - "Expedition Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
+- **player_combat_service()** (7 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **fixture** (5 connections)
+- **mock_event_bus()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_level_service()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_npc_service()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock event bus.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock NPC combat integration service (for calculate_xp_reward's UUID…** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create mock LevelService -- the XP/level authority (#879).** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Create PlayerCombatService instance.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (5 shared connections)
+- [validate_secure_path](validate_secure_path.md) (1 shared connections)
+- [test_event_bus_lifecycle.py](test_event_bus_lifecycle.py.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
+- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (84%)
+- INFERRED: 3 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

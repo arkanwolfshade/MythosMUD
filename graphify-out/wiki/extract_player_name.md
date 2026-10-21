@@ -1,53 +1,58 @@
 # extract_player_name
 
-> 25 nodes
+> 23 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **extract_player_name()** (22 connections) — `server/realtime/player_presence_utils.py`
-- **test_player_presence_utils.py** (18 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **get_player_position()** (10 connections) — `server/realtime/player_presence_utils.py`
-- **_is_valid_name()** (6 connections) — `server/realtime/player_presence_utils.py`
-- **_is_uuid_string()** (5 connections) — `server/realtime/player_presence_utils.py`
-- **_get_name_from_user()** (4 connections) — `server/realtime/player_presence_utils.py`
-- **test_extract_player_name_user_access_error()** (3 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_get_player_position_stats_error()** (3 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **Player** (3 connections)
-- **UUID** (3 connections)
-- **test_extract_player_name_from_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_extract_player_name_from_user()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_extract_player_name_placeholder()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_extract_player_name_rejects_uuid_string()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_get_player_position_default()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_get_player_position_from_stats()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_is_uuid_string()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **test_is_valid_name()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
-- **Any** (1 connections)
-- **Get player position from stats. Args: player: The player object player_id: The…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Check if a value is a valid non-empty string name. Args: name: Value to check…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Check if a string is a UUID format. Args: value: String to check Returns: True…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Attempt to get player name from related User object. Args: player: The player…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Extract and validate player name, ensuring it's never a UUID. Args: player: The…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Unit tests for player_presence_utils.** (1 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- **TEST_AUDIT_EXECUTIVE_SUMMARY.md** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **TEST_COVERAGE_GAPS.md** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **TEST_OPTIMIZATION_ROADMAP.md** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **ConnectionManager Facade** (4 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **TEST_MODERNIZATION_PLAN.md** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Test Pruning Candidates** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **TEST_VALUE_DISTRIBUTION.md** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **MessageBroker Abstraction Gap** (3 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Placeholder assert True Tests** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **REFACTORING_SUMMARY.md** (2 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **MessageBroadcaster** (2 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **25-30 Percent Critical Tests** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **ApplicationContainer Lifecycle Gap** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **ApplicationContainer Test Fixtures** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Framework Behavior Tests** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Low-Value Infrastructure Tests** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **ConnectionCleaner** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **PerformanceTracker** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Option B Quick Wins First** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Domain Layer Coverage Gap** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Phased Uplift Not Greenfield** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Shared SQLAlchemy Declarative Base** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Parametrize Repetitive Tests** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (5 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (2 shared connections)
-- [start_grace_period](start_grace_period.md) (1 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [handle_teach_command](handle_teach_command.md) (1 shared connections)
+- [compilerOptions](compilerOptions.md) (1 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (1 shared connections)
+- [Stop-MythosMudProjectProcessTree](Stop-MythosMudProjectProcessTree.md) (1 shared connections)
+- [test_alias_storage.py](test_alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_presence_utils.py`
-- `server/tests/unit/realtime/test_player_presence_utils.py`
+- `docs/archive/REFACTORING_SUMMARY.md`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 31 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

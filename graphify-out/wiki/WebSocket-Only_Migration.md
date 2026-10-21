@@ -1,15 +1,13 @@
 # WebSocket-Only Migration
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- **WebSocket and SSE Dual Connections** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- **Dual Connection API Reference** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- **Dual Connection Client Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
+- **Dual Connection Deployment Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
 
 ## Relationships
 
@@ -17,14 +15,14 @@
 
 ## Source Files
 
-- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
+- `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
+- `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 1 (33%)
+- INFERRED: 2 (67%)
 - AMBIGUOUS: 0 (0%)
 
 ---

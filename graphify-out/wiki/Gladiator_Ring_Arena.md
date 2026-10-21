@@ -1,10 +1,10 @@
 # Gladiator Ring (Arena)
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Gladiator Ring (Arena)** (0 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `docs/archive/plans/gladiator_ring_arena_plan.md`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

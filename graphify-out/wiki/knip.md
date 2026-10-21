@@ -1,23 +1,23 @@
 # knip
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **knip** (2 connections) — `client/package.json`
-- **knip** (1 connections) — `client/package.json`
+- **apply_824_room_data_to_dev.py** (1 connections) — `scripts/apply_824_room_data_to_dev.py`
+- **main()** (1 connections) — `scripts/apply_824_room_data_to_dev.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `scripts/apply_824_room_data_to_dev.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

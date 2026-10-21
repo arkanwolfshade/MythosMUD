@@ -1,57 +1,42 @@
 # spell_effects_support.py
 
-> 36 nodes
+> 19 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **spell_effects_support.py** (20 connections) — `server/game/magic/spell_effects_support.py`
-- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **process_create_object_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
-- **process_stat_modify_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
-- **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
-- **_apply_stat_modify_to_player()** (8 connections) — `server/game/magic/spell_effects_support.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- **_build_stat_modifications()** (7 connections) — `server/game/magic/spell_effects_support.py`
-- **_create_object_for_room()** (7 connections) — `server/game/magic/spell_effects_support.py`
-- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **Any** (6 connections)
-- **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
-- **test_process_create_object_for_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_create_object_missing_prototype()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_rejects_non_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_success()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_create_object_for_room_placeholder()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_room_environment_cascade.py** (8 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **test_environment_check_constraints_share_the_same_enum()** (8 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **test_get_rooms_with_exits_resolves_from_subzone_when_room_unset()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **test_get_rooms_with_exits_returns_zone_and_subzone_display_names()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **test_update_room_properties_resolves_from_zone_when_room_and_subzone_unset()** (7 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **cascade_room()** (6 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **async_sessionmaker** (5 connections)
+- **AsyncSession** (5 connections)
 - **asyncio** (4 connections)
-- **test_build_stat_modifications_missing()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_build_stat_modifications_shorthand()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- *... and 11 more nodes in this community*
+- **integration** (4 connections)
+- **_enum_values_from_check_definition()** (3 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **fixture** (1 connections)
+- **Integration tests for the room environment inheritance cascade (#663).…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **#910: the death screen needs zones.name / subzones.name, not the stable IDs.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **Clearing a subzone's environment falls through to its zone's.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **chk_zones_environment, chk_subzones_environment, and chk_rooms_environment must…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **Extract the quoted string literals out of a CHECK constraint's…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **Zone (environment='underwater') -> subzone (environment='indoors') -> room…** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
+- **A room with no environment of its own inherits its subzone's, not its zone's.** (1 connections) — `server/tests/integration/test_room_environment_cascade.py`
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (17 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [StatusEffect](StatusEffect.md) (2 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [SpellEffectType](SpellEffectType.md) (1 shared connections)
+- [CombatBroadcastMixin](CombatBroadcastMixin.md) (5 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effects_stats.py`
-- `server/game/magic/spell_effects_support.py`
-- `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- `server/tests/unit/game/magic/test_spell_effects_support.py`
+- `server/tests/integration/test_room_environment_cascade.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (95%)
-- INFERRED: 5 (5%)
+- EXTRACTED: 34 (87%)
+- INFERRED: 5 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

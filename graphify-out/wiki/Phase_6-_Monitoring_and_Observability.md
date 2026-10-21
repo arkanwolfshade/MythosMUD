@@ -1,26 +1,26 @@
 # Phase 6: Monitoring and Observability
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Phase 6: Monitoring and Observability** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.1 Metrics Collection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.2 Health Check Endpoints** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.3 Logging Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **combat_validator()** (4 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **fixture** (1 connections)
+- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
+- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

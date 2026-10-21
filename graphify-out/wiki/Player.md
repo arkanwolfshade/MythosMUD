@@ -1,65 +1,65 @@
 # Player
 
-> 221 nodes
+> 95 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **Player** (281 connections) — `server/models/player.py`
-- **test_player_model.py** (47 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **asyncio** (24 connections)
-- **test_health_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **asyncio** (9 connections)
-- **quest_seed_data()** (8 connections) — `server/tests/integration/test_quest_flow.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **test_health_repository_cold_resistance.py** (7 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **.damage_player()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **.heal_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **test_cold_damage_resistance_reduces_damage()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **test_damage_defaults_current_dp_to_20_when_missing()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **Player** (5 connections)
-- **_convert_legacy_stats_string()** (4 connections) — `server/models/player.py`
-- **test_clear_player_inventory_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_active_players_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **test_get_player_by_name_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- *... and 196 more nodes in this community*
+- **api/monitoring.py** (60 connections) — `server/api/monitoring.py`
+- **test_monitoring_endpoints.py** (55 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **HealthResponse** (17 connections) — `server/models/health.py`
+- **asyncio** (15 connections)
+- **get** (14 connections)
+- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
+- **get_health_status()** (13 connections) — `server/api/monitoring.py`
+- **_request_with_container()** (13 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **get_memory_stats()** (11 connections) — `server/api/monitoring.py`
+- **get_movement_metrics()** (11 connections) — `server/api/monitoring.py`
+- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
+- **resolve_connection_manager()** (11 connections) — `server/realtime/connection_manager.py`
+- **force_memory_cleanup()** (10 connections) — `server/api/monitoring.py`
+- **get_connection_health_stats()** (10 connections) — `server/api/monitoring.py`
+- **get_dual_connection_stats()** (10 connections) — `server/api/monitoring.py`
+- **reset_metrics()** (10 connections) — `server/api/monitoring.py`
+- **_resolve_memory_leak_collector_from_request()** (10 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (10 connections) — `server/api/monitoring.py`
+- **get_cache_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_eventbus_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_memory_alerts()** (9 connections) — `server/api/monitoring.py`
+- **get_memory_leak_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_performance_stats()** (9 connections) — `server/api/monitoring.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (54 shared connections)
-- [alias_storage.py](alias_storage.py.md) (29 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (18 shared connections)
-- [command_result_text](command_result_text.md) (15 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (12 shared connections)
-- [coerce_int](coerce_int.md) (11 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (8 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [session](session.md) (4 shared connections)
-- [combat_assist.py](combat_assist.py.md) (4 shared connections)
-- [test_player_repository_room.py](test_player_repository_room.py.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [FStringLoggingFixer](FStringLoggingFixer.md) (29 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (22 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (21 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (19 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [MutationDecision](MutationDecision.md) (8 shared connections)
+- [handle_read_command](handle_read_command.md) (5 shared connections)
+- [✅ POSITIVE FINDINGS](✅_POSITIVE_FINDINGS.md) (4 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (2 shared connections)
+- [command_error](command_error.md) (2 shared connections)
+- [test_party_service.py](test_party_service.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/tests/integration/test_quest_flow.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/api/monitoring.py`
+- `server/api/monitoring_models.py`
+- `server/game/movement_monitor.py`
+- `server/models/health.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 451 (76%)
-- INFERRED: 143 (24%)
+- EXTRACTED: 348 (96%)
+- INFERRED: 15 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

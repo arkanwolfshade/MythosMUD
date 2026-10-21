@@ -1,37 +1,31 @@
 # test_game_enums.py
 
-> 14 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_attribute_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_all_states()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_position_state_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_all_types()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **test_status_effect_type_enum_values()** (2 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Unit tests for game model enums. Tests AttributeType, StatusEffectType, and…** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains all expected states.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test AttributeType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test StatusEffectType enum contains all expected types.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
-- **Test PositionState enum contains expected values.** (1 connections) — `server/tests/unit/models/test_game_enums.py`
+- **Repository Details** (8 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **What Was Created** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **1. PlayerRepository (439 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **2. RoomRepository (42 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **3. ProfessionRepository (74 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **4. HealthRepository (165 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **5. ExperienceRepository (203 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **6. ContainerRepository (80 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **7. ItemRepository (84 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Async Repository Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- [Stats](Stats.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_game_enums.py`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

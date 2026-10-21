@@ -1,35 +1,35 @@
 # required
 
-> 14 nodes
+> 14 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **required** (8 connections) — `db/static/schemas/room.schema.json`
-- **room.schema.json** (7 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
-- **$id** (1 connections) — `db/static/schemas/room.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/room.schema.json`
-- **title** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **description** (1 connections) — `db/static/schemas/room.schema.json`
-- **exits** (1 connections) — `db/static/schemas/room.schema.json`
-- **id** (1 connections) — `db/static/schemas/room.schema.json`
-- **name** (1 connections) — `db/static/schemas/room.schema.json`
-- **plane** (1 connections) — `db/static/schemas/room.schema.json`
-- **sub_zone** (1 connections) — `db/static/schemas/room.schema.json`
-- **zone** (1 connections) — `db/static/schemas/room.schema.json`
+- **mcp.json** (5 connections) — `.cursor/mcp.json`
+- **jcodemunch** (4 connections) — `.cursor/mcp.json`
+- **codacy** (3 connections) — `.cursor/mcp.json`
+- **context7** (3 connections) — `.cursor/mcp.json`
+- **playwright** (3 connections) — `.cursor/mcp.json`
+- **npx** (3 connections) — `.cursor/mcp.json`
+- **graphify** (2 connections) — `.cursor/mcp.json`
+- **JCODEMUNCH_MAX_FOLDER_FILES** (1 connections) — `.cursor/mcp.json`
+- **graphify-mcp** (1 connections) — `.cursor/mcp.json`
+- **uvx** (1 connections) — `.cursor/mcp.json`
+- **@codacy/codacy-mcp** (1 connections) — `.cursor/mcp.json`
+- **jcodemunch-mcp** (1 connections) — `.cursor/mcp.json`
+- **@playwright/mcp** (1 connections) — `.cursor/mcp.json`
+- **@upstash/context7-mcp** (1 connections) — `.cursor/mcp.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `.cursor/mcp.json`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

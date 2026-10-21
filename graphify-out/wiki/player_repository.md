@@ -1,30 +1,30 @@
 # player_repository
 
-> 5 nodes
+> 8 nodes · cohesion 0.57
 
 ## Key Concepts
 
-- **player_repository()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **mock_player()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **fixture** (2 connections)
-- **Create a mock player for save operations.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Create a PlayerRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_run_quality_fragmentation_guard.py** (7 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **_assert_utf8_replace()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **_fake_result()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **_load_module()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **test_changed_files_between_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **test_local_changed_files_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **test_run_git_passes_utf8_replace_encoding()** (4 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
+- **Regression test for scripts/run_quality_fragmentation_guard.py's git-output…** (1 connections) — `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [session](session.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/scripts/test_run_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (78%)
-- INFERRED: 2 (22%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

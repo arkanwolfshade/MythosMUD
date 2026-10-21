@@ -1,45 +1,45 @@
 # ContainerRepository and ItemRepository: Review and Full Async Migration Plan
 
-> 23 nodes
+> 22 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **ContainerRepository and ItemRepository: Review and Full Async Migration Plan** (10 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **4. Full Async Migration Plan** (6 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1. Review Summary** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **3. Migration Options** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2. Scope of Migration** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.1 Current Architecture** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.2 Impact of Current Wrappers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.3 Recommendation** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2.1 Functions to Migrate** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2.2 Callers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **5. File Checklist** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **6. Risks and Mitigations** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **7. Success Criteria** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **8. Phase 1 Audit Results (Completed)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **9. Implementation Status** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option A: SQLAlchemy Async (Recommended)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option B: asyncpg Raw** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option C: Keep Wrappers, Add Sync Connection Pool** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 1: Preparation (no behavior change)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 2: Async implementation (container)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 3: Async implementation (item)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 4: Cleanup** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 5: Verification** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **TestNPCCombatLifecycle** (12 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **asyncio** (6 connections)
+- **.lifecycle_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.mock_persistence()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_no_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_no_lifecycle_manager()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_sqlalchemy_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_safely_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_despawn_npc_with_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **fixture** (2 connections)
+- **Test _despawn_npc handles NPC not in active_npcs.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test suite for NPCCombatLifecycle class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Create a NPCCombatLifecycle instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test NPCCombatLifecycle initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely successfully despawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles missing lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test despawn_npc_safely handles SQLAlchemy errors.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **Test _despawn_npc handles NPC in active_npcs via fallback path.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- `server/tests/unit/services/test_npc_combat_lifecycle.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 30 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

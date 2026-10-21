@@ -1,48 +1,45 @@
 # FakeSenderRegistry
 
-> 26 nodes
+> 24 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **FakeSenderRegistry** (13 connections) — `server/services/fake_sender_registry.py`
-- **test_fake_sender_registry.py** (9 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **fake_sender_registry.py** (5 connections) — `server/services/fake_sender_registry.py`
-- **UUID** (4 connections)
-- **.clear()** (3 connections) — `server/services/fake_sender_registry.py`
-- **.get_last_fake_sender()** (3 connections) — `server/services/fake_sender_registry.py`
-- **.record_fake_whisper()** (3 connections) — `server/services/fake_sender_registry.py`
-- **test_clear_on_unrecorded_player_does_not_raise()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **test_clear_removes_the_recorded_sender()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **test_get_last_fake_sender_is_none_for_unrecorded_player()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **test_record_fake_whisper_accepts_str_or_uuid_for_the_same_player()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **test_record_fake_whisper_overwrites_the_previous_sender()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **test_record_then_get_last_fake_sender()** (3 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **.__init__()** (1 connections) — `server/services/fake_sender_registry.py`
-- **In-memory registry of each player's most recent fake NPC whisper sender (#625,…** (1 connections) — `server/services/fake_sender_registry.py`
-- **Module-level singleton (mirrors phantom_hostile_service) -- callers MUST share…** (1 connections) — `server/services/fake_sender_registry.py`
-- **Record that this player's most recent whisper came from this fake NPC.** (1 connections) — `server/services/fake_sender_registry.py`
-- **Return the fake NPC name this player was last whispered by, or None.** (1 connections) — `server/services/fake_sender_registry.py`
-- **Drop this player's fake-sender record (e.g. leaving fractured/deranged,…** (1 connections) — `server/services/fake_sender_registry.py`
-- **Unit tests for the in-memory fake whisper sender registry (#625, #714). This…** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **A player with no fake whisper history has no recorded sender.** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **The most recently recorded fake NPC name is returned.** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **Only the most recent fake sender is tracked -- no history list.** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **A UUID and its string form must key into the same registry entry.** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- **clear() drops the entry entirely -- reply falls through to the real whisper…** (1 connections) — `server/tests/unit/services/test_fake_sender_registry.py`
-- *... and 1 more nodes in this community*
+- **migrate_rooms.py** (12 connections) — `scripts/migrate_rooms.py`
+- **migrate_rooms()** (10 connections) — `scripts/migrate_rooms.py`
+- **_create_subzone_structure()** (4 connections) — `scripts/migrate_rooms.py`
+- **_create_zone_structure()** (4 connections) — `scripts/migrate_rooms.py`
+- **_load_and_validate_rooms()** (4 connections) — `scripts/migrate_rooms.py`
+- **_create_backup()** (3 connections) — `scripts/migrate_rooms.py`
+- **create_subzone_config()** (3 connections) — `scripts/migrate_rooms.py`
+- **create_zone_config()** (3 connections) — `scripts/migrate_rooms.py`
+- **determine_zone_type()** (3 connections) — `scripts/migrate_rooms.py`
+- **load_existing_rooms()** (3 connections) — `scripts/migrate_rooms.py`
+- **main()** (3 connections) — `scripts/migrate_rooms.py`
+- **_migrate_room_file()** (3 connections) — `scripts/migrate_rooms.py`
+- **_group_rooms_by_zone()** (2 connections) — `scripts/migrate_rooms.py`
+- **Determine the zone type based on the zone name. Args: zone_name: Name of the…** (1 connections) — `scripts/migrate_rooms.py`
+- **Load existing rooms and validate.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create backup if requested.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create zone directory and config. Returns zone_path.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create sub-zone directory and config. Returns subzone_path.** (1 connections) — `scripts/migrate_rooms.py`
+- **Load all existing room files from the flat structure. Args: rooms_path: Path to…** (1 connections) — `scripts/migrate_rooms.py`
+- **Migrate a single room file.** (1 connections) — `scripts/migrate_rooms.py`
+- **Migrate existing rooms to the new hierarchical structure. Args: rooms_path:…** (1 connections) — `scripts/migrate_rooms.py`
+- **Main entry point for the migration script.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create a default zone configuration. Args: zone_name: Name of the zone…** (1 connections) — `scripts/migrate_rooms.py`
+- **Create a default sub-zone configuration. Args: subzone_name: Name of the sub-…** (1 connections) — `scripts/migrate_rooms.py`
 
 ## Relationships
 
-- [communication_commands_flows.py](communication_commands_flows.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/fake_sender_registry.py`
-- `server/tests/unit/services/test_fake_sender_registry.py`
+- `scripts/migrate_rooms.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

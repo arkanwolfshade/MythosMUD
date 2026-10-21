@@ -1,47 +1,40 @@
 # subzone_schema.json
 
-> 44 nodes
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **required** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
-- *... and 19 more nodes in this community*
+- **Async Remediation Complete** (11 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🚀 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🎯 What Was Done** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🎓 Key Takeaway** (3 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Status**: ✅**COMPLETE AND READY FOR DEPLOYMENT** (2 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Adjusts spectacles with scholarly satisfaction** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Critical Fixes Implemented (4 Code Changes)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **December 3, 2025** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Documentation Created (5 Documents, ~2,500 lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **📚 Key Documents** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Mission Accomplished** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Next Sprint (Optional)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **📊 Results Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **test_async_audit_compliance.py** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Tests Created (1 Comprehensive Suite)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **This Week** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Today** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [NATS Code Review - Branch: feature/sqlite-to-postgresql](NATS_Code_Review_-_Branch-_feature-sqlite-to-postgresql.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

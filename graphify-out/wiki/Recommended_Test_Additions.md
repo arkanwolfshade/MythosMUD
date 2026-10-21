@@ -1,50 +1,38 @@
 # Recommended Test Additions
 
-> 25 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Recommended Test Additions** (10 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **TEST_COVERAGE_GAPS.md** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Net Impact Summary** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Test Coverage Gaps Report** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **TEST_MODERNIZATION_PLAN.md** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Net Result** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **ApplicationContainer Lifecycle Gap** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **ApplicationContainer Test Fixtures** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **1. MessageBroker Integration Tests (15 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **3. Database Migration Tests (10 tests, ~1.5 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **4. WebSocket Edge Case Tests (15 tests, ~2 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **5. Error Recovery Tests (20 tests, ~3 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Additions** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Coverage Gap Priority Matrix** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **If We Execute Full Recommendations** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Immediate Priority (Add First)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Removals** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Secondary Priority (Add Second)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **"The goal is not comprehensive coverage of all code, but comprehensive protection of all user value."** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~3.5 hours effort, closes critical gaps** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~5 hours effort, improves reliability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Domain Layer Coverage Gap** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Shared SQLAlchemy Declarative Base** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phased Uplift Not Greenfield** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Changes by document** (16 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **CLAUDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/CONTAINER_SYSTEM_API_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/E2E_TESTING_GUIDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/NATS_SUBJECT_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/QUICK_START_E2E_TESTS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **docs/realtime.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **e2e-tests/MULTIPLAYER_TEST_RULES.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **server/README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
 
 ## Relationships
 
-- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (2 shared connections)
-- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (1 shared connections)
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [._attack_target_impl](_attack_target_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_GAPS.md`
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/DOCUMENTATION_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,31 @@
 # _Result
 
-> 7 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **_Result** (6 connections) — `server/tests/unit/test_alias_storage.py`
-- **.execute()** (3 connections) — `server/tests/unit/test_alias_storage.py`
-- **.__init__()** (2 connections) — `server/tests/unit/test_alias_storage.py`
-- **.all()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **.__init__()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **.scalar()** (1 connections) — `server/tests/unit/test_alias_storage.py`
-- **TextClause** (1 connections)
+- **Design ↔ Implementation Drift Audit — Final Summary** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Working the backlog** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Decisions made — do not re-litigate** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Do first — small, high value** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Loose ends outside the tracker** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Sequencing that matters** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **User-visible defects** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Weight the evidence correctly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **What the audit concluded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **What was not examined — see #639** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
 
 ## Relationships
 
-- [test_alias_storage.py](test_alias_storage.py.md) (3 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_alias_storage.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

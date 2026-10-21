@@ -1,10 +1,10 @@
 # 20261007120000_bank_deposit_boxes.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20261007120000_bank_deposit_boxes.sql** (0 connections) — `db/migrations/20261007120000_bank_deposit_boxes.sql`
+- **Players API Code Coverage Plan** (0 connections) — `docs/archive/PLANNING_code_coverage.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/20261007120000_bank_deposit_boxes.sql`
+- `docs/archive/PLANNING_code_coverage.md`
 
 ## Audit Trail
 

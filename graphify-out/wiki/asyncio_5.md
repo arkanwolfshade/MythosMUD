@@ -1,56 +1,62 @@
 # asyncio
 
-> 23 nodes
+> 84 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **asyncio** (28 connections)
-- **test_clear_player_combat_state_handles_error()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_clear_player_combat_state_success()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_ensure_player_posture_lying_changes_posture()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_dead_players_empty()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_empty()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_excludes_healthy()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_get_mortally_wounded_players_handles_error()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_handle_player_death_player_not_found()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_handle_player_death_success()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_process_mortally_wounded_tick_applies_decay()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_process_mortally_wounded_tick_handles_error()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() excludes healthy players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_dead_players() returns empty list when no dead players.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test process_mortally_wounded_tick() applies DP decay via Player.apply_dp_decay.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test process_mortally_wounded_tick() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _ensure_player_posture_lying() changes posture to lying.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _clear_player_combat_state() clears combat state.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test _clear_player_combat_state() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test handle_player_death() successfully handles player death.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test handle_player_death() returns False when player not found.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **Test get_mortally_wounded_players() returns empty list when no mortally wounded…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **PathValidator** (27 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **room_validator/validator.py** (21 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **RoomFixer** (20 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **main()** (19 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **MinimapRenderer** (17 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **core/__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
+- **test_validator_integration.py** (9 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **_initialize_validator_components()** (9 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **TestValidatorIntegration** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Any** (7 connections)
+- **_validate_config_files()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_validate_room_connectivity()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **.check_bidirectional_connections()** (6 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **reporter.py** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **room_loader.py** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **fixer.py** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **minimap_renderer.py** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [test_player_death_service.py](test_player_death_service.py.md) (11 shared connections)
-- [test_get_dead_players_debug_only_when_found](test_get_dead_players_debug_only_when_found.md) (2 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
-- [test_clear_player_combat_state_no_service](test_clear_player_combat_state_no_service.md) (1 shared connections)
-- [test_ensure_player_posture_lying_already_lying](test_ensure_player_posture_lying_already_lying.md) (1 shared connections)
-- [test_get_dead_players_excludes_alive](test_get_dead_players_excludes_alive.md) (1 shared connections)
-- [test_get_dead_players_finds_dead](test_get_dead_players_finds_dead.md) (1 shared connections)
-- [test_get_dead_players_handles_error](test_get_dead_players_handles_error.md) (1 shared connections)
-- [test_get_mortally_wounded_players_excludes_dead](test_get_mortally_wounded_players_excludes_dead.md) (1 shared connections)
-- [test_get_mortally_wounded_players_finds_mortally_wounded](test_get_mortally_wounded_players_finds_mortally_wounded.md) (1 shared connections)
-- [test_handle_player_death_clears_combat_state](test_handle_player_death_clears_combat_state.md) (1 shared connections)
-- [test_handle_player_death_handles_error](test_handle_player_death_handles_error.md) (1 shared connections)
+- [verify_linting_parity.py](verify_linting_parity.py.md) (13 shared connections)
+- [logger.ts](logger.ts.md) (13 shared connections)
+- [Onboard Skill](Onboard_Skill.md) (11 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (9 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (8 shared connections)
+- [Mypy Remediation](Mypy_Remediation.md) (4 shared connections)
+- [SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch](SQLAlchemy_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (3 shared connections)
+- [Introduce Color Strategically](Introduce_Color_Strategically.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_death_service.py`
+- `tools/room_toolkit/room_validator/core/__init__.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
+- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- `tools/room_toolkit/room_validator/core/path_validator.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `tools/room_toolkit/room_validator/validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 169 (89%)
+- INFERRED: 21 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

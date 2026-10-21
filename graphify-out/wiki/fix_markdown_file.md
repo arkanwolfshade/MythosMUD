@@ -1,31 +1,32 @@
 # fix_markdown_file
 
-> 9 nodes
+> 7 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **main()** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **fix_markdown_multiple_blanks.py** (4 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **fix_multiple_blanks()** (3 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **Path** (3 connections)
-- **Fix multiple consecutive blank lines (MD012). Returns: (new_content,…** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **Parse markdownlint output to get files with MD012 issues.** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
-- **Fix multiple blank lines in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_multiple_blanks.py`
+- **Easy Coverage Wins** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **Coverage Improvement Summary** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Python Code Coverage Status** (3 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **Realtime Small-File Coverage Sweep** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **70% Coverage Threshold** (2 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **bcrypt PyO3 Reimport Limitation** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **analyze_coverage_gaps.py** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [author_sanitarium_coords.py](author_sanitarium_coords.py.md) (1 shared connections)
+- [NPCService](NPCService.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_markdown_multiple_blanks.py`
+- `docs/PYTHON_COVERAGE_STATUS.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- `docs/archive/EASY_COVERAGE_WINS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,23 @@
 # persistence/utils/__init__.py
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **persistence/utils/__init__.py** (1 connections) — `server/persistence/utils/__init__.py`
-- **Utility modules for persistence layer.** (1 connections) — `server/persistence/utils/__init__.py`
+- **test_adjust_room_drop_index_out_of_range()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() with index out of range.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Teach Impeccable Skill](Teach_Impeccable_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/utils/__init__.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

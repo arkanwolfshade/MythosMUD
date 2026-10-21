@@ -1,62 +1,53 @@
 # test_magic_service.py
 
-> 75 nodes
+> 81 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **MagicService** (41 connections) — `server/game/magic/magic_service.py`
-- **UUID** (26 connections)
-- **CastingStateManager** (25 connections) — `server/game/magic/casting_state_manager.py`
-- **asyncio** (19 connections)
-- **casting_state_manager.py** (11 connections) — `server/game/magic/casting_state_manager.py`
-- **test_casting_state_manager.py** (11 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **StartCastingTarget** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **UUID** (8 connections)
-- **.start_casting()** (7 connections) — `server/game/magic/casting_state_manager.py`
-- **test_start_delayed_cast_value_error()** (7 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_can_cast_spell_unknown_and_materials()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_material_consume_failure()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_check_casting_progress_completes()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_start_delayed_cast_in_combat()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_can_cast_spell_paths()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_delayed()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_complete_casting_via_combat_queue()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_fail()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_pass()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **fixture** (5 connections)
-- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 50 more nodes in this community*
+- **DeadLetterQueue** (40 connections) — `server/realtime/dead_letter_queue.py`
+- **test_dead_letter_queue.py** (29 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **DeadLetterMessage** (28 connections) — `server/realtime/dead_letter_queue.py`
+- **Any** (7 connections)
+- **.from_dict()** (6 connections) — `server/realtime/dead_letter_queue.py`
+- **Path** (5 connections)
+- **.enqueue()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.enqueue_async()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.__init__()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **.replay_message()** (4 connections) — `server/realtime/dead_letter_queue.py`
+- **test_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_cleanup_old_messages_no_old_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dead_letter_message_from_dict()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dead_letter_message_from_dict_datetime_timestamp()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dead_letter_message_from_dict_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_delete_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_removes_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_dequeue_returns_oldest_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_creates_file()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_enqueue_writes_correct_data()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_get_statistics_with_messages()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_handles_read_error()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_respects_limit()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_list_messages_returns_all()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- **test_replay_message()** (4 connections) — `server/tests/unit/realtime/test_dead_letter_queue.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (20 shared connections)
-- [SpellEffectType](SpellEffectType.md) (11 shared connections)
-- [MagicCommandHandler](MagicCommandHandler.md) (7 shared connections)
-- [magic_service.py](magic_service.py.md) (6 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
-- [SpellEffects](SpellEffects.md) (2 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (2 shared connections)
-- [ValueError](ValueError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [Room](Room.md) (10 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (2 shared connections)
+- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/casting_state_manager.py`
-- `server/game/magic/magic_service.py`
-- `server/tests/unit/game/magic/test_casting_state_manager.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/realtime/dead_letter_queue.py`
+- `server/tests/unit/realtime/test_dead_letter_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 187 (80%)
-- INFERRED: 48 (20%)
+- EXTRACTED: 142 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

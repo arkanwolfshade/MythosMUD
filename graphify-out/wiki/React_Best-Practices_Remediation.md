@@ -1,11 +1,11 @@
 # React Best-Practices Remediation
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
-- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
+- **unit/realtime/messaging/__init__.py** (1 connections) — `server/tests/unit/realtime/messaging/__init__.py`
+- **Realtime messaging unit tests.** (1 connections) — `server/tests/unit/realtime/messaging/__init__.py`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `.cursor/plans/react_best-practices_remediation.plan.md`
-- `.cursor/plans/room_editor_backend_apis.plan.md`
+- `server/tests/unit/realtime/messaging/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

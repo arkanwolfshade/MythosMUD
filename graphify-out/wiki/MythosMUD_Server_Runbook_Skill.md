@@ -1,11 +1,10 @@
 # MythosMUD Server Runbook Skill
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **One Server Only Rule** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
-- **MythosMUD Server Runbook Skill** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **20260914_npc_catalog_core_era_e2e.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_core_era_e2e.sql`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- `data/npc_catalog/generated/20260914_npc_catalog_core_era_e2e.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

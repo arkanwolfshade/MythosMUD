@@ -1,48 +1,71 @@
 # test_npc_startup_service.py
 
-> 67 nodes
+> 143 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_npc_startup_service.py** (37 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **asyncio** (26 connections)
-- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_critical_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_exception_in_session()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_no_spawn_room()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_exception()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_fallback()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_fallback_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_no_container()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_no_persistence()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_room_id_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_sub_zone_room_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_with_room_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_determine_spawn_room_with_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_optional_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- *... and 42 more nodes in this community*
+- **SecureBaseModel** (92 connections) — `server/schemas/shared/base.py`
+- **test_player_requests.py** (36 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **api/player_effects.py** (35 connections) — `server/api/player_effects.py`
+- **test_player_effects_endpoints.py** (31 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **player_requests.py** (19 connections) — `server/schemas/players/player_requests.py`
+- **apply_lucidity_loss()** (14 connections) — `server/api/player_effects.py`
+- **apply_corruption()** (13 connections) — `server/api/player_effects.py`
+- **apply_fear()** (13 connections) — `server/api/player_effects.py`
+- **damage_player()** (13 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (13 connections) — `server/api/player_effects.py`
+- **heal_player()** (13 connections) — `server/api/player_effects.py`
+- **EffectResponse** (13 connections) — `server/schemas/players/player_effects.py`
+- **_request()** (13 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
+- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **test_integration_cleanup_gate.py** (10 connections) — `server/tests/unit/test_integration_cleanup_gate.py`
+- **_test_touches_database()** (9 connections) — `server/tests/fixtures/integration/__init__.py`
+- **test_apply_lucidity_loss_validation_maps_to_404()** (9 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **_user()** (9 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_dialogue_tree.py** (9 connections) — `server/tests/unit/schemas/test_dialogue_tree.py`
+- **dialogue_tree.py** (8 connections) — `server/schemas/dialogue/dialogue_tree.py`
+- *... and 118 more nodes in this community*
 
 ## Relationships
 
-- [NPCStartupService](NPCStartupService.md) (34 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (29 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (25 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (22 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (14 shared connections)
+- [NATSService](NATSService.md) (13 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (7 shared connections)
+- [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (6 shared connections)
+- [test_look_player.py](test_look_player.py.md) (6 shared connections)
+- [EventBus](EventBus.md) (5 shared connections)
+- [test_look_item.py](test_look_item.py.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/api/player_effects.py`
+- `server/schemas/dialogue/__init__.py`
+- `server/schemas/dialogue/dialogue_tree.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/shared/base.py`
+- `server/tests/fixtures/integration/__init__.py`
+- `server/tests/unit/api/admin/test_dialogue_schemas.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
+- `server/tests/unit/schemas/test_dialogue_tree.py`
+- `server/tests/unit/schemas/test_player_requests.py`
+- `server/tests/unit/schemas/test_room_write.py`
+- `server/tests/unit/test_integration_cleanup_gate.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (77%)
-- INFERRED: 30 (23%)
+- EXTRACTED: 419 (95%)
+- INFERRED: 23 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,31 +1,34 @@
 # enum
 
-> 10 nodes
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **Mypy Remediation** (8 connections) — `.cursor/commands/mypy-remediation.md`
+- **Fix patterns by tier** (5 connections) — `.cursor/commands/mypy-remediation.md`
+- **mypy-remediation.md** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔴 Critical — import and name errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Entry point** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Error code table** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Fix-verify loop** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🟡 High — type errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🔵 Low — type precision** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **🟢 Medium — type refinement** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Never** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Priority** (1 connections) — `.cursor/commands/mypy-remediation.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `.cursor/commands/mypy-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

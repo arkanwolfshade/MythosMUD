@@ -1,55 +1,58 @@
 # test_message_filtering.py
 
-> 123 nodes
+> 130 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_message_filtering.py** (39 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **MessageFilteringHelper** (31 connections) — `server/realtime/message_filtering.py`
-- **message_filtering.py** (16 connections) — `server/realtime/message_filtering.py`
-- **asyncio** (13 connections)
-- **BroadcastFilterContext** (11 connections) — `server/realtime/message_filtering.py`
-- **test_message_filtering_helpers.py** (10 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
-- **.is_player_in_room()** (6 connections) — `server/realtime/message_filtering.py`
-- **._should_include_target()** (6 connections) — `server/realtime/message_filtering.py`
-- **._debug_dump_receiver_mute_cache()** (5 connections) — `server/realtime/message_filtering.py`
-- **.filter_target_players()** (5 connections) — `server/realtime/message_filtering.py`
-- **test_filter_target_players_includes_allowed_player()** (5 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_filter_target_players_skips_mute_check_for_non_sensitive_channel()** (5 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **.get_player_room_from_online_players()** (4 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_persistence()** (4 connections) — `server/realtime/message_filtering.py`
-- **.is_player_muted_by_receiver()** (4 connections) — `server/realtime/message_filtering.py`
-- **.is_player_muted_by_receiver_with_user_manager()** (4 connections) — `server/realtime/message_filtering.py`
-- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
-- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
-- **._get_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
-- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
-- **._room_id_from_player_info()** (3 connections) — `server/realtime/message_filtering.py`
-- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
-- *... and 98 more nodes in this community*
+- **UtilityCommandFactory** (71 connections) — `server/utils/command_factories_utility.py`
+- **test_command_factories_utility.py** (55 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **.create_summon_command()** (13 connections) — `server/utils/command_factories_utility.py`
+- **.create_cast_command()** (12 connections) — `server/utils/command_factories_utility.py`
+- **.create_teleport_command()** (10 connections) — `server/utils/command_factories_utility.py`
+- **.create_alias_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_learn_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_spell_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_unalias_command()** (7 connections) — `server/utils/command_factories_utility.py`
+- **.create_aliases_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_goto_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_spells_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **.create_stop_command()** (6 connections) — `server/utils/command_factories_utility.py`
+- **test_create_alias_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_aliases_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_cast_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_goto_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_learn_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_spell_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_spells_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_stop_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_extra_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_invalid_token()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_create_summon_command_negative_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (12 shared connections)
-- [NATSError](NATSError.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (1 shared connections)
-- [UserManager](UserManager.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (19 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (12 shared connections)
+- [ContainerComponent](ContainerComponent.md) (11 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [LucidityRepository](LucidityRepository.md) (3 shared connections)
+- [container_query_helpers.py](container_query_helpers.py.md) (2 shared connections)
+- [HeaderBar.tsx](HeaderBar.tsx.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [EmoteService](EmoteService.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_filtering.py`
-- `server/realtime/nats_message_handler_broadcast.py`
-- `server/tests/unit/realtime/test_message_filtering.py`
-- `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- `server/tests/unit/utils/test_command_factories_utility.py`
+- `server/utils/command_factories_utility.py`
 
 ## Audit Trail
 
-- EXTRACTED: 172 (92%)
-- INFERRED: 14 (8%)
+- EXTRACTED: 217 (76%)
+- INFERRED: 69 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

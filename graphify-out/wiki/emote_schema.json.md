@@ -1,47 +1,32 @@
 # emote_schema.json
 
-> 39 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **emote_schema.json** (8 connections) — `schemas/emote_schema.json`
-- **emotes** (6 connections) — `schemas/emote_schema.json`
-- **other_message** (6 connections) — `schemas/emote_schema.json`
-- **^[a-z0-9_]+$** (5 connections) — `schemas/emote_schema.json`
-- **aliases** (5 connections) — `schemas/emote_schema.json`
-- **self_message** (5 connections) — `schemas/emote_schema.json`
-- **properties** (4 connections) — `schemas/emote_schema.json`
-- **required** (3 connections) — `schemas/emote_schema.json`
-- **patternProperties** (2 connections) — `schemas/emote_schema.json`
-- **properties** (2 connections) — `schemas/emote_schema.json`
-- **required** (2 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **items** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **uniqueItems** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **minProperties** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **$id** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- *... and 14 more nodes in this community*
+- **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
+- **test_get_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_is_valid_room_id_format()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test is_valid_room_id_format() validates room ID format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_local_channel_subject() generates subject (deprecated).** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_local_channel_subject() returns None for invalid room ID.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Check if a room ID follows the expected format. Args: room_id: The room ID to…** (1 connections) — `server/utils/room_utils.py`
+- **DEPRECATED: Generate NATS subject for local channel messages. .. deprecated::…** (1 connections) — `server/utils/room_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestCombatConfiguration](TestCombatConfiguration.md) (7 shared connections)
 
 ## Source Files
 
-- `schemas/emote_schema.json`
+- `server/tests/unit/utils/test_room_utils.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

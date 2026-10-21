@@ -1,17 +1,15 @@
 # Dependency Upgrade
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **Dependency Upgrade** (6 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **deps-upgrade/SKILL.md** (2 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Before starting** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Rollback** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Upgrade procedure** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Verify** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **.pre-commit-config.yaml** (1 connections) — `.pre-commit-config.yaml`
+- **dialogues.sql** (5 connections) — `db/procedures/dialogues.sql`
+- **schema_name.delete_dialogue_definition()** (1 connections) — `db/procedures/dialogues.sql`
+- **schema_name.get_dialogue_definition_by_id()** (1 connections) — `db/procedures/dialogues.sql`
+- **schema_name.get_dialogue_definition_by_npc_definition_id()** (1 connections) — `db/procedures/dialogues.sql`
+- **schema_name.list_dialogue_definitions()** (1 connections) — `db/procedures/dialogues.sql`
+- **schema_name.upsert_dialogue_definition()** (1 connections) — `db/procedures/dialogues.sql`
 
 ## Relationships
 
@@ -19,13 +17,12 @@
 
 ## Source Files
 
-- `.claude/skills/deps-upgrade/SKILL.md`
-- `.pre-commit-config.yaml`
+- `db/procedures/dialogues.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

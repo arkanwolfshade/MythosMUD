@@ -1,57 +1,52 @@
 # test_connection_delegates.py
 
-> 126 nodes
+> 117 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_connection_delegates.py** (51 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **connection_delegates.py** (38 connections) — `server/realtime/connection_delegates.py`
-- **asyncio** (27 connections)
-- **cleanup_dead_websocket_impl()** (14 connections) — `server/realtime/connection_delegates.py`
-- **validate_token_impl()** (13 connections) — `server/realtime/connection_delegates.py`
-- **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
-- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
-- **delegate_message_broadcaster()** (12 connections) — `server/realtime/connection_delegates.py`
-- **delegate_health_monitor()** (11 connections) — `server/realtime/connection_delegates.py`
-- **delegate_personal_message_sender()** (11 connections) — `server/realtime/connection_delegates.py`
-- **delegate_health_monitor_sync()** (10 connections) — `server/realtime/connection_delegates.py`
-- **UUID** (10 connections)
-- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
-- **delegate_personal_message_sender_sync()** (9 connections) — `server/realtime/connection_delegates.py`
-- **delegate_room_event_handler()** (9 connections) — `server/realtime/connection_delegates.py`
-- **_async_callable()** (8 connections) — `server/realtime/connection_delegates.py`
-- **delegate_game_state_provider_sync()** (8 connections) — `server/realtime/connection_delegates.py`
-- **_WebsocketCleanupManager** (7 connections) — `server/realtime/connection_delegates.py`
-- **_close_dead_websocket_if_open()** (7 connections) — `server/realtime/connection_delegates.py`
-- **_remove_connection_from_player_list()** (5 connections) — `server/realtime/connection_delegates.py`
-- **_sync_callable()** (5 connections) — `server/realtime/connection_delegates.py`
-- **test_validate_token_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **WebSocket** (5 connections)
-- **_PlayerIdCarrier** (4 connections) — `server/realtime/connection_delegates.py`
-- **_TokenPersistence** (4 connections) — `server/realtime/connection_delegates.py`
-- *... and 101 more nodes in this community*
+- **schema.sql** (168 connections) — `db/schema.sql`
+- **emote_aliases** (2 connections) — `db/schema.sql`
+- **emotes** (2 connections) — `db/schema.sql`
+- **add_player_effect()** (1 connections) — `db/schema.sql`
+- **aliases** (1 connections) — `db/schema.sql`
+- **apply_ban_sanction()** (1 connections) — `db/schema.sql`
+- **apply_kick_sanction()** (1 connections) — `db/schema.sql`
+- **calendar_holidays** (1 connections) — `db/schema.sql`
+- **calendar_npc_schedules** (1 connections) — `db/schema.sql`
+- **capture_invite()** (1 connections) — `db/schema.sql`
+- **clear_container_contents()** (1 connections) — `db/schema.sql`
+- **clear_room_map_origins()** (1 connections) — `db/schema.sql`
+- **create_container()** (1 connections) — `db/schema.sql`
+- **create_npc_definition()** (1 connections) — `db/schema.sql`
+- **create_quest_instance()** (1 connections) — `db/schema.sql`
+- **create_spawn_rule()** (1 connections) — `db/schema.sql`
+- **delete_container()** (1 connections) — `db/schema.sql`
+- **delete_dialogue_definition()** (1 connections) — `db/schema.sql`
+- **delete_npc_definition()** (1 connections) — `db/schema.sql`
+- **delete_player()** (1 connections) — `db/schema.sql`
+- **delete_player_alias()** (1 connections) — `db/schema.sql`
+- **delete_player_aliases_by_id()** (1 connections) — `db/schema.sql`
+- **delete_player_effect()** (1 connections) — `db/schema.sql`
+- **delete_player_mute()** (1 connections) — `db/schema.sql`
+- **delete_player_skills_for_player()** (1 connections) — `db/schema.sql`
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (25 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (9 shared connections)
-- [test_connection_error_methods.py](test_connection_error_methods.py.md) (7 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [MessageQueue](MessageQueue.md) (1 shared connections)
+- [packages/README.md](packages-README.md.md) (22 shared connections)
+- [rooms](rooms.md) (11 shared connections)
+- [_make_mock_row](_make_mock_row.md) (8 shared connections)
+- [📋 Test Coverage Breakdown](📋_Test_Coverage_Breakdown.md) (6 shared connections)
+- [Gladiator Ring (Arena) Implementation Plan](Gladiator_Ring_Arena_Implementation_Plan.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/realtime/connection_manager_methods.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `db/schema.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 287 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 169 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,74 +1,57 @@
 # command_error
 
-> 236 nodes
+> 40 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **command_error()** (227 connections) — `server/commands/command_results.py`
-- **admin_teleport_commands.py** (37 connections) — `server/commands/admin_teleport_commands.py`
-- **admin_hallucinate_command.py** (34 connections) — `server/commands/admin_hallucinate_command.py`
-- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
-- **test_teleport_helpers.py** (31 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
-- **admin_confirm_teleport_commands.py** (28 connections) — `server/commands/admin_confirm_teleport_commands.py`
-- **teleport_helpers.py** (28 connections) — `server/commands/teleport_helpers.py`
-- **get_admin_actions_logger()** (27 connections) — `server/structured_logging/admin_actions_logger.py`
-- **goto_helpers.py** (26 connections) — `server/commands/goto_helpers.py`
-- **admin_teleport_utils.py** (24 connections) — `server/commands/admin_teleport_utils.py`
-- **validate_admin_permission()** (22 connections) — `server/commands/admin_permission_utils.py`
-- **handle_goto_command()** (21 connections) — `server/commands/admin_teleport_commands.py`
-- **broadcast_teleport_effects()** (21 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (21 connections) — `server/commands/admin_teleport_utils.py`
-- **asyncio** (21 connections)
-- **admin_actions_logger.py** (20 connections) — `server/structured_logging/admin_actions_logger.py`
-- **test_admin_commands_helpers.py** (20 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_admin_teleport_utils.py** (18 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **patch** (16 connections)
-- **get_online_player_by_display_name()** (15 connections) — `server/commands/admin_teleport_utils.py`
-- **validate_goto_context()** (14 connections) — `server/commands/goto_helpers.py`
-- **log_failed_admin_move()** (13 connections) — `server/commands/admin_teleport_utils.py`
-- **execute_confirm_goto()** (12 connections) — `server/commands/goto_helpers.py`
-- **execute_goto_teleport()** (12 connections) — `server/commands/goto_helpers.py`
-- *... and 211 more nodes in this community*
+- **TaskRegistry** (49 connections) — `server/app/task_registry.py`
+- **test_task_registry.py** (24 connections) — `server/tests/unit/app/test_task_registry.py`
+- **asyncio** (14 connections)
+- **TaskRegistry** (14 connections)
+- **task_registry.py** (13 connections) — `server/app/task_registry.py`
+- **get_registry()** (9 connections) — `server/app/task_registry.py`
+- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
+- **unregister_task()** (7 connections) — `server/app/task_registry.py`
+- **test_module_level_helpers()** (7 connections) — `server/tests/unit/app/test_task_registry.py`
+- **register_task()** (6 connections) — `server/app/task_registry.py`
+- **test_register_closes_coro_when_create_task_fails()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **test_cancel_task_by_name()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_get_registry_info_and_metrics()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_list_active_tasks_and_stats_by_type()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_and_unregister_task()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_duplicate_name_gets_suffix()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_register_during_shutdown_raises()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_shutdown_all_clears_active_tasks()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_task_metadata_repr()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
+- **registry()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_cancel_missing_task_returns_false()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_shutdown_all_idempotent_warning()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_unregister_missing_task_returns_false()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [alias_storage.py](alias_storage.py.md) (44 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (36 shared connections)
-- [command_service.py](command_service.py.md) (36 shared connections)
-- [AliasStorage](AliasStorage.md) (33 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (24 shared connections)
-- [get_logger](get_logger.md) (24 shared connections)
-- [_handle_admin_hallucinate_command](_handle_admin_hallucinate_command.md) (15 shared connections)
-- [admin_setstat_command.py](admin_setstat_command.py.md) (12 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (8 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (8 shared connections)
-- [test_message_category_invariants.py](test_message_category_invariants.py.md) (7 shared connections)
-- [test_room_system_message_categories.py](test_room_system_message_categories.py.md) (7 shared connections)
+- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (16 shared connections)
+- [Semgrep Configuration](Semgrep_Configuration.md) (7 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
+- [EventHandler](EventHandler.md) (3 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_confirm_teleport_commands.py`
-- `server/commands/admin_hallucinate_command.py`
-- `server/commands/admin_permission_utils.py`
-- `server/commands/admin_teleport_commands.py`
-- `server/commands/admin_teleport_utils.py`
-- `server/commands/command_results.py`
-- `server/commands/goto_helpers.py`
-- `server/commands/teleport_helpers.py`
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
-- `server/tests/unit/commands/test_admin_permission_utils.py`
-- `server/tests/unit/commands/test_admin_teleport_utils.py`
-- `server/tests/unit/commands/test_goto_helpers.py`
-- `server/tests/unit/commands/test_teleport_helpers.py`
-- `server/tests/unit/realtime/test_message_category_invariants.py`
-- `server/tests/unit/realtime/test_room_system_message_categories.py`
+- `server/app/task_registry.py`
+- `server/tests/unit/app/test_task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 901 (99%)
-- INFERRED: 7 (1%)
+- EXTRACTED: 126 (87%)
+- INFERRED: 19 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

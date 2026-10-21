@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Pulp Cthulhu (7th edition Call of Cthulhu)
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Pulp Cthulhu (7th edition Call of Cthulhu)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
-- **pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

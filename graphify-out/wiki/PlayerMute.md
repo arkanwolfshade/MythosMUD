@@ -1,58 +1,52 @@
 # PlayerMute
 
-> 51 nodes
+> 58 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **PlayerMute** (26 connections) — `server/persistence/repositories/player_mute_repository.py`
-- **PlayerMuteRepository** (19 connections) — `server/persistence/repositories/player_mute_repository.py`
-- **test_player_aliases_and_mutes_db.py** (14 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **test_game_bundle_mute_load.py** (14 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
-- **test_player_mute_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **_Players** (12 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **_Session** (11 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **_Repo** (8 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
-- **test_database_errors_raise_database_error()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **test_delete_reports_whether_a_row_was_removed()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **test_load_active_maps_rows()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **test_upsert_binds_stringified_ids_and_commits()** (7 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **_Result** (6 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **test_load_player_mutes_fills_user_manager_index()** (6 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
-- **_use_session()** (6 connections) — `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
-- **test_global_mute_survives_restart_without_muter_online()** (5 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **test_mute_repository_upsert_replaces_and_filters_expired()** (5 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **test_load_player_mutes_database_error_starts_with_no_mutes()** (5 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
-- **asyncio** (5 connections)
-- **MonkeyPatch** (5 connections)
-- **test_alias_crud_round_trip()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **test_alias_rejected_for_unknown_player_and_over_limit()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **test_aliases_are_per_player_and_deleted_by_id()** (4 connections) — `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- **asyncio** (4 connections)
-- **.load_active()** (3 connections) — `server/tests/unit/container/test_game_bundle_mute_load.py`
-- *... and 26 more nodes in this community*
+- **testing_examples.py** (30 connections) — `docs/examples/logging/testing_examples.py`
+- **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **test_async_logging()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **test_exception_tracking()** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
+- **async_operation()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **client** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **LoggingMiddleware** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **process_item()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_batch_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_context_binding()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_correlation_ids()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_error_handling()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_logging_performance_metrics()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_middleware_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_performance_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **test_websocket_logging()** (3 connections) — `docs/examples/logging/testing_examples.py`
+- **.get()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.post()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **database** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.execute()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **.process_request()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- **asyncio** (2 connections)
+- **test_api_request_logging()** (2 connections) — `docs/examples/logging/testing_examples.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (24 shared connections)
-- [UserManager](UserManager.md) (8 shared connections)
-- [test_user_manager.py](test_user_manager.py.md) (8 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
-- [session_factory](session_factory.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [_prepare_command_for_processing](_prepare_command_for_processing.md) (4 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_mute_repository.py`
-- `server/tests/integration/test_player_aliases_and_mutes_db.py`
-- `server/tests/unit/container/test_game_bundle_mute_load.py`
-- `server/tests/unit/persistence/repositories/test_player_mute_repository.py`
+- `docs/examples/logging/testing_examples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (85%)
-- INFERRED: 22 (15%)
+- EXTRACTED: 71 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

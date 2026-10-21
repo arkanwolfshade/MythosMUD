@@ -1,33 +1,34 @@
 # MythosMUD LLM Wiki (Obsidian)
 
-> 12 nodes
+> 13 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- **MythosMUD LLM Wiki (Obsidian)** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Workflows** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Chaosium ingest** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Division of labor** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Graphify sync** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Ingest** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Lint** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Non-goals** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Query (durable)** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **Vault location** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **When to use this skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **LLM Wiki Skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **test_room_environment_parity.py** (7 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **_environment_enum_from_schema()** (5 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **_environment_options_from_room_edit_modal()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_room_edit_modal_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_room_hierarchy_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_unified_room_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Path** (1 connections)
+- **Parity test for the room environment enum (#623). Guards against the exact…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Return the `environment` property's `enum` values from a room JSON schema.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Return the non-empty `value`s of RoomEditModal.tsx's ENVIRONMENT_OPTIONS…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **room_hierarchy_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **unified_room_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **RoomEditModal.tsx's dropdown options must equal ROOM_ENVIRONMENTS (ignoring the…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_channel_commands.py](test_channel_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- `server/tests/unit/test_room_environment_parity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

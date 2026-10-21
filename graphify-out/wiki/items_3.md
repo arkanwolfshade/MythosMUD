@@ -1,26 +1,24 @@
 # items
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **items** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **bonus_tags** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Chaosium graphify snapshot - Down Darker Trails** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **down-darker-trails/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

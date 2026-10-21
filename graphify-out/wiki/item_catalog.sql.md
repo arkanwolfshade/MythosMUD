@@ -1,23 +1,26 @@
 # item_catalog.sql
 
-> 2 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **item_catalog.sql** (1 connections) — `db/procedures/item_catalog.sql`
-- **schema_name.list_item_prototypes_page()** (1 connections) — `db/procedures/item_catalog.sql`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **ConnectionManager** (1 connections)
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,…** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
-- `db/procedures/item_catalog.sql`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,47 @@
 # CommandRateLimiter
 
-> 30 nodes
+> 29 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **CommandRateLimiter** (17 connections) — `server/middleware/command_rate_limiter.py`
-- **test_command_rate_limiter.py** (11 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **_fixed_clock()** (8 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **datetime** (8 connections)
-- **test_get_stats_and_cleanup_inactive()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_get_wait_time_when_rate_limited()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_blocks_at_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_under_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_reset_player_and_all()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_sliding_window_expires_old_commands()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.__init__()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.cleanup_inactive_players()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_remaining_commands()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_wait_time()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.is_allowed()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_all()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_player()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **datetime** (2 connections)
-- **Any** (1 connections)
-- **Get number of commands player can still execute. Args: player_name: Player to…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for a specific player. Useful for admin commands or when…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for all players. Clears all accumulated timestamp data.…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get system-wide rate limiting statistics. Returns: Dictionary containing rate…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Remove timestamp data for players who haven't been active recently. Prevents…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- *... and 5 more nodes in this community*
+- **test_lint_raw_sql_in_python.py** (16 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **_load_script()** (14 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **_LintRawSqlModule** (6 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_raw_sql_site_is_reported()** (4 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_current_codebase_has_no_raw_sql()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_does_not_flag_comment_mentioning_select_star()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_does_not_flag_docstring_prose_with_select_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_does_not_flag_procedure_call_no_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_does_not_flag_procedure_call_with_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_bare_table_select_from_split_across_lines()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_bare_table_select_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_raw_delete_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_raw_insert_into()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_raw_select_star()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **test_flags_raw_update_set()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **._find_raw_sql_lines()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **.scan()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **MonkeyPatch** (1 connections)
+- **Path** (1 connections)
+- **Protocol** (1 connections)
+- **Unit tests for scripts/lint_raw_sql_in_python.py. Verifies the detection logic…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **server/ must have zero raw-SQL sites -- the migration completed under #633.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **Regression test for the gap #624 found: a naive per-line matcher can't see…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- **ADR-015 procedure call: SELECT fn(:arg) -- no FROM at all.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/command_rate_limiter.py`
-- `server/tests/unit/middleware/test_command_rate_limiter.py`
+- `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,10 @@
 # Character Creation Revamp and CoC 7th Ed Skills Plan
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Character Creation Revamp and CoC 7th Ed Skills Plan** (0 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **PostgreSQL Procedures and Functions** (0 connections) — `db/procedures/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- `db/procedures/README.md`
 
 ## Audit Trail
 

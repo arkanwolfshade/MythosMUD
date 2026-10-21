@@ -1,32 +1,35 @@
 # P3 · container-di + client + domain
 
-> 11 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **P3 · container-di + client + domain** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **P3-Cluster-DI-Client-Domain.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **Further P0 reversals** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **H10 · ADR-011 declares completed work as "planned"** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **H7 · The global-singleton leak grew rather than shrank** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **H8 · Twelve modules bypass the persistence facade — and the two docs disagree about whether that's allowed** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **H9 · ADR-008 styling claim is wholly counterfactual** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **Low / STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **Notable CONFORMS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
-- **Register corrections** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **security_utils.py** (8 connections) — `server/security_utils.py`
+- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
+- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Security utilities for MythosMUD server. Implements secure path validation and…** (1 connections) — `server/security_utils.py`
+- **Ensure a directory exists and return its absolute path. Args: directory: The…** (1 connections) — `server/security_utils.py`
+- **Test ensure_directory_exists with existing directory.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test ensure_directory_exists creates directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test ensure_directory_exists with relative path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [ascii_map_exits.py](ascii_map_exits.py.md) (6 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [Adapt Skill](Adapt_Skill.md) (1 shared connections)
+- [directionHallucination.ts](directionHallucination.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- `server/security_utils.py`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

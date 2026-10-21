@@ -1,52 +1,44 @@
 # Code Review: Import Analysis and Anti-Patterns
 
-> 28 nodes
+> 22 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **Code Review: Import Analysis and Anti-Patterns** (10 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Files Reviewed** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Recommendations** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Code Review Import Analysis** (4 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Additional Findings** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Critical Issues Found** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Import Pattern Analysis** (3 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **get_logger** (3 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **Best Practices Analysis** (2 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **F-String Logging Anti-Pattern** (2 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **1. **Import Inconsistency in `server/persistence.py`**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **2. **Import Organization Pattern**** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Conclusion** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Configuration Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Container Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Database Migration Files** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Executive Summary** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Files Using Absolute Imports (`from server.`)** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Files Using Relative Imports (`from .`)** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **✅ Good Practices Found** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **High Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Low Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Medium Priority** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **Notes on Import Style** (1 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- *... and 3 more nodes in this community*
+- **_FakeConnection** (13 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **test_e2e_player_scripts.py** (12 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **_connect_to()** (9 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **_load()** (7 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **MonkeyPatch** (7 connections)
+- **test_place_refuses_a_room_that_does_not_exist_and_moves_nobody()** (7 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **test_place_exits_nonzero_for_an_unknown_character()** (6 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **test_state_exits_nonzero_for_an_unknown_character()** (6 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **test_state_reports_an_empty_list_when_the_character_has_no_box()** (6 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **test_state_reports_location_and_what_is_in_the_bank_box()** (6 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **CaptureFixture** (5 connections)
+- **test_place_moves_the_named_character_to_the_room()** (5 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **_PlaceScript** (2 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **Protocol** (2 connections)
+- **_StateScript** (2 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **.close()** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **.fetchrow()** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **.fetchval()** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **.__init__()** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **Tests for scripts/e2e_player_state.py and scripts/e2e_place_player.py…** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **A typo must fail loudly, not strand the character in a room the server cannot…** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
+- **Stands in for asyncpg.Connection; answers by the query's text and records what…** (1 connections) — `server/tests/unit/scripts/test_e2e_player_scripts.py`
 
 ## Relationships
 
-- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
-- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/LOGGING_BEST_PRACTICES.md`
-- `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
+- `server/tests/unit/scripts/test_e2e_player_scripts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 51 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

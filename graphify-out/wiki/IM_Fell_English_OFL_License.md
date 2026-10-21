@@ -1,10 +1,10 @@
 # IM Fell English OFL License
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **IM Fell English OFL License** (0 connections) — `client/public/fonts/IM-Fell-English-OFL.txt`
+- **3. Decision** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/public/fonts/IM-Fell-English-OFL.txt`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

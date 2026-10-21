@@ -1,51 +1,52 @@
 # test_communication_commands_flows.py
 
-> 54 nodes
+> 134 nodes · cohesion 0.02
 
 ## Key Concepts
 
-- **test_communication_commands_flows.py** (49 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **SimpleNamespace** (24 connections)
-- **asyncio** (22 connections)
-- **_chat_send_with_room_bundle()** (15 connections) — `server/commands/communication_commands_flows.py`
-- **flow_say_command()** (12 connections) — `server/commands/communication_commands_flows.py`
-- **_message_from_command()** (12 connections) — `server/commands/communication_commands_flows.py`
-- **flow_local_command()** (11 connections) — `server/commands/communication_commands_flows.py`
-- **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_whisper_id_pair_or_error()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_RoomChannelOutcomeConfig** (8 connections) — `server/commands/communication_commands_flows.py`
-- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_exception_returns_generic_message()** (7 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_local_command_echo_is_tagged_chat_local()** (7 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **_container_request()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_chat_failure()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_chat_send_with_room_bundle_success()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_global_command_echo_is_tagged_chat_global()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_reply_command_success_uses_container_services()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_say_command_failure_is_not_tagged_as_chat()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_say_command_success_broadcasts_room_message()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_system_command_blocks_non_admin_user()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_system_command_echo_is_tagged_chat_admin()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_exception_returns_generic_message()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_whisper_command_success_sends_private_message()** (6 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- **test_flow_global_command_blocks_low_level_user()** (5 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- *... and 29 more nodes in this community*
+- **test_command_inventory.py** (65 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **EquipCommand** (23 connections) — `server/models/command_inventory.py`
+- **PickupCommand** (22 connections) — `server/models/command_inventory.py`
+- **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
+- **command_inventory.py** (18 connections) — `server/models/command_inventory.py`
+- **DropCommand** (12 connections) — `server/models/command_inventory.py`
+- **GetCommand** (12 connections) — `server/models/command_inventory.py`
+- **PutCommand** (12 connections) — `server/models/command_inventory.py`
+- **InventoryCommand** (8 connections) — `server/models/command_inventory.py`
+- **ReadCommand** (8 connections) — `server/models/command_inventory.py`
+- **field_validator** (6 connections)
+- **.validate_slot()** (4 connections) — `server/models/command_inventory.py`
+- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_slot()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
+- **test_drop_command_index_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_missing_index()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_drop_command_with_quantity()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_index_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_search_term_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_equip_command_target_slot_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- *... and 109 more nodes in this community*
 
 ## Relationships
 
-- [communication_commands_flows.py](communication_commands_flows.py.md) (46 shared connections)
-- [MessageCategory](MessageCategory.md) (20 shared connections)
-- [command_error](command_error.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (30 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands_flows.py`
-- `server/tests/unit/commands/test_communication_commands_flows.py`
+- `server/models/command_inventory.py`
+- `server/tests/unit/models/test_command_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (90%)
-- INFERRED: 20 (10%)
+- EXTRACTED: 245 (96%)
+- INFERRED: 9 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

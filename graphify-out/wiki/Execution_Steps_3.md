@@ -1,46 +1,46 @@
 # Execution Steps
 
-> 23 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Scenario 5: Chat Messages Between Players **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **scenario-05-chat-messages.md** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 1: Clean State - Unmute Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 2: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 3: AW Sends Chat Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 4: Verify Ithaqua Sees AW's Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 5: Ithaqua Replies** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 6: Verify AW Sees Ithaqua's Reply** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 7: Test Multiple Messages** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 8: Test Message Formatting** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 9: Test Message History** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **FRD & Plan-Document Verification Register — 2026-08** (10 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **ADR-022 ui-v2 Client Transition** (4 connections) — `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
+- **3. Claim verification (FRD sweep, re-run)** (4 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **2. FRD corpus — reconstructed and enumerated** (3 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **5. Disposition** (3 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **FRD_PLAN_VERIFICATION_REGISTER_2026-08.md** (2 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **client ui-v2 architecture (GameClientV2Container/PanelSystem)** (1 connections) — `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
+- **1. Purpose** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **2.1 In corpus (17)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **2.2 Candidates considered, excluded (delta, with reasons)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **3.1 Findings confirmed, refuted, or superseded since the original pass** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **3.2 New verification — previously unrecorded** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **3.3 Unverifiable — genuinely, with citation** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **4. §4.7 rows 3–4 — resolved directly (plan-sweep named unverifiables)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **5.1 Fixed inline (doc-text corrections, drifted names, unmarked supersessions)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **5.2 Filed (unbuilt-feature / data-integrity classes, deduped against open issues)** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **6. Coverage summary** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **7. Related documentation** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **8. Changelog** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- **Dead Code Definition and Tooling** (1 connections) — `docs/dead-code.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- `docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`
+- `docs/architecture/decisions/ADR-022-ui-v2-client-transition.md`
+- `docs/dead-code.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 20 (95%)
 - INFERRED: 0 (0%)
-- AMBIGUOUS: 0 (0%)
+- AMBIGUOUS: 1 (5%)
 
 ---
 

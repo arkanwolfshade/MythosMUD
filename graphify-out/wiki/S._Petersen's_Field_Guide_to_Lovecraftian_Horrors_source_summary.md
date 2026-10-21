@@ -1,22 +1,21 @@
 # S. Petersen's Field Guide to Lovecraftian Horrors (source summary)
 
-> 5 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **S. Petersen's Field Guide to Lovecraftian Horrors (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **S. Petersen's Field Guide to Lovecraftian Horrors.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **setup_jwt_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **fixture** (1 connections)
+- **MonkeyPatch** (1 connections)
+- **Set JWT secret for tests.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_look_container.py](test_look_container.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 

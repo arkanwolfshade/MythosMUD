@@ -1,10 +1,10 @@
 # Database Schema Management
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Database Schema Management** (0 connections) — `db/README.md`
+- **Reversed Compass Directions Implementation Requirements** (0 connections) — `docs/archive/reversed-compass-directions-requirements.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/README.md`
+- `docs/archive/reversed-compass-directions-requirements.md`
 
 ## Audit Trail
 

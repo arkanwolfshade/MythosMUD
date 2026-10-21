@@ -1,50 +1,52 @@
 # test_nats_service_pool.py
 
-> 30 nodes
+> 82 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **test_nats_service_pool.py** (23 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **asyncio** (11 connections)
-- **test_flush_batch_records_partial_success_and_cancels_batch_task()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_publish_batch_returns_false_on_subject_validation_failure()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_publish_with_pool_wraps_unexpected_exception()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_recover_failed_batches_requeues_on_repeated_failure()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_retry_failed_batch_groups_recovers_on_retry()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_validate_pool_publish_subject_rejects_invalid_subject()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_validate_pool_publish_subject_wraps_validation_error()** (5 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **nats_config()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_cleanup_connection_pool_swallows_cancelled_error()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_cleanup_connection_pool_swallows_close_error()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_cleanup_connection_pool_swallows_outer_exception()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_publish_batch_returns_false_on_unexpected_exception()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **test_recover_failed_batches_recovers_successfully()** (4 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **fixture** (2 connections)
-- **Unit tests for NATSServicePoolMixin's exception-handling and retry branches.…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **_cleanup_connection_pool's outer try/except tolerates a failure enumerating the…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **publish_batch returns False (not raise) when subject validation rejects the…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **publish_batch's outer handler catches an unexpected exception and returns False.** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **_flush_batch reports partial success when one subject group fails, then clears…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **_retry_failed_batch_groups republishes a failed group successfully on its retry…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **recover_failed_batches puts a message back in the failed queue if recovery also…** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **recover_failed_batches drains the failed queue and reports the recovered count.** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/services/test_nats_service_pool.py`
-- *... and 5 more nodes in this community*
+- **test_command_communication.py** (50 connections) — `server/tests/unit/models/test_command_communication.py`
+- **WhisperCommand** (15 connections) — `server/models/command_communication.py`
+- **test_pose_command_pose_empty_string()** (4 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_action_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_global_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_global_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_global_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_global_command_validate_message_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_validate_message_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_action_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_pose_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_pose_none()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_validate_pose_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (18 shared connections)
-- [NATSError](NATSError.md) (8 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (5 shared connections)
+- [ContainerComponent](ContainerComponent.md) (46 shared connections)
+- [test_look_item_helpers.py](test_look_item_helpers.py.md) (2 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_nats_service_pool.py`
+- `server/models/command_communication.py`
+- `server/tests/unit/models/test_command_communication.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (74%)
-- INFERRED: 18 (26%)
+- EXTRACTED: 135 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

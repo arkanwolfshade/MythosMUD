@@ -1,33 +1,29 @@
 # E2E Tests Playwright
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **E2E Tests Playwright** (3 connections) — `client/tests/e2e/README.md`
-- **Playwright storageState Session Sharing** (3 connections) — `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
-- **Runtime Auth Isolation** (2 connections) — `client/tests/e2e/README.md`
-- **authenticatedTest Fixture** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
-- **E2E Login Timeout Issue** (2 connections) — `client/tests/e2e/TEST_EXECUTION_STATUS.md`
-- **E2E Timeout Analysis and Fixes** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
-- **Playwright E2E Runtime Tests** (1 connections) — `client/README.md`
+- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
 
 ## Relationships
 
-- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/README.md`
-- `client/tests/e2e/README.md`
-- `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
-- `client/tests/e2e/TEST_EXECUTION_STATUS.md`
-- `client/tests/e2e/TIMEOUT_ANALYSIS.md`
+- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (38%)
-- INFERRED: 5 (62%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

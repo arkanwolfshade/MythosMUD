@@ -1,20 +1,20 @@
 # test_handle_spells_command_no_spells
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_handle_spells_command_no_spells()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **Test spells command when player has no spells.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **test_player_xp_award_event_init()** (3 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **Test PlayerXPAwardEvent initialization.** (1 connections) — `server/tests/unit/services/test_player_combat_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 

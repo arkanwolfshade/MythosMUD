@@ -1,11 +1,10 @@
 # UX Writing Reference
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Verb+Object Button Labels** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
-- **UX Writing Reference** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
+- **Relationship to this vault** (0 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/ux-writing.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,31 +1,29 @@
 # fix_suppression_alignment.py
 
-> 22 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **fix_suppression_alignment.py** (10 connections) — `scripts/fix_suppression_alignment.py`
-- **parse_alignment_report()** (8 connections) — `scripts/fix_suppression_alignment.py`
-- **fix_file()** (7 connections) — `scripts/fix_suppression_alignment.py`
-- **_apply_fixes_to_line()** (6 connections) — `scripts/fix_suppression_alignment.py`
-- **Any** (5 connections)
-- **_group_fixes_by_line()** (4 connections) — `scripts/fix_suppression_alignment.py`
-- **main()** (4 connections) — `scripts/fix_suppression_alignment.py`
-- **_parse_missing_rules()** (4 connections) — `scripts/fix_suppression_alignment.py`
-- **add_pylint_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
-- **add_ruff_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
-- **_parse_file_line_pattern()** (3 connections) — `scripts/fix_suppression_alignment.py`
-- **_parse_issue_type_header()** (3 connections) — `scripts/fix_suppression_alignment.py`
-- **Path** (3 connections)
-- **Parse the alignment report to extract misaligned suppressions.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Add ruff noqa comment to a line that has pylint disable.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Add pylint disable comment to a line that has noqa.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Group fixes by line number.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Apply all fixes for a single line.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Apply fixes to a file.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Parse issue type header (MISSING RUFF or MISSING PYLINT).** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Parse file:line pattern from a line. Returns (file, line) or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
-- **Parse missing rules from a line. Returns misaligned dict or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Communities (10 total, 0 thin omitted)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Petersen's Abominations  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **petersen-s-abominations/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 0 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 1 - "Petersen's Abominations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 2 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 3 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 4 - "Mohole"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 5 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 6 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 7 - "Petersen's Abominations Pre-Generated Investigators v2"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 8 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 9 - "The Derelict"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -33,11 +31,11 @@
 
 ## Source Files
 
-- `scripts/fix_suppression_alignment.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

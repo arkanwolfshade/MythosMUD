@@ -1,34 +1,28 @@
 # LOGGING_BEST_PRACTICES.md
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **LOGGING_BEST_PRACTICES.md** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **LOGGING_QUICK_REFERENCE.md** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **NumPy Code Review** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **measure_performance** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **roll_4d6_drop_lowest** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Structured Logging** (2 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **NumPy Vectorized Statistics** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **enhanced_logging_config.get_logger** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Real-Time Communication (WebSocket)** (5 connections) — `docs/archive/realtime.md`
+- **realtime.md** (1 connections) — `docs/archive/realtime.md`
+- **Authentication and Token in URL** (1 connections) — `docs/archive/realtime.md`
+- **Connection Grace Periods** (1 connections) — `docs/archive/realtime.md`
+- **Deprecated Endpoints** (1 connections) — `docs/archive/realtime.md`
+- **Production: HTTPS and WSS** (1 connections) — `docs/archive/realtime.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
-- [Enhanced Logging Quick Reference](Enhanced_Logging_Quick_Reference.md) (1 shared connections)
-- [NumPy Code Review - MythosMUD Codebase](NumPy_Code_Review_-_MythosMUD_Codebase.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
-- `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- `docs/archive/NUMPY_CODE_REVIEW.md`
+- `docs/archive/realtime.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (80%)
-- INFERRED: 2 (20%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

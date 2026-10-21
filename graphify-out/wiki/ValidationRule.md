@@ -1,47 +1,46 @@
 # ValidationRule
 
-> 25 nodes
+> 23 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **ValidationRule** (10 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ValidationError** (8 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **rules/__init__.py** (3 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__str__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.to_dict()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **._filter_rooms_by_zone()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.get_rule_info()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **ABC** (2 connections)
-- **Base validation rule class. This module defines the abstract base class for all…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation error for this rule. Args: room_id: Room ID where error…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Represents a validation error with metadata. As documented in the restricted…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Create a validation warning for this rule. Args: room_id: Room ID where warning…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Get information about this rule. Returns: Dictionary with rule information** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Initialize a validation error. Args: rule_name: Name of the rule that generated…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Convert error to dictionary format.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **String representation of the error.** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Abstract base class for all validation rules. Each rule implements specific…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Initialize the validation rule. Args: name: Name of the rule description:…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Filter rooms by zone if specified. Args: room_database: Dictionary mapping room…** (1 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **Validation rules for room pathing analysis. This module contains the rule…** (1 connections) — `tools/room_toolkit/room_validator/rules/__init__.py`
+- **apply_communication_dampening()** (15 connections) — `server/services/lucidity_communication_dampening.py`
+- **lucidity_communication_dampening.py** (11 connections) — `server/services/lucidity_communication_dampening.py`
+- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **DampeningResult** (8 connections) — `server/services/lucidity_communication_dampening.py`
+- **_apply_receiver_effects()** (5 connections) — `server/services/lucidity_communication_dampening.py`
+- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
+- **patch** (4 connections)
+- **_apply_sender_effects()** (3 connections) — `server/services/lucidity_communication_dampening.py`
+- **_maybe_muffle_fractured_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
+- **_maybe_scramble_deranged_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
+- **test_deranged_incoming_scrambles_words()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_incoming_strips_punctuation()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_outgoing_appends_glyph()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_fractured_outgoing_no_glyph_when_roll_high()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **TypedDict** (1 connections)
+- **Communication dampening utilities for lucidity system. Implements communication…** (1 connections) — `server/services/lucidity_communication_dampening.py`
+- **Check if shout should be blocked based on tier.** (1 connections) — `server/services/lucidity_communication_dampening.py`
+- **Filtered chat payload after lucidity-tier effects.** (1 connections) — `server/services/lucidity_communication_dampening.py`
+- **Apply communication dampening based on lucidity tiers. Args: message: Original…** (1 connections) — `server/services/lucidity_communication_dampening.py`
+- **Unit tests for lucidity communication dampening.** (1 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (2 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [skills_commands.py](skills_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/rules/__init__.py`
-- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `server/services/lucidity_communication_dampening.py`
+- `server/tests/unit/services/test_lucidity_communication_dampening.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,25 @@
 # Implementation Phases
 
-> 5 nodes
+> 3 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Implementation Phases** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 1: Core Separation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 2: Enhanced Features** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 3: Polish and Optimization** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 4: Testing and Refinement** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `client/src/theme/__tests__/mythosTheme.test.ts`
+- `client/src/theme/mythosTheme.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

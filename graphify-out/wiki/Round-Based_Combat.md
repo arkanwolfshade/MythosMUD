@@ -1,31 +1,26 @@
 # Round-Based Combat
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- **🚀 How to Run Remaining Tests** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Docker-Based Testing (Zero bcrypt Issues)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Individual Module Testing (For Debugging)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Quick Start (All Tests in One Fresh Session)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [author_sanitarium_coords.py](author_sanitarium_coords.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
-- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
-- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
-- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (40%)
-- INFERRED: 3 (60%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

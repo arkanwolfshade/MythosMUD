@@ -1,26 +1,24 @@
 # Gotchas & Solutions
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Gotchas & Solutions** (5 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Gotcha 1: Async Propagation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Gotcha 2: Mixing Sync and Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Gotcha 3: Transaction Management** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Gotcha 4: Testing Async Code** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Chaosium graphify snapshot - Alone Against the Dark** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- **alone-against-the-dark/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

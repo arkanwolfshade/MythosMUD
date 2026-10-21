@@ -1,28 +1,26 @@
 # Git Workflow
 
-> 7 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **Summary: Test Quality Metrics** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **By removing 15% of tests, we** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Current State** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Optimized State (After Pruning)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Value Proposition** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [✨ Key Achievements](✨_Key_Achievements.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/git-workflow/SKILL.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

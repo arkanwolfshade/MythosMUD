@@ -1,10 +1,10 @@
 # Codacy CLI Config
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Codacy CLI Config** (0 connections) — `.codacy/cli-config.yaml`
+- **3. Decision** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/cli-config.yaml`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

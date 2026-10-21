@@ -1,25 +1,24 @@
 # The Grand Grimoire of Cthulhu Mythos Magic (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **The Grand Grimoire of Cthulhu Mythos Magic (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **The Grand Grimoire of Cthulhu Mythos Magic.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **check_postgresql.sh** (2 connections) — `scripts/check_postgresql.sh`
+- **PGPASSWORD** (1 connections) — `scripts/check_postgresql.sh`
+- **check_postgresql.sh script** (1 connections) — `scripts/check_postgresql.sh`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- `scripts/check_postgresql.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

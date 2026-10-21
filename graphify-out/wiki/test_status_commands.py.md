@@ -1,59 +1,55 @@
 # test_status_commands.py
 
-> 93 nodes
+> 94 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_status_commands.py** (31 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **status_commands.py** (20 connections) — `server/commands/status_commands.py`
-- **handle_status_command()** (15 connections) — `server/commands/status_commands.py`
-- **asyncio** (14 connections)
-- **test_status_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
-- **_add_additional_stats_lines()** (12 connections) — `server/commands/status_commands.py`
-- **handle_whoami_command()** (12 connections) — `server/commands/status_commands.py`
-- **_add_profession_lines()** (11 connections) — `server/commands/status_commands.py`
-- **_build_base_status_lines()** (11 connections) — `server/commands/status_commands.py`
-- **_build_status_result()** (10 connections) — `server/commands/status_commands.py`
-- **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
-- **_get_combat_status()** (9 connections) — `server/commands/status_commands.py`
-- **Any** (9 connections)
-- **test_get_profession_info_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_handle_status_command_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_utility_commands_whoami.py** (5 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_get_combat_status_no_app()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_combat_status_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_combat_status_player_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_combat_status_player_not_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_profession_info_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_profession_info_player_dict_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_profession_info_profession_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_get_profession_info_with_profession()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_handle_status_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- *... and 68 more nodes in this community*
+- **test_logging_utilities.py** (40 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **ensure_log_directory()** (24 connections) — `server/structured_logging/logging_utilities.py`
+- **logging_utilities.py** (23 connections) — `server/structured_logging/logging_utilities.py`
+- **Path** (23 connections)
+- **rotate_log_files()** (19 connections) — `server/structured_logging/logging_utilities.py`
+- **detect_environment()** (14 connections) — `server/structured_logging/logging_utilities.py`
+- **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
+- **Path** (6 connections)
+- **_rotate_single_log_file()** (6 connections) — `server/structured_logging/logging_utilities.py`
+- **_rename_or_copy_log_file()** (5 connections) — `server/structured_logging/logging_utilities.py`
+- **_collect_rotatable_logs()** (4 connections) — `server/structured_logging/logging_utilities.py`
+- **_rotation_bound_logger()** (4 connections) — `server/structured_logging/logging_utilities.py`
+- **test_ensure_log_directory_creates_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_empty_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_existing_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_no_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_os_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_ensure_log_directory_thread_safety()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_absolute_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_env_local_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_finds_pyproject_in_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_relative_path_no_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_resolve_log_base_relative_path_with_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_rotate_log_files_empty_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [test_who_commands.py](test_who_commands.py.md) (4 shared connections)
-- [command_error](command_error.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (12 shared connections)
+- [CatalogPage.tsx](CatalogPage.tsx.md) (7 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (2 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
+- [test_map_helpers.py](test_map_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/status_commands.py`
-- `server/tests/unit/commands/test_status_commands.py`
-- `server/tests/unit/commands/test_status_commands_helpers.py`
-- `server/tests/unit/commands/test_utility_commands_whoami.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/tests/unit/structured_logging/test_logging_utilities.py`
 
 ## Audit Trail
 
-- EXTRACTED: 177 (96%)
-- INFERRED: 8 (4%)
+- EXTRACTED: 190 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

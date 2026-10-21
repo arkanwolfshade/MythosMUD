@@ -1,24 +1,25 @@
 # eslint-plugin-react-hooks
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **eslint-plugin-react-hooks** (2 connections) — `client/package.json`
-- **eslint-plugin-react-hooks** (1 connections) — `client/package.json`
+- **Magic Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
+- **Skills / Level Subsystem Design** (1 connections) — `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
+- `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

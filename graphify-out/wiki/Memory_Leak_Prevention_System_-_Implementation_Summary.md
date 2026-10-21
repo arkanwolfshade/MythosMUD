@@ -1,35 +1,35 @@
 # Memory Leak Prevention System - Implementation Summary
 
-> 40 nodes
+> 41 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **Memory Leak Prevention System - Implementation Summary** (13 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🔧 **Key Features Implemented**** (6 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****API Usage Examples**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🎉 **Benefits Achieved**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **📈 **Configuration Options**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🚀 **Deployment and Usage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🔮 **Future Enhancements**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **📋 **Implementation Checklist**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **📊 **Monitoring Capabilities**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🔒 **Security and Performance**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🧪 **Testing Coverage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **🏗️ **Architecture Overview**** (2 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **MEMORY_LEAK_PREVENTION_SUMMARY.md** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****1. Memory Usage Monitoring**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****2. Automatic Cleanup System**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****3. Connection Management Enhancements**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****4. Data Structure Management**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****5. Comprehensive Alerting**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****Check Memory Status**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****Cleanup Thresholds**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****✅ Completed Tasks**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****Comprehensive Test Suite** (`server/tests/test_memory_leak_prevention.py`)** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- **📝 **Conclusion**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****Core Components**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- ****Dependencies Added**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
-- *... and 15 more nodes in this community*
+- **🧪 MythosMUD E2E Testing Strategy** (10 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Timeline** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **E2E Testing Strategy** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 2: Core E2E Test Implementation** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 3: Advanced Testing Features** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Technical Specifications** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Current State Analysis** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 1: Infrastructure Consolidation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Success Metrics** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **PLANNING_e2e.md** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.1 Unified Test Environment** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.2 Test Framework Architecture** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.1 Authentication Testing (Priority 1)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.2 Movement System Testing (Priority 2)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.3 Chat System Testing (Priority 3)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.1 Performance & Reliability** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.2 Debugging & Failure Analysis** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.3 Test Data Management** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Client-Side Testing 🔄** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Conclusion** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **False Positive Prevention** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Immediate Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Long-term Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- `docs/archive/PLANNING_e2e.md`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

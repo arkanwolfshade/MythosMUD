@@ -1,32 +1,34 @@
 # properties
 
-> 10 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
-- **id** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **overrides** (7 connections) — `package.json`
+- **package.json** (3 connections) — `package.json`
+- **devDependencies** (3 connections) — `package.json`
+- **eslint** (2 connections) — `client/package.json`
+- **dependencies** (2 connections) — `package.json`
+- **eslint** (2 connections) — `package.json`
+- **dbmate** (2 connections) — `package.json`
+- **dbmate** (1 connections) — `package.json`
+- **eslint** (1 connections) — `package.json`
+- **flatted** (1 connections) — `package.json`
+- **js-yaml** (1 connections) — `package.json`
+- **katex** (1 connections) — `package.json`
+- **linkify-it** (1 connections) — `package.json`
+- **markdown-it** (1 connections) — `package.json`
+- **smol-toml** (1 connections) — `package.json`
 
 ## Relationships
 
-- [enum](enum_2.md) (2 shared connections)
-- [holiday](holiday.md) (1 shared connections)
-- [month](month.md) (1 shared connections)
-- [day](day.md) (1 shared connections)
-- [duration_hours](duration_hours.md) (1 shared connections)
-- [items](items.md) (1 shared connections)
+- [NPCStartupService](NPCStartupService.md) (1 shared connections)
+- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `client/package.json`
+- `package.json`
 
 ## Audit Trail
 

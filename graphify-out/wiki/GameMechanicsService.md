@@ -1,56 +1,51 @@
 # GameMechanicsService
 
-> 36 nodes
+> 31 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **GameMechanicsService** (21 connections) — `server/game/mechanics.py`
-- **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
-- **_player()** (7 connections) — `server/tests/unit/game/test_mechanics.py`
-- **asyncio** (7 connections)
-- **.__init__()** (6 connections) — `server/npc/combat_integration_base.py`
-- **test_apply_corruption_success()** (5 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
-- **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_damage_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_occult_knowledge_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_heal_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.apply_fear()** (3 connections) — `server/game/mechanics.py`
-- **.apply_lucidity_loss()** (3 connections) — `server/game/mechanics.py`
-- **.damage_player()** (3 connections) — `server/game/mechanics.py`
-- **.gain_occult_knowledge()** (3 connections) — `server/game/mechanics.py`
-- **.heal_player()** (3 connections) — `server/game/mechanics.py`
-- **.__init__()** (3 connections) — `server/game/mechanics.py`
-- **_async_session_gen()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_experience_removed()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
-- **fixture** (2 connections)
-- **Gain occult knowledge (with lucidity loss).** (1 connections) — `server/game/mechanics.py`
-- *... and 11 more nodes in this community*
+- **NATSServiceSubscriptionMixin** (18 connections) — `server/services/nats_service_subscriptions.py`
+- **JsonMap** (6 connections)
+- **NatsMessageCallback** (5 connections) — `server/services/nats_service_subscriptions.py`
+- **._verify_subscription_cleanup()** (5 connections) — `server/services/nats_service_subscriptions.py`
+- **Msg** (4 connections)
+- **._acknowledge_message()** (4 connections) — `server/services/nats_service_subscriptions.py`
+- **._call_callback()** (4 connections) — `server/services/nats_service_subscriptions.py`
+- **._decode_message_data()** (4 connections) — `server/services/nats_service_subscriptions.py`
+- **.subscribe()** (4 connections) — `server/services/nats_service_subscriptions.py`
+- **.get_active_subscriptions()** (3 connections) — `server/services/nats_service_subscriptions.py`
+- **._negatively_acknowledge_message()** (3 connections) — `server/services/nats_service_subscriptions.py`
+- **.unsubscribe()** (3 connections) — `server/services/nats_service_subscriptions.py`
+- **.__call__()** (3 connections) — `server/services/nats_service_subscriptions.py`
+- **.__call__()** (2 connections) — `server/services/nats_service_subscriptions.py`
+- **._close_all_subscriptions()** (2 connections) — `server/services/nats_service_subscriptions.py`
+- **._drain_subscriptions()** (2 connections) — `server/services/nats_service_subscriptions.py`
+- **.get_subscription_count()** (2 connections) — `server/services/nats_service_subscriptions.py`
+- **Verify all subscriptions were cleaned up and log warnings if any remain.** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Decode message data from NATS message.** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Call the registered callback, handling both async and sync callbacks. Sync…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Acknowledge message if manual ack is enabled. Returns True if acknowledged. AI:…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Negatively acknowledge message if manual ack is enabled. AI: Records metrics…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Subscribe to a NATS subject and register a callback for incoming messages.…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Get list of all active NATS subscription subjects. Returns: List of subject…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- **Unsubscribe from a NATS subject. Args: subject: NATS subject name to…** (1 connections) — `server/services/nats_service_subscriptions.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [CorruptionService](CorruptionService.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (6 shared connections)
+- [CombatAttackHandler](CombatAttackHandler.md) (3 shared connections)
+- [test_rate_overrides.py](test_rate_overrides.py.md) (2 shared connections)
+- [test_combat_death_handler.py](test_combat_death_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/mechanics.py`
-- `server/npc/combat_integration_base.py`
-- `server/tests/unit/game/test_mechanics.py`
+- `server/services/nats_service_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (87%)
-- INFERRED: 10 (13%)
+- EXTRACTED: 47 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

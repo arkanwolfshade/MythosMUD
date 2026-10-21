@@ -1,32 +1,30 @@
 # Execution Steps
 
-> 23 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **scenario-04-muting-system-emotes.md** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 1: Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 2: AW Mutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 3: Ithaqua Uses Dance Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 4: Verify AW Does NOT See Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 5: Test Other Communication Still Works** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 6: AW Unmutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 7: Ithaqua Uses Dance Emote Again** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 8: Verify AW Now Sees Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 9: Test Multiple Emotes** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Communities (11 total, 0 thin omitted)** (12 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Pulp Cthulhu (7th edition Call of Cthulhu)  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 0 - "Pandora's Box / Pandora Handout 10"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 10 - "Chapter 6: Pulp Magic, Psychic Powers, and Weird S / Psychic Powers"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 1 - "Disintegrator device / Handout: Disintegrator 1"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 2 - "Chapter 1: The Pulps / Chapter 7: Running Pulp Games"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 3 - "Avoiding Certain Death / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 4 - "Cthulhu Mythos / Deep One"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 5 - "Seekers of Eternal Wisdom / Handout: Pandora's Box 12"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 6 - "Pandora Handout 9 / Hyperborea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 7 - "Augmented Skills / Chapter 5: Pulp Sanity"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 8 - "Caduceus / Chapter 3: Pulp Organizations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community 9 - "Chapter 2: Creating Pulp Heroes / Pulp Archetypes"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -34,11 +32,11 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,60 +1,61 @@
 # QuestService
 
-> 63 nodes
+> 79 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **QuestService** (76 connections) — `server/game/quest/quest_service.py`
-- **Any** (22 connections)
-- **QuestDefinitionSchema** (21 connections) — `server/schemas/quest/quest.py`
-- **UUID** (20 connections)
-- **_parse_definition()** (13 connections) — `server/game/quest/quest_service.py`
-- **._apply_activity_progress()** (13 connections) — `server/game/quest/quest_service.py`
-- **._sync_collect_for_instance()** (13 connections) — `server/game/quest/quest_service.py`
-- **.turn_in()** (11 connections) — `server/game/quest/quest_service.py`
-- **._complete_instance()** (10 connections) — `server/game/quest/quest_service.py`
-- **.start_quest()** (10 connections) — `server/game/quest/quest_service.py`
-- **._consume_collect_n_items()** (9 connections) — `server/game/quest/quest_service.py`
-- **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
-- **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
-- **._turn_in_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
-- **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
-- **.abandon()** (7 connections) — `server/game/quest/quest_service.py`
-- **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
-- **._load_player_for_collect()** (7 connections) — `server/game/quest/quest_service.py`
-- **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
-- **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
-- **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
-- **_definition_completion_mode_error()** (5 connections) — `server/game/quest/quest_service.py`
-- **.get_quest_log()** (5 connections) — `server/game/quest/quest_service.py`
-- **.record_complete_activity()** (5 connections) — `server/game/quest/quest_service.py`
-- **.record_kill()** (5 connections) — `server/game/quest/quest_service.py`
-- *... and 38 more nodes in this community*
+- **command_handler_unified.py** (55 connections) — `server/command_handler_unified.py`
+- **process_command_unified()** (19 connections) — `server/command_handler_unified.py`
+- **_handle_special_command_routing()** (17 connections) — `server/command_handler_unified.py`
+- **handle_command()** (13 connections) — `server/command_handler_unified.py`
+- **test_command_handler_unified.py** (13 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **test_command_aliases.py** (12 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **_ensure_alias_storage()** (10 connections) — `server/command_handler_unified.py`
+- **CommandRequest** (9 connections) — `server/command_handler_unified.py`
+- **_run_expanded_alias()** (9 connections) — `server/command_handler_unified.py`
+- **TestProcessAliasExpansion** (8 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **process_command()** (7 connections) — `server/command_handler_unified.py`
+- **asyncio** (7 connections)
+- **TestHandleSpecialCommandRouting** (7 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **asyncio** (7 connections)
+- **get_help_content()** (6 connections) — `server/command_handler_unified.py`
+- **CommandExecutionRequest** (6 connections)
+- **TestHandleCommand** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestProcessCommandUnified** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **_as_user_dict()** (5 connections) — `server/command_handler_unified.py`
+- **TestEnsureAliasStorage** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_command_success()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_unauthorized()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestLegacyFunctions** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_special_command_routing_alias_command()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [test_quest_service.py](test_quest_service.py.md) (29 shared connections)
-- [quest_service.py](quest_service.py.md) (16 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
-- [quest_rewards.py](quest_rewards.py.md) (8 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (7 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (6 shared connections)
-- [test_quest_service_collect.py](test_quest_service_collect.py.md) (4 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
-- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (18 shared connections)
+- [command_parser.py](command_parser.py.md) (13 shared connections)
+- [look_container.py](look_container.py.md) (8 shared connections)
+- [test_passive_corruption_flux_rate_overrides.py](test_passive_corruption_flux_rate_overrides.py.md) (5 shared connections)
+- [go_command.py](go_command.py.md) (5 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (5 shared connections)
+- [DialogueService](DialogueService.md) (5 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (4 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (3 shared connections)
+- [Room](Room.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/quest/quest_service.py`
-- `server/schemas/quest/quest.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_aliases.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
 
 ## Audit Trail
 
-- EXTRACTED: 199 (87%)
-- INFERRED: 31 (13%)
+- EXTRACTED: 205 (94%)
+- INFERRED: 14 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

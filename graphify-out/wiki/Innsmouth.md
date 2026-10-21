@@ -1,10 +1,10 @@
 # Innsmouth
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Innsmouth** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Relationships
 
@@ -12,11 +12,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- `docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

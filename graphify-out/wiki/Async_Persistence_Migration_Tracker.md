@@ -1,68 +1,45 @@
 # Async Persistence Migration Tracker
 
-> 37 nodes
+> 22 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **Async Persistence Migration Tracker** (13 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Event Loop Blocking** (6 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Migration Strategy** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **AsyncPersistenceLayer** (5 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **PersistenceLayer** (5 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Async Remediation Summary 2025-12-03** (5 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **ASYNC_CODE_REVIEW_POST_MIGRATION.md** (4 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **17-Second Game Tick Delay** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **asyncio.to_thread** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Migration Pattern** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **PassiveLucidityFluxService** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **ContainerRepository** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Complementary Async and Sync Facades** (3 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **asyncio.to_thread Persistence Pattern** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Current Status** (2 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **FACADES_IMPLEMENTATION_SUMMARY.md** (2 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **ItemRepository** (2 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Room Cache TTL (60s)** (2 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **asyncio.run in Library Code** (2 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **asyncpg Explicit Transaction** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **time.sleep in Async Retry** (2 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Relative vs Absolute Import Policy** (2 connections) — `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- **SQLAlchemy Async Migration (Option A)** (2 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Decision Tree** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- *... and 12 more nodes in this community*
+- **test_game_state_provider_hallucination.py** (12 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **test_send_initial_game_state_hallucinates_exits_for_deranged_viewer()** (6 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **test_send_initial_game_state_includes_viewer_phantom()** (6 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **fixture** (5 connections)
+- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **_no_lucidity_row_session()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **_wire_room()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **asyncio** (2 connections)
+- **Unit tests for hallucination-related additions to GameStateProvider (#625,…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **#626/#714: a deranged connecting player's initial game_state shows the seeded…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Fake get_async_session() yielding a session whose PlayerLucidity lookup misses.…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Create a mock get_async_persistence callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **Wire the fixtures so send_initial_game_state resolves a minimal, real room dict.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
+- **#625/#714: the game_state room payload includes this viewer's own active…** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
 
 ## Relationships
 
-- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (6 shared connections)
-- [Async Remediation Complete](Async_Remediation_Complete.md) (2 shared connections)
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
-- [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
-- [ContainerRepository and ItemRepository: Review and Full Async Migration Plan](ContainerRepository_and_ItemRepository-_Review_and_Full_Async_Migration_Plan.md) (1 shared connections)
-- [Async Facades Implementation - COMPLETE ✅](Async_Facades_Implementation_-_COMPLETE_✅.md) (1 shared connections)
-- [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (1 shared connections)
-- [PYDANTIC_CODE_REVIEW.md](PYDANTIC_CODE_REVIEW.md.md) (1 shared connections)
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
-- [Code Review: Import Analysis and Anti-Patterns](Code_Review-_Import_Analysis_and_Anti-Patterns.md) (1 shared connections)
-- [Phase 2 Async Persistence Migration - Status Update](Phase_2_Async_Persistence_Migration_-_Status_Update.md) (1 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (4 shared connections)
+- [ChatLogger](ChatLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- `docs/archive/CODE_REVIEW_IMPORT_ANALYSIS.md`
-- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- `docs/archive/UVICORN_CODE_REVIEW.md`
+- `server/tests/unit/realtime/integration/test_game_state_provider_hallucination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 33 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

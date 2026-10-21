@@ -1,10 +1,10 @@
 # Database Provisioning README
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Database Provisioning README** (0 connections) — `db/databases/README.md`
+- **Dual Connection Troubleshooting Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/databases/README.md`
+- `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
 
 ## Audit Trail
 

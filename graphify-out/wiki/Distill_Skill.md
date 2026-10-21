@@ -1,35 +1,35 @@
 # Distill Skill
 
-> 13 nodes
+> 12 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Simplify the Design** (7 connections) — `.claude/skills/distill/SKILL.md`
-- **Distill Skill** (7 connections) — `.claude/skills/distill/SKILL.md`
-- **Assess Current State** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Code Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Content Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Document Removed Complexity** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Information Architecture** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Interaction Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Layout Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Plan Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Verify Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
-- **Visual Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_validator()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_validate_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **asyncio** (2 connections)
+- **fixture** (2 connections)
+- **Unit tests for websocket handler message validation. Tests the message…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/distill/SKILL.md`
+- `server/tests/unit/realtime/test_websocket_handler_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

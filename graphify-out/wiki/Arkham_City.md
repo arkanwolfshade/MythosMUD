@@ -1,23 +1,23 @@
 # Arkham City
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Arkham City** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Miskatonic University** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with valid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PanelContextRuntime.tsx](PanelContextRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

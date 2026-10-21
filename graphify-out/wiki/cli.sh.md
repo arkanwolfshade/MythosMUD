@@ -1,29 +1,27 @@
 # cli.sh
 
-> 8 nodes
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- **cli.sh** (7 connections) — `.codacy/cli.sh`
-- **cli.sh script** (4 connections) — `.codacy/cli.sh`
-- **download()** (3 connections) — `.codacy/cli.sh`
-- **download_cli()** (3 connections) — `.codacy/cli.sh`
-- **get_latest_version()** (3 connections) — `.codacy/cli.sh`
-- **download_file()** (2 connections) — `.codacy/cli.sh`
-- **get_version_from_yaml()** (2 connections) — `.codacy/cli.sh`
-- **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
+- **📚 Documentation Created** (6 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **1. Comprehensive Audit Report** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **2. Executive Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **3. Developer Quick Reference** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **4. Migration Tracker** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **5. Test Suite** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_combat_service.py](test_combat_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.codacy/cli.sh`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,24 @@
 # duration_hours
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **container_test_client Fixture** (1 connections) — `docs/archive/fixture-optimization-plan.md`
+- **Class-Scoped Container Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/fixture-optimization-plan.md`
+- `docs/archive/fixture-optimization-summary.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

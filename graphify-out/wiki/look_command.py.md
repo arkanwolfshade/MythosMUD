@@ -1,61 +1,75 @@
 # look_command.py
 
-> 85 nodes
+> 94 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **look_command.py** (58 connections) — `server/commands/look_command.py`
-- **test_look_command.py** (25 connections) — `server/tests/unit/commands/test_look_command.py`
-- **handle_look_command()** (18 connections) — `server/commands/look_command.py`
-- **LookRequest** (15 connections) — `server/commands/look_helpers.py`
-- **_handle_implicit_target_lookup()** (14 connections) — `server/commands/look_command.py`
-- **_setup_look_command()** (13 connections) — `server/commands/look_command.py`
-- **_route_look_command()** (12 connections) — `server/commands/look_command.py`
-- **_get_app_and_persistence()** (11 connections) — `server/commands/look_command.py`
-- **_validate_look_prerequisites()** (11 connections) — `server/commands/look_command.py`
-- **_get_room_drops()** (10 connections) — `server/commands/look_command.py`
-- **_try_direction_look()** (10 connections) — `server/commands/look_command.py`
-- **_try_explicit_player_look()** (10 connections) — `server/commands/look_command.py`
-- **FastAPI** (10 connections)
-- **asyncio** (10 connections)
-- **_LookPersistence** (9 connections) — `server/commands/look_command.py`
-- **LookRouteCtx** (9 connections) — `server/commands/look_command.py`
-- **_try_explicit_container_look()** (9 connections) — `server/commands/look_command.py`
-- **_try_explicit_item_look()** (9 connections) — `server/commands/look_command.py`
-- **CommandResponse** (9 connections)
-- **_as_response()** (8 connections) — `server/commands/look_command.py`
-- **_LookRoom** (7 connections) — `server/commands/look_command.py`
-- **_container_from_app()** (7 connections) — `server/commands/look_command.py`
-- **_connection_manager_from_app()** (6 connections) — `server/commands/look_command.py`
-- **_prototype_registry_from_app()** (6 connections) — `server/commands/look_command.py`
-- **_try_implicit_target_lookup()** (6 connections) — `server/commands/look_command.py`
-- *... and 60 more nodes in this community*
+- **fixtures/auth.ts** (107 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **loginPlayer()** (46 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **multiplayer-colocated.ts** (45 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **test-data.ts** (33 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
+- **multiplayer-ready.ts** (28 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **multiplayer-contexts.ts** (26 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **waitForPlayableSession()** (19 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **recoverPlayableSession()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **TEST_TIMEOUTS** (16 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
+- **basic-connection.spec.ts** (15 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- **isVisibleWithin()** (14 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **logoutPlayer()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **reopenClosedPage()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resyncE2ePlayersAfterDatabaseReset()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **executeCommandTrusted()** (10 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **pages/index.ts** (10 connections) — `client/tests/e2e/runtime/pages/index.ts`
+- **respawn-occupants.spec.ts** (9 connections) — `client/tests/e2e/runtime/character/respawn-occupants.spec.ts`
+- **assertCommandChannelReady()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **resetE2ePlayerRoomsInDatabase()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **runCoLocateTeleportAttempt()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **command-registry-routing.spec.ts** (8 connections) — `client/tests/e2e/runtime/commands/command-registry-routing.spec.ts`
+- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **catalog-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/catalog-visibility.spec.ts`
+- **skills-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
+- **assertNoRestDisconnectPollution()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [test_look_container.py](test_look_container.py.md) (8 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [look_helpers.py](look_helpers.py.md) (5 shared connections)
-- [test_look_player.py](test_look_player.py.md) (5 shared connections)
-- [_find_item_in_equipped](_find_item_in_equipped.md) (5 shared connections)
-- [alias_storage.py](alias_storage.py.md) (5 shared connections)
-- [look_container.py](look_container.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (3 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_websocket_handler_commands.py](test_websocket_handler_commands.py.md) (2 shared connections)
+- [ChatModeration](ChatModeration.md) (104 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (51 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (50 shared connections)
+- [properties](properties.md) (15 shared connections)
+- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (13 shared connections)
+- [PassiveCorruptionFluxService](PassiveCorruptionFluxService.md) (9 shared connections)
+- [required](required.md) (7 shared connections)
+- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (2 shared connections)
+- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_command.py`
-- `server/commands/look_helpers.py`
-- `server/tests/unit/commands/test_look_command.py`
+- `client/tests/e2e/runtime/character/catalog-visibility.spec.ts`
+- `client/tests/e2e/runtime/character/character-deletion.spec.ts`
+- `client/tests/e2e/runtime/character/character-name-uniqueness.spec.ts`
+- `client/tests/e2e/runtime/character/character-selection.spec.ts`
+- `client/tests/e2e/runtime/character/multi-character-creation.spec.ts`
+- `client/tests/e2e/runtime/character/respawn-occupants.spec.ts`
+- `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
+- `client/tests/e2e/runtime/commands/command-registry-routing.spec.ts`
+- `client/tests/e2e/runtime/commands/look-command-game-info.spec.ts`
+- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- `client/tests/e2e/runtime/connection/login-bootstrap.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/e2e-browser-helpers.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- `client/tests/e2e/runtime/fixtures/test-data.ts`
+- `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
+- `client/tests/e2e/runtime/pages/MotdPage.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (95%)
-- INFERRED: 12 (5%)
+- EXTRACTED: 482 (98%)
+- INFERRED: 10 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

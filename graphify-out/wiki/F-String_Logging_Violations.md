@@ -1,14 +1,12 @@
 # F-String Logging Violations
 
-> 5 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **F-String Logging Violations** (3 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
-- **Pre-Commit F-String Hook Gaps** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- **Enhanced Logging Compliance Audit** (1 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
-- **F-String Logging Remediation Complete** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- **AST-Based F-String Logging Detector** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
+- **Chaosium graphify snapshot - character_sheets** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- **character-sheets/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
 
 ## Relationships
 
@@ -16,14 +14,11 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
-- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
-- `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
-- `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

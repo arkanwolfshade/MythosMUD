@@ -1,47 +1,47 @@
 # asyncio
 
-> 25 nodes
+> 43 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_load_world_seed.py** (18 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **LoadWorldSeedTestApi** (17 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **regression** (10 connections)
+- **test_validate_environment_errors_when_baseline_files_are_missing()** (7 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_validate_environment_resolves_to_the_single_schema_agnostic_baseline()** (7 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_validate_environment_rejects_non_allowlist_database_name()** (6 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **MonkeyPatch** (5 connections)
+- **test_asyncpg_server_settings_defaults_to_db_name()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_asyncpg_server_settings_respects_postgres_search_path()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_reset_migration_ledger_swallows_undefined_table()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_reset_migration_ledger_truncates_the_ledger_table()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **world_seed_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_replay_migrations_passes_url_via_env_not_argv()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_replay_migrations_raises_on_nonzero_exit()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_replay_migrations_raises_when_npx_missing()** (4 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_LoadWorldSeedScriptInternals** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_database_url_for_cli_replaces_asyncpg_prefix()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_decodes_user_password()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_rejects_missing_host()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **asyncio** (2 connections)
+- **CaptureFixture** (2 connections)
+- **Path** (2 connections)
+- **fixture** (1 connections)
+- **parametrize** (1 connections)
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/scripts/test_load_world_seed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

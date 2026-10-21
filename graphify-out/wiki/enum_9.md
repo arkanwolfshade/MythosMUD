@@ -1,31 +1,30 @@
-# enum
+# Enum
 
-> 10 nodes
+> 9 nodes · cohesion 0.53
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/unified_room_schema.json`
-- **environment** (5 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `schemas/unified_room_schema.json`
+- **run_bug_prevention_tests.ps1** (8 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Write-ColorOutput()** (7 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Write-Section()** (5 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Invoke-ClientTest()** (4 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Invoke-IntegrationTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Invoke-ServerTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Show-TestSummary()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Write-Header()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Test-Command()** (2 connections) — `scripts/run_bug_prevention_tests.ps1`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `scripts/run_bug_prevention_tests.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

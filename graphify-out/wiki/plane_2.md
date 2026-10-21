@@ -1,21 +1,21 @@
 # plane
 
-> 4 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **plane** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **Call of Cthulhu 7th Edition - Keeper's Rulebook (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **Call of Cthulhu 7th Edition - Keeper's Rulebook.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_inventory_commands_helpers.py](test_inventory_commands_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
 
 ## Audit Trail
 

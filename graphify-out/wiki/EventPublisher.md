@@ -1,53 +1,50 @@
 # EventPublisher
 
-> 22 nodes
+> 36 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **EventPublisher** (32 connections) — `server/realtime/event_publisher.py`
-- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
-- **.publish_player_entered_event()** (7 connections) — `server/realtime/event_publisher.py`
-- **.publish_player_left_event()** (7 connections) — `server/realtime/event_publisher.py`
-- **._publish_event()** (5 connections) — `server/realtime/event_publisher.py`
-- **.publish_game_tick_event()** (5 connections) — `server/realtime/event_publisher.py`
-- **JsonMap** (5 connections)
-- **._get_async_persistence()** (4 connections) — `server/realtime/event_publisher.py`
-- **._resolve_player_and_room_names()** (4 connections) — `server/realtime/event_publisher.py`
-- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
-- **._player_event_subject()** (3 connections) — `server/realtime/event_publisher.py`
-- **test_event_publisher_init_without_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
-- **Publish a player_entered event to NATS. Args: player_id: ID of the player who…** (1 connections) — `server/realtime/event_publisher.py`
-- **Publish a player_left event to NATS. Args: player_id: ID of the player who left…** (1 connections) — `server/realtime/event_publisher.py`
-- **Publish a game_tick event to NATS. Args: timestamp: Optional custom timestamp…** (1 connections) — `server/realtime/event_publisher.py`
-- **Create a standardized event message structure. Args: event_type: Type of event…** (1 connections) — `server/realtime/event_publisher.py`
-- **Get the next sequence number for event ordering. Returns: Next sequence number** (1 connections) — `server/realtime/event_publisher.py`
-- **Reset the sequence number to 0.** (1 connections) — `server/realtime/event_publisher.py`
-- **Get async_persistence (#679: injected at construction by RealtimeBundle).** (1 connections) — `server/realtime/event_publisher.py`
-- **Service for publishing real-time game events to NATS subjects. This service…** (1 connections) — `server/realtime/event_publisher.py`
-- **Test EventPublisher initialization without subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_quality_fragmentation_guard.py** (24 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **Path** (8 connections)
+- **test_collect_repo_texts_reports_unreadable_files()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_emit_results_does_not_print_failure_or_warning_bodies()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_does_not_flag_tiny_function_with_two_usages()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_flags_single_use_for_non_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_flags_tiny_single_use_function()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **Protocol** (4 connections)
+- **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_is_safe_git_ref_accepts_sha_and_branch_like_ref()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_is_safe_git_ref_rejects_suspicious_values()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [test_event_publisher.py](test_event_publisher.py.md) (7 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_event_publisher_init_with_initial_sequence](test_event_publisher_init_with_initial_sequence.md) (2 shared connections)
-- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
-- [_EventPersistence](_EventPersistence.md) (2 shared connections)
-- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [event_publisher](event_publisher.md) (1 shared connections)
+- [Test Suite Refactoring Plan](Test_Suite_Refactoring_Plan.md) (11 shared connections)
+- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_publisher.py`
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `server/tests/unit/test_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (85%)
-- INFERRED: 9 (15%)
+- EXTRACTED: 75 (82%)
+- INFERRED: 17 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

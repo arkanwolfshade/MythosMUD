@@ -1,57 +1,61 @@
 # test_quest_service.py
 
-> 86 nodes
+> 82 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_quest_service.py** (49 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_MockDefRepo** (31 connections) — `server/tests/unit/game/test_quest_service.py`
-- **asyncio** (27 connections)
-- **_MockInstanceRepo** (26 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_make_definition_row()** (19 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_InstanceStub** (16 connections) — `server/tests/unit/game/test_quest_service.py`
-- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_completed()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_reaccept_after_abandon()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_no_instance()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_get_quest_log_returns_entries()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_auto_completes_when_goals_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_suppresses_intermediate_progress_notify()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_prereq_not_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_requires_any_satisfied()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 61 more nodes in this community*
+- **MessageQueue** (60 connections) — `server/realtime/message_queue.py`
+- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **deque** (28 connections)
+- **message_queue.py** (17 connections) — `server/realtime/message_queue.py`
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **Any** (4 connections)
+- **test_message_queue_add_message_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_add_message()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_multiple()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_with_timestamp()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (29 shared connections)
-- [_complete_tutorial_with_rewards](_complete_tutorial_with_rewards.md) (9 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [quest_service.py](quest_service.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (8 shared connections)
+- [SpellEffects](SpellEffects.md) (8 shared connections)
+- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (5 shared connections)
+- [coerce_int](coerce_int.md) (4 shared connections)
+- [test_npc_utils.py](test_npc_utils.py.md) (3 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (3 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (3 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (2 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (2 shared connections)
+- [test_combat_validator.py](test_combat_validator.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service.py`
+- `server/realtime/message_queue.py`
+- `server/services/nats_metrics.py`
+- `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (88%)
-- INFERRED: 31 (12%)
+- EXTRACTED: 148 (83%)
+- INFERRED: 31 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

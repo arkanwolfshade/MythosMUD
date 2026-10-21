@@ -1,47 +1,48 @@
 # Async Facades Implementation - COMPLETE ✅
 
-> 25 nodes
+> 24 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **Async Facades Implementation - COMPLETE ✅** (9 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **(A) and (B) Relationship: **Complementary**** (5 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Usage Patterns** (4 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Validation** (4 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Benefits Achieved** (3 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **What Was Implemented** (3 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Conclusion** (2 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Final Architecture** (2 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **(A) AsyncPersistenceLayer Integration ✅** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Async Tests** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **(B) Sync Shim - NOT NEEDED ⏭️** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Both facades are now operational** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Future** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Immediate** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Import Tests** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Linting** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Option A: AsyncPersistenceLayer (Async Facade)** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Option B: Sync Shim in persistence.py** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Pattern 1: Async Code → AsyncPersistenceLayer Facade ✅** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Pattern 2: Async Code → Direct Repositories ✅** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Pattern 3: Sync Code → PersistenceLayer (Unchanged) ✅** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Summary** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **They Serve Different Purposes** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **They Work Together** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
-- **Three Access Paths (All Valid)** (1 connections) — `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
+- **test_inventory_mutation_guard_internal.py** (15 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **asyncio** (6 connections)
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_empty()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_locked()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_state_creates_lazily()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async_ttl_zero()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_global_lock()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **fixture** (1 connections)
+- **Unit tests for inventory mutation guard - internal helper methods. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state removes empty state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens_async removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _enforce_limit removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_global_lock creates lock lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_state creates state lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state handles locked state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [test_metadata.py](test_metadata.py.md) (2 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/FACADES_IMPLEMENTATION_SUMMARY.md`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

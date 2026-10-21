@@ -1,12 +1,11 @@
 # Test Suite Stall After Performance Comparison
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Test Suite Stall After Performance Comparison** (2 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
-- **thread.join Without Timeout Hang** (1 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
-- **Docker Build mythos_unitql Typo** (1 connections) — `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
+- **server/structured_logging/__init__.py** (1 connections) — `server/structured_logging/__init__.py`
+- **Structured logging package for MythosMUD. This package provides enhanced…** (1 connections) — `server/structured_logging/__init__.py`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
-- `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- `server/structured_logging/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

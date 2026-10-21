@@ -1,11 +1,10 @@
 # Color and Contrast Reference
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **OKLCH Color Space** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
-- **Color and Contrast Reference** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **Things and notes to expand on** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

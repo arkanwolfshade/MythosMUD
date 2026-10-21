@@ -1,25 +1,25 @@
 # 🚀 DEPLOYMENT STRATEGY
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **🚀 DEPLOYMENT STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Monitoring Post-Deployment** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Pre-Deployment Checklist** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Rollback Plan** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_validate_player_in_room_with_cache_false()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_player_in_room() returns False when player not in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (2 shared connections)
+- [test_request_schema_security.py](test_request_schema_security.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

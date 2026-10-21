@@ -1,10 +1,10 @@
 # Structured Logging Correct Patterns
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Structured Logging Correct Patterns** (0 connections) — `docs/examples/logging/README.md`
+- **load_seed_direct.py** (0 connections) — `scripts/load_seed_direct.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/examples/logging/README.md`
+- `scripts/load_seed_direct.py`
 
 ## Audit Trail
 

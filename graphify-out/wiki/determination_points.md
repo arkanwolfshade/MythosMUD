@@ -1,25 +1,26 @@
 # determination_points
 
-> 4 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **determination_points** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **description** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
-- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **_RoomPersistence** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.get_room_by_id()** (2 connections) — `server/npc/aggressive_mob_npc.py`
+- **Protocol** (1 connections)
+- **Protocol for persistence with get_room_by_id.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Return the room object for the given room_id, or None if not found.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/npcs/npc_base_stats.schema.json`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

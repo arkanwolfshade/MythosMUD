@@ -1,26 +1,26 @@
 # Alone against the Tide (source summary)
 
-> 4 nodes
+> 3 nodes · cohesion 0.67
 
 ## Key Concepts
 
-- **Alone against the Tide (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
-- **Alone against the Tide.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
+- **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
 
 ## Relationships
 
-- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Alone against the Tide.md`
+- `e2e-tests/TESTING_APPROACH.md`
+- `e2e-tests/TROUBLESHOOTING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

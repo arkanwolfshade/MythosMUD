@@ -1,10 +1,10 @@
 # Client Layer Layout
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Client Layer Layout** (0 connections) — `client/README.md`
+- **4. Alternatives Considered** (0 connections) — `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/README.md`
+- `docs/architecture/decisions/ADR-019-player-effects-system.md`
 
 ## Audit Trail
 

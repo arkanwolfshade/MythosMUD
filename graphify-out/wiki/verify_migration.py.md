@@ -1,44 +1,47 @@
 # verify_migration.py
 
-> 23 nodes
+> 30 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **verify_migration.py** (11 connections) — `scripts/verify_migration.py`
-- **_validate_database_data()** (8 connections) — `scripts/verify_migration.py`
-- **verify_database()** (8 connections) — `scripts/verify_migration.py`
-- **Connection** (7 connections)
-- **_check_foreign_keys()** (4 connections) — `scripts/verify_migration.py`
-- **_check_null_values()** (4 connections) — `scripts/verify_migration.py`
-- **_check_table_exists()** (4 connections) — `scripts/verify_migration.py`
-- **_print_sample_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_json_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_table_schema()** (4 connections) — `scripts/verify_migration.py`
-- **_print_json_validation_results()** (3 connections) — `scripts/verify_migration.py`
-- **_print_verification_summary()** (3 connections) — `scripts/verify_migration.py`
-- **main()** (2 connections) — `scripts/verify_migration.py`
-- **Validate JSON data integrity in players table.** (1 connections) — `scripts/verify_migration.py`
-- **Check for NULL values in required fields.** (1 connections) — `scripts/verify_migration.py`
-- **Validate database data (JSON, NULLs, sample).** (1 connections) — `scripts/verify_migration.py`
-- **Print JSON validation results.** (1 connections) — `scripts/verify_migration.py`
-- **Print sample player data.** (1 connections) — `scripts/verify_migration.py`
-- **Check foreign key constraints.** (1 connections) — `scripts/verify_migration.py`
-- **Print verification summary and return result.** (1 connections) — `scripts/verify_migration.py`
-- **Verify a single database.** (1 connections) — `scripts/verify_migration.py`
-- **Check if players table exists.** (1 connections) — `scripts/verify_migration.py`
-- **Validate table schema against expected columns.** (1 connections) — `scripts/verify_migration.py`
+- **Pydantic Code Review - feature/sqlite-to-postgresql Branch** (11 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Specific File Reviews** (9 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Medium Priority Issues** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Code Quality Observations** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **High Priority Issues** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Critical Issues** (2 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **⚠️ Areas for Improvement** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Business Logic in Models - Stats.**init**** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🔴 CRITICAL: Security Vulnerability - `extra="allow"` in Stats Model** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Field Validator Organization** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **✅ Good Practices Found** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Immediate Actions (High Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Long-term Improvements (Low Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Missing `model_rebuild()` Usage** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Optional Fields Without Explicit Defaults** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Performance: Missing `__slots__` in Frequently Used Models** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **References** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/auth/endpoints.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/config/models.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/command.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/game.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [container_helpers_inventory_display.py](container_helpers_inventory_display.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_migration.py`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

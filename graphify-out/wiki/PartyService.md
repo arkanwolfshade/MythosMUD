@@ -1,61 +1,62 @@
 # PartyService
 
-> 25 nodes
+> 89 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **PartyService** (47 connections) — `server/game/party_service.py`
-- **party_service.py** (18 connections) — `server/game/party_service.py`
-- **test_party_flow.py** (13 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyUpdated** (11 connections) — `server/events/event_types.py`
-- **party_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_invite_join_leave_disband_state_and_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_leader_leaves_disbands()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
-- **event_bus()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (4 connections) — `server/tests/unit/game/test_party_service.py`
-- **asyncio** (3 connections)
-- **fixture** (3 connections)
-- **fixture** (1 connections)
-- **Event fired when party membership or leadership changes. Emitted by…** (1 connections) — `server/events/event_types.py`
-- **Party service for MythosMUD. In-memory ephemeral party state: parties exist…** (1 connections) — `server/game/party_service.py`
-- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
-- **In-memory party management: create, disband, add/remove/kick members, leader…** (1 connections) — `server/game/party_service.py`
-- **Integration tests for party (ephemeral grouping) feature. Flow: Two players;…** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **When leader leaves, party is disbanded and disbanded event is emitted.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Collect PartyUpdated events published during test.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyService wired to real EventBus.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Two players: A creates party, adds B; B leaves; A disbands. Verify in-memory…** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **apiTypeGuards.ts** (69 connections) — `client/src/utils/apiTypeGuards.ts`
+- **useAsciiMapState.ts** (18 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **maps.ts** (17 connections) — `client/src/api/maps.ts`
+- **AsciiMinimap.tsx** (15 connections) — `client/src/components/map/AsciiMinimap.tsx`
+- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isString()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
+- **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
+- **useAsciiMapState()** (9 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
+- **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
+- **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **useAsciiMap.ts** (6 connections) — `client/src/components/map/useAsciiMap.ts`
+- **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **runFetchMap()** (5 connections) — `client/src/components/map/useAsciiMapState.ts`
+- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [_str_id](_str_id.md) (17 shared connections)
-- [Any](Any.md) (10 shared connections)
-- [EventBus](EventBus.md) (10 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_combat_assist.py](test_combat_assist.py.md) (4 shared connections)
-- [asyncio](asyncio.md) (3 shared connections)
-- [combat_assist.py](combat_assist.py.md) (3 shared connections)
-- [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (21 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (8 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (4 shared connections)
+- [party_commands.py](party_commands.py.md) (3 shared connections)
+- [Phase 4: Recommendations](Phase_4-_Recommendations.md) (2 shared connections)
+- [test_look_room.py](test_look_room.py.md) (2 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [.set_player_skills](set_player_skills.md) (2 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/party_service.py`
-- `server/tests/integration/test_party_flow.py`
-- `server/tests/unit/game/test_party_service.py`
+- `client/src/api/__tests__/maps.test.ts`
+- `client/src/api/maps.ts`
+- `client/src/components/map/AsciiMinimap.tsx`
+- `client/src/components/map/__tests__/useAsciiMap.test.ts`
+- `client/src/components/map/useAsciiMap.ts`
+- `client/src/components/map/useAsciiMapState.ts`
+- `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (84%)
-- INFERRED: 16 (16%)
+- EXTRACTED: 248 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

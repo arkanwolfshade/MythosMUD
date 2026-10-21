@@ -1,22 +1,21 @@
 # Client Test Remediation
 
-> 13 nodes
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- **Client Test Remediation** (5 connections) — `.claude/skills/client-test-remediation/SKILL.md`
-- **Fix patterns by tier** (4 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **Client Test Remediation — Reference** (3 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **client-test-remediation/SKILL.md** (2 connections) — `.claude/skills/client-test-remediation/SKILL.md`
-- **client-test-remediation/reference.md** (2 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **🔴 Critical — TypeScript/rendering errors** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **🟡 High — component issues** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **🟢 Medium — hook/async issues** (1 connections) — `.claude/skills/client-test-remediation/reference.md`
-- **Entry point** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
-- **Fix-verify loop** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
-- **Priority** (1 connections) — `.claude/skills/client-test-remediation/SKILL.md`
+- **test_monitoring_init.py** (6 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_performance_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_unknown_raises()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unit tests for server.monitoring lazy __getattr__ re-exports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Exception tracker symbols import without triggering numpy lazy paths.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves MonitoringDashboard and get_monitoring_dashboard.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves PerformanceStats and get_performance_monitor.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unknown attribute names raise AttributeError.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Direct __getattr__ covers both branch returns for dashboard imports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Relationships
 
@@ -24,12 +23,11 @@
 
 ## Source Files
 
-- `.claude/skills/client-test-remediation/SKILL.md`
-- `.claude/skills/client-test-remediation/reference.md`
+- `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

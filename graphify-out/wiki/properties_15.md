@@ -1,42 +1,41 @@
 # properties
 
-> 18 nodes
+> 20 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **properties** (10 connections) — `db/static/schemas/room.schema.json`
-- **attributes** (3 connections) — `db/static/schemas/room.schema.json`
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
-- **name** (3 connections) — `db/static/schemas/room.schema.json`
-- **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
-- **zone** (3 connections) — `db/static/schemas/room.schema.json`
-- **environment** (2 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **compilerOptions** (18 connections) — `client/tsconfig.node.json`
+- **lib** (2 connections) — `client/tsconfig.node.json`
+- **types** (2 connections) — `client/tsconfig.node.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.node.json`
+- **composite** (1 connections) — `client/tsconfig.node.json`
+- **declarationDir** (1 connections) — `client/tsconfig.node.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.node.json`
+- **module** (1 connections) — `client/tsconfig.node.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.node.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.node.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.node.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.node.json`
+- **strict** (1 connections) — `client/tsconfig.node.json`
+- **target** (1 connections) — `client/tsconfig.node.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.node.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.node.json`
+- **ES2020** (1 connections) — `client/tsconfig.node.json`
+- **node** (1 connections) — `client/tsconfig.node.json`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [exits](exits.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `client/tsconfig.node.json`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

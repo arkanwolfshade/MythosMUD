@@ -2,7 +2,7 @@
 
 > God node · 281 connections · `server/models/player.py`
 
-**Community:** [Player](Player.md)
+**Community:** [fixtures/auth.ts](fixtures-auth.ts.md)
 
 ## Connections by Relation
 

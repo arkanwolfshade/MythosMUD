@@ -1,74 +1,54 @@
 # waitForMessage
 
-> 89 nodes
+> 88 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **waitForMessage()** (71 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **multiplayer.ts** (63 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
-- **ensurePlayerInGame()** (62 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **createMultiPlayerContexts()** (50 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **waitForAllPlayersInGame()** (44 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **getMessages()** (38 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **local-channel-isolation.spec.ts** (31 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **cleanupMultiPlayerContexts()** (30 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **shared-session.ts** (30 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
-- **PlayerContext** (26 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **local-channel-basic.spec.ts** (26 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- **ensureMultiplayerCoLocated()** (25 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **chat-messages.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- **local-channel-integration.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- **local-channel-movement.spec.ts** (23 connections) — `client/tests/e2e/runtime/movement/local-channel-movement.spec.ts`
-- **waitForCrossPlayerMessage()** (22 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **test** (22 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
-- **follow-commands.spec.ts** (22 connections) — `client/tests/e2e/runtime/follow/follow-commands.spec.ts`
-- **movement-between-rooms.spec.ts** (22 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
-- **ensurePlayersInSameRoom()** (21 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
-- **adoptSharedPlayers()** (21 connections) — `client/tests/e2e/runtime/fixtures/shared-session.ts`
-- **party-commands.spec.ts** (21 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
-- **getPlayerMessages()** (20 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
-- **admin-teleportation.spec.ts** (20 connections) — `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
-- **posture-messages-game-info.spec.ts** (19 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- *... and 64 more nodes in this community*
+- **test_player_repository.py** (49 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **asyncio** (28 connections)
+- **_make_mock_row()** (10 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_ScalarResult** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_session_maker_double()** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_clear_player_inventory_calls_only_the_narrow_procedure()** (7 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **_SessionCM** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_allows_new_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_refuses_deleted_player()** (6 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **player_repository()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_clear_player_inventory_database_error()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_success()** (5 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **mock_player()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_active_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_batch_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_players_in_room_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_list_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_player_repository_initialization_with_cache()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_player_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_save_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [player.ts](player.ts.md) (102 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (80 shared connections)
-- [executeCommand](executeCommand.md) (77 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (32 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (24 shared connections)
-- [tutorial-instance-lifecycle.spec.ts](tutorial-instance-lifecycle.spec.ts.md) (13 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (11 shared connections)
-- [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (2 shared connections)
+- [endpoints.py](endpoints.py.md) (10 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (5 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (5 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/accessibility/logout-accessibility.spec.ts`
-- `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
-- `client/tests/e2e/runtime/admin/summon-command.spec.ts`
-- `client/tests/e2e/runtime/admin/whisper-logging.spec.ts`
-- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
-- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/quit-combat-guard.spec.ts`
-- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
-- `client/tests/e2e/runtime/connection/clean-game-state.spec.ts`
-- `client/tests/e2e/runtime/connection/new-game-session.spec.ts`
-- `client/tests/e2e/runtime/consumables/folk-tonic-use.spec.ts`
-- `client/tests/e2e/runtime/containers/container-environmental-interactions.spec.ts`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 771 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 144 (92%)
+- INFERRED: 13 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,10 @@
 # nats_status.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **nats_status.ps1** (0 connections) — `scripts/nats_status.ps1`
+- **unit/schemas/__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/nats_status.ps1`
+- `server/tests/unit/schemas/__init__.py`
 
 ## Audit Trail
 

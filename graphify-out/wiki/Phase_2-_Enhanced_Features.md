@@ -1,38 +1,47 @@
 # Phase 2: Enhanced Features
 
-> 16 nodes
+> 25 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **Phase 2: Enhanced Features** (6 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 2.1: Add Chat History and Statistics to ChatPanel** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 2.2: Implement Quick Chat Commands** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 2.3: Add Channel Activity Indicators** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 2.4: Enhance GameLogPanel with Better Message Categorization** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 2.5: Add Game Log Filtering and Search Capabilities** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **TEMPORAL_SYSTEM_RESEARCH.md** (7 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **2. Mythos Time Model Draft** (6 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **3. Implementation Blueprint** (5 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **MythosMUD Temporal Compression Briefing** (5 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **4. Client HUD Implementation** (4 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **4.0 In-Game Hours Per Real Hour** (3 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **1. Research Synthesis** (2 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **DikuMUD Baseline Compression** (2 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **MythosChronicle** (2 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Calendar structure** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Chronicle bootstrap** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Configuration & persistence** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Core services** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Day-night cadence** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Wheel of Time Farede Calendar** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Holiday mirroring** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **HUD rendering** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Integration points** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Key takeaways** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Major religious observances** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **<!-- Mythic Temporal Spec Draft — prepared for Prof. Wolfshade -->** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Mythos hour broadcasts** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **MythosTimeHud** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Seasonal beats** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- **Testing strategy** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
 
 ## Relationships
 
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

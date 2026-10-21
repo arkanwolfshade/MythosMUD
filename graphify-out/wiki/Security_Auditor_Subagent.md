@@ -1,44 +1,50 @@
 # Security Auditor Subagent
 
-> 22 nodes
+> 26 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **Security Auditor Subagent** (11 connections) — `.claude/agents/security-auditor.md`
-- **Capabilities** (6 connections) — `.claude/agents/security-auditor.md`
-- **Example Scenarios** (4 connections) — `.claude/agents/security-auditor.md`
-- **Security Requirements** (3 connections) — `.claude/agents/security-auditor.md`
-- **security-auditor.md** (1 connections) — `.claude/agents/security-auditor.md`
-- **Authentication & Authorization** (1 connections) — `.claude/agents/security-auditor.md`
-- **Authentication Security Review** (1 connections) — `.claude/agents/security-auditor.md`
-- **COPPA Compliance** (1 connections) — `.claude/agents/security-auditor.md`
-- **COPPA Compliance (Critical)** (1 connections) — `.claude/agents/security-auditor.md`
-- **COPPA Compliance Verification** (1 connections) — `.claude/agents/security-auditor.md`
-- **Input Validation** (1 connections) — `.claude/agents/security-auditor.md`
-- **Input Validation Review** (1 connections) — `.claude/agents/security-auditor.md`
-- **Integration** (1 connections) — `.claude/agents/security-auditor.md`
-- **Methodology** (1 connections) — `.claude/agents/security-auditor.md`
-- **Notes** (1 connections) — `.claude/agents/security-auditor.md`
-- **Output Format** (1 connections) — `.claude/agents/security-auditor.md`
-- **Purpose** (1 connections) — `.claude/agents/security-auditor.md`
-- **Security Best Practices** (1 connections) — `.claude/agents/security-auditor.md`
-- **Security Headers & Configuration** (1 connections) — `.claude/agents/security-auditor.md`
-- **Security Implementation Standards** (1 connections) — `.claude/agents/security-auditor.md`
-- **Usage** (1 connections) — `.claude/agents/security-auditor.md`
-- **Vulnerability Scanning** (1 connections) — `.claude/agents/security-auditor.md`
+- **test_calendar.py** (13 connections) — `server/tests/unit/models/test_calendar.py`
+- **HolidayModel** (10 connections) — `server/models/calendar.py`
+- **NPCScheduleModel** (10 connections) — `server/models/calendar.py`
+- **models/calendar.py** (7 connections) — `server/models/calendar.py`
+- **test_holiday_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_holiday_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_holiday_model_table_name()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_holiday_model_with_bonus_tags()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_npc_schedule_model_creation()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_npc_schedule_model_empty_arrays()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_npc_schedule_model_repr()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_npc_schedule_model_table_name()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **test_npc_schedule_model_with_notes()** (3 connections) — `server/tests/unit/models/test_calendar.py`
+- **Base** (2 connections)
+- **SQLAlchemy models for calendar data (holidays and NPC schedules).** (1 connections) — `server/models/calendar.py`
+- **Mythos holidays tracker.** (1 connections) — `server/models/calendar.py`
+- **Unit tests for calendar models. Tests the HolidayModel and NPCScheduleModel…** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test NPCScheduleModel can have optional notes.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test NPCScheduleModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test NPCScheduleModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test HolidayModel can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test NPCScheduleModel can have empty arrays.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test HolidayModel can have bonus_tags.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test HolidayModel has correct table name.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- **Test HolidayModel __repr__ method.** (1 connections) — `server/tests/unit/models/test_calendar.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_channel_commands.py](test_channel_commands.py.md) (4 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (3 shared connections)
 
 ## Source Files
 
-- `.claude/agents/security-auditor.md`
+- `server/models/calendar.py`
+- `server/tests/unit/models/test_calendar.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (91%)
+- INFERRED: 4 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

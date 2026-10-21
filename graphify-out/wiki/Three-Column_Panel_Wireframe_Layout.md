@@ -1,23 +1,24 @@
 # Three-Column Panel Wireframe Layout
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
-- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **test_execute_applicable_rules_no_handler()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() returns False when no handler.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TestValidatorIntegration](TestValidatorIntegration.md) (1 shared connections)
+- [.cursor/hooks/record_edited_file.py](cursor-hooks-record_edited_file.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

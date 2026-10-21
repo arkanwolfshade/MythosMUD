@@ -1,52 +1,50 @@
 # test_room_renderer.py
 
-> 72 nodes
+> 73 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **format_room_drop_lines()** (24 connections) — `server/utils/room_renderer.py`
-- **clone_room_drops()** (17 connections) — `server/utils/room_renderer.py`
-- **test_room_renderer_functions.py** (14 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **build_room_drop_summary()** (12 connections) — `server/utils/room_renderer.py`
-- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
-- **test_build_room_drop_summary()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_clone_room_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_clone_room_drops_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_format_room_drop_lines()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_format_room_drop_lines_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_format_room_drop_lines_fallback_name()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_format_room_drop_lines_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_build_room_drop_summary_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_converts_to_dict()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_nested_structure()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_clone_room_drops_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **test_format_room_drop_lines_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- *... and 47 more nodes in this community*
+- **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
+- **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_not_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_empty()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_with_fresh_and_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_default_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_both_have_timestamps()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_new_has_timestamp_old_doesnt()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_old_newer_than_new()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [AttributeError](AttributeError.md) (5 shared connections)
-- [test_look_room.py](test_look_room.py.md) (4 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [HolidayEntry](HolidayEntry.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_room_renderer.py`
-- `server/tests/unit/utils/test_room_renderer_functions.py`
-- `server/utils/room_renderer.py`
+- `server/services/room_data_cache.py`
+- `server/tests/unit/services/test_room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

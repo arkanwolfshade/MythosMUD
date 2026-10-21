@@ -1,10 +1,10 @@
 # Dual Connection System Tasks
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dual Connection System Tasks** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
+- **Scenario 42 Quest Log Visible After Login** (0 connections) — `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
+- `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
 
 ## Audit Trail
 

@@ -1,26 +1,24 @@
 # combat_validator
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **combat_validator()** (4 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **fixture** (1 connections)
-- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ftfy Unicode Normalization** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
+- **Sanitization Over Validation** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
 
 ## Relationships
 
-- [test_combat_validator.py](test_combat_validator.py.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # Async Persistence Migration Plan
 
-> 38 nodes
+> 38 nodes · cohesion 0.05
 
 ## Key Concepts
 

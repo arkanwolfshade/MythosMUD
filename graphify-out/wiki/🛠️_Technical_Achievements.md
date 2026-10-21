@@ -1,25 +1,23 @@
 # 🛠️ Technical Achievements
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **🛠️ Technical Achievements** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Code Quality** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Performance** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
-- **Test Organization** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **wsl-bashrc-codacy.sh** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
+- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 
 ## Relationships
 
-- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- `.codacy/wsl-bashrc-codacy.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

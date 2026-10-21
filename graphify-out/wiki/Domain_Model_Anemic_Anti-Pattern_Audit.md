@@ -1,48 +1,56 @@
 # Domain Model Anemic Anti-Pattern Audit
 
-> 28 nodes
+> 34 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **Domain Model Anemic Anti-Pattern Audit** (10 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2. High Priority – Domain Logic in Services** (6 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3. Medium Priority – Partial Enrichment** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4. Low Priority – Acceptable Service Logic** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **Anemic Domain Model Anti-Pattern** (4 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **DOMAIN_MODEL_ANEMIC_AUDIT.md** (2 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **1. Already Addressed (Prior Work)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.1 Player Death Service – DP Decay** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.2 Combat Turn Processor – “Can Act” Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.3 Combat HP Sync – Death Threshold Logic** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.4 Combat Persistence Handler – Same Patterns** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.5 Player Respawn Service – Stats Restoration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.1 Wearable Container Service – Capacity Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.2 Inventory Service – Slot Capacity** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.3 NPC Combat Data Provider – Stats Extraction** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.4 Combat Event Handler / Publisher – DP in Events** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.1 Container Service** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.2 Combat Initialization** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.3 Combat Service, Combat Messaging Integration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.4 NPC Instance Service, NPC Combat Integration Service (Done)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **5. Models Already Rich (No Action)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **6. Recommended Implementation Order** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **7. Services Reviewed (No Domain Logic to Move)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **8. Summary Table** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **Executive Summary** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- *... and 3 more nodes in this community*
+- **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
+- **Lock** (8 connections)
+- **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **.__init__()** (4 connections) — `server/npc/threading.py`
+- **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
+- **Any** (2 connections)
+- **test_circuit_state_change_trims_history()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_get_summary()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **Record a circuit breaker state change. Args: old_state: Previous circuit state…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Record message processing time. Args: duration_ms: Processing duration in…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Room](Room.md) (3 shared connections)
+- [test_metadata.py](test_metadata.py.md) (2 shared connections)
+- [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
+- [_find_item_in_inventory](_find_item_in_inventory.md) (1 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- `server/middleware/metrics_collector.py`
+- `server/npc/threading.py`
+- `server/tests/unit/middleware/test_metrics_collector.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

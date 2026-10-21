@@ -1,10 +1,10 @@
 # Dual Connection Monitoring Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Dual Connection Monitoring Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
+- **Per-Recipient Whisper Rate Limit** (0 connections) — `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
+- `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
 
 ## Audit Trail
 

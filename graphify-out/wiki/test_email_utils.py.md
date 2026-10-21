@@ -1,37 +1,38 @@
 # test_email_utils.py
 
-> 15 nodes
+> 15 nodes · cohesion 0.13
 
 ## Key Concepts
 
-- **test_email_utils.py** (12 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **generate_unique_bogus_email()** (7 connections) — `server/auth/email_utils.py`
-- **validate_bogus_email_format()** (7 connections) — `server/auth/email_utils.py`
-- **test_generate_unique_bogus_email_adds_suffix_when_taken()** (3 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **test_generate_unique_bogus_email_base_available()** (3 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **test_generate_unique_bogus_email_full_uuid_collision()** (3 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **asyncio** (3 connections)
-- **test_is_bogus_email()** (2 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **test_validate_bogus_email_format_accepts_valid()** (2 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **test_validate_bogus_email_format_rejects_bad_local()** (2 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **test_validate_bogus_email_format_rejects_non_bogus()** (2 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **AsyncSession** (1 connections)
-- **Generate a unique bogus email address for a user. This function creates a bogus…** (1 connections) — `server/auth/email_utils.py`
-- **Validate that a bogus email follows our expected format. Args: email: The email…** (1 connections) — `server/auth/email_utils.py`
-- **Unit tests for auth email utilities.** (1 connections) — `server/tests/unit/auth/test_email_utils.py`
+- **compilerOptions** (7 connections) — `client/tsconfig.test.json`
+- **tsconfig.test.json** (6 connections) — `client/tsconfig.test.json`
+- **tsconfig.app.json** (5 connections) — `client/tsconfig.app.json`
+- **include** (2 connections) — `client/tsconfig.app.json`
+- **extends** (1 connections) — `client/tsconfig.app.json`
+- **src** (1 connections) — `client/tsconfig.app.json`
+- **./tsconfig.json** (1 connections) — `client/tsconfig.app.json`
+- **composite** (1 connections) — `client/tsconfig.test.json`
+- **declarationDir** (1 connections) — `client/tsconfig.test.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.test.json`
+- **noEmit** (1 connections) — `client/tsconfig.test.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.test.json`
+- **exclude** (1 connections) — `client/tsconfig.test.json`
+- **extends** (1 connections) — `client/tsconfig.test.json`
+- **references** (1 connections) — `client/tsconfig.test.json`
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
+- [Pydantic Code Review - feature/sqlite-to-postgresql Branch](Pydantic_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (2 shared connections)
+- [compilerOptions](compilerOptions.md) (2 shared connections)
 
 ## Source Files
 
-- `server/auth/email_utils.py`
-- `server/tests/unit/auth/test_email_utils.py`
+- `client/tsconfig.app.json`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

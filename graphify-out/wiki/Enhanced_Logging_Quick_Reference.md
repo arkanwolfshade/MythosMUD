@@ -1,34 +1,37 @@
 # Enhanced Logging Quick Reference
 
-> 12 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Enhanced Logging Quick Reference** (10 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Context Binding** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Validation Checklist** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Clear Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **🚨 CRITICAL: DO NOT USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Log Levels** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **✅ MANDATORY: ALWAYS USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **One-page cheat sheet for MythosMUD enhanced logging patterns** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Quick Fixes** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Request Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Security Features** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Communities (12 total, 7 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **down-darker-trails/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 0 - "Call of Cthulhu (7th Edition); Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 1 - "APP; Characteristics"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 2 - "Everett Scanlon; Gustavo Romero"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 3 - "First Aid; Hit Points"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 4 - "Formless Spawn of Tsathoggua; Rudolf Zimmer"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md.md) (1 shared connections)
-- [Common Patterns](Common_Patterns.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

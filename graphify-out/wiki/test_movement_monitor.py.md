@@ -1,50 +1,51 @@
 # test_movement_monitor.py
 
-> 57 nodes
+> 61 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **test_movement_monitor.py** (33 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_calculates_occupancy()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 32 more nodes in this community*
+- **CoordinateGenerator** (31 connections) — `server/services/coordinate_generator.py`
+- **test_coordinate_generator.py** (23 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
+- **Any** (8 connections)
+- **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
+- **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
+- **asyncio** (6 connections)
+- **._assign_coordinates_bfs()** (5 connections) — `server/services/coordinate_generator.py`
+- **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
+- **._find_origin_room()** (4 connections) — `server/services/coordinate_generator.py`
+- **._rooms_query_and_pattern()** (4 connections) — `server/services/coordinate_generator.py`
+- **._attach_room_exits()** (3 connections) — `server/services/coordinate_generator.py`
+- **._detect_coordinate_conflicts()** (3 connections) — `server/services/coordinate_generator.py`
+- **._get_next_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
+- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
+- **._nearest_free_cell()** (3 connections) — `server/services/coordinate_generator.py`
+- **._reverse_direction()** (3 connections) — `server/services/coordinate_generator.py`
+- **._room_dict_from_row()** (3 connections) — `server/services/coordinate_generator.py`
+- **._store_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
+- **generator()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_assign_coordinates_bfs_displaces_up_down_exits()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_assign_coordinates_bfs_reaches_disconnected_components()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_assign_coordinates_bfs_resolves_collisions()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_room_dict_from_row_carries_environment_columns()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_room_dict_from_row_inherited_environment_is_none()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [MovementMonitor](MovementMonitor.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_movement_monitor.py`
+- `server/services/coordinate_generator.py`
+- `server/tests/unit/services/test_coordinate_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 94 (93%)
+- INFERRED: 7 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

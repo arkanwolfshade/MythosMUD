@@ -1,10 +1,10 @@
 # Worktree Task Plan Template
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Worktree Task Plan Template** (0 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **ADR-007: FastAPI with Async/Await** (0 connections) — `docs/architecture/decisions/ADR-007-fastapi-async-await.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- `docs/architecture/decisions/ADR-007-fastapi-async-await.md`
 
 ## Audit Trail
 

@@ -1,65 +1,62 @@
 # resolve_lazy_attr
 
-> 68 nodes
+> 76 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **resolve_lazy_attr()** (14 connections) — `server/realtime/connection_manager_lazy.py`
-- **test_connection_manager_api.py** (14 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
-- **resolve_connection_manager()** (11 connections) — `server/realtime/connection_manager_utils.py`
-- **remove_online_player()** (9 connections) — `server/realtime/connection_manager_api.py`
-- **_require_manager()** (9 connections) — `server/realtime/connection_manager_api.py`
-- **send_system_notification()** (9 connections) — `server/realtime/connection_manager_api.py`
-- **connection_manager_lazy.py** (9 connections) — `server/realtime/connection_manager_lazy.py`
-- **connection_manager_utils.py** (8 connections) — `server/realtime/connection_manager_utils.py`
-- **asyncio** (8 connections)
-- **_ConnectionManagerAPI** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_player_status_update()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_room_description()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **send_room_event()** (7 connections) — `server/realtime/connection_manager_api.py`
-- **UUID** (7 connections)
-- **test_connection_manager_lazy.py** (6 connections) — `server/tests/unit/realtime/test_connection_manager_lazy.py`
-- **.soft_delete_character()** (5 connections) — `server/game/player_service.py`
-- **test_missing_manager_is_logged_not_raised()** (5 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- **ConnectionManagerUnavailable** (4 connections) — `server/realtime/connection_manager_api.py`
-- **_ensure_async_compat()** (4 connections) — `server/realtime/connection_manager_utils.py`
-- **test_resolve_lazy_attr_returns_api_function()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_lazy.py`
-- **_coerce_connection_manager()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **_make_async_compat_wrapper()** (3 connections) — `server/realtime/connection_manager_utils.py`
-- **test_broadcast_game_event()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- **test_remove_online_player_is_a_noop_without_a_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_api.py`
-- *... and 43 more nodes in this community*
+- **.get_instance()** (88 connections) — `server/database.py`
+- **.reset_instance()** (87 connections) — `server/database.py`
+- **test_database_error_handling.py** (41 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **asyncio** (7 connections)
+- **test_close_handles_attribute_error_during_dispose()** (7 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_value_error()** (7 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_closed_event_loop()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_dispose_timeout()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_generic_exception_during_dispose()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_no_running_loop()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_none_engine()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_close_handles_runtime_error_during_dispose()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_get_database_path_none_url_raises()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_get_database_path_unsupported_raises()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_runtime_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_config_validation_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_connection_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_generic_exception()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_none_url()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_os_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_type_error()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_initialize_database_unsupported_url()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_reset_database_resets_singleton()** (6 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_database_manager_init_raises_when_instance_exists()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_get_database_path_postgresql_returns_none()** (5 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (21 shared connections)
-- [magic_service.py](magic_service.py.md) (8 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [InventoryPanel.tsx](InventoryPanel.tsx.md) (82 shared connections)
+- [ItemFactory](ItemFactory.md) (26 shared connections)
+- [RateLimiter](RateLimiter.md) (11 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (10 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
+- [test_check_coverage_thresholds.py](test_check_coverage_thresholds.py.md) (7 shared connections)
+- [intersection_schema.json](intersection_schema.json.md) (7 shared connections)
+- [LoggingPatternLinter](LoggingPatternLinter.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (1 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/player_service.py`
-- `server/realtime/connection_manager.py`
-- `server/realtime/connection_manager_api.py`
-- `server/realtime/connection_manager_lazy.py`
-- `server/realtime/connection_manager_utils.py`
-- `server/tests/unit/realtime/test_connection_manager_api.py`
-- `server/tests/unit/realtime/test_connection_manager_lazy.py`
+- `server/database.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 263 (85%)
+- INFERRED: 47 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

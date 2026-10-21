@@ -1,10 +1,10 @@
 # 20260914_npc_catalog_scaffold_unit.sql
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **20260914_npc_catalog_scaffold_unit.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_scaffold_unit.sql`
+- **Dual Connection Monitoring Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/npc_catalog/generated/20260914_npc_catalog_scaffold_unit.sql`
+- `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
 
 ## Audit Trail
 

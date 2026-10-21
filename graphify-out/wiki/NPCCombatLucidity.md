@@ -1,62 +1,64 @@
 # NPCCombatLucidity
 
-> 66 nodes
+> 73 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
-- **ActiveLucidityService** (28 connections) — `server/services/active_lucidity_service.py`
-- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
-- **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **.apply_timed_recovery()** (7 connections) — `server/services/active_lucidity_service.py`
-- **.perform_recovery_action()** (7 connections) — `server/services/active_lucidity_service.py`
-- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_loss()** (6 connections) — `server/services/active_lucidity_service.py`
+- **TargetResolutionResult** (38 connections) — `server/schemas/shared/target_resolution.py`
+- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **follow_commands.py** (20 connections) — `server/commands/follow_commands.py`
+- **handle_follow_command()** (18 connections) — `server/commands/follow_commands.py`
+- **.async_persistence()** (15 connections) — `server/commands/cleanse_command.py`
+- **asyncio** (13 connections)
+- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_following_command()** (11 connections) — `server/commands/follow_commands.py`
+- **handle_unfollow_command()** (11 connections) — `server/commands/follow_commands.py`
+- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **.resolve_combat_target()** (6 connections) — `server/commands/combat_handler.py`
+- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
+- **_load_follow_context()** (6 connections) — `server/commands/follow_commands.py`
 - **Any** (6 connections)
-- **.get_action_cooldown()** (5 connections) — `server/services/active_lucidity_service.py`
-- **UUID** (5 connections)
-- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_with_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_without_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_base_stats_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **test_npc_combat_lucidity.py** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- *... and 41 more nodes in this community*
+- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **._validate_combat_target_match()** (5 connections) — `server/commands/combat_handler.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [active_lucidity_service.py](active_lucidity_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (5 shared connections)
-- [ValueError](ValueError.md) (4 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [debrief_command.py](debrief_command.py.md) (2 shared connections)
-- [lucidity.py](lucidity.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [command_parser.py](command_parser.py.md) (14 shared connections)
+- [RoomService](RoomService.md) (14 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (11 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (6 shared connections)
+- [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (6 shared connections)
+- [test_help_docs.py](test_help_docs.py.md) (4 shared connections)
+- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (3 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
+- [.load_room_data](load_room_data.md) (3 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [test_player_respawn_api.py](test_player_respawn_api.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/active_lucidity_service.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lucidity.py`
-- `server/tests/unit/services/test_npc_combat_lucidity.py`
+- `server/commands/cleanse_command.py`
+- `server/commands/combat_handler.py`
+- `server/commands/follow_commands.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/tests/unit/commands/test_follow_commands.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (90%)
-- INFERRED: 15 (10%)
+- EXTRACTED: 192 (88%)
+- INFERRED: 25 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

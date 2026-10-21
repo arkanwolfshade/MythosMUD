@@ -1,53 +1,50 @@
 # HealthService
 
-> 39 nodes
+> 57 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **HealthService** (27 connections) — `server/services/health_service.py`
-- **.get_health_status()** (10 connections) — `server/services/health_service.py`
-- **.check_database_health_async()** (7 connections) — `server/services/health_service.py`
-- **._create_health_response()** (7 connections) — `server/services/health_service.py`
-- **.get_server_component_health()** (7 connections) — `server/services/health_service.py`
-- **Any** (7 connections)
-- **.check_connections_health()** (5 connections) — `server/services/health_service.py`
-- **.determine_overall_status()** (5 connections) — `server/services/health_service.py`
-- **.get_connections_component_health()** (5 connections) — `server/services/health_service.py`
-- **.get_database_component_health()** (5 connections) — `server/services/health_service.py`
-- **._health_from_pool()** (5 connections) — `server/services/health_service.py`
-- **._ping_database()** (5 connections) — `server/services/health_service.py`
-- **.check_database_health()** (4 connections) — `server/services/health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
-- **._status_from_query_ms()** (4 connections) — `server/services/health_service.py`
-- **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
-- **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
-- **.__init__()** (3 connections) — `server/services/health_service.py`
-- **test_health_service_accepts_injected_async_persistence()** (3 connections) — `server/tests/unit/services/test_health_service.py`
-- **HealthStatus** (3 connections)
-- **Create a standardized health check response dictionary. Args: status: Health…** (1 connections) — `server/services/health_service.py`
-- **Async database health check.** (1 connections) — `server/services/health_service.py`
-- **check_database_health.** (1 connections) — `server/services/health_service.py`
-- *... and 14 more nodes in this community*
+- **Async Code Review - Post Phase 2 Migration** (16 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🔍 Specific File Reviews** (11 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🔴 Anti-Patterns Check (Critical)** (9 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🚫 Anti-Patterns NOT Found (Good!)** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🔍 Anti-Pattern Check** (6 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎓 Best Practice Examples to Share** (5 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **📋 Checklist Against Best Practices** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎯 Code Quality Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎯 Final Verdict** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🟡 Minor Recommendations (Not Blocking)** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **📈 Performance Impact Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Blocking the Event Loop?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Using `asyncio.run()` in Library Code?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Mixing Sync and Async Code Incorrectly?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Forgetting to Await Awaitable Objects?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Not Handling Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **7. Over-using Locks?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **8. Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **After Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **anyio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Areas for Future Enhancement (Not Blocking)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **asyncio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Before Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Blocking Calls in Async Functions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (9 shared connections)
-- [test_health_service.py](test_health_service.py.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
+- [global-teardown.ts](global-teardown.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

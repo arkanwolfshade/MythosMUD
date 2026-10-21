@@ -1,12 +1,11 @@
 # Chaosium graphify snapshot - Nameless Horrors - 2nd Edition
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Nameless Horrors - 2nd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
-- **nameless-horrors-2nd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- **Cursor Hooks Development Plan** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- **Cursor hooks.json** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

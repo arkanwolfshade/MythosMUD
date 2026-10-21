@@ -1,23 +1,23 @@
 # test_build_room_objects_success
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_build_room_objects_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects successfully builds room objects.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

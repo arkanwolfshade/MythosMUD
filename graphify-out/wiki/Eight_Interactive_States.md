@@ -1,11 +1,10 @@
 # Eight Interactive States
 
-> 2 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
-- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **R'lyeh** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/interaction-design.md`
+- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,28 @@
 # .grant_xp
 
-> 8 nodes
+> 6 nodes · cohesion 0.47
 
 ## Key Concepts
 
-- **_XpAwardingPersistence** (4 connections) — `server/game/level_service.py`
-- **.grant_xp()** (4 connections) — `server/game/level_service.py`
-- **.award_player_xp()** (3 connections) — `server/game/level_service.py`
-- **UUID** (3 connections)
-- **Protocol** (1 connections)
-- **Persistence surface LevelService actually calls (narrows the Any-typed…** (1 connections) — `server/game/level_service.py`
-- **Atomically add XP and recompute level. Returns (new_xp, old_level, new_level).** (1 connections) — `server/game/level_service.py`
-- **Grant experience points to a character and check for level-up. Delegates to…** (1 connections) — `server/game/level_service.py`
+- **check_file_for_logging_issues()** (4 connections) — `scripts/check_logging_consistency.py`
+- **main()** (4 connections) — `scripts/check_logging_consistency.py`
+- **check_logging_consistency.py** (2 connections) — `scripts/check_logging_consistency.py`
+- **Path** (2 connections)
+- **Check a single file for logging consistency issues. Args: file_path: Path to…** (1 connections) — `scripts/check_logging_consistency.py`
+- **Main function to check all service files for logging consistency.** (1 connections) — `scripts/check_logging_consistency.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [LevelService](LevelService.md) (1 shared connections)
-- [ValueError](ValueError.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `scripts/check_logging_consistency.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (91%)
-- INFERRED: 1 (9%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

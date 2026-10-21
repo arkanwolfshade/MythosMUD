@@ -1,30 +1,28 @@
 # Detailed Implementation
 
-> 9 nodes
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- **Detailed Implementation** (9 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **1. Error Handling Standardization** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **2. Message Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **3. Batch Flush Error Recovery** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **4. Connection Pool Error Handling** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **5. Subject Manager Integration** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **6. Health Monitoring** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **7. Acknowledgment Metrics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **8. Wildcard Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **P0 · Previously-Known Deviations** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **ACCEPTED — do not re-report as new** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Contradiction found in prior work** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Corroboration of the P2 provenance finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Deferred / residual (open by admission)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **PLANNED-NOT-DONE — highest-value rows** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **REMEDIATED — expect CONFORMS; a deviation here is a regression** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
 
 ## Relationships
 
-- [NATS Complete Remediation Summary](NATS_Complete_Remediation_Summary.md) (1 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

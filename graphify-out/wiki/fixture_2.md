@@ -1,35 +1,39 @@
 # fixture
 
-> 11 nodes
+> 16 nodes · cohesion 0.16
 
 ## Key Concepts
 
-- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
-- **fixture** (5 connections)
-- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a RoomService instance.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_database_config_helpers_asyncpg_settings.py** (9 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **clear_postgres_search_path()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_mythos_unit_defaults_search_path_to_db_name()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_respects_postgres_search_path_when_matches_db_name()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_empty_when_no_env()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **test_unknown_database_uses_postgres_search_path_when_set()** (4 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **MonkeyPatch** (3 connections)
+- **usefixtures** (3 connections)
+- **test_mythos_e2e_defaults_search_path_to_db_name()** (3 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **fixture** (1 connections)
+- **Unit tests for get_asyncpg_server_settings_for_database_url.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Ensure POSTGRES_SEARCH_PATH does not leak between cases.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Known env DBs must set search_path to the database name when env override is…** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **When POSTGRES_SEARCH_PATH matches the DB name, keep that search_path.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Non-mythos_* URLs still honor POSTGRES_SEARCH_PATH.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- **Other databases without POSTGRES_SEARCH_PATH get no server_settings.** (1 connections) — `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (5 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (6 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (83%)
-- INFERRED: 3 (17%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

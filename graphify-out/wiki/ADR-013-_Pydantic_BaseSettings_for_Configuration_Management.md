@@ -1,10 +1,10 @@
 # ADR-013: Pydantic BaseSettings for Configuration Management
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-013: Pydantic BaseSettings for Configuration Management** (0 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- **databases.sql** (0 connections) — `db/databases/databases.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- `db/databases/databases.sql`
 
 ## Audit Trail
 

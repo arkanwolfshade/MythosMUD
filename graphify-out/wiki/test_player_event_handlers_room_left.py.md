@@ -1,49 +1,51 @@
 # test_player_event_handlers_room_left.py
 
-> 27 nodes
+> 45 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- **test_player_event_handlers_room_left.py** (15 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **asyncio** (11 connections)
-- **test_handle_player_left_disconnecting()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_handle_player_left_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_broadcast_player_left_message_not_disconnecting()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_invalid_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_string_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_unsubscribe_player_from_room_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **test_log_occupants_info()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Unit tests for player room event handlers (player left / unsubscribe /…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() skips broadcast when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test handle_player_left() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test _log_occupants_info() logs occupant information.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() successfully unsubscribes player.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles string player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test unsubscribe_player_from_room() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() broadcasts when not disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- **Test broadcast_player_left_message() skips when player is disconnecting.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
-- *... and 2 more nodes in this community*
+- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
+- **ItemComponentState** (13 connections) — `server/models/item.py`
+- **ItemPrototype** (13 connections) — `server/models/item.py`
+- **ItemInstance** (11 connections) — `server/models/item.py`
+- **item.py** (8 connections) — `server/models/item.py`
+- **.unique_key()** (8 connections) — `server/models/item.py`
+- **test_item_component_state_unique_key()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_different_instance_same_component()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_different_values()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_empty_strings()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_same_instance_different_component()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_component_state_unique_key_static_method()** (4 connections) — `server/tests/unit/models/test_item.py`
+- **Base** (3 connections)
+- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
+- **.apply_flag()** (2 connections) — `server/models/item.py`
+- **.primary_slot()** (2 connections) — `server/models/item.py`
+- **SQLAlchemy models for MythosMUD item prototypes, instances, and component…** (1 connections) — `server/models/item.py`
+- **Idempotently apply a runtime-only flag override.** (1 connections) — `server/models/item.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (6 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (5 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (4 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room_left.py`
+- `server/models/item.py`
+- `server/tests/unit/models/test_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (88%)
-- INFERRED: 5 (12%)
+- EXTRACTED: 70 (88%)
+- INFERRED: 10 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

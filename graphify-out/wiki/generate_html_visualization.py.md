@@ -1,44 +1,43 @@
 # generate_html_visualization.py
 
-> 23 nodes
+> 21 nodes · cohesion 0.10
 
 ## Key Concepts
 
-- **generate_html_visualization.py** (11 connections) — `scripts/generate_html_visualization.py`
-- **generate_html_visualization()** (8 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_list_html()** (5 connections) — `scripts/generate_html_visualization.py`
-- **_format_exits()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_intersection_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
-- **main()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_edge_data()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_generate_intersection_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_get_subzone_colors()** (3 connections) — `scripts/generate_html_visualization.py`
-- **load_room_data()** (3 connections) — `scripts/generate_html_visualization.py`
-- **Generate edge data for JavaScript.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Format exits data for display.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate room items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate intersection items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate room list HTML.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Get color scheme for subzones.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate node data for rooms.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate node data for intersections.** (1 connections) — `scripts/generate_html_visualization.py`
+- **NATS Medium-Priority Remediation Summary** (9 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Completed Medium-Priority Fixes ✅** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Configuration Options** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Implementation Details** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **NATSMessageBroker** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Health Monitoring** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **1. Integrated Subject Manager into NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **2. Added Health Monitoring to NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **3. Documented Manual Acknowledgment Strategy** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **After Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Before Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Event Callback Improvements** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Manual Acknowledgment** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **NATSSubjectManager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Remaining Low-Priority Items** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager Integration** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/generate_html_visualization.py`
+- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

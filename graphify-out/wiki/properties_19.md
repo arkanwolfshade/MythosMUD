@@ -1,40 +1,43 @@
 # properties
 
-> 19 nodes
+> 18 nodes · cohesion 0.11
 
 ## Key Concepts
 
-- **properties** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **equipmentMetadata** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **coverage** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **notes** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **properties** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **armor_points** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **skill_bonuses** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$ref** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
+- **day** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **id** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **month** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [item_prototype.schema.json](item_prototype.schema.json.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [check_file](check_file.md) (1 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
+- [SkillUseLog](SkillUseLog.md) (1 shared connections)
+- [useGridLayout.ts](useGridLayout.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

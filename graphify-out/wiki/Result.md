@@ -1,42 +1,46 @@
 # Result
 
-> 15 nodes
+> 23 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **Result** (5 connections) — `scripts/run_test_ci.py`
-- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **database** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **.execute()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **.create_user()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **.execute()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **.query()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **.__init__()** (1 connections) — `scripts/run_test_ci.py`
-- **Simulate database operations.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Simulate database query.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Simulate database execute.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Simulate database operations.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Simulate database execute.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Simulate user creation.** (1 connections) — `docs/examples/logging/migration_examples.py`
-- **Container for subprocess result data (returncode, stdout, stderr).** (1 connections) — `scripts/run_test_ci.py`
+- **ApplicationContainer Structure Analysis and Domain-Specific Split Proposal** (11 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2. Current Structure Analysis** (5 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3. Proposed Domain-Specific Split** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **4. Migration Path** (4 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **APPLICATION_CONTAINER_ANALYSIS.md** (2 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **1. Executive Summary** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.1 Attribute Inventory by Domain** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.2 Initialization Order and Dependencies** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.3 Private Initializers and Helpers** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.4 Public API and Consumers** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.1 Option A: Internal Bundles (Recommended)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.2 Option B: Composed Sub-Containers (Alternative)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.3 Dependency Flow Between Bundles** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **5. Backward Compatibility** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **6. Success Criteria** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **7. References** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **8. Changelog** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Current state (architecture-cleanup)** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Phase 1: Extract bundles without changing behavior [COMPLETE]** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Phase 2: Reduce ApplicationContainer to orchestrator [COMPLETE]** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Phase 3: (Optional) Extract service factories** (1 connections) — `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- **BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md** (1 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
 
 ## Relationships
 
-- [correct_patterns.py](correct_patterns.py.md) (1 shared connections)
-- [migration_examples.py](migration_examples.py.md) (1 shared connections)
-- [safe_run_static](safe_run_static.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
-- `docs/examples/logging/migration_examples.py`
-- `scripts/run_test_ci.py`
+- `docs/APPLICATION_CONTAINER_ANALYSIS.md`
+- `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (83%)
-- INFERRED: 3 (17%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,23 @@
 # bootstrap_e2e_database.ps1
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **bootstrap_e2e_database.ps1** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
-- **Invoke-Step()** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
+- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Test _get_user_manager() falls back to a fresh UserManager when none was…** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/bootstrap_e2e_database.ps1`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

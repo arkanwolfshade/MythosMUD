@@ -1,58 +1,48 @@
 # debrief_command.py
 
-> 50 nodes
+> 54 nodes · cohesion 0.04
 
 ## Key Concepts
 
-- **debrief_command.py** (25 connections) — `server/commands/debrief_command.py`
-- **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **handle_debrief_command()** (18 connections) — `server/commands/debrief_command.py`
-- **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
-- **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
-- **asyncio** (9 connections)
-- **Any** (8 connections)
-- **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
-- **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
-- **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
-- **test_handle_debrief_command_success()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_perform_therapy_on_cooldown()** (5 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_check_debrief_availability_not_pending()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_handle_debrief_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_handle_debrief_command_not_available()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_perform_therapy_if_not_requested()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_perform_therapy_success()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_validate_debrief_context_no_persistence()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_validate_debrief_context_player_missing()** (4 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_generate_narrative_recap_exception_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_generate_narrative_recap_no_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_generate_narrative_recap_with_adjustments()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **test_get_catatonia_registry_from_state_fallback()** (3 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- *... and 25 more nodes in this community*
+- **properties** (18 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **determination_points** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **max_dp** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **xp_value** (4 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **attacks** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **charisma** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **constitution** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **dexterity** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **education** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **intelligence** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **luck** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **magic_points** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **max_magic_points** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **power** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **size** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **strength** (3 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **items** (2 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **armor** (2 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **catalog** (2 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **$ref** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **$ref** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **type** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- **minimum** (1 connections) — `schemas/npcs/npc_base_stats.schema.json`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [active_lucidity_service.py](active_lucidity_service.py.md) (5 shared connections)
-- [lucidity.py](lucidity.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [command_parser.py](command_parser.py.md) (1 shared connections)
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/debrief_command.py`
-- `server/tests/unit/commands/test_debrief_command.py`
+- `schemas/npcs/npc_base_stats.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

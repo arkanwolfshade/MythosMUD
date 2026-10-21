@@ -1,12 +1,11 @@
 # NPCs Not Updating On Player Movement
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- **check_users_schema.py** (1 connections) — `server/scripts/check_users_schema.py`
+- **main()** (1 connections) — `server/scripts/check_users_schema.py`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- `server/scripts/check_users_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

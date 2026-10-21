@@ -1,27 +1,25 @@
 # init_npc_database.py
 
-> 18 nodes
+> 16 nodes · cohesion 0.28
 
 ## Key Concepts
 
-- **init_npc_database.py** (8 connections) — `scripts/init_npc_database.py`
-- **init_database_schema()** (5 connections) — `scripts/init_npc_database.py`
-- **_initialize_database_with_url()** (5 connections) — `scripts/init_npc_database.py`
-- **main()** (5 connections) — `scripts/init_npc_database.py`
-- **_determine_database_init_flags()** (4 connections) — `scripts/init_npc_database.py`
-- **get_npc_database_url()** (3 connections) — `scripts/init_npc_database.py`
-- **get_npc_seed_data_from_postgresql()** (3 connections) — `scripts/init_npc_database.py`
-- **populate_npc_data()** (3 connections) — `scripts/init_npc_database.py`
-- **_print_final_message()** (3 connections) — `scripts/init_npc_database.py`
-- **Namespace** (1 connections)
-- **Populate the database with NPC seed data. Args: engine: SQLAlchemy engine…** (1 connections) — `scripts/init_npc_database.py`
-- **Initialize a PostgreSQL database with the NPC schema. Args: database_url: The…** (1 connections) — `scripts/init_npc_database.py`
-- **Get NPC database URL for the specified environment. Args: environment:…** (1 connections) — `scripts/init_npc_database.py`
-- **Determine which databases to initialize based on arguments.** (1 connections) — `scripts/init_npc_database.py`
-- **Initialize a database with URL checking. Returns updated success flag.** (1 connections) — `scripts/init_npc_database.py`
-- **Print final success or error message and exit.** (1 connections) — `scripts/init_npc_database.py`
-- **Main function to initialize NPC database schema.** (1 connections) — `scripts/init_npc_database.py`
-- **Extract seed data from a PostgreSQL NPC database. DEPRECATED: NPC seed data is…** (1 connections) — `scripts/init_npc_database.py`
+- **_apply_arena_seed_patch.py** (12 connections) — `scripts/_apply_arena_seed_patch.py`
+- **patch_file()** (8 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Path** (7 connections)
+- **_append_before_copy_terminator()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_arena_room_links()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_arena_room_rows()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_zone_configuration_row()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_insert_after_line_containing()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_zones_and_subzones()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **main()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_with_trailing_nl()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_load_arena_links()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_load_arena_rooms()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
+- **One-off idempotent patch: add limbo arena world seed to e2e/unit DML (mirrors…** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Apply arena seed slices to one DML file; return human-readable action lines.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Patch mythos_e2e and mythos_unit DML files when patch snippet files are present.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
 
 ## Relationships
 
@@ -29,11 +27,11 @@
 
 ## Source Files
 
-- `scripts/init_npc_database.py`
+- `scripts/_apply_arena_seed_patch.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

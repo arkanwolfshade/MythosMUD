@@ -1,50 +1,50 @@
 # gen_arena_migration_sql.py
 
-> 58 nodes
+> 60 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **gen_arena_migration_sql.py** (14 connections) — `scripts/gen_arena_migration_sql.py`
-- **gen_arena_dml.py** (13 connections) — `scripts/gen_arena_dml.py`
-- **strip_arena_from_dml.py** (10 connections) — `scripts/strip_arena_from_dml.py`
-- **generate_migration()** (8 connections) — `scripts/gen_arena_migration_sql.py`
-- **should_skip_line()** (8 connections) — `scripts/strip_arena_from_dml.py`
-- **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
-- **main()** (7 connections) — `scripts/gen_arena_dml.py`
-- **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
-- **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
-- **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
-- **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
-- **gen_subzone_row()** (5 connections) — `scripts/gen_arena_dml.py`
-- **gen_zone_config_row()** (5 connections) — `scripts/gen_arena_dml.py`
-- **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
-- **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
-- **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
-- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
-- **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
-- **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
-- **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
-- **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
-- **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
-- **get_copy_section()** (3 connections) — `scripts/strip_arena_from_dml.py`
-- **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
-- **is_arena_room_link_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
-- *... and 33 more nodes in this community*
+- **test_active_lucidity_service.py** (34 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **asyncio** (25 connections)
+- **active_lucidity_service()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_active_lucidity_service_init()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_active_lucidity_service_init_with_now_provider()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_unknown_category()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_naive_datetime_cooldown()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_on_cooldown()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_unknown_action()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **fixture** (3 connections)
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_acclimated()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_cosmic_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_first_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_horrific_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_repeat_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_apply_encounter_lucidity_loss_with_location()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_lowercases_action_code()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_get_action_cooldown_success()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- **test_perform_recovery_action_all_actions()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (5 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (4 shared connections)
+- [scripts](scripts.md) (3 shared connections)
 
 ## Source Files
 
-- `scripts/gen_arena_dml.py`
-- `scripts/gen_arena_migration_sql.py`
-- `scripts/strip_arena_from_dml.py`
+- `server/tests/unit/services/test_active_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 90 (93%)
+- INFERRED: 7 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

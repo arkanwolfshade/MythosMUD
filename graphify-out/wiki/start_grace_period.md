@@ -1,58 +1,66 @@
 # start_grace_period
 
-> 39 nodes
+> 63 nodes · cohesion 0.06
 
 ## Key Concepts
 
-- **start_grace_period()** (25 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_disconnect_grace_period.py** (18 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **cancel_grace_period()** (15 connections) — `server/realtime/disconnect_grace_period.py`
-- **asyncio** (9 connections)
-- **test_start_grace_period_reconnection_cancels()** (5 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **UUID** (5 connections)
-- **_PlayerLookupManager** (4 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_cancel_grace_period_cancels_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_cancel_grace_period_not_in_grace_period()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_grace_period_handles_errors_gracefully()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_grace_period_handles_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_start_grace_period_already_in_grace_period()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_start_grace_period_creates_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_start_grace_period_timer_expires()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **._get_player()** (3 connections) — `server/realtime/disconnect_grace_period.py`
-- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_is_player_in_grace_period_false()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_is_player_in_grace_period_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_is_player_in_grace_period_true()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **Any** (3 connections)
-- **Player** (1 connections)
-- **Protocol** (1 connections)
-- **fixture** (1 connections)
-- **Cancel grace period for a player (e.g., on reconnection). Args: player_id: The…** (1 connections) — `server/realtime/disconnect_grace_period.py`
-- **The one typed slice of ConnectionManager needed to snapshot DP at grace start.** (1 connections) — `server/realtime/disconnect_grace_period.py`
-- *... and 14 more nodes in this community*
+- **schedule_service.py** (25 connections) — `server/services/schedule_service.py`
+- **holiday_service.py** (24 connections) — `server/services/holiday_service.py`
+- **validate_calendar.py** (17 connections) — `scripts/validate_calendar.py`
+- **get_project_root()** (16 connections) — `server/utils/project_paths.py`
+- **project_paths.py** (15 connections) — `server/utils/project_paths.py`
+- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
+- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
+- **test_integration_cleanup_helpers.py** (11 connections) — `server/tests/unit/fixtures/test_integration_cleanup_helpers.py`
+- **._init_temporal_services()** (10 connections) — `server/container/bundles/time.py`
+- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
+- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
+- **.__init__()** (8 connections) — `server/services/schedule_service.py`
+- **_should_preserve_table_on_cleanup()** (8 connections) — `server/tests/fixtures/integration/__init__.py`
+- **get_environment_data_dir()** (8 connections) — `server/utils/project_paths.py`
+- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
+- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
+- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
+- **Path** (6 connections)
+- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
+- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
+- **load_document_ids()** (4 connections) — `scripts/validate_calendar.py`
+- **parse_args()** (4 connections) — `scripts/validate_calendar.py`
+- **test_does_not_preserve_mutable_player_tables()** (4 connections) — `server/tests/unit/fixtures/test_integration_cleanup_helpers.py`
+- **test_preserves_every_orm_table_that_seed_sql_populates()** (4 connections) — `server/tests/unit/fixtures/test_integration_cleanup_helpers.py`
+- **test_preserves_every_reference_seed_table()** (4 connections) — `server/tests/unit/fixtures/test_integration_cleanup_helpers.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (8 shared connections)
-- [test_disconnect_catchup.py](test_disconnect_catchup.py.md) (3 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (3 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (2 shared connections)
-- [player_presence_tracker.py](player_presence_tracker.py.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [extract_player_name](extract_player_name.md) (1 shared connections)
-- [InstanceFlushOwner](InstanceFlushOwner.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (14 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (14 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (9 shared connections)
+- [Room](Room.md) (9 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (8 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (4 shared connections)
+- [test_party_service.py](test_party_service.py.md) (3 shared connections)
+- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (3 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (3 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (3 shared connections)
+- [MessageCategory](MessageCategory.md) (3 shared connections)
+- [Delight Techniques](Delight_Techniques.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- `scripts/validate_calendar.py`
+- `server/container/bundles/time.py`
+- `server/services/holiday_service.py`
+- `server/services/schedule_service.py`
+- `server/tests/fixtures/integration/__init__.py`
+- `server/tests/unit/fixtures/test_integration_cleanup_helpers.py`
+- `server/tests/unit/utils/test_project_paths.py`
+- `server/utils/project_paths.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 193 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

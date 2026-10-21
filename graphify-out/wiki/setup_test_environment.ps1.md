@@ -1,10 +1,10 @@
 # setup_test_environment.ps1
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **setup_test_environment.ps1** (0 connections) — `scripts/setup_test_environment.ps1`
+- **Audit Skill** (0 connections) — `.cursor/skills/audit/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/setup_test_environment.ps1`
+- `.cursor/skills/audit/SKILL.md`
 
 ## Audit Trail
 

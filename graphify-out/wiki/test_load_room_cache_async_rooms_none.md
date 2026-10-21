@@ -1,24 +1,23 @@
 # test_load_room_cache_async_rooms_none
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **test_load_room_cache_async_rooms_none()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async handles case when rooms is None.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **Test get_remaining_messages handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [debugLogger](debugLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

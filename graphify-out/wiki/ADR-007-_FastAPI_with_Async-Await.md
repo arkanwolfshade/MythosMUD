@@ -1,10 +1,10 @@
 # ADR-007: FastAPI with Async/Await
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-007: FastAPI with Async/Await** (0 connections) — `docs/architecture/decisions/ADR-007-fastapi-async-await.md`
+- **Client message handling and GameState projection** (0 connections) — `docs/client-message-handling.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-007-fastapi-async-await.md`
+- `docs/client-message-handling.md`
 
 ## Audit Trail
 

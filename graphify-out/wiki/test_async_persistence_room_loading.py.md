@@ -1,42 +1,36 @@
 # test_async_persistence_room_loading.py
 
-> 10 nodes
+> 15 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- **test_async_persistence_room_loading.py** (31 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_build_room_objects_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_process_exit_rows_with_full_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Unit tests for async persistence layer: process_room_rows, process_exit_rows,…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with stable_ids that already contain full hierarchical…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _load_room_cache successfully loads rooms.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _build_room_objects includes exits in room data.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **fix_markdown_common_issues.py** (7 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_markdown_file()** (7 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_first_line_heading()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_link_fragments()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **main()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **Path** (4 connections)
+- **fix_emphasis_as_heading()** (3 connections) — `scripts/fix_markdown_common_issues.py`
+- **generate_anchor()** (3 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD051: Fix invalid link fragments by generating proper anchors. Scans for…** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Generate a markdown anchor from text.** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix common markdown issues in a file. Returns: (changed, list of fixes applied)** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Parse markdownlint output to get files with fixable issues.** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD041: Add top-level heading if file doesn't start with one. Returns:…** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD036: Convert bold/italic used as headings to proper headings. This is…** (1 connections) — `scripts/fix_markdown_common_issues.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
-- [test_process_exit_rows_with_partial_room_ids](test_process_exit_rows_with_partial_room_ids.md) (1 shared connections)
-- [test_process_exit_rows_debug_logging](test_process_exit_rows_debug_logging.md) (1 shared connections)
-- [test_build_room_objects_success](test_build_room_objects_success.md) (1 shared connections)
-- [test_process_room_rows_with_full_room_id](test_process_room_rows_with_full_room_id.md) (1 shared connections)
-- [test_build_room_objects_with_non_dict_attributes](test_build_room_objects_with_non_dict_attributes.md) (1 shared connections)
-- [test_build_room_objects_debug_logging](test_build_room_objects_debug_logging.md) (1 shared connections)
-- [test_load_room_cache_with_rooms_logs_sample_ids](test_load_room_cache_with_rooms_logs_sample_ids.md) (1 shared connections)
-- [test_process_room_rows_empty_list](test_process_room_rows_empty_list.md) (1 shared connections)
-- [test_process_exit_rows_empty_list](test_process_exit_rows_empty_list.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `scripts/fix_markdown_common_issues.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

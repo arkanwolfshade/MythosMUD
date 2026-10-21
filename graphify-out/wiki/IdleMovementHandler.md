@@ -1,55 +1,54 @@
 # IdleMovementHandler
 
-> 97 nodes
+> 90 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
-- **test_idle_movement.py** (35 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
-- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
-- **patch** (8 connections)
-- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
-- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
-- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
-- **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
-- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
-- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
-- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_alive()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_check()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
-- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
-- *... and 72 more nodes in this community*
+- **FeatureFlagService** (35 connections) — `server/services/feature_flag_service.py`
+- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **feature_flag_service.py** (13 connections) — `server/services/feature_flag_service.py`
+- **test_feature_flag_service.py** (10 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **get_feature_flags()** (9 connections) — `server/services/feature_flag_service.py`
+- **.get_combat_configuration()** (8 connections) — `server/services/feature_flag_service.py`
+- **is_combat_enabled()** (8 connections) — `server/services/feature_flag_service.py`
+- **TestGlobalFunctions** (8 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.get_feature_status()** (7 connections) — `server/services/feature_flag_service.py`
+- **is_combat_logging_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **is_combat_monitoring_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **.validate_combat_requirements()** (5 connections) — `server/services/feature_flag_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.check_combat_availability()** (4 connections) — `server/services/feature_flag_service.py`
+- **refresh_feature_flags()** (4 connections) — `server/services/feature_flag_service.py`
+- **.__init__()** (3 connections) — `server/services/feature_flag_service.py`
+- **.test_check_combat_availability_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_enabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_invalid_requirements()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_with_player_id()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_clear_cache()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_feature_status()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (3 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/services/combat_configuration_service.py`
+- `server/services/feature_flag_service.py`
+- `server/tests/unit/services/test_feature_flag_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 140 (81%)
-- INFERRED: 32 (19%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

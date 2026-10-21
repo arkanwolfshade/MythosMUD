@@ -1,48 +1,50 @@
 # test_lint_pyright_suppressions.py
 
-> 33 nodes
+> 32 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- **test_lint_pyright_suppressions.py** (22 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **LintTestApi** (18 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **Path** (15 connections)
-- **_problems()** (13 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **_write()** (7 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_justification_below_the_suppression_is_accepted()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_non_any_rule_needs_no_justification()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_short_appropriate_because_is_rejected()** (5 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **lint_api_module_scope()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_any_rule_without_justification_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_bare_ignore_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_clean_file_reports_nothing()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_empty_bracket_ignore_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_justification_above_the_suppression_is_accepted()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_multi_rule_suppression_reports_every_rule()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_prefix_category_requires_a_suffix()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_reason_without_appropriate_because_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_sqlalchemy_style_suppression_still_passes()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **test_unknown_category_is_rejected()** (4 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **_Failure** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **_LintModule** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **_Suppression** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
-- **Protocol** (3 connections)
-- **fixture** (1 connections)
-- *... and 8 more nodes in this community*
+- **test_room_occupant_manager.py** (17 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **asyncio** (10 connections)
+- **occupant_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_error()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_get_players_error()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_includes_online_subscribers_missing_from_room_players()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_no_room()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_with_ensure_player()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_get_room_occupants_with_players_and_npcs()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_room_occupant_manager_init()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **fixture** (2 connections)
+- **test_separate_occupants_by_type()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_separate_occupants_by_type_empty_list()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Unit tests for room occupant manager. Tests the RoomOccupantManager class for…** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test get_room_occupants handles get_players error.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Test separate_occupants_by_type with empty list.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **#776: a broadcast is one payload for every subscriber, so it cannot add each…** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_lint_pyright_suppressions.py`
+- `server/tests/unit/realtime/test_room_occupant_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (90%)
+- INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

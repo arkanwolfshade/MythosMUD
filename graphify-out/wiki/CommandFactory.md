@@ -1,58 +1,66 @@
 # CommandFactory
 
-> 164 nodes
+> 229 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **CommandFactory** (97 connections) — `server/utils/command_factories.py`
-- **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
-- **_build_command_factory_part1()** (4 connections) — `server/utils/command_parser.py`
-- **_build_command_factory_part2()** (4 connections) — `server/utils/command_parser.py`
-- **.create_add_admin_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_admin_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_alias_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_aliases_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_assist_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_attack_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_bank_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_cast_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_catalog_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_channel_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_cleanse_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_deposit_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_drop_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_emote_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_equip_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_flee_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_get_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_global_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_go_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 139 more nodes in this community*
+- **command_parser.py** (52 connections) — `server/utils/command_parser.py`
+- **test_command_parser.py** (51 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **parse_command()** (38 connections) — `server/utils/command_parser.py`
+- **test_command_processor.py** (32 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_assist_wiring.py** (25 connections) — `server/tests/unit/commands/test_assist_wiring.py`
+- **test_protect_wiring.py** (24 connections) — `server/tests/unit/commands/test_protect_wiring.py`
+- **CommandParser** (22 connections) — `server/utils/command_parser.py`
+- **test_command_parser_helpers.py** (21 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **CommandProcessor** (20 connections) — `server/utils/command_processor.py`
+- **command_processor.py** (16 connections) — `server/utils/command_processor.py`
+- **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
+- **.parse_command()** (7 connections) — `server/utils/command_parser.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
+- **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
+- **test_the_combat_handler_exposes_the_party_service_it_was_given()** (4 connections) — `server/tests/unit/commands/test_assist_wiring.py`
+- **test_the_topic_survives_extraction_from_the_parsed_command()** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
+- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_value_error()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_create_command_object_pydantic_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_empty_string()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_unknown_command()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_use_and_its_aliases()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 204 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (79 shared connections)
-- [command_parser.py](command_parser.py.md) (6 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (5 shared connections)
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
-- [factory](factory.md) (1 shared connections)
-- [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (1 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (29 shared connections)
+- [command_parser.py](command_parser.py.md) (14 shared connections)
+- [ContainerComponent](ContainerComponent.md) (8 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (6 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (6 shared connections)
+- [Room](Room.md) (6 shared connections)
+- [AttributeError](AttributeError.md) (6 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (6 shared connections)
+- [Communities (10 total, 2 thin omitted)](Communities_10_total,_2_thin_omitted.md) (5 shared connections)
+- [SecureBaseModel](SecureBaseModel.md) (5 shared connections)
+- [corpse_service](corpse_service.md) (5 shared connections)
+- [HeaderBar.tsx](HeaderBar.tsx.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_use.py`
-- `server/utils/command_factories.py`
+- `server/tests/unit/commands/test_assist_wiring.py`
+- `server/tests/unit/commands/test_help_commands.py`
+- `server/tests/unit/commands/test_protect_wiring.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/tests/unit/utils/test_command_processor.py`
 - `server/utils/command_parser.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 250 (95%)
-- INFERRED: 12 (5%)
+- EXTRACTED: 400 (93%)
+- INFERRED: 32 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

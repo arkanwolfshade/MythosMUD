@@ -1,10 +1,10 @@
 # ADR-008: React 18+ with TypeScript for Client
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **ADR-008: React 18+ with TypeScript for Client** (0 connections) — `docs/architecture/decisions/ADR-008-react-typescript-client.md`
+- **20260914_npc_catalog_scaffold_unit.sql** (0 connections) — `data/npc_catalog/generated/20260914_npc_catalog_scaffold_unit.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-008-react-typescript-client.md`
+- `data/npc_catalog/generated/20260914_npc_catalog_scaffold_unit.sql`
 
 ## Audit Trail
 
