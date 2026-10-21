@@ -128,3 +128,43 @@ def test_authored_lines_stay_speech():
     greeting.assert_called_once_with("npc-9", 0, "Hi", as_emote=False)
     farewell.assert_called_once_with("npc-9", "Bye", as_emote=False)
     response.assert_called_once_with("npc-9", "Ok", as_emote=False)
+
+
+def _registered(behavior_config: dict[str, object]):
+    """Register a passive NPC's default reactions with the three templates and the greeting builder mocked."""
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc("npc-10", "passive_mob", behavior_config, system)
+    return greeting, farewell, response
+
+
+def test_the_bare_greeting_farewell_and_response_keys_the_authored_data_uses_are_read():
+    """#1110: every seeded NPC authors `greeting` / `farewell`; they were ignored and replaced by the gestures."""
+    greeting, farewell, response = _registered(
+        {"greeting": "Your box is in order.", "farewell": "Thank you for your confidence.", "response": "Hm."}
+    )
+
+    greeting.assert_called_once_with("npc-10", 0, "Your box is in order.", as_emote=False)
+    farewell.assert_called_once_with("npc-10", "Thank you for your confidence.", as_emote=False)
+    response.assert_called_once_with("npc-10", "Hm.", as_emote=False)
+
+
+def test_the_bare_key_wins_over_the_older_message_key():
+    greeting, farewell, _ = _registered(
+        {"greeting": "New.", "greeting_message": "Old.", "farewell_message": "Old bye."}
+    )
+
+    greeting.assert_called_once_with("npc-10", 0, "New.", as_emote=False)
+    farewell.assert_called_once_with("npc-10", "Old bye.", as_emote=False)  # the older key still works on its own
+
+
+def test_a_blank_authored_line_falls_back_to_the_default_gesture():
+    greeting, farewell, response = _registered({"greeting": "   ", "farewell": "", "response": None})
+
+    greeting.assert_called_once_with("npc-10", 0, DEFAULT_GREETING_EMOTE, as_emote=True)
+    farewell.assert_called_once_with("npc-10", DEFAULT_FAREWELL_EMOTE, as_emote=True)
+    response.assert_called_once_with("npc-10", DEFAULT_SILENCE_EMOTE, as_emote=True)
