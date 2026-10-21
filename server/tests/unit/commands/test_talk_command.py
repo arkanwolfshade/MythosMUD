@@ -44,13 +44,19 @@ def test_remainder_from_command_data_string() -> None:
     assert cmd._remainder_from_command_data({"args": "  hello  "}) == "hello"
 
 
+SENT: dict[str, object] = {"success": True}
+NOT_SENT: dict[str, object] = {"success": False}
+
+
 @pytest.mark.asyncio
 async def test_emit_prompt_ended() -> None:
     player_id = uuid.uuid4()
     prompt = DialoguePrompt(text="Goodbye.", options=[], ended=True)
-    with patch("server.commands.talk_command.deliver_personal_system", new_callable=AsyncMock) as sent:
+    with patch(
+        "server.commands.talk_command.deliver_personal_system", new_callable=AsyncMock, return_value=SENT
+    ) as sent:
         result = await cmd._emit_prompt(player_id, "NPC", prompt)
-    assert result == "Goodbye."
+    assert result == ""  # delivered, so the command does not echo it
     sent.assert_awaited_once_with(player_id, "Goodbye.")
 
 
@@ -58,10 +64,12 @@ async def test_emit_prompt_ended() -> None:
 async def test_emit_prompt_with_options() -> None:
     player_id = uuid.uuid4()
     prompt = DialoguePrompt(text="Hello?", options=["Yes", "No"], ended=False)
-    with patch("server.commands.talk_command.deliver_personal_system", new_callable=AsyncMock) as sent:
+    with patch(
+        "server.commands.talk_command.deliver_personal_system", new_callable=AsyncMock, return_value=SENT
+    ) as sent:
         with patch("server.commands.talk_command.format_dialogue_prompt", return_value="formatted"):
             result = await cmd._emit_prompt(player_id, "NPC", prompt)
-    assert result == "formatted"
+    assert result == ""
     sent.assert_awaited_once_with(player_id, "formatted")
 
 
@@ -330,14 +338,14 @@ async def test_emit_prompt_speaks_the_line_as_the_npc_when_it_knows_who_and_wher
     player_id = uuid.uuid4()
     prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
     with (
-        patch.object(cmd, "_send_prompt", new_callable=AsyncMock) as send,
+        patch.object(cmd, "_send_prompt", new_callable=AsyncMock, return_value=True) as send,
         patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
     ):
         result = await cmd._emit_prompt(player_id, "Ghoul", prompt, npc_id="npc-1", room_id="room-1")
 
     send.assert_awaited_once_with(player_id, "npc-1", "Ghoul", "room-1", prompt)
     system.assert_not_awaited()
-    assert "Sit." in result
+    assert result == ""
 
 
 @pytest.mark.asyncio
@@ -346,12 +354,13 @@ async def test_emit_prompt_falls_back_to_a_system_prompt_without_an_npc_or_room(
     prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
     with (
         patch.object(cmd, "_send_prompt", new_callable=AsyncMock) as send,
-        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
+        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock, return_value=SENT) as system,
     ):
-        _ = await cmd._emit_prompt(player_id, "Ghoul", prompt, npc_id="npc-1", room_id=None)
+        result = await cmd._emit_prompt(player_id, "Ghoul", prompt, npc_id="npc-1", room_id=None)
 
     send.assert_not_awaited()
     system.assert_awaited_once_with(player_id, format_dialogue_prompt("Ghoul", "Sit.", ["Yes"]))
+    assert result == ""
 
 
 @pytest.mark.asyncio
@@ -362,7 +371,7 @@ async def test_send_prompt_speaks_privately_then_sends_the_options() -> None:
         patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": True}) as speech,
         patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
     ):
-        await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
+        _ = await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
 
     speech.assert_awaited_once_with(
         npc_id="npc-1", room_id="room-1", message="Sit.", npc_name="Ghoul", target_player_id=player_id
@@ -377,7 +386,7 @@ async def test_send_prompt_sends_no_options_block_for_a_node_without_options() -
         patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": True}),
         patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
     ):
-        await cmd._send_prompt(uuid.uuid4(), "npc-1", "Ghoul", "room-1", prompt)
+        _ = await cmd._send_prompt(uuid.uuid4(), "npc-1", "Ghoul", "room-1", prompt)
 
     system.assert_not_awaited()
 
@@ -391,7 +400,7 @@ async def test_send_prompt_falls_back_to_the_whole_node_as_a_system_prompt_when_
         patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value={"success": False}),
         patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock) as system,
     ):
-        await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
+        _ = await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
 
     system.assert_awaited_once_with(player_id, format_dialogue_prompt("Ghoul", "Sit.", ["Yes"]))
 
@@ -447,3 +456,42 @@ async def test_talk_with_npc_opens_the_dialogue_in_the_players_room(rig: ActionR
     opened.assert_awaited_once_with(
         player_id, npc_id="n", npc_name=ANY, definition_id=42, room_id="room-1", ctx=rig.ctx
     )
+
+
+# --- the command result does not echo a node that was delivered (it showed the dialogue twice) ---------------------
+
+
+@pytest.mark.asyncio
+async def test_emit_prompt_echoes_the_node_only_when_nothing_could_be_delivered() -> None:
+    """With no chat channel the command result is the player's only copy, so it must still carry the text."""
+    player_id = uuid.uuid4()
+    options = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
+    ended = DialoguePrompt(text="The conversation ends.", options=[], ended=True)
+    with patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock, return_value=NOT_SENT):
+        plain = await cmd._emit_prompt(player_id, "Ghoul", options)
+        closing = await cmd._emit_prompt(player_id, "Ghoul", ended)
+    with (
+        patch.object(cmd, "_send_prompt", new_callable=AsyncMock, return_value=False),
+        patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock),
+    ):
+        spoken = await cmd._emit_prompt(player_id, "Ghoul", options, npc_id="npc-1", room_id="room-1")
+
+    assert plain == spoken == format_dialogue_prompt("Ghoul", "Sit.", ["Yes"])
+    assert closing == "The conversation ends."
+
+
+@pytest.mark.asyncio
+async def test_send_prompt_reports_whether_the_player_was_sent_the_line() -> None:
+    player_id = uuid.uuid4()
+    prompt = DialoguePrompt(text="Sit.", options=["Yes"], ended=False)
+
+    async def sent_by(speech: dict[str, object], system: dict[str, object]) -> bool:
+        with (
+            patch.object(cmd, "deliver_npc_room_speech", new_callable=AsyncMock, return_value=speech),
+            patch.object(cmd, "deliver_personal_system", new_callable=AsyncMock, return_value=system),
+        ):
+            return await cmd._send_prompt(player_id, "npc-1", "Ghoul", "room-1", prompt)
+
+    assert await sent_by(SENT, NOT_SENT) is True  # the line was spoken; a lost options block does not unsay it
+    assert await sent_by(NOT_SENT, SENT) is True  # fell back to the system prompt
+    assert await sent_by(NOT_SENT, NOT_SENT) is False
