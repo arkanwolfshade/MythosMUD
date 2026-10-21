@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@xstate/react": "^6.1.0",
-    "dompurify": "^3.4.16",
+    "dompurify": "^3.4.17",
     "lucide-react": "^1.57.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.0",
