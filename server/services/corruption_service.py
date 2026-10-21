@@ -26,7 +26,6 @@ from typing import Protocol
 
 from ..database import get_async_session
 from ..exceptions import ValidationError
-from ..game.chat_npc_system import deliver_personal_system
 from ..models.corruption import CorruptionTier, compute_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
@@ -206,6 +205,10 @@ class CorruptionService:
         rose = list(CorruptionTier).index(new_tier) > list(CorruptionTier).index(previous_tier)
         message = _TIER_RISE_MESSAGES.get(new_tier) if rose else _TIER_FALL_MESSAGES.get(new_tier)
         if message:
+            # Imported here, as the other callers do: chat_npc_system -> chat_message_helpers -> services imports this
+            # module while chat_npc_system is still initialising (#1128).
+            from ..game.chat_npc_system import deliver_personal_system
+
             _ = await deliver_personal_system(player_id, message)
 
     async def get_cooldown_expiry(self, player_id: uuid.UUID, action_code: str) -> datetime | None:
