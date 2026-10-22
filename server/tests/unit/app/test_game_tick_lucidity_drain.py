@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
 
 import pytest
 from fastapi import FastAPI
+from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.app import game_tick_lucidity_drain as drain
@@ -35,7 +36,11 @@ class Rig:
     deltas: list[int] = field(default_factory=lambda: cast(list[int], []))
     narrated: list[str] = field(default_factory=lambda: cast(list[str], []))
     picker_kwargs: list[object] = field(default_factory=lambda: cast(list[object], []))
+    hallucinated: list[tuple[str, str, str, int]] = field(
+        default_factory=lambda: cast(list[tuple[str, str, str, int]], [])
+    )
     fail: bool = False
+    fail_hallucination: bool = False
 
 
 @pytest.fixture(name="rig")
@@ -75,6 +80,20 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
         rig.narrated.append(message)
         return {}
 
+    def fake_hallucination(kind: str) -> Callable[[uuid.UUID, str, str, int], Awaitable[None]]:
+        async def handler(player_id: uuid.UUID, room_id: str, tier: str, current_lcd: int) -> None:
+            _ = player_id
+            if rig.fail_hallucination:
+                raise RuntimeError("delivery failed")
+            rig.hallucinated.append((kind, room_id, tier, current_lcd))
+
+        return handler
+
+    hallucinations = "server.services.passive_lucidity_flux.hallucinations"
+    monkeypatch.setattr(
+        f"{hallucinations}.handle_room_text_overlay_hallucination", fake_hallucination("room_text_overlay")
+    )
+    monkeypatch.setattr(f"{hallucinations}.handle_phantom_hostile_hallucination", fake_hallucination("phantom_hostile"))
     monkeypatch.setattr(drain, "get_async_session", fake_sessions)
     monkeypatch.setattr(drain, "LucidityService", FakeLucidityService)
     # Authored drain narration is quest content: it goes out on the quest channel.
@@ -84,6 +103,10 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
 
 def _player() -> Player:
     return Player(player_id=str(uuid.uuid4()), name="Tester")
+
+
+def _player_in_room() -> Player:
+    return Player(player_id=str(uuid.uuid4()), name="Tester", current_room_id="room-1")
 
 
 def _container() -> _TickContainer:
@@ -218,3 +241,108 @@ async def test_the_tick_runs_the_drain_only_on_game_seconds(monkeypatch: pytest.
     assert between == (effect, False)
     assert on_second == ({**effect, "elapsed": 1}, True)
     assert calls == [effect]
+
+
+# --- scripted hallucination beats (#1096) -------------------------------------------------------------------------
+
+BEATS = [{"at": 1, "kind": "room_text_overlay"}, {"at": 3, "kind": "phantom_hostile"}]
+
+
+@pytest.mark.asyncio
+async def test_each_hallucination_beat_fires_once_on_its_second(rig: Rig) -> None:
+    rig.lcd = 30
+    player = _player_in_room()
+
+    for elapsed in range(6):
+        _ = await drain.process_lucidity_drain(_container(), player, _effect(hallucinations=BEATS, elapsed=elapsed))
+
+    # LCD after each step is 29, 28, 27, 26, ...: the overlay at second 1, the phantom at second 3, nothing else.
+    assert rig.hallucinated == [
+        ("room_text_overlay", "room-1", "fractured", 28),
+        ("phantom_hostile", "room-1", "fractured", 26),
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("lcd_before", "tier"), [(100, "lucid"), (50, "uneasy"), (30, "fractured"), (10, "deranged"), (0, "catatonic")]
+)
+async def test_the_beat_uses_the_tier_of_the_players_lcd_right_now(rig: Rig, lcd_before: int, tier: str) -> None:
+    rig.lcd = lcd_before
+
+    _ = await drain.process_lucidity_drain(
+        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}])
+    )
+
+    assert rig.hallucinated == [("phantom_hostile", "room-1", tier, lcd_before - 1)]
+
+
+@pytest.mark.asyncio
+async def test_no_beat_fires_once_the_player_is_at_the_floor(rig: Rig) -> None:
+    rig.lcd = -10
+
+    updated, applied = await drain.process_lucidity_drain(
+        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
+    )
+
+    assert (updated, applied, rig.hallucinated) == (None, False, [])
+
+
+@pytest.mark.asyncio
+async def test_a_beat_after_the_drain_ends_never_fires(rig: Rig) -> None:
+    rig.lcd = 3
+    effect: dict[str, object] | None = _effect(hallucinations=[{"at": 99, "kind": "room_text_overlay"}])
+
+    while effect is not None:
+        effect, _applied = await drain.process_lucidity_drain(_container(), _player_in_room(), effect)
+
+    assert rig.lcd == -10
+    assert rig.hallucinated == []
+
+
+@pytest.mark.asyncio
+async def test_a_failed_database_step_fires_no_beat_and_retries_the_same_second(rig: Rig) -> None:
+    rig.fail = True
+    effect = _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
+
+    updated, applied = await drain.process_lucidity_drain(_container(), _player_in_room(), effect)
+
+    assert (updated, applied, rig.hallucinated) == (effect, False, [])
+
+
+@pytest.mark.asyncio
+async def test_a_player_without_a_room_skips_the_beat_but_the_drain_advances(rig: Rig) -> None:
+    updated, applied = await drain.process_lucidity_drain(
+        _container(), _player(), _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
+    )
+
+    assert rig.hallucinated == []
+    assert (applied, updated is not None and updated["elapsed"]) == (True, 1)
+
+
+@pytest.mark.asyncio
+async def test_a_failing_hallucination_is_skipped_and_the_drain_still_advances(rig: Rig) -> None:
+    rig.fail_hallucination = True
+
+    updated, applied = await drain.process_lucidity_drain(
+        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}])
+    )
+
+    assert rig.deltas == [-1]  # applied exactly once: a retry would drain this second twice
+    assert (applied, updated is not None and updated["elapsed"]) == (True, 1)
+
+
+def test_unknown_hallucination_kinds_are_rejected_at_validation() -> None:
+    with pytest.raises(ValidationError):
+        _ = drain.LucidityDrainParams.model_validate({"hallucinations": [{"at": 5, "kind": "fake_npc_tell"}]})
+    with pytest.raises(ValidationError):
+        _ = drain.LucidityDrainParams.model_validate({"hallucinations": [{"at": -1, "kind": "room_text_overlay"}]})
+
+
+@pytest.mark.asyncio
+async def test_a_drain_with_an_unknown_kind_is_dropped_like_any_malformed_effect(rig: Rig) -> None:
+    updated, applied = await drain.process_lucidity_drain(
+        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "fake_npc_tell"}])
+    )
+
+    assert (updated, applied, rig.deltas, rig.hallucinated) == (None, False, [], [])

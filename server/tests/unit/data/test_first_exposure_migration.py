@@ -31,11 +31,13 @@ from server.schemas.scripted_actions import (
     StartQuestAction,
     on_put_actions,
 )
+from server.services.lucidity_helpers import resolve_tier
 from server.utils.project_paths import get_project_root
 
 ROOT = get_project_root()
 MIGRATION = ROOT / "data" / "db" / "migrations" / "20261018120000_first_exposure_tutorial.sql"
 CONVERGENCE = ROOT / "data" / "db" / "migrations" / "20261020100000_first_exposure_content_convergence.sql"
+HALLUCINATION_BEATS = ROOT / "data" / "db" / "migrations" / "20261022120000_hounds_scent_hallucination_beats.sql"
 ITEM_CATALOG = ROOT / "data" / "item_catalog" / "catalog" / "first_exposure_items.json"
 NPC_CATALOG = ROOT / "data" / "npc_catalog" / "catalog" / "first_exposure_npcs.json"
 
@@ -416,6 +418,69 @@ def test_the_hounds_drain_validates_and_lands_on_delirium_in_about_ninety_second
     assert 70 <= seconds <= 100  # rapid but not immediate, and always finite
     assert all(line.at < seconds for line in params.narration)  # every beat fires before the end
     assert [line.at for line in params.narration] == sorted(line.at for line in params.narration)
+
+
+def _child(node: object, part: str) -> object:
+    """One step down a ``jsonb_set`` path: a list index for digits, an object key otherwise."""
+    return cast(list[object], node)[int(part)] if part.isdigit() else cast(dict[str, object], node)[part]
+
+
+def _hound_with_beats() -> dict[str, object]:
+    """The Hound as the convergence migration ships it, with exactly what the hallucination-beats migration writes."""
+    convergence = CONVERGENCE.read_text(encoding="utf-8").partition("-- migrate:down")[0]
+    [vault] = [cast(dict[str, object], json.loads(raw)) for raw in _tagged("room", convergence) if '"furniture"' in raw]
+    migration = HALLUCINATION_BEATS.read_text(encoding="utf-8")
+    up, _, down = migration.partition("-- migrate:down")
+    found = re.search(r"'\{(furniture[a-z_,0-9]*hallucinations)\}'", up)
+    assert found
+    path = str(found.group(1))
+    assert path in down  # the down migration removes the very key the up one wrote
+    [beats] = _tagged("hallucinations", up)
+
+    *parents, key = path.split(",")
+    node: object = vault
+    for part in parents:
+        node = _child(node, part)
+    effect = cast(dict[str, object], node)
+    assert effect["type"] == "lucidity_drain_over_time"  # the migration's WHERE guard checks the same thing
+    effect[key] = json.loads(beats)
+    return effect
+
+
+def _lcd_after_each_second(effect: dict[str, object]) -> list[int]:
+    """LCD after the drain's step at second 0, 1, 2 ... for a player who starts at 100, until the floor."""
+    params = LucidityDrainParams.model_validate(effect)
+    lcd = 100
+    after: list[int] = []
+    while lcd > params.floor:
+        step = LucidityDrainParams.model_validate({**effect, "elapsed": len(after)}).rate_now()
+        lcd -= min(step, lcd - params.floor)
+        after.append(lcd)
+    return after
+
+
+def test_the_hounds_hallucination_beats_validate_and_all_fire_before_the_end() -> None:
+    effect = _hound_with_beats()
+    params = LucidityDrainParams.model_validate(effect)
+    after = _lcd_after_each_second(effect)
+
+    assert 2 <= len(params.hallucinations) <= 3
+    assert all(beat.at < len(after) for beat in params.hallucinations)
+    assert len({beat.at for beat in params.hallucinations}) == len(params.hallucinations)
+    # a beat and a narration line never share a second: each lands on its own
+    assert {b.at for b in params.hallucinations}.isdisjoint({line.at for line in params.narration})
+
+
+def test_the_hounds_beats_stay_out_of_catatonia_and_the_phantom_is_the_harmless_kind() -> None:
+    effect = _hound_with_beats()
+    after = _lcd_after_each_second(effect)
+
+    for beat in LucidityDrainParams.model_validate(effect).hallucinations:
+        tier = resolve_tier(after[beat.at])
+        assert tier != "catatonic", f"{beat.kind} at {beat.at}s lands in catatonia"
+        if beat.kind == "phantom_hostile":
+            # only the fractured tier spawns a non-damaging phantom (PhantomHostileService): never hurt the player here
+            assert tier == "fractured", f"the phantom at {beat.at}s would be {tier}"
 
 
 # --- the pipeline and the code agree ----------------------------------------------------------------------------
