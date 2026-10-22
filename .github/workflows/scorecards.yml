@@ -38,10 +38,20 @@ jobs:
       checks: read
 
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode: only the hosts below may be reached (built from Harden-Runner's per-connection log over 12 runs,
+      # plus hosts the actions' code calls). See ci.yml's backend job for how the list works and what is implicit.
+      - name: Harden the runner (block all but allowed outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            codeload.github.com:443
+            api.deps.dev:443
+            api.osv.dev:443
+            oss-fuzz-build-logs.storage.googleapis.com:443
+            www.bestpractices.dev:443
       # Standard bootstrap: harden + checkout
       # github.token for parent repo; GITHUB_TOKEN cannot read other private repos.
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
