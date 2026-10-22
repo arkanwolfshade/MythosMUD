@@ -18,6 +18,7 @@ from ....commands.admin_shutdown_command import (
     broadcast_shutdown_notification,
     calculate_notification_times,
     cancel_shutdown_countdown,
+    countdown_loop,
     get_shutdown_blocking_message,
     handle_shutdown_command,
     initiate_shutdown_countdown,
@@ -546,3 +547,22 @@ async def test_initiate_shutdown_countdown_supersedes():
     result = await initiate_shutdown_countdown(app, 60, "ArkanWolfshade")
     assert result is True
     cancel_mock.assert_called_once()
+
+
+@_asyncio_mark
+async def test_countdown_loop_logs_unexpected_error_from_shutdown_sequence():
+    """countdown_loop logs a non-OSError from the shutdown sequence instead of letting the task die silently (#1112)."""
+    state = _InitiateStateStub(server_shutdown_pending=True)
+    app = _InitiateAppStub(state=state)
+    error_log = MagicMock()
+    with (
+        patch(
+            "server.commands.admin_shutdown_command.execute_shutdown_sequence",
+            AsyncMock(side_effect=AttributeError("get_player")),
+        ),
+        patch("server.commands.admin_shutdown_command.logger.error", error_log),
+    ):
+        await countdown_loop(app, 0, "ArkanWolfshade")
+
+    error_log.assert_called_once()
+    assert error_log.call_args.args == ("Error in shutdown countdown loop",)

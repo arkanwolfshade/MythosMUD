@@ -365,12 +365,14 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
         logger.info("Countdown complete, initiating shutdown sequence")
 
         # Execute the shutdown sequence
-        await execute_shutdown_sequence(app)
+        # Reason: DYNAMIC_DISPATCH - app is the FastAPI instance whose dynamic State attributes are untyped.
+        # Appropriate because: this is the boundary where the untyped app meets execute_shutdown_sequence's Protocol.
+        await execute_shutdown_sequence(app)  # pyright: ignore[reportAny]
 
     except asyncio.CancelledError:
         logger.info("Shutdown countdown cancelled by request")
         raise
-    except OSError as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: a detached task dies silently otherwise
         logger.error("Error in shutdown countdown loop", error=str(e), exc_info=True)
 
 

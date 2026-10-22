@@ -9,7 +9,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { executeCommand, waitForMessage } from '../fixtures/auth';
+import { clickWithoutStability, executeCommand, waitForMessage } from '../fixtures/auth';
 import { cleanupMultiPlayerContexts, createMultiPlayerContexts, type PlayerContext } from '../fixtures/multiplayer';
 import { DEFAULT_RESPAWN_ROOM } from '../fixtures/test-data';
 import {
@@ -136,7 +136,8 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
     await test.step('Delirium: acknowledge it and wake in the Recovery Ward', async () => {
       const acknowledge = tutorial.page.getByRole('button', { name: /Acknowledge your delirium/i });
       await expect(acknowledge).toBeVisible({ timeout: 150000 });
-      await acknowledge.click();
+      // Same Firefox actionability hang as the death interstitial's button (dismissDeathInterstitial).
+      await clickWithoutStability(acknowledge);
       await say(tutorial, 'look', RECOVERY_WARD_LOOK_CUE, 30000);
 
       await expect
