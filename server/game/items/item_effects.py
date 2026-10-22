@@ -100,6 +100,11 @@ async def _lucidity_recovery(ctx: ItemUseContext) -> ItemEffectResult:
 ITEM_EFFECTS: dict[str, ItemEffectHandler] = {LUCIDITY_RECOVERY_TAG: _lucidity_recovery}
 
 
+def restores_lucidity(prototype: ItemPrototypeModel) -> bool:
+    """Whether using the item restores LCD: the one thing a catatonic player may use (#1148)."""
+    return LUCIDITY_RECOVERY_TAG in prototype.effect_components
+
+
 def find_effect(prototype: ItemPrototypeModel) -> ItemEffectHandler | None:
     """Handler for the first of the prototype's ``effect_components`` that has one."""
     for tag in prototype.effect_components:

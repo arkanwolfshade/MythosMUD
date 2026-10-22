@@ -89,6 +89,16 @@ flowchart LR
   after the lucidity action.
 - **Tier and catatonia**: PlayerLucidity has current_lcd and current_tier; catatonic tier triggers
   rescue/ground flow; apply_lucidity_adjustment updates tier when crossing thresholds.
+- **Catatonia is a clock, not a trap (#1148)**: a catatonic player (LCD 0 to -9) loses 1 LCD every
+  `GameConfig.catatonia_decay_interval_seconds` (default 2.0, so about 20 s to delirium at -10), mirroring
+  DP bleed-out. It runs online and offline, and in combat (combat costs DP, not LCD, so pausing it would
+  freeze the player at 0). It stacks with `lucidity_drain_over_time`; both clamp at -10, so delirium fires
+  once. The window has to fit a `ground` channel (10 s) after an ally arrives. This supersedes the
+  archived "rescue window without a clock" (docs/archive/lucidity-system.md section 2.3).
+- **Self-rescue while catatonic (#1148)**: the command gate lets `use` / `drink` / `quaff` through, and the
+  use command then refuses any item that does not restore LCD (`restores_lucidity`: the
+  `component.lucidity_recovery` tag). Everything else stays locked (help, who, status, time are the only
+  other commands).
 
 ## 4. Constraints
 
@@ -115,9 +125,13 @@ flowchart LR
    success optionally restore MP (meditate, pray) and return result.
 2. **ground** – LucidityService.apply_lucidity_adjustment(reason_code="ground_rescue") to bring
    catatonic target to 1 LCD; tier updates; catatonia_observer notified.
-3. **Mythos spell** – SpellCostsService checks and applies lucidity_cost; can_cast_spell in
+3. **Catatonia clock** – [game_tick_catatonia.py](../../server/app/game_tick_catatonia.py) runs in the
+   per-tick DB session (`_process_session_dp_decay_and_death`), selects candidates with the stored
+   function `get_catatonic_player_ids()` (db/procedures/lucidity.sql), re-reads each player's LCD and takes
+   1 through `LucidityService.apply_lucidity_adjustment(reason_code="catatonia_decay")`.
+4. **Mythos spell** – SpellCostsService checks and applies lucidity_cost; can_cast_spell in
    MagicService validates current lucidity.
-4. **Phantom hostiles (combat, #625)** – added after this doc's 2026-07-30 baseline.
+5. **Phantom hostiles (combat, #625)** – added after this doc's 2026-07-30 baseline.
    `LucidityService.apply_lucidity_adjustment` clears any active phantom hostiles
    (`phantom_hostile_service.clear_all_phantoms`) whenever a tier transition leaves the
    `fractured`/`deranged` tiers in either direction – phantoms only make sense while the player

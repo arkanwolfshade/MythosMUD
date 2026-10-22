@@ -13,9 +13,12 @@ from server.commands.inventory_use_command import handle_use_command
 from server.game.items.item_effects import ITEM_EFFECTS, LUCIDITY_RECOVERY_TAG, ItemEffectResult, ItemUseContext
 from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry
+from server.services.catatonia_state import CATATONIA_BLOCK_MESSAGE
 
 TONIC_ID = "consumable.folk_tonic"
 SWORD_ID = "weapon.sword"
+OTHER_ID = "consumable.other"
+OTHER_TAG = "component.other_effect"
 MODULE = "server.commands.inventory_use_command"
 
 
@@ -69,6 +72,7 @@ def request_obj() -> SimpleNamespace:
             TONIC_ID: _prototype(TONIC_ID, "Folk Tonic", "consumable", [LUCIDITY_RECOVERY_TAG]),
             SWORD_ID: _prototype(SWORD_ID, "Sword", "weapon", [LUCIDITY_RECOVERY_TAG]),
             "consumable.dud": _prototype("consumable.dud", "Dud", "consumable", ["component.durability"]),
+            OTHER_ID: _prototype(OTHER_ID, "Other", "consumable", [OTHER_TAG]),
         },
         [],
     )
@@ -221,3 +225,58 @@ async def test_player_resolution_errors_are_passed_through(request_obj: SimpleNa
         result = await handle_use_command({"index": 1}, {"username": "tester"}, request_obj, None, "Tester")
 
     assert dict(result) == {"result": "Player information not found."}
+
+
+# --- catatonia (#1148): the command gate lets `use` through; the item decides ------------------------------------
+
+
+def _catatonic(monkeypatch: pytest.MonkeyPatch, *, catatonic: bool) -> AsyncMock:
+    lookup = AsyncMock(return_value=catatonic)
+    monkeypatch.setattr(f"{MODULE}.player_is_catatonic", lookup)
+    return lookup
+
+
+@pytest.mark.asyncio
+async def test_a_catatonic_player_cannot_use_an_item_that_does_not_restore_lcd(
+    request_obj: SimpleNamespace, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    other = EffectProbe(ItemEffectResult(ok=True, message="You feel strange."))
+    monkeypatch.setitem(ITEM_EFFECTS, OTHER_TAG, other)
+    _ = _catatonic(monkeypatch, catatonic=True)
+    player = FakePlayer([_stack(OTHER_ID, "Other")])
+
+    result, persist, _emit = await _use(player, request_obj, {"index": 1})
+
+    assert result == {"result": CATATONIA_BLOCK_MESSAGE}
+    assert other.contexts == []
+    assert [stack["quantity"] for stack in player.get_inventory()] == [1]
+    persist.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_a_catatonic_player_can_use_an_item_that_restores_lcd(
+    request_obj: SimpleNamespace, effect: EffectProbe, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    lookup = _catatonic(monkeypatch, catatonic=True)
+    player = FakePlayer([_stack(TONIC_ID, "Folk Tonic")])
+
+    result, _persist, _emit = await _use(player, request_obj, {"index": 1})
+
+    assert result["result"] == "You swallow the folk tonic."
+    assert len(effect.contexts) == 1
+    lookup.assert_not_awaited()  # an LCD item never needs the catatonia lookup
+
+
+@pytest.mark.asyncio
+async def test_an_item_that_does_not_restore_lcd_works_for_a_player_who_is_not_catatonic(
+    request_obj: SimpleNamespace, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    other = EffectProbe(ItemEffectResult(ok=True, message="You feel strange."))
+    monkeypatch.setitem(ITEM_EFFECTS, OTHER_TAG, other)
+    _ = _catatonic(monkeypatch, catatonic=False)
+    player = FakePlayer([_stack(OTHER_ID, "Other")])
+
+    result, _persist, _emit = await _use(player, request_obj, {"index": 1})
+
+    assert result["result"] == "You feel strange."
+    assert player.get_inventory() == []

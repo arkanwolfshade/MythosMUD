@@ -18,6 +18,7 @@ from ..services.combat_messaging_integration import combat_messaging_integration
 from ..services.corpse_lifecycle_service import CorpseLifecycleService, CorpseServiceError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
+from .game_tick_catatonia import process_catatonia_decay
 from .game_tick_protocols import (
     _app_container,
     _online_player_ids,
@@ -335,6 +336,7 @@ async def _process_session_dp_decay_and_death(
     """Process DP decay and death for a single database session."""
     await _process_mortally_wounded_players(container, session, tick_count)
     await _process_passive_lucidity_flux(container, session, tick_count)
+    await process_catatonia_decay(container, session, tick_count)
     await _process_passive_corruption_flux(container, session, tick_count)
     await _process_mp_regeneration(container, session, tick_count)
     await _process_dead_players(container, session)

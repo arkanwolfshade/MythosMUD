@@ -18,7 +18,6 @@ logger = get_logger(__name__)
 # Configuration
 MAX_COMMAND_LENGTH = get_config().game.max_command_length
 MAX_EXPANDED_COMMAND_LENGTH = CommandValidator.MAX_EXPANDED_COMMAND_LENGTH
-CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
 
 
 # List of known system commands that should NOT be treated as emotes

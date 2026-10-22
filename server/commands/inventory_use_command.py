@@ -8,9 +8,10 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
-from ..game.items.item_effects import ItemEffectHandler, ItemUseContext, find_effect
+from ..game.items.item_effects import ItemEffectHandler, ItemUseContext, find_effect, restores_lucidity
 from ..game.items.models import ItemPrototypeModel
 from ..models.player import Player
+from ..services.catatonia_state import CATATONIA_BLOCK_MESSAGE, player_is_catatonic
 from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_results import command_error
@@ -102,6 +103,11 @@ async def handle_use_command(
     inventory_index, prototype, effect = usable
 
     player_id = UUID(str(player.player_id))
+    # The command gate lets `use` through for a catatonic player; only an item that restores LCD may act (#1148).
+    if not restores_lucidity(prototype) and await player_is_catatonic(
+        getattr(getattr(request, "app", None), "state", None), player_id
+    ):
+        return {"result": CATATONIA_BLOCK_MESSAGE}
     outcome = await effect(
         ItemUseContext(
             app=cast(object, getattr(request, "app", None)), player_id=player_id, room_id=room_id, prototype=prototype

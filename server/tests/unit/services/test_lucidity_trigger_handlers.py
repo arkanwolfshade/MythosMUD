@@ -42,6 +42,9 @@ async def test_handle_catatonia_transitions_enters_catatonia(lucidity_record: Ma
     assert lucidity_record.catatonia_entered_at is not None
     observer.on_catatonia_entered.assert_called_once()
     send_event.assert_awaited_once()
+    # #1148: the line must not tell a player only allies can help; a restorative item can too.
+    [sent] = send_event.await_args_list
+    assert "restorative draught" in sent.kwargs["message"]
 
 
 class _RecordingLogger:

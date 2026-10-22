@@ -14,6 +14,7 @@ from server.game.items.item_effects import (
     LUCIDITY_RECOVERY_TAG,
     ItemUseContext,
     find_effect,
+    restores_lucidity,
 )
 from server.game.items.models import ItemPrototypeModel
 from server.services.active_lucidity_service import LucidityActionOnCooldownError
@@ -175,3 +176,17 @@ def test_find_effect_returns_the_first_tag_with_a_handler() -> None:
 @pytest.mark.parametrize("tags", [[], ["component.durability"]])
 def test_find_effect_is_none_without_a_handled_tag(tags: list[str]) -> None:
     assert find_effect(_prototype(tags)) is None
+
+
+@pytest.mark.parametrize(
+    ("tags", "expected"),
+    [
+        ([LUCIDITY_RECOVERY_TAG], True),
+        (["component.durability", LUCIDITY_RECOVERY_TAG], True),
+        (["component.durability"], False),
+        ([], False),
+    ],
+)
+def test_restores_lucidity_follows_the_effect_tag(tags: list[str], expected: bool) -> None:
+    """#1148: the one data key a catatonic player's `use` is judged by."""
+    assert restores_lucidity(_prototype(tags)) is expected

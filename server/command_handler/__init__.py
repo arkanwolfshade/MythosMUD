@@ -13,9 +13,8 @@ from .alias_expansion import (
     handle_expanded_command,
     validate_expanded_command,
 )
-from .catatonia_check import check_catatonia_block
+from .catatonia_check import CATATONIA_ALLOWED_COMMANDS, check_catatonia_block
 from .command_input import (
-    CATATONIA_ALLOWED_COMMANDS,
     MAX_COMMAND_LENGTH,
     MAX_EXPANDED_COMMAND_LENGTH,
     clean_command_input,

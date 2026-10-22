@@ -25,7 +25,7 @@ from .enhanced_error_logging import log_and_raise_enhanced
 logger = get_logger(__name__)
 
 # Verbs that resolve to ``use`` before the factory lookup (no CommandType/handler of their own).
-_USE_ALIASES = ("drink", "quaff")
+USE_ALIASES = ("drink", "quaff")
 
 
 def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
@@ -176,7 +176,7 @@ class CommandParser:
         command, args = self._parse_command_parts(normalized)
 
         # Validate command type (including aliases)
-        valid_commands_with_aliases = self.valid_commands | {"l", "g", *_USE_ALIASES}  # Add aliases (no w for whisper)
+        valid_commands_with_aliases = self.valid_commands | {"l", "g", *USE_ALIASES}  # Add aliases (no w for whisper)
         if command not in valid_commands_with_aliases:
             log_and_raise_enhanced(
                 MythosValidationError,
@@ -246,7 +246,7 @@ class CommandParser:
 
     def _resolve_command_alias(self, command: str) -> str:
         """Resolve aliases (single-letter, and drink/quaff for use) to full command names."""
-        alias_map = {"w": "whisper", "l": "local", "g": "global", **dict.fromkeys(_USE_ALIASES, "use")}
+        alias_map = {"w": "whisper", "l": "local", "g": "global", **dict.fromkeys(USE_ALIASES, "use")}
         return alias_map.get(command, command)
 
     def _invoke_create_method(
