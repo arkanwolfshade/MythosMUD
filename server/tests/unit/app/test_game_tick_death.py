@@ -22,7 +22,7 @@ from server.app.game_tick_corpses import (
     _log_cleanup_results,
     cleanup_decayed_corpses,
 )
-from server.app.game_tick_death import _process_mortally_wounded_players
+from server.app.game_tick_death import _process_mortally_wounded_players, _process_session_dp_decay_and_death
 from server.app.game_tick_processing import (
     _process_dead_players,
     _process_mortally_wounded_player,
@@ -506,3 +506,20 @@ async def test_mortally_wounded_decay_runs_once_per_second(
     with patch("server.app.game_tick_death.get_config", return_value=config):
         await _process_mortally_wounded_players(container, AsyncMock(), tick_count)
     assert get_mortally_wounded_players.await_count == int(should_decay)
+
+
+@pytest.mark.asyncio
+async def test_the_session_pass_runs_the_catatonia_clock() -> None:
+    """#1148: the clock rides the same per-tick DB session as bleed-out and passive flux."""
+    container = MagicMock()
+    session = AsyncMock()
+    with (
+        patch("server.app.game_tick_death._process_mortally_wounded_players", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_passive_lucidity_flux", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_passive_corruption_flux", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_mp_regeneration", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_dead_players", new_callable=AsyncMock),
+        patch("server.app.game_tick_death.process_catatonia_decay", new_callable=AsyncMock) as clock,
+    ):
+        await _process_session_dp_decay_and_death(container, session, 20)
+    clock.assert_awaited_once_with(container, session, 20)

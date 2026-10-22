@@ -49,7 +49,7 @@ async def handle_catatonia_transitions(
             await send_catatonia_event(
                 player_id=player_id,
                 current_lcd=new_lcd,
-                message="Your senses collapse into static; only allies can reach you now.",
+                message="Your senses collapse into static; only an ally's grounding or a restorative draught can reach you now.",
                 status="catatonic",
             )
         return

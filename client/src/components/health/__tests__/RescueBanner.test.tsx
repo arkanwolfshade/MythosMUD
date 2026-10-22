@@ -56,7 +56,26 @@ describe('RescueBanner', () => {
   it('shows the catatonic state, derived from the tier, when no rescue phase is active', () => {
     render(<RescueBanner rescueStatus={null} isCatatonic />);
     expect(screen.getByText('Catatonic')).toBeInTheDocument();
-    expect(screen.getByText(/only allies can reach you/i)).toBeInTheDocument();
+    expect(screen.getByText(/an ally's grounding or a restorative draught/i)).toBeInTheDocument();
+  });
+
+  it('counts down to delirium from the authoritative LCD (2 s per LCD) while catatonic', () => {
+    const { rerender } = render(<RescueBanner rescueStatus={null} isCatatonic currentLcd={0} />);
+    expect(screen.getByTestId('catatonia-countdown')).toHaveTextContent('20 seconds remain');
+
+    rerender(<RescueBanner rescueStatus={null} isCatatonic currentLcd={-9} />);
+    expect(screen.getByTestId('catatonia-countdown')).toHaveTextContent('2 seconds remain');
+
+    rerender(<RescueBanner rescueStatus={null} isCatatonic currentLcd={-10} />);
+    expect(screen.getByTestId('catatonia-countdown')).toHaveTextContent('0 seconds remain');
+  });
+
+  it('shows no countdown without an LCD, or while a rescue phase owns the banner', () => {
+    const { rerender } = render(<RescueBanner rescueStatus={null} isCatatonic />);
+    expect(screen.queryByTestId('catatonia-countdown')).not.toBeInTheDocument();
+
+    rerender(<RescueBanner rescueStatus={status()} isCatatonic currentLcd={-3} />);
+    expect(screen.queryByTestId('catatonia-countdown')).not.toBeInTheDocument();
   });
 
   it('clears a terminal phase after the display window and falls back to catatonic if the tier says so', () => {

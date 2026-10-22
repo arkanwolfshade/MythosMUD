@@ -43,6 +43,10 @@ class GameConfig(BaseSettings):
         default=10.0,
         description="/ground ritual channel time before a catatonic target is stabilised, in seconds (#713)",
     )
+    catatonia_decay_interval_seconds: float = Field(
+        default=2.0,
+        description="Seconds per LCD a catatonic player loses on the way from 0 to -10 (delirium), ~20 s by default (#1148)",
+    )
 
     # Combat system configuration
     combat_enabled: bool = Field(default=True, description="Enable/disable combat system")
@@ -107,6 +111,7 @@ class GameConfig(BaseSettings):
         "login_grace_period_seconds",
         "rest_countdown_seconds",
         "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
     )
     @classmethod
     def validate_grace_period_seconds(cls, v: float) -> float:

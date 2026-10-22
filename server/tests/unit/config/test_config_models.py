@@ -132,6 +132,8 @@ def _make_game_config(field: str, value: float) -> GameConfig:
         return GameConfig(rest_countdown_seconds=value)
     if field == "ground_channel_seconds":
         return GameConfig(ground_channel_seconds=value)
+    if field == "catatonia_decay_interval_seconds":
+        return GameConfig(catatonia_decay_interval_seconds=value)
     raise ValueError(f"Unknown grace/countdown field: {field}")
 
 
@@ -142,6 +144,7 @@ def test_game_config_grace_period_defaults() -> None:
     assert config.login_grace_period_seconds == 10.0
     assert config.rest_countdown_seconds == 10.0
     assert config.ground_channel_seconds == 10.0  # #713
+    assert config.catatonia_decay_interval_seconds == 2.0  # #1148
 
 
 @pytest.mark.parametrize(
@@ -151,6 +154,7 @@ def test_game_config_grace_period_defaults() -> None:
         "login_grace_period_seconds",
         "rest_countdown_seconds",
         "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
     ],
 )
 def test_game_config_grace_period_accepts_override(field: str) -> None:
@@ -166,6 +170,7 @@ def test_game_config_grace_period_accepts_override(field: str) -> None:
         "login_grace_period_seconds",
         "rest_countdown_seconds",
         "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
     ],
 )
 def test_game_config_grace_period_rejects_zero(field: str) -> None:
@@ -181,6 +186,7 @@ def test_game_config_grace_period_rejects_zero(field: str) -> None:
         "login_grace_period_seconds",
         "rest_countdown_seconds",
         "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
     ],
 )
 def test_game_config_grace_period_rejects_over_max(field: str) -> None:

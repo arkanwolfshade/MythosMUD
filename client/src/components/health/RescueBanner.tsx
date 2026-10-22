@@ -7,10 +7,16 @@ interface RescueBannerProps {
   rescueStatus: RescueStatus | null;
   /** From the authoritative lucidity tier; shown when no rescue phase is on screen. */
   isCatatonic: boolean;
+  /** Authoritative LCD; with `isCatatonic` it drives the delirium countdown (#1148). */
+  currentLcd?: number;
   className?: string;
 }
 
-const CATATONIC_MESSAGE = 'Your senses collapse into static; only allies can reach you now.';
+const CATATONIC_MESSAGE =
+  "Your senses collapse into static; only an ally's grounding or a restorative draught can reach you now.";
+const DELIRIUM_LCD = -10;
+// shortcut: mirrors GameConfig.catatonia_decay_interval_seconds (2.0); send it from the server if it is ever retuned.
+const SECONDS_PER_LCD = 2;
 
 /** Headline per phase and side. The body text is the server's own line, already worded for the side. */
 function headline({ status, role }: RescueStatus): string {
@@ -42,7 +48,7 @@ const toneClass = (status: RescueStatus['status']): string =>
  * in case the server never sends the terminal event); the catatonic state then shows again if the
  * tier still says so. The timer is keyed on the event's sequence number, so a new phase restarts it.
  */
-export const RescueBanner = memo<RescueBannerProps>(({ rescueStatus, isCatatonic, className }) => {
+export const RescueBanner = memo<RescueBannerProps>(({ rescueStatus, isCatatonic, currentLcd, className }) => {
   const [expiredSeq, setExpiredSeq] = useState<number | null>(null);
 
   useEffect(() => {
@@ -59,6 +65,9 @@ export const RescueBanner = memo<RescueBannerProps>(({ rescueStatus, isCatatonic
   const title = activeRescue ? headline(activeRescue) : 'Catatonic';
   const body = activeRescue ? activeRescue.message : CATATONIC_MESSAGE;
   const tone = activeRescue ? toneClass(activeRescue.status) : 'bg-slate-900/80 border-slate-500/60';
+  // Derived from the server's LCD, never a client timer, like the DP bleed-out countdown (#1059).
+  const secondsToDelirium =
+    !activeRescue && currentLcd !== undefined ? Math.max(0, currentLcd - DELIRIUM_LCD) * SECONDS_PER_LCD : null;
 
   return (
     <aside
@@ -69,6 +78,11 @@ export const RescueBanner = memo<RescueBannerProps>(({ rescueStatus, isCatatonic
     >
       <span className="text-xs font-semibold uppercase tracking-wide text-mythos-terminal-primary">{title}</span>
       {body && <p className="leading-relaxed text-mythos-terminal-text-secondary">{body}</p>}
+      {secondsToDelirium !== null && (
+        <p className="font-semibold leading-relaxed text-mythos-terminal-text" data-testid="catatonia-countdown">
+          Your mind slips toward delirium: {secondsToDelirium} {secondsToDelirium === 1 ? 'second' : 'seconds'} remain
+        </p>
+      )}
       {activeRescue?.status === 'channeling' && activeRescue.etaSeconds !== undefined && (
         <div className="mt-1 h-1 w-full overflow-hidden rounded bg-black/40" aria-hidden="true">
           <div

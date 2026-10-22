@@ -245,6 +245,12 @@ describe('GameClientV2', () => {
     expect(screen.getByTestId('rescue-banner')).toHaveTextContent('Catatonic');
   });
 
+  it('should pass the authoritative LCD to the catatonic banner for the delirium countdown (#1148)', () => {
+    const lucidityStatus = { current: -4, max: 100, tier: 'catatonic' as const, liabilities: [] };
+    render(<GameClientV2 {...defaultProps} lucidityStatus={lucidityStatus} />);
+    expect(screen.getByTestId('catatonia-countdown')).toHaveTextContent('12 seconds remain');
+  });
+
   it('should not render the rescue banner without a rescue phase or catatonia (#713)', () => {
     render(<GameClientV2 {...defaultProps} rescueStatus={null} />);
     expect(screen.queryByTestId('rescue-banner')).not.toBeInTheDocument();

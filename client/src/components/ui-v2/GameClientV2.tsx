@@ -313,7 +313,11 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
             {isIncapacitated && (
               <IncapacitatedBanner className="pointer-events-auto" currentDp={derivedHealthStatus?.current} />
             )}
-            <RescueBanner rescueStatus={rescueStatus} isCatatonic={derivedLucidityStatus?.tier === 'catatonic'} />
+            <RescueBanner
+              rescueStatus={rescueStatus}
+              isCatatonic={derivedLucidityStatus?.tier === 'catatonic'}
+              currentLcd={derivedLucidityStatus?.current}
+            />
           </div>
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
