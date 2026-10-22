@@ -5,6 +5,11 @@ optional and validated by ``LucidityDrainParams``. There is no fixed duration on
 drain always reaches the floor (delirium fires when LCD crosses -10), which instanced content relies on when delirium
 is the only way out. Each step goes through ``LucidityService``, so tiers, events, catatonia and delirium behave as for
 any other LCD loss.
+
+Content can also script the drain: ``narration`` lines and ``hallucinations`` beats fire once, at the second they name,
+for the draining player only. A hallucination beat calls the same server-authoritative handlers the passive flux uses
+(#714, ADR-024), with the tier resolved from the player's LCD at that moment, so what the player sees matches their
+state. Beats exist because passive flux checks run every 60 s, which rarely lands inside a ~85 s drain.
 """
 
 # pylint: disable=too-few-public-methods  # Reason: Pydantic models; validators are the behavior
@@ -12,12 +17,13 @@ any other LCD loss.
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import get_async_session
+from ..services.lucidity_helpers import resolve_tier
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer
@@ -38,6 +44,14 @@ class DrainNarration(BaseModel):
     text: str = Field(min_length=1)
 
 
+class DrainHallucination(BaseModel):
+    """A hallucination of ``kind`` delivered to the player when the drain has run for ``at`` seconds."""
+
+    at: int = Field(ge=0)
+    # Deterministic handlers only: the random fake-NPC-tell/overlay pick would make an authored beat a coin flip.
+    kind: Literal["room_text_overlay", "phantom_hostile"]
+
+
 class LucidityDrainParams(BaseModel):
     """Shape of a ``lucidity_drain_over_time`` effect dict."""
 
@@ -48,6 +62,7 @@ class LucidityDrainParams(BaseModel):
     floor: int = -10
     elapsed: int = Field(default=0, ge=0)
     narration: list[DrainNarration] = Field(default_factory=list)
+    hallucinations: list[DrainHallucination] = Field(default_factory=list)
     grants_liabilities: bool = True
 
     def rate_now(self) -> int:
@@ -63,6 +78,40 @@ async def _narrate(player_id: uuid.UUID, text: str) -> None:
 
     # Authored narration beats are quest content, so they read on the quest channel.
     _ = await deliver_personal_quest(player_id, text)
+
+
+async def _hallucinate(player_id: uuid.UUID, room_id: str, kind: str, lcd: int) -> None:
+    """Deliver one authored hallucination, in the tier the player's LCD is in right now."""
+    # Imported here for the same reason as _narrate: the handlers reach chat_npc_system lazily, and the package import
+    # pulls in the passive flux service.
+    from ..services.passive_lucidity_flux.hallucinations import (
+        handle_phantom_hostile_hallucination,
+        handle_room_text_overlay_hallucination,
+    )
+
+    handler = {
+        "room_text_overlay": handle_room_text_overlay_hallucination,
+        "phantom_hostile": handle_phantom_hostile_hallucination,
+    }[kind]
+    await handler(player_id, room_id, resolve_tier(lcd), lcd)
+
+
+async def _fire_hallucinations(
+    player_id: uuid.UUID, room_id: str | None, params: LucidityDrainParams, lcd: int
+) -> None:
+    """Fire the beats due at this second. A beat that fails is logged and skipped: the drain must still advance."""
+    for beat in params.hallucinations:
+        if beat.at != params.elapsed:
+            continue
+        if room_id is None:
+            logger.warning("Drain hallucination skipped: player has no room", player_id=str(player_id), kind=beat.kind)
+            continue
+        try:
+            await _hallucinate(player_id, room_id, beat.kind, lcd)
+        except (ValueError, RuntimeError, OSError) as e:
+            logger.warning(
+                "Drain hallucination failed; skipped", player_id=str(player_id), kind=beat.kind, error=str(e)
+            )
 
 
 def _no_liability(player_id: str, previous_lcd: int, new_lcd: int, reason_code: str) -> None:
@@ -119,6 +168,7 @@ async def process_lucidity_drain(
         for line in params.narration:
             if line.at == params.elapsed:
                 await _narrate(player_id, line.text)
+        await _fire_hallucinations(player_id, player.current_room_id, params, new_lcd)
     if new_lcd <= params.floor:
         return None, applied
     return {**effect, "elapsed": params.elapsed + 1}, True
