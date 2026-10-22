@@ -35,10 +35,20 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode: only the hosts below may be reached (built from Harden-Runner's per-connection log over 12 runs,
+      # plus hosts the actions' code calls). See ci.yml's backend job for how the list works and what is implicit.
+      # Component Detection downloads its binary from GitHub releases and resolves Python packages from PyPI.
+      - name: Harden the runner (block all but allowed outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            pypi.org:443
+            files.pythonhosted.org:443
       # Standard bootstrap: harden + checkout
       # github.token: parent repo only; GITHUB_TOKEN cannot access other private repos (automatic token authentication).
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -139,10 +149,18 @@ jobs:
       contents: read
       pull-requests: write # PR failure-comment summary only.
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode: only the hosts below may be reached (built from Harden-Runner's per-connection log over 12 runs,
+      # plus hosts the actions' code calls). See ci.yml's backend job for how the list works and what is implicit.
+      # deps.dev and securityscorecards.dev are queried only when a PR changes dependencies (OpenSSF levels).
+      - name: Harden the runner (block all but allowed outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            api.deps.dev:443
+            api.securityscorecards.dev:443
 
       - name: "Checkout Repository"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

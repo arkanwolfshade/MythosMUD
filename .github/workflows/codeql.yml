@@ -24,10 +24,18 @@ jobs:
       matrix:
         language: ["python", "javascript"]
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode: only the hosts below may be reached (built from Harden-Runner's per-connection log over 12 runs,
+      # plus hosts the actions' code calls). See ci.yml's backend job for how the list works and what is implicit.
+      - name: Harden the runner (block all but allowed outbound calls)
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            uploads.github.com:443
       # Standard bootstrap: harden + checkout
 
       # Parent: github.token only (GITHUB_TOKEN scoped to this repo).
