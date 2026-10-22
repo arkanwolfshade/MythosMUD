@@ -60,11 +60,36 @@ jobs:
       # codeql[hardcoded-credential]: Test verification token secret defaults for CI environment only, not used in production
       MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI || 'test-verification-token-secret-for-development' }}
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode (#1150 triage): only the hosts below may be reached; anything else fails the job instead of
+      # raising an after-the-fact audit alert. Built from Harden-Runner's per-connection log over 15 CI runs.
+      # The agent also allows GitHub's Actions domains (GitHub meta API: github.com, *.github.com, *.githubapp.com,
+      # *.actions.githubusercontent.com, release assets, productionresultssa*.blob.core.windows.net) and Azure's
+      # platform IP 168.63.129.16; the GitHub hosts CI needs are listed anyway in case the meta fetch fails.
+      # apt over plain HTTP is integrity-checked by Ubuntu's signed InRelease/hashes, not by TLS.
+      # A new tool or download host must be added here, or the job fails with a blocked-call annotation.
+      - name: Harden the runner (block all but allowed outbound calls)
         if: ${{ !env.ACT }}
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            azure.archive.ubuntu.com:80
+            esm.ubuntu.com:443
+            motd.ubuntu.com:443
+            packages.microsoft.com:443
+            apt.postgresql.org:443
+            www.postgresql.org:443
+            pypi.org:443
+            files.pythonhosted.org:443
+            registry.npmjs.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
+            storage.googleapis.com:443
+            api.codacy.com:443
       # Standard bootstrap: harden + checkout
 
       # Parent repo: actions/checkout with github.token. GITHUB_TOKEN is limited to *this* repo (cannot clone sibling
@@ -233,6 +258,8 @@ jobs:
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
+          # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
+          getent hosts azure.archive.ubuntu.com || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during install-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
@@ -482,11 +509,26 @@ jobs:
       run:
         working-directory: client
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode (#1150 triage): see the backend job's note. Same sources minus Python, PostgreSQL and the
+      # GitHub API, which this job does not use.
+      - name: Harden the runner (block all but allowed outbound calls)
         if: ${{ !env.ACT }}
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            azure.archive.ubuntu.com:80
+            esm.ubuntu.com:443
+            motd.ubuntu.com:443
+            packages.microsoft.com:443
+            registry.npmjs.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
+            storage.googleapis.com:443
+            api.codacy.com:443
       # Standard bootstrap: harden + checkout
 
       - name: Checkout repository
@@ -508,6 +550,8 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: |
+          # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
+          getent hosts azure.archive.ubuntu.com || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during --with-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
