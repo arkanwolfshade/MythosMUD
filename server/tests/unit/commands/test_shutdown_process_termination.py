@@ -1,103 +1,135 @@
-"""Unit tests for shutdown process termination helpers."""
+"""Unit tests for shutdown process termination."""
 
-from unittest.mock import MagicMock, patch
+import signal
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import cast
+from unittest.mock import patch
+
+import psutil
+import pytest
 
 from server.commands import shutdown_process_termination as spt
 
+MODULE = "server.commands.shutdown_process_termination"
 
-def test_schedule_process_termination_disabled_by_env(monkeypatch):
+
+@dataclass
+class FakeProcess:
+    """Stands in for a psutil.Process: an ancestor with a command line, or ourselves with ancestors."""
+
+    command: list[str] = field(default_factory=lambda: cast(list[str], []))
+    pid: int = 10
+    ancestors: list["FakeProcess"] = field(default_factory=lambda: cast(list["FakeProcess"], []))
+    parents_error: Exception | None = None
+    terminated: bool = False
+
+    def cmdline(self) -> list[str]:
+        return self.command
+
+    def parents(self) -> list["FakeProcess"]:
+        if self.parents_error is not None:
+            raise self.parents_error
+        return self.ancestors
+
+    def terminate(self) -> None:
+        self.terminated = True
+
+
+@dataclass
+class Outcome:
+    signals: list[int] = field(default_factory=lambda: cast(list[int], []))
+    exits: list[int] = field(default_factory=lambda: cast(list[int], []))
+    iterated_all_processes: bool = False
+
+
+def test_schedule_process_termination_disabled_by_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """schedule_process_termination returns early when exit is disabled."""
     monkeypatch.setenv("MYTHOSMUD_DISABLE_PROCESS_EXIT", "1")
-    with patch("server.commands.shutdown_process_termination.threading.Thread") as mock_thread:
+    with patch(f"{MODULE}.threading.Thread") as mock_thread:
         spt.schedule_process_termination()
-    mock_thread.assert_not_called()
+    assert not mock_thread.called
 
 
-def test_schedule_process_termination_starts_thread(monkeypatch):
+def test_schedule_process_termination_starts_thread(monkeypatch: pytest.MonkeyPatch) -> None:
     """schedule_process_termination starts daemon thread when enabled."""
     monkeypatch.delenv("MYTHOSMUD_DISABLE_PROCESS_EXIT", raising=False)
-    with patch("server.commands.shutdown_process_termination.threading.Thread") as mock_thread:
+    with patch(f"{MODULE}.threading.Thread") as mock_thread:
         spt.schedule_process_termination(0.1)
-    mock_thread.assert_called_once()
-    kwargs = mock_thread.call_args.kwargs
+    assert mock_thread.call_count == 1
+    kwargs = cast(dict[str, object], mock_thread.call_args.kwargs)
     assert kwargs["daemon"] is True
     assert kwargs["name"] == "MythosMUD-ProcessTerminator"
 
 
-def test_find_uvicorn_processes_collects_uvicorn_names():
-    """_find_uvicorn_processes returns processes whose name contains uvicorn."""
-    good = MagicMock()
-    good.info = {"pid": 2, "name": "uvicorn-worker"}
-    other = MagicMock()
-    other.info = {"pid": 3, "name": "python"}
-
-    with patch("psutil.process_iter", return_value=[good, other]):
-        result = spt._find_uvicorn_processes()
-
-    assert result == [good]
-
-
-def test_terminate_with_signals_sends_to_child_and_parent():
-    """_terminate_with_signals attempts SIGINT and SIGTERM on child and parent."""
-    with patch("server.commands.shutdown_process_termination.os.kill") as mock_kill:
-        with patch("server.commands.shutdown_process_termination.time.sleep"):
-            spt._terminate_with_signals(pid=100, ppid=200)
-    assert mock_kill.call_count >= 2
-
-
-def test_terminate_uvicorn_processes_kills_stubborn():
-    """_terminate_uvicorn_processes kills processes still running after terminate."""
-    proc = MagicMock()
-    proc.info = {"pid": 42}
-    proc.is_running.side_effect = [True, False]
-    proc.kill = MagicMock()
-
-    with patch("server.commands.shutdown_process_termination.time.sleep"):
-        with patch("psutil.NoSuchProcess", Exception):
-            with patch("psutil.AccessDenied", Exception):
-                spt._terminate_uvicorn_processes([proc])
-
-    proc.terminate.assert_called_once()
-    proc.kill.assert_called_once()
-
-
-def test_terminate_child_processes():
-    """_terminate_child_processes terminates and kills surviving children."""
-    child = MagicMock()
-    child.pid = 7
-    child.name.return_value = "worker"
-    parent = MagicMock()
-    parent.children.return_value = [child]
-
-    with patch("psutil.Process", return_value=parent):
-        with patch("psutil.wait_procs", return_value=([], [child])):
-            with patch("psutil.NoSuchProcess", Exception):
-                spt._terminate_child_processes(pid=1)
-
-    child.terminate.assert_called_once()
-    child.kill.assert_called_once()
-
-
-def test_terminator_thread_import_error_falls_back_to_signals(monkeypatch):
-    """Terminator thread uses signal fallback when psutil import fails."""
+def _run_terminator(monkeypatch: pytest.MonkeyPatch, me: FakeProcess) -> Outcome:
+    """Capture the terminator thread body and run it once with sleeping, signals and exit stubbed."""
     monkeypatch.delenv("MYTHOSMUD_DISABLE_PROCESS_EXIT", raising=False)
+    captured: list[Callable[[], None]] = []
+    outcome = Outcome()
 
-    captured_target = {}
+    class ThreadStub:
+        def __init__(self, target: Callable[[], None], name: str, daemon: bool) -> None:
+            _ = name, daemon
+            captured.append(target)
 
-    class _ThreadStub:
-        def __init__(self, target=None, name=None, daemon=None):
-            captured_target["fn"] = target
-
-        def start(self):
+        def start(self) -> None:
             return None
 
-    with patch("server.commands.shutdown_process_termination.threading.Thread", _ThreadStub):
-        with patch("server.commands.shutdown_process_termination.time.sleep"):
-            with patch("server.commands.shutdown_process_termination._find_uvicorn_processes", side_effect=ImportError):
-                with patch("server.commands.shutdown_process_termination._terminate_with_signals") as mock_signals:
-                    with patch("server.commands.shutdown_process_termination.os._exit") as mock_exit:
-                        spt.schedule_process_termination(0.0)
-                        captured_target["fn"]()
+    def process_iter(*_args: object, **_kwargs: object) -> list[object]:
+        outcome.iterated_all_processes = True
+        return []
 
-    mock_signals.assert_called_once()
-    mock_exit.assert_called_once_with(0)
+    def no_sleep(_seconds: float) -> None:
+        return None
+
+    monkeypatch.setattr(f"{MODULE}.threading.Thread", ThreadStub)
+    monkeypatch.setattr(f"{MODULE}.time.sleep", no_sleep)
+    monkeypatch.setattr(f"{MODULE}.psutil.Process", lambda: me)
+    monkeypatch.setattr(f"{MODULE}.psutil.process_iter", process_iter)
+    monkeypatch.setattr(f"{MODULE}.signal.raise_signal", outcome.signals.append)
+    monkeypatch.setattr(f"{MODULE}.os._exit", outcome.exits.append)
+
+    spt.schedule_process_termination(0.0)
+    captured[0]()
+    return outcome
+
+
+def test_terminator_stops_the_reloader_then_asks_uvicorn_to_exit(monkeypatch: pytest.MonkeyPatch) -> None:
+    shim = FakeProcess(["python", "-c", "spawn_main"])
+    reloader = FakeProcess(["python", "uvicorn", "server.main:app", "--reload"])
+
+    outcome = _run_terminator(monkeypatch, FakeProcess(ancestors=[shim, reloader]))
+
+    assert reloader.terminated
+    assert not shim.terminated
+    assert outcome.signals == [signal.SIGINT]
+    assert outcome.exits == [0]  # the backstop, reached because the stubbed SIGINT ended nothing
+
+
+def test_terminator_leaves_unrelated_ancestors_alone(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A uvicorn without --reload, or any other parent, is not this server's supervisor to kill."""
+    plain_uvicorn = FakeProcess(["python", "uvicorn", "server.main:app"])
+    shell = FakeProcess(["pwsh", "-File", "start_local.ps1"])
+
+    outcome = _run_terminator(monkeypatch, FakeProcess(ancestors=[plain_uvicorn, shell]))
+
+    assert not plain_uvicorn.terminated
+    assert not shell.terminated
+    assert outcome.signals == [signal.SIGINT]
+
+
+@pytest.mark.parametrize("error", [psutil.NoSuchProcess(1), psutil.AccessDenied(1)])
+def test_terminator_still_exits_when_the_reloader_cannot_be_inspected(
+    monkeypatch: pytest.MonkeyPatch, error: Exception
+) -> None:
+    outcome = _run_terminator(monkeypatch, FakeProcess(parents_error=error))
+
+    assert outcome.signals == [signal.SIGINT]
+
+
+def test_terminator_never_enumerates_other_processes(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The old behavior terminated every process on the machine named uvicorn; only ancestors are considered now."""
+    outcome = _run_terminator(monkeypatch, FakeProcess())
+
+    assert not outcome.iterated_all_processes
