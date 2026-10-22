@@ -82,11 +82,13 @@ def _despawn(combat_service: CombatService, npc: CombatParticipant, lifecycle: N
 async def disengage(
     combat_service: CombatService, combat: CombatInstance, npc: CombatParticipant, lifecycle: NpcDespawner | None
 ) -> None:
-    """Announce, end the combat, and despawn the NPC.
+    """End the combat, announce it, and despawn the NPC.
+
+    The combat ends before the line goes out: a player who moves on reading it must not still be held in combat.
 
     ponytail: ends the whole combat, so in a multi-foe fight the other foes stop too; removing only this NPC from the
     roster needs an NPC counterpart of CombatService.remove_participant.
     """
-    await _announce(combat_service, combat, npc)
     await combat_service.end_combat(combat.combat_id, f"{npc.name} disengaged")
+    await _announce(combat_service, combat, npc)
     _despawn(combat_service, npc, lifecycle)

@@ -8,7 +8,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from types import SimpleNamespace
-from typing import cast
+from typing import cast, override
 
 import pytest
 
@@ -165,6 +165,39 @@ async def test_disengage_announces_ends_the_combat_and_despawns_the_npc() -> Non
     ]
     assert cast(FakeCombatService, cast(object, service)).ended == [(combat.combat_id, "Ghoul disengaged")]
     assert lifecycle.despawned == [(NPC_STRING_ID, "disengaged")]
+
+
+@dataclass
+class EndedFirstMessaging(FakeMessaging):
+    """Records whether the combat had already ended when the disengage line went out."""
+
+    combat_service: FakeCombatService | None = None
+    ended_before_line: list[bool] = field(default_factory=lambda: cast(list[bool], []))
+
+    @override
+    async def broadcast_npc_disengage(
+        self,
+        room_id: str,
+        combat_id: str,
+        npc_name: str,
+        clause: str,
+        npc_disposition: NpcDisposition | None = None,
+    ) -> dict[str, object]:
+        self.ended_before_line.append(self.combat_service is not None and bool(self.combat_service.ended))
+        return await super().broadcast_npc_disengage(room_id, combat_id, npc_name, clause, npc_disposition)
+
+
+@pytest.mark.asyncio
+async def test_disengage_ends_the_combat_before_announcing_it() -> None:
+    """A client acting on the line (e.g. `go east`) must find the server already out of combat."""
+    npc = _npc(disengage_at_target_dp_ratio=0.25)
+    messaging = EndedFirstMessaging()
+    fake_service = FakeCombatService(FakeNpcService(messaging))
+    messaging.combat_service = fake_service
+
+    await disengage(cast(CombatService, cast(object, fake_service)), _combat(npc), npc, FakeLifecycle())
+
+    assert messaging.ended_before_line == [True]
 
 
 @pytest.mark.asyncio

@@ -38,9 +38,15 @@ export async function waitUntil(predicate: () => Promise<boolean>, timeoutMs: nu
 }
 
 export async function dismissDeathInterstitial(page: Page): Promise<void> {
-  const respawnBtn = page.getByRole('button', {
-    name: /Rejoin the earthly plane|Returning to the mortal realm/i,
-  });
+  const respawnBtn = page.getByRole('button', { name: /Rejoin the earthly plane/i });
+  // The in-flight label: a respawn is already under way and this disabled button is about to unmount.
+  // Clicking it hung for the full 30s once it detached, so wait it out instead.
+  const returning = page.getByRole('button', { name: /Returning to the mortal realm/i });
+  if (await returning.isVisible()) {
+    await returning.waitFor({ state: 'hidden', timeout: 30000 }).catch(() => {});
+    await waitUntil(async () => !(await isInDeathVoid(page)), 5000);
+    return;
+  }
   // Called speculatively while alive too, so only wait for the button when Location already says dead.
   const visible = (await isInDeathVoid(page)) ? await isVisibleWithin(respawnBtn, 5000) : await respawnBtn.isVisible();
   if (visible) {

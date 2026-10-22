@@ -11,6 +11,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { isVisibleWithin } from '../fixtures/auth';
 import { cleanupE2ECharacters } from '../fixtures/character-cleanup';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
+import { TUTORIAL_SQUARE_LOOK_CUE } from '../fixtures/tutorial';
 import { LoginPage } from '../pages';
 
 /** Unique name under ADR-021 max length 20 (E2ERevised_${Date.now()} is ~25 chars). */
@@ -335,7 +336,10 @@ test.describe('Revised Character Creation', () => {
     await assertCharacterVisibleOnList(page, creationCharName);
     await enterGameWithCharacter(page, creationCharName);
     const { executeCommand, waitForMessage, getMessages } = await import('../fixtures/auth');
-    // A new character starts in the First Exposure tutorial at Independence Square, whose only exit is east.
+    // A new character starts in the First Exposure tutorial at Independence Square, whose only exit is east
+    // and opens only once the player has looked around (#1111).
+    await executeCommand(page, 'look');
+    await waitForMessage(page, TUTORIAL_SQUARE_LOOK_CUE, TEST_TIMEOUTS.MESSAGE);
     await executeCommand(page, 'go east');
     await waitForMessage(page, /You go east/i, TEST_TIMEOUTS.MESSAGE);
     expect((await getMessages(page)).join('\n')).toMatch(/You go east/i);
