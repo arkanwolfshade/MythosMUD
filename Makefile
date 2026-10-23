@@ -41,7 +41,7 @@ PYTEST_OPTS := --maxfail=10 --tb=short
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets
-.PHONY: help clean install build run run-production apply-procedures migrate-dev
+.PHONY: help clean install build run apply-procedures migrate-dev
 .PHONY: lint lint-sqlalchemy lint-imports format mypy basedpyright typecheck any-report
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
@@ -122,7 +122,6 @@ help:
 	@echo "  build             - Apply procedures, then build the client (Node)"
 	@echo "  apply-procedures  - Apply db/procedures/*.sql to target databases"
 	@echo "  run               - Start the development server (Uvicorn)"
-	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
 	@echo ""
 	@echo "Note: Server integration tests run under test-playwright (with running server). Unit only: make test-server."
 	@echo "  uv run pytest -m unit server/tests   # unit only"
@@ -384,11 +383,6 @@ migrate-dev:
 
 run:
 	$(PYTHON) scripts/run.py
-
-# Production: Gunicorn with Uvicorn workers (see docs/deployment.md)
-# Default port 8000; for another port run the gunicorn command with -b 0.0.0.0:PORT
-run-production:
-	$(UV) gunicorn server.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
 
 # ============================================================================
 # COMPOSITE TARGETS
