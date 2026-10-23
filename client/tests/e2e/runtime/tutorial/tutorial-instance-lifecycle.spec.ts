@@ -113,6 +113,33 @@ test.describe.serial('First Exposure instance lifecycle', () => {
     await awFindsNoSlingInChest(aw);
   });
 
+  test('restarting in a fresh instance starts the run over: first act active, later acts not started, vitals restored', async () => {
+    const before = readE2ePlayerState(TUTORIAL_USERNAME);
+
+    // Get a step into the run: walking east off the square makes progress on the first act.
+    await executeCommand(tutorial.page, 'go east');
+    await waitForMessage(tutorial.page, /Lamplighter offers a wary nod in greeting/i, 20000);
+    expect(readE2ePlayerState(TUTORIAL_USERNAME).current_room_id).toMatch(tutorialRoomPattern('gravel_walk'));
+
+    await relogTutorialCharacter(tutorial, false);
+    await executeCommand(tutorial.page, 'look');
+    await waitForMessage(tutorial.page, TUTORIAL_SQUARE_LOOK_CUE, 20000);
+
+    // The square again, the first act running again; the later acts reset to not started (abandoned rows are hidden).
+    expect(readE2ePlayerState(TUTORIAL_USERNAME).current_room_id).toMatch(tutorialRoomPattern('independence_square'));
+    await expect
+      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests, { timeout: 15000 })
+      .toMatchObject({ first_exposure_dusk: 'active' });
+    const after = readE2ePlayerState(TUTORIAL_USERNAME);
+    for (const later of ['first_exposure_burying_ground', 'first_exposure_below']) {
+      expect(['active', 'completed']).not.toContain(after.quests[later]);
+    }
+    // Full DP and the starting lucidity; corruption is a floor and is left alone.
+    expect(after.current_dp).toBe(before.current_dp);
+    expect(after.current_lcd).toBe(100);
+    expect(after.corruption).toBe(before.corruption);
+  });
+
   test('the owner can list, withdraw and re-deposit what an instance banked, but only at a bank', async () => {
     await dropSlingAndRelog(tutorial);
     await expect.poll(() => readE2ePlayerState(TUTORIAL_USERNAME).bank_items, { timeout: 15000 }).toEqual(['Sling']);
