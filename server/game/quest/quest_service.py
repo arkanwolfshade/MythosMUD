@@ -10,8 +10,9 @@ applies rewards (XP, item, spell) via injected services.
 from __future__ import annotations
 
 import uuid
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from pydantic import BaseModel, TypeAdapter
 
@@ -130,6 +131,27 @@ def _build_collect_n_progress(
             continue
         new_progress[str(i)] = count_prototype_in_stacks(stacks, prototype_id)
     return new_progress
+
+
+class _OfferLookup(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The slice of QuestDefinitionRepository a run restart reads."""
+
+    async def list_quest_ids_offered_by(self, entity_type: str, entity_id: str) -> list[str]:
+        """Quest ids offered by one trigger entity."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
+class _InstanceStore(Protocol):
+    """The slice of QuestInstanceRepository a run restart drives."""
+
+    async def get_by_player_and_quest(self, player_id: uuid.UUID, quest_id: str) -> QuestInstance | None:
+        """The player's instance of this quest, in any state."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    async def update_state_and_progress(
+        self, instance_id: uuid.UUID, state: str | None = None, progress: dict[str, int] | None = None
+    ) -> None:
+        """Change an instance's state and/or progress."""
 
 
 class QuestService(QuestRewardsMixin):
@@ -567,6 +589,41 @@ class QuestService(QuestRewardsMixin):
         notify_quest_abandoned(player_id, title)
         self._publish_log_changed(player_id)
         return {"success": True, "message": "Quest abandoned."}
+
+    async def _offered_quest_chain(self, room_ids: Iterable[str]) -> list[str]:
+        """Quest ids offered by any of these rooms, plus every quest those unlock by completion, transitively."""
+        found: list[str] = []
+        pending: list[tuple[str, str]] = [("room", room_id) for room_id in room_ids]
+        while pending:
+            entity_type, entity_id = pending.pop()
+            for quest_id in await cast("_OfferLookup", self._def_repo).list_quest_ids_offered_by(
+                entity_type, entity_id
+            ):
+                if quest_id not in found:
+                    found.append(quest_id)
+                    pending.append(("quest", quest_id))
+        return found
+
+    async def reset_offered_quests(self, player_id: uuid.UUID, room_ids: Iterable[str]) -> list[str]:
+        """Return the quests a set of rooms offers (and the chain they unlock) to a clean, not-started state.
+
+        For a player restarting an instanced run: their rows become ``abandoned`` with empty progress, which the
+        quest log hides and ``start_quest`` re-activates, so the first act restarts on spawn and the later acts
+        wait to be unlocked again. Returns the quest ids that were reset.
+        """
+        # shortcut: one offer query per room (rare restart path), batch the lookup if templates grow large
+        instances = cast("_InstanceStore", self._instance_repo)
+        reset: list[str] = []
+        for quest_id in await self._offered_quest_chain(room_ids):
+            instance = await instances.get_by_player_and_quest(player_id, quest_id)
+            if instance is None or instance.state == "abandoned":
+                continue
+            await instances.update_state_and_progress(instance.id, state="abandoned", progress={})
+            reset.append(quest_id)
+        if reset:
+            logger.info("Quests reset for a fresh instance", player_id=str(player_id), quest_ids=reset)
+            self._publish_log_changed(player_id)
+        return reset
 
     async def get_quest_log(self, player_id: uuid.UUID, include_completed: bool = True) -> list[dict[str, Any]]:
         """Return quest log entries (active and optionally completed) for API/command."""

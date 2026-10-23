@@ -5,6 +5,7 @@ Tests the player_presence_tracker module functions.
 """
 
 import uuid
+from collections.abc import Iterable
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -836,6 +837,7 @@ def _manager_with(
     rooms: dict[str, Room],
     save_player: AsyncMock,
     content: MagicMock | None = None,
+    quests: object | None = None,
 ) -> MagicMock:
     manager = MagicMock()
     manager.configure_mock(
@@ -844,6 +846,7 @@ def _manager_with(
             "async_persistence.save_player": save_player,
             "app.state.container.instance_manager": instance_manager,
             "app.state.container.instance_content_service": content,
+            "app.state.container.quest_service": quests,
         }
     )
     return manager
@@ -881,6 +884,19 @@ def _two_room_tutorial() -> dict[str, Room]:
         START_ID: Room({"id": START_ID, "attributes": {**attributes, "instance_start": True}}),
         FOYER_ID: _foyer(),
     }
+
+
+class _RecordingQuests:
+    """Records the quest resets a fresh-instance restart asks for."""
+
+    calls: list[list[str]]
+
+    def __init__(self) -> None:
+        self.calls = []
+
+    async def reset_offered_quests(self, _player_id: uuid.UUID, room_ids: Iterable[str]) -> list[str]:
+        self.calls.append(list(room_ids))
+        return []
 
 
 def _content() -> tuple[MagicMock, AsyncMock]:
@@ -931,13 +947,15 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     rooms = _two_room_tutorial()
     instance_manager = InstanceManager(room_cache=rooms)
     content, populate = _content()
-    manager = _manager_with(instance_manager, rooms, AsyncMock(), content)
+    quests = _RecordingQuests()
+    manager = _manager_with(instance_manager, rooms, AsyncMock(), content, quests)
     player = Player(
         player_id=str(uuid.uuid4()),
         name="Restarted",
         current_room_id="instance_gone_" + START_ID,
         tutorial_instance_id="instance_gone",
     )
+    player.set_stats({"current_dp": 1, "max_dp": 100, "corruption": 2})
     player.set_inventory(
         [
             {"item_id": "jade_amulet", "flags": [INSTANCE_BOUND_FLAG]},
@@ -945,7 +963,8 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
         ]
     )
 
-    room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
+        room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
 
     assert room_id is not None and room_id.endswith(START_ID)
     assert player.tutorial_instance_id != "instance_gone"
@@ -953,6 +972,11 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     assert fresh is not None
     populate.assert_awaited_once_with(fresh)
     assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
+    # The run starts over: full DP, starting lucidity, the template's (stable) rooms' quests reset; corruption stays.
+    assert player.get_stats()["current_dp"] == 100
+    assert player.get_stats()["corruption"] == 2
+    reset_lucidity.assert_awaited_once()
+    assert [set(rooms_reset) for rooms_reset in quests.calls] == [{START_ID, WALK_ID}]
 
 
 @pytest.mark.asyncio
@@ -961,10 +985,12 @@ async def test_new_character_gets_a_populated_instance_and_keeps_their_belonging
     rooms = _two_room_tutorial()
     instance_manager = InstanceManager(room_cache=rooms)
     content, populate = _content()
-    manager = _manager_with(instance_manager, rooms, AsyncMock(), content)
+    quests = _RecordingQuests()
+    manager = _manager_with(instance_manager, rooms, AsyncMock(), content, quests)
     player = Player(
         player_id=str(uuid.uuid4()), name="Newcomer", current_room_id=FOYER_ID, tutorial_instance_id=PENDING_INSTANCE_ID
     )
+    player.set_stats({"current_dp": 40, "max_dp": 100})
     player.set_inventory([{"item_id": "jade_amulet", "flags": [INSTANCE_BOUND_FLAG]}])
 
     room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
@@ -973,6 +999,8 @@ async def test_new_character_gets_a_populated_instance_and_keeps_their_belonging
     assert player.tutorial_instance_id != PENDING_INSTANCE_ID
     populate.assert_awaited_once()
     assert len(player.get_inventory()) == 1  # not a restart: nothing from a previous run to clear
+    assert player.get_stats()["current_dp"] == 40  # ...nor DP, lucidity or quests to reset
+    assert not quests.calls
 
 
 @pytest.mark.asyncio
