@@ -17,6 +17,7 @@ from server.app import game_tick_lucidity_drain as drain
 from server.app import game_tick_status_effects as tick
 from server.app.game_tick_protocols import _TickContainer
 from server.models.player import Player
+from server.services.lucidity_repository import PlayerGoneError
 
 EFFECT_TYPE = "lucidity_drain_over_time"
 
@@ -40,6 +41,7 @@ class Rig:
         default_factory=lambda: cast(list[tuple[str, str, str, int]], [])
     )
     fail: bool = False
+    gone: bool = False
     fail_hallucination: bool = False
 
 
@@ -65,6 +67,8 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
             _ = player_id
             if rig.fail:
                 raise SQLAlchemyError("database unavailable")
+            if rig.gone:
+                raise PlayerGoneError(str(player_id))
             return SimpleNamespace(current_lcd=rig.lcd)
 
         async def apply_lucidity_adjustment(
@@ -164,6 +168,19 @@ async def test_a_player_already_at_the_floor_just_loses_the_effect(rig: Rig) -> 
     updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=3))
 
     assert (updated, applied, rig.deltas) == (None, False, [])
+
+
+@pytest.mark.asyncio
+async def test_a_deleted_player_is_a_quiet_no_op(rig: Rig) -> None:
+    """#1147: the player vanished mid-drain; no write, no commit, and the effect is left for the tick to discard."""
+    rig.gone = True
+    effect = _effect(rate=3)
+
+    updated, applied = await drain.process_lucidity_drain(_container(), _player(), effect)
+
+    assert (updated, applied) == (effect, False)
+    assert rig.deltas == []
+    assert rig.session.commits == 0
 
 
 @pytest.mark.asyncio

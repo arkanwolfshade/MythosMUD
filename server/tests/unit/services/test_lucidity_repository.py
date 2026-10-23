@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLucidity
+from server.services import lucidity_repository
 from server.services.lucidity_repository import LucidityRepository, _utc_now
 
 
@@ -75,11 +76,22 @@ async def test_get_or_create_player_lucidity_existing(repo: LucidityRepository, 
 async def test_get_or_create_player_lucidity_creates(repo: LucidityRepository, mock_session: _MockAsyncSession):
     """get_or_create inserts new PlayerLucidity when missing."""
     player_id = uuid.uuid4()
-    mock_session.execute.return_value = _scalar_result(None)
+    # First execute: no lucidity row; second: the player-exists check.
+    mock_session.execute.side_effect = [_scalar_result(None), _scalar_result(player_id)]
     got = await repo.get_or_create_player_lucidity(player_id)
     assert got.player_id == player_id
     mock_session.add.assert_called_once()
     mock_session.flush.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_get_or_create_player_lucidity_player_gone(repo: LucidityRepository, mock_session: _MockAsyncSession):
+    """#1147: a deleted player gets PlayerGoneError instead of an FK-violating insert."""
+    mock_session.execute.side_effect = [_scalar_result(None), _scalar_result(None)]
+    with pytest.raises(lucidity_repository.PlayerGoneError):
+        _ = await repo.get_or_create_player_lucidity(uuid.uuid4())
+    mock_session.add.assert_not_called()
+    mock_session.flush.assert_not_awaited()
 
 
 @pytest.mark.asyncio

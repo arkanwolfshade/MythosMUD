@@ -20,6 +20,7 @@ from ...async_persistence import AsyncPersistenceLayer
 from ...config import get_config
 from ...models.lucidity import PlayerLucidity
 from ...models.player import Player
+from ...services.lucidity_repository import PlayerGoneError
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...structured_logging.enhanced_logging_config import get_logger
@@ -179,7 +180,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                         **flux_context.metadata,
                     },
                 )
-        except IntegrityError:
+        except IntegrityError, PlayerGoneError:
             logger.warning(
                 "Skipping passive LCD flux for missing player",
                 player_id=computation.player_id_str,
