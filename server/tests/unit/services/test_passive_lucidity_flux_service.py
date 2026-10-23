@@ -8,6 +8,7 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 
 from server.config import get_config
+from server.services.lucidity_repository import PlayerGoneError
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
@@ -324,7 +325,14 @@ async def test_process_single_player_no_delta() -> None:
 
 
 @pytest.mark.asyncio
-async def test_process_single_player_skips_missing_player_fk() -> None:
+@pytest.mark.parametrize(
+    "missing_player_error",
+    [
+        IntegrityError("INSERT", {}, Exception("player_lucidity_player_id_fkey")),
+        PlayerGoneError("deleted"),  # #1147: the repository now refuses to insert before the FK can fire
+    ],
+)
+async def test_process_single_player_skips_missing_player_fk(missing_player_error: Exception) -> None:
     """E2E truncate race: player deleted after load must not abort the flux tick."""
 
     def resolver(_player: object, _ts: datetime) -> PassiveFluxContext:
@@ -334,9 +342,7 @@ async def test_process_single_player_skips_missing_player_fk() -> None:
     player_id = uuid.uuid4()
     player = MagicMock(player_id=str(player_id), current_room_id="room-a")
     lucidity_service: AsyncMock = AsyncMock()
-    lucidity_service.apply_lucidity_adjustment = AsyncMock(
-        side_effect=IntegrityError("INSERT", {}, Exception("player_lucidity_player_id_fkey"))
-    )
+    lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=missing_player_error)
     nested = MagicMock()
     nested.__aenter__ = AsyncMock(return_value=None)
     nested.__aexit__ = AsyncMock(return_value=None)
