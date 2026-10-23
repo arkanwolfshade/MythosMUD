@@ -13,7 +13,7 @@ from typing import Any, Protocol, cast
 from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
 from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
-from ..game.instance_state import reset_instance_scoped_state
+from ..game.instance_state import QuestResetter, reset_instance_scoped_state, restart_instance_run
 from ..models.corruption import compute_tier
 from ..models.player import Player
 from ..models.room import Room
@@ -199,14 +199,16 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     services = _tutorial_instance_services(player_obj, cast(object, manager))
     if services is None:
         return None
-    instance_manager, content_service = services
+    instance_manager, content_service, quest_service = services
 
     instance = instance_manager.get_instance(instance_id) if instance_id else None
     if instance is not None and player_obj.current_room_id in instance.rooms:
         # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
         return player_obj.current_room_id
     if instance is None:
-        instance = await _start_fresh_instance(player_obj, instance_manager, content_service, template_id, instance_id)
+        instance = await _start_fresh_instance(
+            player_obj, instance_manager, content_service, quest_service, template_id, instance_id
+        )
 
     first_room_id = instance_manager.get_first_room_id(instance.instance_id)
     if not first_room_id:
@@ -221,13 +223,13 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
 
 def _tutorial_instance_services(
     player: Player, manager: object
-) -> tuple[InstanceManager, InstanceContentLifecycle | None] | None:
-    """The container's InstanceManager and content service for a tutorial (re)entry, or None (logged) if missing."""
+) -> tuple[InstanceManager, InstanceContentLifecycle | None, QuestResetter | None] | None:
+    """The container's instance manager, content and quest services for a tutorial (re)entry, or None (logged)."""
     services = _container_services(manager)
     if services is None or services.instance_manager is None:
         logger.warning("InstanceManager not available for tutorial reconnect", player_id=player.player_id)
         return None
-    return services.instance_manager, services.instance_content_service
+    return services.instance_manager, services.instance_content_service, services.quest_service
 
 
 def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str | None:
@@ -242,15 +244,17 @@ async def _start_fresh_instance(
     player: Player,
     instance_manager: InstanceManager,
     content: InstanceContentLifecycle | None,
+    quests: QuestResetter | None,
     template_id: str,
     lost_instance_id: str | None,
 ) -> Instance:
     """Create and populate a new instance for the player and record it on them.
 
     ``lost_instance_id`` is the instance the player had before, if any. A real one that no longer
-    exists means a restart (logout, server restart), so what the old instance handed the player is
-    cleared; the pending marker (new character) and None (stranded in a template) mean there is
-    nothing to clear.
+    exists means a restart (logout, server restart), so the run starts over: what the old instance
+    handed the player is cleared, and DP, lucidity and the instance's quests are reset (corruption
+    stays). The pending marker (new character) and None (stranded in a template) mean there is
+    nothing to reset.
     """
     instance = instance_manager.create_instance(template_id=template_id, owner_player_id=player.player_id)
     if content is not None:
@@ -258,6 +262,9 @@ async def _start_fresh_instance(
     cleared = 0
     if lost_instance_id and lost_instance_id != PENDING_INSTANCE_ID:
         cleared = reset_instance_scoped_state(player)
+        # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
+        prefix = f"{instance.instance_id}_"
+        await restart_instance_run(player, [room_id.removeprefix(prefix) for room_id in instance.rooms], quests)
     logger.info(
         "Tutorial instance missing on (re)entry, created a fresh one",
         player_id=player.player_id,
@@ -275,6 +282,7 @@ class _InstanceServices(Protocol):  # pylint: disable=too-few-public-methods  # 
 
     instance_manager: InstanceManager | None
     instance_content_service: InstanceContentLifecycle | None
+    quest_service: QuestResetter | None
 
 
 def _container_services(manager: object) -> _InstanceServices | None:

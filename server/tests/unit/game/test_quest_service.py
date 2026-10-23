@@ -239,6 +239,67 @@ async def test_abandoning_a_quest_announces_a_quest_log_change(
     assert bus.names() == ["QuestLogChanged"]
 
 
+# ---- reset_offered_quests (a fresh instance restarts the run) ----
+def _offers(by_entity: dict[tuple[str, str], list[str]]) -> AsyncMock:
+    """list_quest_ids_offered_by answering from a (entity_type, entity_id) table."""
+
+    async def lookup(entity_type: str, entity_id: str) -> list[str]:
+        return by_entity.get((entity_type, entity_id), [])
+
+    return AsyncMock(side_effect=lookup)
+
+
+@pytest.mark.asyncio
+async def test_reset_offered_quests_resets_the_room_chain_but_not_unoffered_quests(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    mock_def_repo.list_quest_ids_offered_by = _offers(
+        {("room", "square"): ["act1"], ("quest", "act1"): ["act2"], ("quest", "act2"): ["act3"]}
+    )
+    act1 = _InstanceStub(state="completed", quest_id="act1", progress={"0": 1})
+    act2 = _InstanceStub(state="active", quest_id="act2", progress={"0": 1})
+    rows: dict[str, _InstanceStub | None] = {
+        "act1": act1,
+        "act2": act2,
+        "act3": None,  # never started
+        "epilogue": _InstanceStub(state="completed", quest_id="epilogue"),  # offered by no room or quest
+    }
+
+    async def instance_of(_player_id: uuid.UUID, quest_id: str) -> _InstanceStub | None:
+        return rows[quest_id]
+
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(side_effect=instance_of)
+    player_id = uuid.uuid4()
+
+    reset = await quest_service_with_bus.reset_offered_quests(player_id, ["square", "elsewhere"])
+
+    assert sorted(reset) == ["act1", "act2"]
+    updated = {call.args[0] for call in mock_instance_repo.update_state_and_progress.await_args_list}
+    assert updated == {act1.id, act2.id}
+    for call in mock_instance_repo.update_state_and_progress.await_args_list:
+        assert call.kwargs == {"state": "abandoned", "progress": {}}
+    assert bus.names() == ["QuestLogChanged"]  # announced once for the whole reset
+
+
+@pytest.mark.asyncio
+async def test_reset_offered_quests_leaves_already_abandoned_quests_and_stays_quiet(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    mock_def_repo.list_quest_ids_offered_by = _offers({("room", "square"): ["act1"]})
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=_InstanceStub(state="abandoned"))
+
+    assert await quest_service_with_bus.reset_offered_quests(uuid.uuid4(), ["square"]) == []
+
+    mock_instance_repo.update_state_and_progress.assert_not_awaited()
+    assert not bus.events
+
+
 # ---- resolve_name_to_quest_id ----
 @pytest.mark.asyncio
 async def test_resolve_name_to_quest_id_found(quest_service: QuestService, mock_def_repo: _MockDefRepo):
