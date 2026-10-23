@@ -24,6 +24,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import get_async_session
 from ..services.lucidity_helpers import resolve_tier
+from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer
@@ -158,6 +159,10 @@ async def process_lucidity_drain(
     player_id = uuid.UUID(str(player.player_id))
     try:
         outcome = await _drain_step(container, player_id, player.current_room_id, params)
+    except PlayerGoneError:
+        # Deleted or reset mid-drain (#1147): nothing to drain; the effect is left untouched so no stale save happens.
+        logger.debug("Lucidity drain skipped: player no longer exists", player_id=str(player_id))
+        return effect, False
     except (SQLAlchemyError, ValueError, RuntimeError, OSError) as e:
         logger.warning("Lucidity drain step failed; will retry next second", player_id=str(player_id), error=str(e))
         return effect, False

@@ -24,6 +24,7 @@ tmp/
 *codacy-makefile-test.json
 .codacy/generated/
 .codacy/codacy.config.baseline.json
+.codacy/codacy.config.json
 
 # Local Codacy/lizard investigation dumps and one-shot scrapers (never commit)
 docs/investigations/_*.py
