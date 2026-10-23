@@ -260,6 +260,10 @@ jobs:
           source .venv-ci/bin/activate
           # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
           getent hosts azure.archive.ubuntu.com || true
+          # apt probes _http(s)._tcp.<host> SRV records before the A lookup; Harden-Runner reports those names as
+          # blocked calls (they are not hosts) and fails its check, though apt falls back and succeeds.
+          echo 'Acquire::EnableSrvRecords "false";' | sudo tee /etc/apt/apt.conf.d/99-no-srv
+          apt-config dump | grep -i EnableSrvRecords || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during install-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
@@ -552,6 +556,9 @@ jobs:
         run: |
           # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
           getent hosts azure.archive.ubuntu.com || true
+          # No SRV probes from apt (see the Python job's Playwright step): they show up as Harden-Runner blocked calls.
+          echo 'Acquire::EnableSrvRecords "false";' | sudo tee /etc/apt/apt.conf.d/99-no-srv
+          apt-config dump | grep -i EnableSrvRecords || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during --with-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
