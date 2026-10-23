@@ -89,31 +89,46 @@ class NPCCombatIntegrationCombatMixin:
 
     async def _apply_npc_attack_damage_for_npc_initiated_combat(
         self: _NPCCombatIntegrationDeps,
+        npc_id: str,
         room_id: str,
         target_id: str,
         npc_instance: object,
         npc_uuid: UUID,
         player_uuid: UUID,
         attack_damage: int,
-    ) -> None:
+    ) -> bool:
         """
         Resolve participant combat data and apply the initial attack damage through CombatService.
 
         Damage amount is the caller-supplied ``attack_damage``; combat resolution (armor, etc.)
         is handled inside ``process_attack``.
+
+        An NPC can be despawned (a disengage, say) while this attack is awaiting its lookups or
+        ``start_combat``'s checks. Despawning is synchronous, so each check below sees it with nothing able
+        to interleave before the act that follows; a combat opened for a gone NPC would hold the player in it
+        with nothing to fight. Returns False, with no combat left behind, when the NPC is gone.
         """
         current_tick = get_current_tick()
         data_provider = self.get_data_provider()
+
+        def npc_despawned() -> bool:
+            return data_provider.get_npc_instance(npc_id) is None
+
         player_name = await data_provider.get_player_name(target_id)
         attacker_data = data_provider.get_npc_combat_data(npc_instance, npc_uuid)
         target_data = await data_provider.get_player_combat_data(target_id, player_uuid, player_name)
+        if npc_despawned():
+            return False
 
-        _ = await self.get_combat_service().start_combat(
+        combat = await self.get_combat_service().start_combat(
             room_id=room_id,
             attacker=attacker_data,
             target=target_data,
             current_tick=current_tick,
         )
+        if npc_despawned():
+            await self.get_combat_service().end_combat(combat.combat_id, "NPC despawned before the combat began")
+            return False
         _ = await self.get_combat_service().process_attack(
             attacker_id=npc_uuid,
             target_id=player_uuid,
@@ -121,6 +136,7 @@ class NPCCombatIntegrationCombatMixin:
             is_initial_attack=True,
             damage_type="physical",
         )
+        return True
 
     def _broadcast_npc_attack_on_player_started(
         self: _NPCCombatIntegrationDeps,

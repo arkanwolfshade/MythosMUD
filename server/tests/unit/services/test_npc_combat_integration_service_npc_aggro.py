@@ -112,6 +112,61 @@ async def test_handle_npc_attack_on_player_happy_path(integration_service: "NPCC
 
 
 @pytest.mark.asyncio
+async def test_npc_attack_does_not_open_a_combat_for_an_npc_despawned_while_it_waited(
+    integration_service: "NPCCombatIntegrationService",
+):
+    """A disengage despawns the NPC while an attack it queued is still gathering data: no combat is opened."""
+    npc_id = "npc_001"
+    room_id = "room_001"
+    npc_instance, mock_start_combat, mock_process_attack = _wire_npc_aggro_mocks(
+        integration_service, npc_id=npc_id, room_id=room_id, npc_definition=None
+    )
+    integration_service._data_provider.get_npc_instance = MagicMock(return_value=None)  # gone from active_npcs
+
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
+        attacked = await integration_service.handle_npc_attack_on_player(
+            npc_id=npc_id, target_id=str(uuid.uuid4()), room_id=room_id, attack_damage=10, npc_instance=npc_instance
+        )
+
+    assert attacked is False
+    mock_start_combat.assert_not_awaited()
+    mock_process_attack.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_npc_attack_ends_the_combat_it_opened_for_an_npc_despawned_during_start_combat(
+    integration_service: "NPCCombatIntegrationService",
+):
+    """start_combat awaits its checks; an NPC despawned in that gap must not be left holding the player in combat."""
+    npc_id = "npc_001"
+    room_id = "room_001"
+    npc_instance, mock_start_combat, mock_process_attack = _wire_npc_aggro_mocks(
+        integration_service, npc_id=npc_id, room_id=room_id, npc_definition=None
+    )
+    # Present for the check before start_combat, gone for the one after it.
+    integration_service._data_provider.get_npc_instance = MagicMock(side_effect=[npc_instance, None])
+    opened_id = uuid.uuid4()
+    mock_start_combat.return_value = MagicMock(combat_id=opened_id)
+    ended: list[uuid.UUID] = []
+
+    async def end_combat(combat_id: uuid.UUID, reason: str = "Combat ended") -> None:  # CombatService.end_combat
+        _ = reason
+        ended.append(combat_id)
+
+    integration_service._combat_service.end_combat = end_combat
+
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
+        attacked = await integration_service.handle_npc_attack_on_player(
+            npc_id=npc_id, target_id=str(uuid.uuid4()), room_id=room_id, attack_damage=10, npc_instance=npc_instance
+        )
+
+    assert attacked is False
+    mock_start_combat.assert_awaited_once()
+    assert ended == [opened_id]
+    mock_process_attack.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_handle_npc_attack_on_player_applies_encounter_lucidity_once(
     integration_service: "NPCCombatIntegrationService",
 ):
