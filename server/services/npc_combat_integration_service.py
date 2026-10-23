@@ -285,14 +285,17 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             return False
 
         await self._apply_first_sight_lucidity(npc_id, target_id, room_id)
-        await self._apply_npc_attack_damage_for_npc_initiated_combat(
+        if not await self._apply_npc_attack_damage_for_npc_initiated_combat(
+            npc_id=npc_id,
             room_id=room_id,
             target_id=target_id,
             npc_instance=npc_instance,
             npc_uuid=npc_uuid,
             player_uuid=player_uuid,
             attack_damage=attack_damage,
-        )
+        ):
+            logger.debug("NPC attack on player skipped - the NPC was despawned first", npc_id=npc_id)
+            return False
         self._broadcast_npc_attack_on_player_started(
             npc_id=npc_id,
             target_id=target_id,
