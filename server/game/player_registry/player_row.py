@@ -27,11 +27,14 @@ from .part import DbSession, Part, PartWrite
 
 # Same columns PlayerRepository.get_player_by_id selects, so the aggregate starts from identical data.
 LOAD_PLAYER_SQL = text(
-    "SELECT player_id, user_id, name, inventory, status_effects, current_room_id, "
-    + "respawn_room_id, experience_points, level, is_admin, profession_id, "
-    + "created_at, last_active, stats, is_deleted, deleted_at, "
-    + "tutorial_instance_id, inventory_json, equipped_json "
-    + "FROM get_player_by_id(:id)"
+    """
+    SELECT
+        player_id, user_id, name, inventory, status_effects, current_room_id,
+        respawn_room_id, experience_points, level, is_admin, profession_id,
+        created_at, last_active, stats, is_deleted, deleted_at,
+        tutorial_instance_id, inventory_json, equipped_json
+    FROM get_player_by_id(:id)
+    """
 )
 
 # PlayerSavePreparer's default for a row with no room.
