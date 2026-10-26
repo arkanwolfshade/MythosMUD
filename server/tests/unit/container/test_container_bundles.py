@@ -62,6 +62,43 @@ def test_time_bundle_resolve_hourly_holidays() -> None:
     assert bundle._resolve_hourly_holidays(datetime.now()) == []
 
 
+class _RecordingBus:
+    def __init__(self) -> None:
+        self.published: list[object] = []
+
+    def publish(self, event: object) -> None:
+        self.published.append(event)
+
+
+def test_game_bundle_builds_the_player_registry_from_config() -> None:
+    """ADR-029: the registry takes its tuning from GameConfig and publishes queued events on the event bus."""
+    from server.game.player_registry import PlayerRegistry
+
+    bundle = GameBundle()
+    bus = _RecordingBus()
+    container = MagicMock()
+    container.event_bus = bus
+    game = MagicMock(
+        save_interval=3,
+        player_registry_idle_ttl_seconds=45.0,
+        player_registry_flush_concurrency=2,
+        player_registry_failure_alert_after=7,
+    )
+    with (
+        patch("server.config.get_config", return_value=MagicMock(game=game)),
+        patch("server.database.get_session_maker", return_value=MagicMock()),
+    ):
+        bundle._init_player_registry(container)  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - unit-testing the bundle's private wiring step  # Appropriate because: this file tests each GameBundle wiring helper directly, and initialize() needs the whole app
+
+    registry = bundle.player_registry
+    assert isinstance(registry, PlayerRegistry)
+    settings = registry._settings  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - the wired settings are only held on the private field  # Appropriate because: adding a public accessor only for this assertion would widen the registry's API
+    assert (settings.idle_ttl_seconds, settings.flush_concurrency, settings.failure_alert_after) == (45.0, 2, 7)
+    assert settings.retry_base_seconds == 3.0
+    assert registry._publish == bus.publish  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - as above  # Appropriate because: the publisher is only held on the private field, and asserting it is the point
+    assert "player_registry" in GAME_ATTRS
+
+
 def test_game_bundle_wire_helpers() -> None:
     bundle = GameBundle()
     follow = MagicMock()

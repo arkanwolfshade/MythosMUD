@@ -87,6 +87,23 @@ def get_tick_interval() -> float:
     return config.game.server_tick_rate
 
 
+def player_registry_sweep_ticks() -> int:
+    """Ticks between lazy player-registry flushes: ``save_interval`` seconds at the server tick rate."""
+    game = get_config().game
+    # pylint: disable-next=no-member  # Reason: Pydantic model fields are dynamically accessible; pylint sees FieldInfo
+    return max(1, round(game.save_interval / game.server_tick_rate))
+
+
+def schedule_player_registry_sweep(app: FastAPI, tick_count: int, sweep_ticks: int) -> None:
+    """Start a background lazy flush of dirty players every ``sweep_ticks`` (it skips itself if one is running)."""
+    if tick_count % sweep_ticks:
+        return
+    container = _app_container(app)
+    if container is None or container.player_registry is None:
+        return
+    container.player_registry.schedule_sweep()
+
+
 async def process_combat_tick(app: FastAPI, tick_count: int) -> None:
     """Process combat auto-progression."""
     container = _app_container(app)
@@ -268,6 +285,7 @@ async def game_tick_loop(app: FastAPI) -> None:
     """
     tick_count = 0
     tick_interval = get_tick_interval()
+    sweep_ticks = player_registry_sweep_ticks()
     logger.info("Game tick loop started", tick_interval=tick_interval)
 
     while True:
@@ -289,6 +307,7 @@ async def game_tick_loop(app: FastAPI) -> None:
             await process_combat_cleanup(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
+            schedule_player_registry_sweep(app, tick_count, sweep_ticks)
             # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
             if not tick_count % 10:
                 await broadcast_tick_event(app, tick_count)

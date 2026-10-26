@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.0** · MythosMUD · 2026-10-26
+**Version 1.0.1** · MythosMUD · 2026-10-26
 
 ---
 
@@ -206,8 +206,10 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 Stacked PRs (`gh stack`), each green on its own, with correctness required once the stack merges:
 
 1. This ADR.
-2. Core: `PlayerRegistry`, `PlayerAggregate` and parts, the read-only Protocol, per-part mappers, locks,
-   re-entrancy, events, sweep, and shutdown flush. Unit-tested on its own; no callers yet.
+2. Core: `PlayerRegistry`, `PlayerAggregate`, the `Part` protocol, the read-only Protocol, locks, re-entrancy,
+   events, sweep, and shutdown flush, plus the first real part (the `players` row and inventory, over
+   `get_player_by_id` / `upsert_player`). Unit-tested on its own; no callers yet. Each later step adds its own
+   parts and mappers alongside the callers that use them.
 3. Schema: drop the duplicate stores and move their readers.
 4. Inventory, bank, containers and transfers.
 5. Quests, lucidity, corruption, cooldowns and debrief.
@@ -232,3 +234,4 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-10-26 | Initial decision record |
+| 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |

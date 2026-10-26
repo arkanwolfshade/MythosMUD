@@ -140,6 +140,18 @@ async def _flush_live_instances(container: ApplicationContainer) -> None:
         logger.error("Error flushing live instances at shutdown", error=str(e))
 
 
+async def _flush_player_registry(container: ApplicationContainer) -> None:
+    """Write every dirty player while persistence is still up (ADR-029): after the tick loop and logouts stop."""
+    registry = container.player_registry
+    if registry is None:
+        return
+    try:
+        written = await registry.close()
+        logger.info("Player registry flushed for shutdown", players_written=written)
+    except (DatabaseError, SQLAlchemyError, RuntimeError) as e:
+        logger.error("Error flushing the player registry at shutdown", error=str(e))
+
+
 async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Handle graceful shutdown of all services."""
     await _flush_live_instances(container)
@@ -148,6 +160,7 @@ async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> No
     await _shutdown_connection_manager(app)
     await _shutdown_mythos_tick_scheduler(app)
     await _shutdown_task_registry(container)
+    await _flush_player_registry(container)
     await _shutdown_event_bus(container)
 
     logger.info("Shutting down ApplicationContainer")

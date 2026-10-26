@@ -32,6 +32,7 @@ __all__ = [
     "_TickMpRegen",
     "_TickNpcLifecycle",
     "_TickNpcThreadManager",
+    "_TickPlayerRegistry",
     "_TickRespawnService",
     "_app_container",
     "_online_player_ids",
@@ -103,8 +104,13 @@ class _TickNpcLifecycle(Protocol):
     def periodic_maintenance(self) -> dict[str, object]: ...
 
 
+class _TickPlayerRegistry(Protocol):
+    def schedule_sweep(self) -> None: ...
+
+
 class _TickContainer(Protocol):
     async_persistence: AsyncPersistenceLayer | None
+    player_registry: _TickPlayerRegistry | None
     connection_manager: _TickConnectionManager | None
     combat_service: _TickCombatService | None
     magic_service: _TickMagicService | None
