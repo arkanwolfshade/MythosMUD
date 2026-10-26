@@ -47,7 +47,7 @@ describe('projector messages', () => {
       ...getInitialGameState(),
       player: {
         name: 'TestPlayer',
-        stats: { current_dp: 10, max_dp: 100, lucidity: 50, position: 'standing' },
+        stats: { current_dp: 10, max_dp: 100, position: 'standing' },
       },
     };
     const event: GameEvent = {
@@ -69,7 +69,7 @@ describe('projector messages', () => {
   describe('bleed-out (#1059)', () => {
     const downed: GameState = {
       ...getInitialGameState(),
-      player: { name: 'TestPlayer', stats: { current_dp: 0, max_dp: 100, lucidity: 50, position: 'lying' } },
+      player: { name: 'TestPlayer', stats: { current_dp: 0, max_dp: 100, position: 'lying' } },
     };
     const decay = (data: Record<string, unknown>): GameEvent => ({
       event_type: 'player_dp_decay',

@@ -385,7 +385,6 @@ class NPCCombatIntegration(NPCCombatIntegrationBase):
             "max_dp": max_dp,
             "strength": stats.get("strength", 50),
             "constitution": stats.get("constitution", 50),
-            "lucidity": stats.get("lucidity", 100),
             "fear": stats.get("fear", 0),
             "corruption": stats.get("corruption", 0),
         }

@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from server.constants.lucidity import STARTING_LCD
 from server.game.instance_state import (
     INSTANCE_SCOPED_EFFECT_KEY,
-    STARTING_LCD,
     _reset_lucidity,  # pyright: ignore[reportPrivateUsage]
     reset_instance_scoped_state,
     restart_instance_run,

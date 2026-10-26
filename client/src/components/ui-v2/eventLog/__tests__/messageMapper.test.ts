@@ -85,7 +85,7 @@ describe('messageMapper', () => {
 
   describe('mergePlayerDpFromPlayerAttackedPayload', () => {
     it("leaves a bystander's own DP alone when someone else was hit (#1056)", () => {
-      const bystander = { id: 'me', name: 'Ada', stats: { current_dp: 50, lucidity: 50 } } as Player;
+      const bystander = { id: 'me', name: 'Ada', stats: { current_dp: 50 } } as Player;
       expect(
         mergePlayerDpFromPlayerAttackedPayload(bystander, { target_id: 'other', target_current_dp: 5 })
       ).toBeNull();
@@ -98,7 +98,7 @@ describe('messageMapper', () => {
       expect(mergePlayerDpFromPlayerAttackedPayload(null, { target_current_dp: 5 })).toBeNull();
       const p: Player = {
         name: 'x',
-        stats: { current_dp: 10, lucidity: 50 },
+        stats: { current_dp: 10 },
       };
       expect(mergePlayerDpFromPlayerAttackedPayload(p, {})).toBeNull();
     });
@@ -106,7 +106,7 @@ describe('messageMapper', () => {
     it('merges target_current_dp and target_max_dp into player stats', () => {
       const prev: Player = {
         name: 'Hero',
-        stats: { current_dp: 100, max_dp: 100, lucidity: 50 },
+        stats: { current_dp: 100, max_dp: 100, max_lucidity: 50 },
       };
       const next = mergePlayerDpFromPlayerAttackedPayload(prev, {
         target_current_dp: 42,
@@ -114,7 +114,7 @@ describe('messageMapper', () => {
       });
       expect(next?.stats?.current_dp).toBe(42);
       expect(next?.stats?.max_dp).toBe(100);
-      expect(next?.stats?.lucidity).toBe(50);
+      expect(next?.stats?.max_lucidity).toBe(50); // other stats are kept
     });
   });
 });

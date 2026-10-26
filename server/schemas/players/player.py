@@ -54,7 +54,7 @@ class PlayerCreate(PlayerBase):
                 "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 0,
                 "level": 1,
-                "stats": {"health": 100, "lucidity": 100, "strength": 50},
+                "stats": {"health": 100, "strength": 50},
                 "inventory": [],
                 "status_effects": [],
             }
@@ -101,7 +101,7 @@ class PlayerRead(PlayerBase):
                 "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 150,
                 "level": 2,
-                "stats": {"health": 95, "lucidity": 88, "strength": 12},
+                "stats": {"health": 95, "strength": 12},
                 "inventory": [{"id": "sword", "name": "Rusty Sword"}],
                 "status_effects": [{"type": "poison", "duration": 5}],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -160,7 +160,7 @@ class PlayerUpdate(BaseModel):
                 "current_room_id": "arkham_002",
                 "experience_points": 200,
                 "level": 3,
-                "stats": {"health": 100, "lucidity": 90, "strength": 15},
+                "stats": {"health": 100, "strength": 15},
                 "inventory": [{"id": "potion", "name": "Health Potion"}],
                 "status_effects": [],
             }

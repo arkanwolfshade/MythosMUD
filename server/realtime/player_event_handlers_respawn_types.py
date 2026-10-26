@@ -14,7 +14,6 @@ class RespawnPlayerStatsPayload(TypedDict):
 
     current_dp: int
     max_dp: int
-    lucidity: int
     max_lucidity: int
     position: str
     occult_knowledge: int

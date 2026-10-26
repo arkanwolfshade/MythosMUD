@@ -353,8 +353,12 @@ class _OfflineRespawnHandler(PlayerRespawnEventHandler):
         return None
 
     @override
-    async def get_player_data_for_delirium_respawn(self, player_id_str: str, default_lucidity: int) -> tuple[None, str]:
+    async def get_player_data_for_delirium_respawn(self, player_id_str: str) -> tuple[None, str]:
         return None, "standing"
+
+    @override
+    async def get_current_lucidity(self, player_uuid: uuid.UUID, default_lucidity: int) -> int:
+        return default_lucidity
 
     @override
     async def _prepare_room_data_for_respawn(

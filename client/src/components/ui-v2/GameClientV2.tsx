@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
-import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
+import type { LucidityStatus } from '../../types/lucidity';
 import type { RescueStatus } from '../../types/rescue';
 import { publishTier } from '../../utils/lucidityTierRelay';
 import { IncapacitatedBanner } from '../health/IncapacitatedBanner';
@@ -169,10 +169,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     [healthStatus, player]
   );
 
-  const derivedLucidityStatus = useMemo<LucidityStatus | null>(
-    () => lucidityStatus ?? deriveLucidityStatusFromPlayer(player, undefined),
-    [lucidityStatus, player]
-  );
+  // Lucidity is server-authoritative and never a player stat: game_state / lucidity_change / delirium respawn.
+  const derivedLucidityStatus: LucidityStatus | null = lucidityStatus;
 
   // Self-clearing: tracks the authoritative DP tier exactly, no minimum dwell time (#715).
   const isIncapacitated = derivedHealthStatus?.tier === 'incapacitated';

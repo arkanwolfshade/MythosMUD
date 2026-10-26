@@ -10274,7 +10274,6 @@
           "profession_name": "Tramp",
           "stats": {
             "health": 95,
-            "lucidity": 88,
             "strength": 12
           },
           "status_effects": [
@@ -11954,12 +11953,6 @@
             ],
             "title": "Luck",
             "description": "Fortune and chance"
-          },
-          "lucidity": {
-            "type": "integer",
-            "title": "Lucidity",
-            "description": "Mental clarity (0 = complete delirium)",
-            "default": 100
           },
           "occult": {
             "type": "integer",

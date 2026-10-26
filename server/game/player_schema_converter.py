@@ -183,10 +183,6 @@ class PlayerSchemaConverter:
             # Initialize magic_points to max if it's 0 (full MP at character creation)
             if not out.get("magic_points", 0) and out.get("max_magic_points", 0) > 0:
                 out["magic_points"] = out["max_magic_points"]
-            # Cap lucidity to max_lucidity if it exceeds max
-            max_lucidity_val = out.get("max_lucidity", edu)
-            if out.get("lucidity", 100) > max_lucidity_val:
-                out["lucidity"] = max_lucidity_val
             return out
         except (DatabaseError, AttributeError) as e:
             logger.error(

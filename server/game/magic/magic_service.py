@@ -50,6 +50,8 @@ class _StatsPlayer(Protocol):
 class _PlayerPersistence(Protocol):
     async def get_player_by_id(self, player_id: uuid.UUID) -> _StatsPlayer | None: ...
 
+    async def get_current_lcd(self, player_id: uuid.UUID) -> int: ...
+
 
 class _CombatTickState(Protocol):
     next_turn_tick: int | None
@@ -147,11 +149,11 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
             return False, f"Not enough magic points. You need {spell.mp_cost} MP, but only have {current_mp}."
         return True, ""
 
-    def _check_lucidity_sufficient(self, stats: dict[str, object], spell: Spell) -> tuple[bool, str]:
-        """Return (False, message) if Mythos spell and not enough lucidity, else (True, '')."""
+    async def _check_lucidity_sufficient(self, player_id: uuid.UUID, spell: Spell) -> tuple[bool, str]:
+        """Return (False, message) if Mythos spell and not enough lucidity (player_lucidity), else (True, '')."""
         if not (spell.is_mythos() and spell.requires_lucidity()):
             return True, ""
-        current_lucidity = _stat_int(stats, "lucidity", 100)
+        current_lucidity = await self._player_persistence().get_current_lcd(player_id)
         if current_lucidity < spell.lucidity_cost:
             return (
                 False,
@@ -194,7 +196,7 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
         ok, msg = self._check_mp_sufficient(stats, spell)
         if not ok:
             return False, msg
-        ok, msg = self._check_lucidity_sufficient(stats, spell)
+        ok, msg = await self._check_lucidity_sufficient(player_id, spell)
         if not ok:
             return False, msg
         ok, msg = await self._check_player_knows_spell(player_id, spell)

@@ -25,21 +25,21 @@ def test_stats_validate_current_vs_max_stats_caps_magic_points():
     assert stats.magic_points == 10  # Capped at max_magic_points
 
 
-def test_stats_validate_current_vs_max_stats_caps_lucidity():
-    """Test validate_current_vs_max_stats() caps lucidity at max_lucidity."""
-    stats = Stats(education=50, lucidity=1000)
-
-    assert stats.lucidity == 50  # Capped at max_lucidity (education)
-
-
 def test_stats_validate_current_vs_max_stats_allows_valid_values():
     """Test validate_current_vs_max_stats() allows values within limits."""
-    stats = Stats(constitution=50, size=50, current_dp=15, power=50, magic_points=5, education=50, lucidity=40)
-    # max_dp = 20, max_magic_points = 10, max_lucidity = 50
+    stats = Stats(constitution=50, size=50, current_dp=15, power=50, magic_points=5, education=50)
+    # max_dp = 20, max_magic_points = 10
 
     assert stats.current_dp == 15  # Within limit
     assert stats.magic_points == 5  # Within limit
-    assert stats.lucidity == 40  # Within limit
+
+
+def test_stats_has_no_lucidity_and_ignores_a_legacy_key():
+    """Lucidity lives in player_lucidity (ADR-029 step 3a): an old stats row's key is ignored and never dumped."""
+    stats = Stats.model_validate({"education": 50, "lucidity": 40})
+
+    assert "lucidity" not in stats.model_dump()
+    assert not hasattr(stats, "lucidity")
 
 
 def test_stats_get_attribute_modifier_negative():
@@ -136,23 +136,6 @@ def test_stats_max_lucidity_calculation_alternative():
     assert result == 60  # Should equal education
 
 
-def test_stats_is_lucid_true():
-    """Test is_lucid returns True when lucidity > 0."""
-    stats = Stats(lucidity=50)
-
-    assert stats.is_lucid() is True
-
-
-def test_stats_is_lucid_false():
-    """Test is_lucid returns False when lucidity <= 0."""
-    stats = Stats(lucidity=0)
-
-    assert stats.is_lucid() is False
-
-    stats2 = Stats(lucidity=-10)
-    assert stats2.is_lucid() is False
-
-
 def test_stats_is_corrupted_true():
     """Test is_corrupted returns True when corruption >= 50."""
     stats = Stats(corruption=50)
@@ -173,25 +156,6 @@ def test_stats_is_corrupted_false():
 
     stats3 = Stats()
     assert stats3.is_corrupted() is False
-
-
-def test_stats_is_delirious_true():
-    """Test is_delirious returns True when lucidity <= 0."""
-    stats = Stats(lucidity=0)
-
-    assert stats.is_delirious() is True
-
-    stats2 = Stats(lucidity=-10)
-    assert stats2.is_delirious() is True
-
-
-def test_stats_is_delirious_false():
-    """Test is_delirious returns False when lucidity > 0."""
-    stats1 = Stats(lucidity=1)
-    assert stats1.is_delirious() is False
-
-    stats2 = Stats(lucidity=50)
-    assert stats2.is_delirious() is False
 
 
 def test_stats_get_attribute_modifier_positive():
@@ -228,7 +192,6 @@ def test_stats_validate_current_vs_max_stats_valid():
         education=60,
         current_dp=40,  # max_dp = (100+100)//5 = 40
         magic_points=10,  # max_mp = ceil(50*0.2) = 10
-        lucidity=60,  # max_lucidity = 60
     )
 
     result = stats.validate_current_vs_max_stats()  # type: ignore[operator]  # Reason: @model_validator is callable at runtime, mypy inference issue with Pydantic decorators
@@ -260,14 +223,3 @@ def test_stats_validate_current_vs_max_stats_exceeds_mp_alternative():
     result = stats.validate_current_vs_max_stats()  # type: ignore[operator]  # Reason: @model_validator is callable at runtime, mypy inference issue with Pydantic decorators
 
     assert result.magic_points == 10  # Should be capped at max (10)
-
-
-def test_stats_validate_current_vs_max_stats_exceeds_lucidity():
-    """Test validate_current_vs_max_stats preserves reasonable lucidity values."""
-    # Reasonable lucidity values (<= 100) that exceed max_lucidity should be preserved
-    # as they are likely intentional user-specified values
-    stats = Stats(education=60, lucidity=70)
-
-    result = stats.validate_current_vs_max_stats()  # type: ignore[operator]  # Reason: @model_validator is callable at runtime, mypy inference issue with Pydantic decorators
-
-    assert result.lucidity == 70  # Reasonable value should be preserved even if above max_lucidity

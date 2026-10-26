@@ -378,9 +378,9 @@ async def test_get_player_data_for_delirium_respawn_success(
         yield mock_session
 
     with patch("server.database.get_async_session", return_value=async_gen()):
-        result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str, 75)
+        result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str)
         assert result is not None
-        assert result["stats"]["lucidity"] == 80  # Should use value from database, not default
+        assert "lucidity" not in result["stats"]  # not a stat: the event carries current_lcd top-level
         assert position == "standing"
 
 
@@ -390,7 +390,7 @@ async def test_get_player_data_for_delirium_respawn_no_connection_manager(
 ) -> None:
     """Test get_player_data_for_delirium_respawn() returns None when connection manager not available."""
     player_respawn_event_handler.connection_manager = None
-    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(str(uuid.uuid4()), 100)
+    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(str(uuid.uuid4()))
     assert result is None
     assert position == "standing"
 
@@ -403,7 +403,7 @@ async def test_get_player_data_for_delirium_respawn_player_not_found(
     player_id_str = str(uuid.uuid4())
     async_persistence = _async_persistence(mock_connection_manager)
     async_persistence.get_player_by_id = AsyncMock(return_value=None)
-    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str, 100)
+    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str)
     assert result is None
     assert position == "standing"
 
@@ -417,7 +417,7 @@ async def test_get_player_data_for_delirium_respawn_error_handling(
     async_persistence = _async_persistence(mock_connection_manager)
     async_persistence.get_player_by_id = AsyncMock(side_effect=ValueError("Error"))
     warning = _logger_method(mock_logger, "warning")
-    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str, 100)
+    result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str)
     assert result is None
     assert position == "standing"
     warning.assert_called_once()
@@ -451,7 +451,7 @@ async def test_handle_player_delirium_respawned_success(
     )
     mock_session = MagicMock()
     mock_lucidity_record = MagicMock()
-    mock_lucidity_record.current_lcd = 100
+    mock_lucidity_record.current_lcd = 72
     mock_session.get = AsyncMock(return_value=mock_lucidity_record)
 
     async def async_gen() -> AsyncIterator[MagicMock]:
@@ -462,7 +462,7 @@ async def test_handle_player_delirium_respawned_success(
 
     with (
         patch("server.realtime.envelope.build_event") as mock_build_event,
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.database.get_async_session", side_effect=lambda: async_gen()),
         patch(
             "server.container.async_persistence_access.get_container_async_persistence", return_value=mock_persistence
         ),
@@ -473,6 +473,9 @@ async def test_handle_player_delirium_respawned_success(
         assert mock_build_event.call_args is not None
         payload = cast(dict[str, object], mock_build_event.call_args[0][1])
         assert "room" in payload
+        # Lucidity travels top-level, from player_lucidity, as in game_state (ADR-029 step 3a).
+        assert payload["current_lcd"] == 72
+        assert payload["lucidity_tier"] == "lucid"
 
 
 @pytest.mark.asyncio

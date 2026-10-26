@@ -15,20 +15,3 @@ export interface LucidityStatus {
   liabilities: string[];
   lastChange?: LucidityChangeMeta;
 }
-
-/**
- * Pure UI projection for lucidity meter when only `player.stats` is available (no server tier yet).
- * Does not invent a tier -- the server is authoritative for that (server-authority.mdc).
- */
-export function deriveLucidityStatusFromPlayer(
-  player: { stats?: { lucidity?: number; max_lucidity?: number } } | null | undefined,
-  previousLastChange: LucidityChangeMeta | undefined
-): LucidityStatus | null {
-  if (player?.stats?.lucidity === undefined) return null;
-  return {
-    current: player.stats.lucidity,
-    max: player.stats.max_lucidity ?? 100,
-    liabilities: [],
-    lastChange: previousLastChange,
-  };
-}

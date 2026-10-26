@@ -149,6 +149,13 @@ async def test_send_initial_game_state_success(
     with (
         patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
         patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
+        # A unit test must not reach the real database: whether that worked depended on what the shared
+        # connection pool held from earlier tests' event loops (an intermittent "attached to a different loop").
+        patch(
+            "server.realtime.websocket_initial_state._get_lucidity_for_client",
+            new_callable=AsyncMock,
+            return_value=("uneasy", 55),
+        ),
     ):
         mock_get_player_room.return_value = (mock_player, mock_room, room_id)
         mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}

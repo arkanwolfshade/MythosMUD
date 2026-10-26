@@ -357,6 +357,12 @@ def test_get_player_combat_stats_string_and_invalid_dp(integration: NPCCombatInt
     assert integration._get_player_combat_stats({"current_dp": object(), "max_dp": 20})["dp"] == 100
 
 
+def test_player_combat_stats_carry_no_lucidity(integration: NPCCombatIntegration) -> None:
+    """ADR-029 step 3a: lucidity is not a stat, so the combat stats built from a player's stats omit it."""
+    stats = integration._get_player_combat_stats({"current_dp": 10, "max_dp": 20, "lucidity": 55})
+    assert "lucidity" not in stats
+
+
 def test_normalize_npc_stats_from_dp(integration: NPCCombatIntegration) -> None:
     out = integration._normalize_npc_stats({"dp": 9})
     assert out["hp"] == 9

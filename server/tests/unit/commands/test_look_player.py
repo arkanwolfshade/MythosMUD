@@ -9,6 +9,7 @@ Tests the helper functions for looking at players in rooms.
 # already baselined for the identical pattern); new tests using it inherit the same shape.
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -60,6 +61,7 @@ def mock_persistence(mock_player):
     """Create a mock persistence layer."""
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    persistence.get_current_lcd = AsyncMock(return_value=10)  # lucidity comes from player_lucidity, not stats
     return persistence
 
 
@@ -219,6 +221,9 @@ async def test_handle_player_look_success(mock_room, mock_persistence, mock_play
     assert result is not None
     assert "result" in result
     assert "TestPlayer" in result["result"]
+    text = cast(str, result["result"])
+    assert "unstable" in text.lower()  # LCD 10 of 100: the label follows player_lucidity
+    mock_persistence.get_current_lcd.assert_awaited_once()
 
 
 @pytest.mark.asyncio

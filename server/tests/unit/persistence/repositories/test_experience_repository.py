@@ -151,4 +151,11 @@ async def test_update_player_stat_field_db_error(repo: ExperienceRepository) -> 
         return_value=MagicMock(return_value=mock_session),
     ):
         with pytest.raises(DatabaseError):
-            await repo.update_player_stat_field(player_id, "lucidity", -1)
+            await repo.update_player_stat_field(player_id, "fear", -1)
+
+
+@pytest.mark.asyncio
+async def test_update_player_stat_field_refuses_lucidity(repo: ExperienceRepository) -> None:
+    """Lucidity is not a stats field (ADR-029 step 3a): writes go through LucidityService."""
+    with pytest.raises(ValueError, match="Invalid stat field name: lucidity"):
+        await repo.update_player_stat_field(uuid.uuid4(), "lucidity", -1)

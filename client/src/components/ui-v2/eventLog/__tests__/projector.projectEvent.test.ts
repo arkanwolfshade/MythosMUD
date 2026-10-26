@@ -44,7 +44,7 @@ describe('projector', () => {
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: {
-          player: { name: 'TestPlayer', stats: { current_dp: 50, lucidity: 80 } },
+          player: { name: 'TestPlayer', stats: { current_dp: 50 } },
           room: {
             id: 'room1',
             name: 'Test Room',
@@ -313,7 +313,7 @@ describe('projector', () => {
       const prev = getInitialGameState();
       prev.player = {
         name: 'Hero',
-        stats: { current_dp: 100, max_dp: 100, lucidity: 80 },
+        stats: { current_dp: 100, max_dp: 100 },
       };
       const event: GameEvent = {
         event_type: 'player_attacked',
@@ -428,7 +428,7 @@ describe('projector', () => {
         stats: {
           current_dp: 10,
           max_dp: 100,
-          lucidity: 40,
+          max_lucidity: 40,
           strength: 12,
           luck: 15,
           occult: 20,
@@ -454,7 +454,7 @@ describe('projector', () => {
       expect(next.player?.level).toBe(5);
       expect(next.player?.experience).toBe(1200);
       expect(next.player?.stats?.max_dp).toBe(100);
-      expect(next.player?.stats?.lucidity).toBe(40);
+      expect(next.player?.stats?.max_lucidity).toBe(40);
       expect(next.player?.stats?.strength).toBe(12);
       expect(next.player?.stats?.luck).toBe(15);
       expect(next.player?.stats?.occult).toBe(20);
@@ -466,7 +466,7 @@ describe('projector', () => {
       // The server's room payload for respawn already includes self (it's built the same way as
       // room_state's occupant list) -- the client trusts it rather than injecting.
       const prev = getInitialGameState();
-      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } };
       const event: GameEvent = {
         event_type: 'player_respawned',
         timestamp: new Date().toISOString(),
@@ -483,7 +483,7 @@ describe('projector', () => {
     it('player_respawned clears isDead/deathLocation and player_died sets them from the payload', () => {
       const prev = {
         ...getInitialGameState(),
-        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 50 } },
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } },
       };
       const died = projectEvent(prev, {
         event_type: 'player_died',
@@ -508,7 +508,7 @@ describe('projector', () => {
       const dead = {
         ...getInitialGameState(),
         isDead: true,
-        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: -10, max_dp: 100, lucidity: 50 } },
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: -10, max_dp: 100 } },
       };
       const next = projectEvent(dead, {
         event_type: 'player_dp_updated',
@@ -657,7 +657,7 @@ describe('projector', () => {
     it('lucidity_change reads the real server payload shape and updates lucidityStatus/stats', () => {
       const prev = {
         ...getInitialGameState(),
-        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 50, lucidity: 60 } },
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 50 } },
       };
       const next = projectEvent(prev, {
         event_type: 'lucidity_change',
@@ -667,7 +667,9 @@ describe('projector', () => {
       });
       expect(next.lucidityStatus?.current).toBe(45);
       expect(next.lucidityStatus?.tier).toBe('uneasy');
-      expect(next.player?.stats?.lucidity).toBe(45);
+      // Lucidity is not a player stat (server: player_lucidity); only the meter carries it.
+      expect(next.player?.stats).not.toHaveProperty('lucidity');
+      expect(next.player?.stats?.max_lucidity).toBe(100);
       // Must never touch current_dp (the old bug read event.data.current_dp, a field lucidity_change never sends).
       expect(next.player?.stats?.current_dp).toBe(50);
     });
@@ -797,21 +799,44 @@ describe('projector', () => {
       expect(cleared.messages).toHaveLength(0);
     });
 
-    it('player_respawned does not clobber lucidity with an omitted/null value', () => {
+    it('player_respawned (death) leaves the lucidity meter alone', () => {
       const prev = getInitialGameState();
-      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } };
+      prev.lucidityStatus = { current: 40, max: 100, tier: 'uneasy', liabilities: [] };
       const event: GameEvent = {
         event_type: 'player_respawned',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: {
-          // Death respawn payload: no lucidity field at all.
+          // Death respawn payload: no lucidity fields at all.
           player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
           room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
         },
       };
       const next = projectEvent(prev, event);
-      expect(next.player?.stats?.lucidity).toBe(40);
+      expect(next.lucidityStatus?.current).toBe(40);
+      expect(next.lucidityStatus?.tier).toBe('uneasy');
+    });
+
+    it('player_delirium_respawned updates the lucidity meter from top-level current_lcd/lucidity_tier', () => {
+      const prev = getInitialGameState();
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, max_lucidity: 100 } };
+      prev.lucidityStatus = { current: -12, max: 100, tier: 'catatonic', liabilities: [] };
+      const event: GameEvent = {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
+          room: { id: 'ward', name: 'Recovery Ward', description: '', exits: {} },
+          current_lcd: 70,
+          lucidity_tier: 'lucid',
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.lucidityStatus?.current).toBe(70);
+      expect(next.lucidityStatus?.tier).toBe('lucid');
+      expect(next.player?.stats).not.toHaveProperty('lucidity');
     });
 
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {

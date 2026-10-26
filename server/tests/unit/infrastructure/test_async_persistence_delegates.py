@@ -35,21 +35,45 @@ def test_validate_and_fix_player_room_delegates(async_persistence_layer: AsyncPe
 
 
 @pytest.mark.asyncio
-async def test_apply_lucidity_loss_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test apply_lucidity_loss delegates to ExperienceRepository."""
+async def test_apply_lucidity_loss_and_gain_use_the_wired_adjuster(async_persistence_layer: AsyncPersistenceLayer):
+    """Lucidity lives in player_lucidity: loss and gain are adjustments through the injected LucidityService path."""
     mock_player = MagicMock(spec=Player)
     player_id = uuid.uuid4()
     mock_player.player_id = player_id
-    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+    adjuster = AsyncMock()
+    async_persistence_layer.set_lucidity_adjuster(adjuster)
 
     await async_persistence_layer.apply_lucidity_loss(mock_player, 10, "test_source")
+    await async_persistence_layer.apply_lucidity_gain(mock_player, 4, "test_source")
+    await async_persistence_layer.apply_lucidity_gain(mock_player, 0, "test_source")  # no-op
 
-    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        player_id,
-        "lucidity",
-        -10,
-        "test_source: lucidity loss",
-    )
+    assert [call.args for call in adjuster.await_args_list] == [
+        (player_id, -10, "test_source"),
+        (player_id, 4, "test_source"),
+    ]
+
+
+@pytest.mark.asyncio
+async def test_lucidity_change_without_a_wired_adjuster_fails_loudly(async_persistence_layer: AsyncPersistenceLayer):
+    mock_player = MagicMock(spec=Player)
+    mock_player.player_id = uuid.uuid4()
+    async_persistence_layer.set_lucidity_adjuster(None)
+
+    with pytest.raises(RuntimeError, match="not wired"):
+        await async_persistence_layer.apply_lucidity_loss(mock_player, 1, "test_source")
+
+
+@pytest.mark.asyncio
+async def test_get_current_lcd_reads_player_lucidity_or_defaults(async_persistence_layer: AsyncPersistenceLayer):
+    session = MagicMock()
+    session.get = AsyncMock(side_effect=[MagicMock(current_lcd=37), None])
+
+    async def sessions():
+        yield session
+
+    with patch("server.async_persistence.get_async_session", sessions):
+        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 37
+        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 100  # no record yet
 
 
 @pytest.mark.asyncio

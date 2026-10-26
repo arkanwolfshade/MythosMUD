@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.container.bundles.chat import CHAT_ATTRS, ChatBundle
-from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle
+from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle, make_lucidity_adjuster
 from server.container.bundles.core import CORE_ATTRS, CoreBundle
 from server.container.bundles.game import GAME_ATTRS, GameBundle
 from server.container.bundles.magic import (
@@ -368,6 +368,32 @@ def test_magic_validate_prerequisites() -> None:
     container.config.logging.environment = "production"
     with pytest.raises(RuntimeError, match="async_persistence"):
         _validate_magic_prerequisites(container)
+
+
+@pytest.mark.asyncio
+async def test_lucidity_adjuster_applies_through_lucidity_service_with_the_registry() -> None:
+    """ADR-029 step 3a: persistence-layer lucidity changes use LucidityService with the catatonia registry, committed."""
+    observer = MagicMock()
+    commit = AsyncMock()
+    session = MagicMock()
+    session.commit = commit
+
+    async def sessions():
+        yield session
+
+    adjust = AsyncMock()
+    service = MagicMock()
+    service.apply_lucidity_adjustment = adjust
+    player_id = uuid.uuid4()
+    with (
+        patch("server.database.get_async_session", sessions),
+        patch("server.services.lucidity_service.LucidityService", return_value=service) as service_cls,
+    ):
+        await make_lucidity_adjuster(observer)(player_id, -7, "spell_cast:x")
+
+    assert service_cls.call_args.kwargs["catatonia_observer"] is observer
+    adjust.assert_awaited_once_with(player_id, -7, reason_code="spell_cast:x")
+    commit.assert_awaited_once()
 
 
 def test_combat_bundle_validate_nats_prerequisites() -> None:
