@@ -24,6 +24,7 @@ effects: `player_effects` is the only effects store)
 ## 2. Context
 
 **[BUG] Concurrent full-row saves silently revert each other's player changes**
+
 - **Symptom:** an item picked up during a heal-over-time effect vanished from Postgres milliseconds after the pickup
   saved it. `first-exposure.spec.ts` failed intermittently at `toContain('Jade Amulet')`.
 - **Cause:** nothing holds a shared `Player`. `player_repository.get_player_by_id` / `get_player_by_name` build a
@@ -34,7 +35,7 @@ effects: `player_effects` is the only effects store)
 - **Fix:** this ADR. One authoritative in-memory aggregate per player; all reads and writes go through it.
 
 **[NOTE]**
-#917 patched one instance of the same class (`clear_player_inventory` exists so it "never rewrites stats"). A survey
+Issue #917 patched one instance of the same class (`clear_player_inventory` exists so it "never rewrites stats"). A survey
 of `server/` found the problem is structural, not local:
 
 - `save_player` has 37 non-test call sites, `get_player_by_id` 132 and `get_player_by_name` 64, each loading and
@@ -73,6 +74,7 @@ saves player-keyed rows.
 ### 3.2 The aggregate
 
 **[SPEC]**
+
 - `PlayerAggregate` is a plain, typed, slotted domain class with no SQLAlchemy. The ORM `Player` model is not used at
   runtime.
 - It is made of parts, each with its own mutators and dirty flag:
@@ -100,6 +102,7 @@ saves player-keyed rows.
 ### 3.3 Access API
 
 **[SPEC]**
+
 ```python
 async with registry.mutate(player_id, sync=False) as player:   # per-player asyncio.Lock
     player.inventory.add(stack)                                  # mutators mark parts dirty, queue events
@@ -146,6 +149,7 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 ### 3.5 Subsystem consequences
 
 **[SPEC]**
+
 - **Combat:** a player's `CombatParticipant` references the aggregate; DP has one home. `persist_player_dp_background`,
   the player side of `combat_persistence_handler.py`, and the dead `combat_hp_sync.py` are deleted.
 - **Ticks** (status effects, MP regeneration, DP decay, catatonia, corruption and lucidity flux) iterate pinned
