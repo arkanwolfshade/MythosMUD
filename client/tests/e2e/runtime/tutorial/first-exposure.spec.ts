@@ -18,26 +18,14 @@ import {
   TUTORIAL_USERNAME,
   readE2ePlayerState,
   resetTutorialCharacterInDatabase,
+  say,
   startFreshTutorial,
   tutorialRoomPattern,
+  walk,
 } from '../fixtures/tutorial';
 
 const state = () => readE2ePlayerState(TUTORIAL_USERNAME);
 const exactRoom = (roomId: string): RegExp => new RegExp(`^${roomId}$`);
-
-/** Walk one step and wait until the server has the player in the expected room. */
-async function walk(player: PlayerContext, direction: string, room: RegExp): Promise<void> {
-  await executeCommand(player.page, `go ${direction}`);
-  await expect
-    .poll(() => state().current_room_id, { timeout: 20000, message: `after "go ${direction}"` })
-    .toMatch(room);
-}
-
-/** Say a command and wait for a line of the reply. */
-async function say(player: PlayerContext, command: string, reply: RegExp, timeout = 20000): Promise<void> {
-  await executeCommand(player.page, command);
-  await waitForMessage(player.page, reply, timeout);
-}
 
 test.describe.serial('First Exposure: the whole tutorial', () => {
   let contexts: PlayerContext[];

@@ -6,7 +6,8 @@
  * - Whatever a player leaves on an instance floor goes to that player's own bank deposit box when the instance
  *   is flushed (here, on really logging out). Nobody else can take it: the shared foyer Lost-and-Found Chest
  *   does not receive it. The owner gets it back at the bank.
- * - Logging out inside the tutorial and back in gives a brand new instance.
+ * - Logging out inside the tutorial and back in gives a brand new instance, and the run starts over: the quests,
+ *   DP and lucidity are reset, corruption is kept.
  *
  * Every test starts with E2ETutorial reset to the start of the tutorial (fixtures/tutorial.ts) and
  * ArkanWolfshade standing in the Main Foyer. (The whole tutorial, start to finish, is first-exposure.spec.ts.)
@@ -29,8 +30,10 @@ import {
   readE2ePlayerState,
   relogTutorialCharacter,
   resetTutorialCharacterInDatabase,
+  say,
   startFreshTutorial,
   tutorialRoomPattern,
+  walk,
 } from '../fixtures/tutorial';
 
 /** The most recent message matching `cue` (the log keeps earlier `look`s). */
@@ -113,31 +116,46 @@ test.describe.serial('First Exposure instance lifecycle', () => {
     await awFindsNoSlingInChest(aw);
   });
 
-  test('restarting in a fresh instance starts the run over: first act active, later acts not started, vitals restored', async () => {
-    const before = readE2ePlayerState(TUTORIAL_USERNAME);
+  test('a fresh instance restarts the run: Dusk active again, full DP and lucidity, corruption kept (#1098)', async () => {
+    const fullDp = readE2ePlayerState(TUTORIAL_USERNAME).current_dp;
 
-    // Get a step into the run: walking east off the square makes progress on the first act.
-    await executeCommand(tutorial.page, 'go east');
-    await waitForMessage(tutorial.page, /Lamplighter offers a wary nod in greeting/i, 20000);
-    expect(readE2ePlayerState(TUTORIAL_USERNAME).current_room_id).toMatch(tutorialRoomPattern('gravel_walk'));
-
-    await relogTutorialCharacter(tutorial, false);
-    await executeCommand(tutorial.page, 'look');
-    await waitForMessage(tutorial.page, TUTORIAL_SQUARE_LOOK_CUE, 20000);
-
-    // The square again, the first act running again; the later acts reset to not started (abandoned rows are hidden).
-    expect(readE2ePlayerState(TUTORIAL_USERNAME).current_room_id).toMatch(tutorialRoomPattern('independence_square'));
+    // Finish Act I so the Burying Ground act is running when the run is lost.
+    await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
+    await say(tutorial, 'talk lamplighter', /Mind the gravel/i);
+    await say(tutorial, 'reply 1', /Strays, the constable says/i);
+    await waitForMessage(tutorial.page, /steps aside from the gravel/i, 20000);
+    await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
+    await executeCommand(tutorial.page, 'get newspaper');
+    await expect
+      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).inventory_items, { timeout: 15000 })
+      .toContain('Arkham Advertiser');
+    await say(tutorial, 'read newspaper', /GRAVES OPENED AGAIN/i);
+    await walk(tutorial, 'east', tutorialRoomPattern('lane_off_the_square'));
+    await walk(tutorial, 'east', tutorialRoomPattern('burying_ground_gate'));
     await expect
       .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests, { timeout: 15000 })
-      .toMatchObject({ first_exposure_dusk: 'active' });
-    const after = readE2ePlayerState(TUTORIAL_USERNAME);
-    for (const later of ['first_exposure_burying_ground', 'first_exposure_below']) {
-      expect(['active', 'completed']).not.toContain(after.quests[later]);
+      .toMatchObject({ first_exposure_dusk: 'completed', first_exposure_burying_ground: 'active' });
+
+    // What a failed run leaves behind: hurt, shaken, and touched by corruption.
+    await say(aw, `admin set DP ${TUTORIAL_USERNAME} 5`, /Set .+['’]s DP from \d+ to 5/i, 45000);
+    await say(aw, `admin setlucidity ${TUTORIAL_USERNAME} 60`, /Set .+['’]s LCD from \d+ to 60/i, 45000);
+    await say(aw, `admin set corruption ${TUTORIAL_USERNAME} 1`, /Set .+['’]s corruption from \d+ to 1/i, 45000);
+
+    await relogTutorialCharacter(tutorial, false);
+
+    await expect
+      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests.first_exposure_dusk, { timeout: 15000 })
+      .toBe('active');
+    const restarted = readE2ePlayerState(TUTORIAL_USERNAME);
+    expect(restarted.current_room_id).toMatch(tutorialRoomPattern('independence_square'));
+    // The later acts are not running: never started, or reset to abandoned.
+    for (const act of ['first_exposure_burying_ground', 'first_exposure_below']) {
+      expect(['abandoned', undefined]).toContain(restarted.quests[act]);
     }
-    // Full DP and the starting lucidity; corruption is a floor and is left alone.
-    expect(after.current_dp).toBe(before.current_dp);
-    expect(after.current_lcd).toBe(100);
-    expect(after.corruption).toBe(before.corruption);
+    expect(restarted.current_dp).toBe(fullDp);
+    expect(restarted.current_lcd).toBe(100);
+    expect(restarted.corruption).toBe(1); // a floor, not part of the run
+    expect(restarted.inventory_items).not.toContain('Arkham Advertiser');
   });
 
   test('the owner can list, withdraw and re-deposit what an instance banked, but only at a bank', async () => {
