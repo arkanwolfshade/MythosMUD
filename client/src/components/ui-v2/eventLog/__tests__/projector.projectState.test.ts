@@ -22,7 +22,7 @@ describe('projector', () => {
           timestamp: new Date().toISOString(),
           sequence_number: 1,
           data: {
-            player: { name: 'TestPlayer', stats: { current_dp: -10, lucidity: 50 } },
+            player: { name: 'TestPlayer', stats: { current_dp: -10 } },
             room: {
               id: 'some_combat_room',
               name: 'Combat Room',
@@ -38,7 +38,7 @@ describe('projector', () => {
           data: {
             player: {
               name: 'TestPlayer',
-              stats: { current_dp: 27, lucidity: 50 },
+              stats: { current_dp: 27 },
             },
             room: {
               id: 'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -220,7 +220,7 @@ describe('projector', () => {
             player: {
               name: 'Player1',
               in_combat: false,
-              stats: { current_dp: 100, lucidity: 50, position: 'standing' },
+              stats: { current_dp: 100, max_lucidity: 50, position: 'standing' },
             },
             room: { id: 'r1', name: 'Room 1', description: 'D', exits: {} },
           },
@@ -243,7 +243,7 @@ describe('projector', () => {
       expect(state.player?.stats?.position).toBe('sitting');
       expect(state.player?.in_combat).toBe(true);
       expect(state.player?.stats?.current_dp).toBe(95);
-      expect(state.player?.stats?.lucidity).toBe(50);
+      expect(state.player?.stats?.max_lucidity).toBe(50);
     });
 
     it('command_response flagged is_html becomes a finished-HTML message (help output)', () => {

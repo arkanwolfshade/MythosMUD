@@ -38,7 +38,7 @@ class ExperienceRepository:
     # Field name to JSONB path for update_player_stat_field
     FIELD_NAME_TO_PATH: dict[str, list[str]] = {
         "current_dp": ["current_dp"],
-        "lucidity": ["lucidity"],
+        # No "lucidity": it lives in player_lucidity, written through LucidityService (ADR-029 step 3a).
         "occult_knowledge": ["occult_knowledge"],
         "fear": ["fear"],
         "corruption": ["corruption"],

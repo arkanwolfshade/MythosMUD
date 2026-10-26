@@ -253,6 +253,8 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       rescueStatus: null,
     };
     if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
+    // A delirium respawn restores lucidity: it arrives top-level (current_lcd, lucidity_tier), as in game_state.
+    next = { ...next, lucidityStatus: deriveLucidityStatus(next, event, next.player) };
     // Respawn is the one moment the corpse owner is guaranteed to have missed their own corpse's
     // container.created broadcast (they were dead), so backfill from the respawn room payload.
     if (room) next = { ...next, room, ...roomContainersField(event) };
@@ -372,7 +374,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
         ...next,
         player: {
           ...prevState.player,
-          stats: { ...prevState.player.stats, lucidity: status.current, max_lucidity: status.max },
+          stats: { ...prevState.player.stats, max_lucidity: status.max },
         },
       };
     }

@@ -20,8 +20,9 @@ from anyio import sleep
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from server.async_persistence import AsyncPersistenceLayer
+    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster
     from server.container.main import ApplicationContainer
+    from server.services.lucidity_helpers import CatatoniaObserverProtocol
     from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
     from server.services.player_combat_service import PlayerCombatService
 
@@ -36,6 +37,21 @@ COMBAT_ATTRS = (
     "passive_lucidity_flux_service",
     "passive_corruption_flux_service",
 )
+
+
+def make_lucidity_adjuster(observer: CatatoniaObserverProtocol | None) -> LucidityAdjuster:
+    """Apply one lucidity adjustment through LucidityService in its own committed session."""
+
+    async def adjust(player_id: uuid_lib.UUID, delta: int, reason_code: str) -> None:
+        from server.database import get_async_session
+        from server.services.lucidity_service import LucidityService
+
+        async for session in get_async_session():
+            service = LucidityService(session, catatonia_observer=observer)
+            _ = await service.apply_lucidity_adjustment(player_id, delta, reason_code=reason_code)
+            await session.commit()
+
+    return adjust
 
 
 class CombatBundle:
@@ -147,6 +163,12 @@ class CombatBundle:
 
         self.catatonia_registry = CatatoniaRegistry(failover_callback=failover_cb)
         logger.info("Catatonia registry initialized")
+        # Lucidity changes made through the persistence layer (combat, spells) go through LucidityService with this
+        # registry, like every other lucidity write (ADR-029 step 3a).
+        persistence = cast("AsyncPersistenceLayer | None", container.async_persistence)
+        if persistence is not None:
+            registry = cast("CatatoniaObserverProtocol", self.catatonia_registry)
+            persistence.set_lucidity_adjuster(make_lucidity_adjuster(registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,

@@ -111,17 +111,26 @@ def test_resolve_heal_spell_id_variants() -> None:
     assert MagicService._resolve_heal_spell_id("heal", "Bob") == "heal_other"
 
 
-def test_check_mp_and_lucidity(magic_service: MagicService, base_spell: Spell) -> None:
+@pytest.mark.asyncio
+async def test_check_mp_and_lucidity(magic_service: MagicService, base_spell: Spell) -> None:
     ok, msg = magic_service._check_mp_sufficient({"magic_points": 10}, base_spell)
     assert ok is True and msg == ""
     ok, msg = magic_service._check_mp_sufficient({"magic_points": 1}, base_spell)
     assert ok is False and "Not enough magic points" in msg
 
+    # The lucidity gate reads player_lucidity (ADR-029 step 3a), not stats.
     mythos = base_spell.model_copy(update={"school": SpellSchool.MYTHOS, "lucidity_cost": 10})
-    ok, msg = magic_service._check_lucidity_sufficient({"lucidity": 5}, mythos)
+    player_id = uuid.uuid4()
+    current_lcd = AsyncMock(side_effect=[5, 50])
+    persistence = MagicMock()
+    persistence.get_current_lcd = current_lcd
+    magic_service.player_service.persistence = persistence
+    check = magic_service._check_lucidity_sufficient  # pyright: ignore[reportPrivateUsage]  # Reason: TEST_MOCK - unit-testing the private casting gate directly, as the MP check above does
+    ok, msg = await check(player_id, mythos)
     assert ok is False and "lucidity" in msg.lower()
-    ok, msg = magic_service._check_lucidity_sufficient({"lucidity": 50}, mythos)
+    ok, msg = await check(player_id, mythos)
     assert ok is True
+    current_lcd.assert_awaited_with(player_id)
 
 
 @pytest.mark.asyncio

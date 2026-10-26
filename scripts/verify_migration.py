@@ -59,7 +59,6 @@ EXPECTED_STATS_KEYS = {
     "intelligence",
     "wisdom",
     "charisma",
-    "lucidity",
     "occult_knowledge",
     "fear",
     "corruption",

@@ -17,6 +17,7 @@ import uuid
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Protocol, cast
 
+from ..constants.lucidity import STARTING_LCD
 from ..structured_logging.enhanced_logging_config import get_logger
 from .items.instance_bound import strip_instance_bound_stacks
 
@@ -24,9 +25,6 @@ if TYPE_CHECKING:
     from ..models.player import Player
 
 logger = get_logger(__name__)
-
-# What a new character's lucidity starts at (the PlayerLucidity column default).
-STARTING_LCD = 100
 
 # Status effects carrying this key set to true are removed by reset_instance_scoped_state.
 INSTANCE_SCOPED_EFFECT_KEY = "instance_scoped"

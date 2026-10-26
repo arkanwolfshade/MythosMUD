@@ -8,8 +8,12 @@ formatting player display, and handling player look requests.
 # pylint: disable=too-many-arguments  # Reason: Player look requires many parameters for context and target resolution
 
 import uuid
-from typing import Any
+from collections.abc import Mapping
+from typing import Any, cast
 
+from ..constants.lucidity import STARTING_LCD
+from ..models.player import Player
+from ..persistence.protocols import CurrentLcdReader
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -165,6 +169,14 @@ def _player_id_uuid(target_player: Any) -> uuid.UUID | None:
         return None
 
 
+async def _target_lcd(target_player: Player, persistence: CurrentLcdReader | None) -> int:
+    """The looked-at player's lucidity from player_lucidity, or the starting value if it cannot be read."""
+    player_id = _player_id_uuid(target_player)
+    if player_id is None or persistence is None:
+        return STARTING_LCD
+    return await persistence.get_current_lcd(player_id)
+
+
 def _apply_grace_period_labels(player_name_display: str, target_player: Any, connection_manager: Any | None) -> str:
     if not connection_manager:
         return player_name_display
@@ -183,7 +195,12 @@ def _apply_grace_period_labels(player_name_display: str, target_player: Any, con
     return player_name_display
 
 
-def _format_player_look_display(target_player: Any, connection_manager: Any | None = None) -> str:
+def _format_player_look_display(
+    target_player: Any,  # pyright: ignore[reportAny, reportExplicitAny]  # Reason: DYNAMIC_DISPATCH - look targets are duck-typed (hasattr checks on players from room lookups)  # Appropriate because: this keeps the function's existing untyped parameter; only the current_lcd keyword is new
+    connection_manager: Any | None = None,  # pyright: ignore[reportExplicitAny]  # Reason: DYNAMIC_DISPATCH - the connection manager is passed through untouched to the grace-period helpers  # Appropriate because: this keeps the function's existing untyped parameter; only the current_lcd keyword is new
+    *,
+    current_lcd: int = STARTING_LCD,
+) -> str:
     """
     Format the display text for looking at a player.
     Adds "(linkdead)" indicator if player is in grace period.
@@ -202,7 +219,9 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
     position = stats.get("position", "standing") if stats else "standing"
 
     health_label = _get_health_label(stats)
-    lucidity_label = _get_lucidity_label(stats)
+    # Lucidity lives in player_lucidity, not stats (ADR-029 step 3a); the caller looks it up.
+    max_lucidity = cast(Mapping[str, object], stats).get("max_lucidity", 100)
+    lucidity_label = _get_lucidity_label({"lucidity": current_lcd, "max_lucidity": max_lucidity})
     corruption_label = _get_corruption_label(stats)  # pyright: ignore[reportUnknownArgumentType] -- stats is Any here, same as the health/lucidity calls above (target_player: Any)
     visible_equipment = _get_visible_equipment(target_player)
 
@@ -252,7 +271,9 @@ async def _handle_player_look(  # pylint: disable=too-many-arguments,too-many-po
             logger.debug("No players match target", player=player_name, target=target)
         return error_result
 
-    result_text = _format_player_look_display(target_player, connection_manager)
+    player = cast(Player, target_player)
+    current_lcd = await _target_lcd(player, cast("CurrentLcdReader | None", persistence))
+    result_text = _format_player_look_display(player, connection_manager, current_lcd=current_lcd)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}
@@ -276,7 +297,9 @@ async def _try_lookup_player_implicit(  # pylint: disable=too-many-arguments,too
     if error_result:
         return error_result
 
-    result_text = _format_player_look_display(target_player, connection_manager)
+    player = cast(Player, target_player)
+    current_lcd = await _target_lcd(player, cast("CurrentLcdReader | None", persistence))
+    result_text = _format_player_look_display(player, connection_manager, current_lcd=current_lcd)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}

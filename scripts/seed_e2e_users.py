@@ -79,7 +79,6 @@ DEFAULT_STATS: dict[str, int | str] = {
     "education": 50,
     "charisma": 50,
     "luck": 50,
-    "lucidity": 100,
     "occult": 0,
     "corruption": 0,
     "current_dp": 20,

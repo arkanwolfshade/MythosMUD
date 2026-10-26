@@ -10,7 +10,6 @@ describe('characterInfoPanelOutline', () => {
     stats: {
       current_dp: 80,
       max_dp: 100,
-      lucidity: 50,
       magic_points: 20,
       max_magic_points: 20,
       ...overrides,

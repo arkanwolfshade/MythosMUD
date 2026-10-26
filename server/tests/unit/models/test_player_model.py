@@ -71,6 +71,13 @@ def test_player_get_stats_default() -> None:
     assert "strength" in stats or stats == {}
 
 
+def test_player_default_stats_have_no_lucidity() -> None:
+    """Lucidity lives in player_lucidity (ADR-029 step 3a): a new player's stats never carry a copy."""
+    player = Player(player_id=str(uuid4()), user_id=str(uuid4()), name="TestPlayer")
+
+    assert "lucidity" not in player.get_stats()
+
+
 def test_player_set_stats() -> None:
     """Test Player.set_stats() updates stats dictionary."""
     player_id = str(uuid4())

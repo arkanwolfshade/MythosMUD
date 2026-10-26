@@ -65,7 +65,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
         strength: 10,
         dexterity: 10,
         constitution: 10,
@@ -86,7 +85,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
         corruption: 62,
       },
     };
@@ -103,7 +101,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
       },
     };
 
@@ -119,7 +116,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
       },
     };
 
@@ -134,7 +130,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
         magic_points: 25,
         max_magic_points: 50,
       },
@@ -152,7 +147,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
       },
     };
 
@@ -169,7 +163,6 @@ describe('CharacterInfoPanel', () => {
       stats: {
         current_dp: 100,
         max_dp: 100,
-        lucidity: 50,
       },
     };
 

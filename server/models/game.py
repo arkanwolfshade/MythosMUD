@@ -168,8 +168,7 @@ class Stats(BaseModel):
     charisma: int | None = Field(default=None, description="Social skills and influence")
     luck: int | None = Field(default=None, description="Fortune and chance")
 
-    # Horror-Specific Attributes
-    lucidity: int = Field(default=100, description="Mental clarity (0 = complete delirium)")
+    # Horror-Specific Attributes (lucidity is not a stat: it lives in player_lucidity, ADR-029 step 3a)
     occult: int = Field(default=0, description="Knowledge of forbidden lore")
     corruption: int = Field(default=0, description="Taint from dark forces")
 
@@ -272,25 +271,18 @@ class Stats(BaseModel):
     @model_validator(mode="after")
     def validate_current_vs_max_stats(self) -> "Stats":
         """
-        Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max values.
+        Ensure current_dp (DP) and magic_points (MP) don't exceed their max values.
 
         Validation Rules:
         - current_dp is capped at max_dp (calculated as (CON + SIZ) / 5)
         - magic_points is capped at max_magic_points (calculated as ceil(POW * 0.2))
-        - lucidity is capped at max_lucidity (equals education), but preserves:
-          * Default value (100) to allow characters to start with full mental clarity
-          * Reasonable explicit values (<= 100) that slightly exceed max_lucidity
-          * Only unreasonably high values (> 100) are capped
 
-        AI: This validator ensures that current values never exceed their maximums, preventing
-        impossible stat configurations. The lucidity logic preserves intentional user-specified
-        values while preventing unreasonably high values. Uses object.__setattr__ to bypass
+        Lucidity is not a stat (player_lucidity holds it, ADR-029 step 3a). Uses object.__setattr__ to bypass
         Pydantic's validation cycle and prevent recursion.
         """
         # Use stored max_dp when present (persistence), else computed; prevents capping 73 to formula max
         max_dp = self.max_dp if self.max_dp is not None else self._calculate_max_dp()
         max_mp = self._calculate_max_magic_points()
-        max_lucidity_value = self._calculate_max_lucidity()
 
         # Cap current_dp at max_dp
         # Use object.__setattr__ to bypass Pydantic validation and prevent recursion
@@ -301,12 +293,6 @@ class Stats(BaseModel):
         if self.magic_points > max_mp:
             object.__setattr__(self, "magic_points", max_mp)
 
-        # Cap lucidity at max_lucidity with special handling for default/reasonable values
-        # Preserve default value (100) and reasonable explicit values (<= 100)
-        # Only cap unreasonably high values (> 100) that exceed max_lucidity
-        if self.lucidity > max_lucidity_value and self.lucidity > 100:
-            object.__setattr__(self, "lucidity", max_lucidity_value)
-
         return self
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
@@ -314,17 +300,9 @@ class Stats(BaseModel):
         attr_value = getattr(self, attribute.value, 50)
         return (attr_value - 50) // 2
 
-    def is_lucid(self) -> bool:
-        """Check if the character is still mentally clear."""
-        return self.lucidity > 0
-
     def is_corrupted(self) -> bool:
         """Check if the character has significant corruption."""
         return self.corruption >= 50
-
-    def is_delirious(self) -> bool:
-        """Check if the character has lost their lucidity completely."""
-        return self.lucidity <= 0
 
 
 class InventoryItem(BaseModel):

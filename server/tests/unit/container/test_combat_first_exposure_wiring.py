@@ -32,6 +32,9 @@ class FakePersistence:
     async def save_player(self, player: object) -> None:  # pragma: no cover - no player is ever found
         _ = player
 
+    def set_lucidity_adjuster(self, adjuster: object) -> None:  # wired by the combat bundle (ADR-029 step 3a)
+        _ = adjuster
+
 
 class FakeFlush:
     _rig: Rig

@@ -86,7 +86,6 @@ class Player(Base):
             "education": 50,
             "charisma": 50,
             "luck": 50,
-            "lucidity": 100,
             "occult": 0,
             "corruption": 0,
             "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
@@ -188,7 +187,6 @@ class Player(Base):
                 "education": 50,
                 "charisma": 50,
                 "luck": 50,
-                "lucidity": 100,
                 "occult": 0,
                 "corruption": 0,
                 "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
@@ -632,7 +630,6 @@ def _convert_legacy_stats_string(target: Player, _context: object) -> None:
                 "intelligence": 50,
                 "wisdom": 50,
                 "charisma": 50,
-                "lucidity": 100,
                 "occult_knowledge": 0,
                 "fear": 0,
                 "corruption": 0,

@@ -151,7 +151,6 @@ describe('GameClientV2', () => {
       stats: {
         current_dp: 75,
         max_dp: 100,
-        lucidity: 50,
         max_lucidity: 100,
         position: 'standing',
       },

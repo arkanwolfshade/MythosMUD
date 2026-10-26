@@ -5,8 +5,8 @@ It is read through ``get_player_by_id`` and written through ``upsert_player``, t
 PlayerRepository uses, which also write ``player_inventories``. Inventory and equipped changes are synchronous
 (they must be committed before the command returns); every other change here is lazy.
 
-``status_effects`` and ``stats.lucidity`` are duplicate stores that ADR-029 removes in a later step; until then this
-part carries them through unchanged, so a write never erases them.
+``status_effects`` is a duplicate store that ADR-029 step 3b removes; until then this part carries it through
+unchanged, so a write never erases it. (Lucidity left ``stats`` in step 3a; it lives in ``player_lucidity``.)
 """
 
 from __future__ import annotations

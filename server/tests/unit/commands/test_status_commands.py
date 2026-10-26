@@ -4,6 +4,7 @@ Unit tests for status command handlers.
 Tests handlers for status and whoami commands.
 """
 
+import uuid
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
@@ -171,11 +172,10 @@ def test_build_base_status_lines():
         "position": "sitting",
         "current_dp": 80,
         "max_dp": 100,
-        "lucidity": 75,
         "max_lucidity": 100,
     }
 
-    result = _build_base_status_lines(mock_player, "Test Room", stats, False)
+    result = _build_base_status_lines(mock_player, "Test Room", stats, False, current_lcd=75)
 
     assert "Name: TestPlayer" in result
     assert "Location: Test Room" in result
@@ -191,9 +191,9 @@ def test_build_base_status_lines_in_combat():
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
     mock_player.experience_points = 100
-    stats = {"position": "standing", "current_dp": 100, "max_dp": 100, "lucidity": 100, "max_lucidity": 100}
+    stats = {"position": "standing", "current_dp": 100, "max_dp": 100, "max_lucidity": 100}
 
-    result = _build_base_status_lines(mock_player, "Test Room", stats, True)
+    result = _build_base_status_lines(mock_player, "Test Room", stats, True, current_lcd=100)
 
     assert "In Combat: Yes" in result
 
@@ -306,6 +306,7 @@ async def test_handle_status_command_success():
     """Test handle_status_command returns status information successfully."""
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
+    mock_player.player_id = str(uuid.uuid4())
     mock_player.current_room_id = "test_room"
     mock_player.experience_points = 100
     mock_player.get_stats = MagicMock(
@@ -313,7 +314,6 @@ async def test_handle_status_command_success():
             "position": "standing",
             "current_dp": 100,
             "max_dp": 100,
-            "lucidity": 100,
             "max_lucidity": 100,
         }
     )
@@ -323,6 +323,7 @@ async def test_handle_status_command_success():
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
     mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+    mock_persistence.get_current_lcd = AsyncMock(return_value=64)
     mock_combat_service = MagicMock()
     mock_combat_service.get_combat_by_participant = AsyncMock(return_value=None)
     mock_app = MagicMock()
@@ -343,6 +344,7 @@ async def test_handle_status_command_success():
     assert "result" in result
     assert "Name: TestPlayer" in result["result"]
     assert "Location: Test Room" in result["result"]
+    assert "lucidity: 64/100" in result["result"]  # from player_lucidity, not stats
 
 
 @pytest.mark.asyncio

@@ -5,16 +5,24 @@ This module handles applying spell costs (MP, lucidity, corruption) to players.
 """
 
 import uuid
-from typing import Any, cast
+from typing import Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.game.player_service import PlayerService
+from server.models.player import Player
 from server.models.spell import Spell
 from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+class LucidityPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The slice of AsyncPersistenceLayer spell costs use to spend lucidity."""
+
+    async def apply_lucidity_loss(self, player: Player, amount: int, source: str = "unknown") -> None:
+        """Lower the player's lucidity through LucidityService."""
 
 
 class SpellCostsService:
@@ -33,27 +41,13 @@ class SpellCostsService:
         """
         self.player_service = player_service
 
-    def _spend_lucidity_if_required(
-        self,
-        player_id: uuid.UUID,
-        spell: Spell,
-        # Reason: SERIALIZATION_BOUNDARY - stats is dict[str, Any] per player.get_stats()'s own
-        # established, unsuppressed return type.
-        # Appropriate because: same unsuppressed convention as this class's other stats-dict access.
-        stats: dict[str, Any],  # pyright: ignore[reportExplicitAny]
-    ) -> None:
-        """Deduct lucidity cost in-place on stats, for Mythos spells that require it."""
+    async def _spend_lucidity_if_required(self, player: Player, spell: Spell) -> None:
+        """Spend the lucidity cost of a Mythos spell that requires it, through player_lucidity (ADR-029 step 3a)."""
         if not (spell.is_mythos() and spell.requires_lucidity()):
             return
-        current_lucidity = cast(int, stats.get("lucidity", 100))
-        new_lucidity = max(0, current_lucidity - spell.lucidity_cost)
-        stats["lucidity"] = new_lucidity
-        logger.debug(
-            "Spent lucidity",
-            player_id=player_id,
-            lucidity_cost=spell.lucidity_cost,
-            remaining_lucidity=new_lucidity,
-        )
+        persistence = cast(LucidityPersistence, self.player_service.persistence)
+        await persistence.apply_lucidity_loss(player, spell.lucidity_cost, f"spell_cast:{spell.spell_id}")
+        logger.debug("Spent lucidity", spell_id=spell.spell_id, lucidity_cost=spell.lucidity_cost)
 
     async def _apply_corruption_if_mythos(self, player_id: uuid.UUID, spell: Spell) -> None:
         """Apply corruption via CorruptionService for Mythos spells that carry a corruption cost.
@@ -135,14 +129,14 @@ class SpellCostsService:
         stats["magic_points"] = new_mp
         logger.debug("Spent MP", player_id=player_id, mp_cost=spell.mp_cost, remaining_mp=new_mp)
 
-        self._spend_lucidity_if_required(player_id, spell, stats)
-
-        # Save player (MP and lucidity). Corruption is applied separately below, *after* this
+        # Save player (MP). Lucidity and corruption are applied separately below, *after* this
         # save -- CorruptionService.apply_corruption_adjustment does its own read-modify-write
         # cycle on the persisted row, so applying it before this save would have this save's
-        # stale local `stats` dict immediately overwrite the corruption change.
+        # stale local `stats` dict immediately overwrite the corruption change. Lucidity lives in
+        # player_lucidity, which this save never touches.
         await self.player_service.persistence.save_player(player)
 
+        await self._spend_lucidity_if_required(cast(Player, player), spell)
         await self._apply_corruption_if_mythos(player_id, spell)
         await self._notify_mp_update(player_id, spell, stats, current_mp, new_mp)
 

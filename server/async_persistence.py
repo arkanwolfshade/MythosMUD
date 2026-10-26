@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
+from collections.abc import Awaitable, Callable
 from datetime import datetime
 from typing import TYPE_CHECKING, Unpack, cast
 
@@ -36,7 +37,10 @@ from .async_persistence_types import (
     InstanceRoomLookup,
     PlayerEffectOptions,
 )
+from .constants.lucidity import STARTING_LCD
+from .database import get_async_session
 from .events import EventBus
+from .models.lucidity import PlayerLucidity
 from .models.player import Player
 from .models.player_effect import PlayerEffect
 from .models.profession import Profession
@@ -58,6 +62,9 @@ from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from .models.room import Room
+
+# (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
+LucidityAdjuster = Callable[[uuid.UUID, int, str], Awaitable[None]]
 
 logger = get_logger(__name__)
 
@@ -90,6 +97,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _item_repo: ItemRepository
     _player_effect_repo: PlayerEffectRepository
     _instance_manager: InstanceRoomLookup | None
+    _lucidity_adjuster: LucidityAdjuster | None
     _room_loader: RoomCacheLoader
 
     def __init__(
@@ -134,11 +142,20 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._item_repo = ItemRepository()
         self._player_effect_repo = PlayerEffectRepository()
         self._instance_manager = None
+        self._lucidity_adjuster = None
         self._room_loader = RoomCacheLoader(self._room_cache, self._room_mappings, self._logger, event_bus)
 
     def set_instance_manager(self, instance_manager: InstanceRoomLookup) -> None:
         """Set the instance manager for instanced room lookup (instance-first)."""
         self._instance_manager = instance_manager
+
+    def set_lucidity_adjuster(self, adjuster: LucidityAdjuster | None) -> None:
+        """Set how lucidity changes made through this layer are applied: LucidityService with the catatonia registry.
+
+        Injected (by the combat bundle, which builds both) rather than imported: the lucidity services reach the
+        realtime and container layers, which import this module.
+        """
+        self._lucidity_adjuster = adjuster
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -303,10 +320,28 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Validate and fix player room if needed. Delegates to PlayerRepository."""
         return self._player_repo.validate_and_fix_player_room(player)
 
+    async def get_current_lcd(self, player_id: uuid.UUID) -> int:
+        """The player's lucidity (player_lucidity.current_lcd), or the starting 100 if they have no record yet."""
+        async for session in get_async_session():
+            record = await session.get(PlayerLucidity, player_id)
+            return record.current_lcd if record is not None else STARTING_LCD
+        return STARTING_LCD
+
     async def apply_lucidity_loss(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Apply lucidity loss to a player. Delegates to ExperienceRepository."""
-        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
-        await self._experience_repo.update_player_stat_field(player_id, "lucidity", -amount, f"{source}: lucidity loss")
+        """Lower a player's lucidity through LucidityService (tiers, catatonia, delirium, the adjustment log)."""
+        await self._adjust_lucidity(uuid.UUID(str(player.player_id)), -amount, source)
+
+    async def apply_lucidity_gain(self, player: Player, amount: int, source: str = "unknown") -> None:
+        """Raise a player's lucidity through LucidityService."""
+        await self._adjust_lucidity(uuid.UUID(str(player.player_id)), amount, source)
+
+    async def _adjust_lucidity(self, player_id: uuid.UUID, delta: int, source: str) -> None:
+        if not delta:
+            return
+        if self._lucidity_adjuster is None:
+            # Wiring is missing (the combat bundle sets it at startup): never fall back to a second store.
+            raise RuntimeError("Lucidity adjuster not wired; cannot change lucidity")
+        await self._lucidity_adjuster(player_id, delta, source)
 
     async def apply_fear(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Apply fear to a player. Delegates to ExperienceRepository."""

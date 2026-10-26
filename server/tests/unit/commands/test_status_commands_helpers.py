@@ -19,9 +19,9 @@ def test_build_base_status_lines():
     player = MagicMock()
     player.name = "TestPlayer"
     player.experience_points = 100
-    stats = {"position": "standing", "current_dp": 80, "max_dp": 100, "lucidity": 90, "max_lucidity": 100}
+    stats = {"position": "standing", "current_dp": 80, "max_dp": 100, "max_lucidity": 100}
 
-    result = _build_base_status_lines(player, "Test Room", stats, False)
+    result = _build_base_status_lines(player, "Test Room", stats, False, current_lcd=90)
 
     assert len(result) == 7
     assert "Name: TestPlayer" in result
@@ -38,9 +38,9 @@ def test_build_base_status_lines_in_combat():
     player = MagicMock()
     player.name = "TestPlayer"
     player.experience_points = 100
-    stats = {"position": "standing", "current_dp": 80, "max_dp": 100, "lucidity": 90, "max_lucidity": 100}
+    stats = {"position": "standing", "current_dp": 80, "max_dp": 100, "max_lucidity": 100}
 
-    result = _build_base_status_lines(player, "Test Room", stats, True)
+    result = _build_base_status_lines(player, "Test Room", stats, True, current_lcd=90)
 
     assert "In Combat: Yes" in result
 
@@ -50,9 +50,9 @@ def test_build_base_status_lines_sitting():
     player = MagicMock()
     player.name = "TestPlayer"
     player.experience_points = 100
-    stats = {"position": "sitting", "current_dp": 80, "max_dp": 100, "lucidity": 90, "max_lucidity": 100}
+    stats = {"position": "sitting", "current_dp": 80, "max_dp": 100, "max_lucidity": 100}
 
-    result = _build_base_status_lines(player, "Test Room", stats, False)
+    result = _build_base_status_lines(player, "Test Room", stats, False, current_lcd=90)
 
     assert "Position: Sitting" in result
 

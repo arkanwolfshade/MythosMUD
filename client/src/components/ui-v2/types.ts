@@ -14,7 +14,7 @@ export interface Player {
   stats?: {
     current_dp: number; // Represents determination points (DP)
     max_dp?: number; // Represents max determination points (DP)
-    lucidity: number;
+    // No lucidity here: it is not a stat (server: player_lucidity). Read GameState.lucidityStatus.
     max_lucidity?: number;
     strength?: number;
     dexterity?: number;
