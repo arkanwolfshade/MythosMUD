@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 import pytest
 
 from server.game.player_registry import PlayerRowPart, load_player_row
+from server.game.player_registry.player_row import LOAD_PLAYER_SQL
 from server.persistence.repositories.player_repository_save import UPSERT_PLAYER_SQL
 from server.schemas.shared import InventorySchemaValidationError
 
@@ -24,6 +25,18 @@ def test_from_row_parses_json_text_and_defaults() -> None:
     assert data.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
     assert data.level == 1
     assert data.inventory[0]["item_name"] == "Sling"
+
+
+def test_load_sql_calls_the_procedure_and_selects_every_column_the_row_reads() -> None:
+    sql = " ".join(str(LOAD_PLAYER_SQL).split())
+    assert sql.endswith("FROM get_player_by_id(:id)")
+    selected = {column.strip() for column in sql.removeprefix("SELECT ").split(" FROM ")[0].split(",")}
+    read_by_from_row = {
+        "player_id", "user_id", "name", "current_room_id", "respawn_room_id", "experience_points", "level",
+        "is_admin", "profession_id", "created_at", "last_active", "is_deleted", "deleted_at",
+        "tutorial_instance_id", "stats", "inventory", "equipped_json", "status_effects",
+    }  # fmt: skip
+    assert read_by_from_row <= selected
 
 
 def test_upsert_params_cover_every_procedure_argument() -> None:
