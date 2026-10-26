@@ -34,6 +34,10 @@ docs/architecture/decisions/ADR-022-ui-v2-client-transition.md
 docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md
 docs/architecture/decisions/ADR-024-server-authoritative-perceived-reality.md
 docs/architecture/decisions/ADR-025-corruption-perceptual-filter.md
+docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md
+docs/architecture/decisions/ADR-027-npc-catalog-base-stats-contracts.md
+docs/architecture/decisions/ADR-028-instanced-content-and-first-exposure.md
+docs/architecture/decisions/ADR-029-authoritative-player-registry.md
 docs/architecture/decisions/README.md
 docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md
 docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md

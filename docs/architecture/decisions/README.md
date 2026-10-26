@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-**Version 1.4.0** · MythosMUD · 2026-09-09
+**Version 1.5.0** · MythosMUD · 2026-10-26
 
 ---
 
@@ -70,6 +70,8 @@ Each ADR follows this structure:
 | [ADR-025](ADR-025-corruption-perceptual-filter.md)               | Corruption as a Global Perceptual Filter, Not Per-Message Styling           | Accepted | 2026-09-09 |
 | [ADR-026](ADR-026-item-catalog-metadata-contracts.md)            | Item Catalog Metadata Contracts                                             | Accepted | 2026-09-13 |
 | [ADR-027](ADR-027-npc-catalog-base-stats-contracts.md)           | NPC Catalog Base Stats Contracts                                            | Accepted | 2026-09-14 |
+| [ADR-028](ADR-028-instanced-content-and-first-exposure.md)       | Instanced Content Mechanics and the First Exposure Tutorial                 | Proposed | 2026-10-16 |
+| [ADR-029](ADR-029-authoritative-player-registry.md)              | Authoritative In-Memory Player Registry                                     | Accepted | 2026-10-26 |
 
 ## 4. Related Documentation
 
@@ -93,3 +95,4 @@ Each ADR follows this structure:
 | 1.2.0   | 2026-08-28 | Repoint the `APPLICATION_CONTAINER_ANALYSIS.md` link at `docs/`: the file was restored there per audit ruling C4 — four live documents cite it as authoritative, so it is not archival; fix broken Architecture Review Plan link (wrong depth) (#722) |
 | 1.3.0   | 2026-09-08 | Add ADR-024 (server-authoritative hallucination delivery, #714); backfill the missing ADR-023 index row                                                                                                                                               |
 | 1.4.0   | 2026-09-09 | Add ADR-025 (corruption global perceptual filter, #145); ADR-024 was missing from `docs/hads.manifest` (added alongside ADR-025 in the same PR)                                                                                                       |
+| 1.5.0   | 2026-10-26 | Add ADR-029 (authoritative in-memory player registry); backfill the missing ADR-028 index row and the ADR-026–028 `docs/hads.manifest` entries                                                                                                     |
