@@ -11,7 +11,7 @@
 import { spawnSync } from 'child_process';
 import { join } from 'path';
 
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { executeCommand, loginPlayer, logoutPlayer, waitForMessage, waitForPlayableSession } from './auth';
 import type { PlayerContext } from './multiplayer-contexts';
@@ -120,6 +120,23 @@ export async function relogTutorialCharacter(
   }
   await loginPlayer(tutorial.page, tutorial.player.username, tutorial.player.password);
   await waitForPlayableSession(tutorial.page, 30000);
+}
+
+/** Walk one step and wait until the server has the player in the expected room. */
+export async function walk(player: PlayerContext, direction: string, room: RegExp): Promise<void> {
+  await executeCommand(player.page, `go ${direction}`);
+  await expect
+    .poll(() => readE2ePlayerState(player.player.username).current_room_id, {
+      timeout: 20000,
+      message: `after "go ${direction}"`,
+    })
+    .toMatch(room);
+}
+
+/** Say a command and wait for a line of the reply. */
+export async function say(player: PlayerContext, command: string, reply: RegExp, timeout = 20000): Promise<void> {
+  await executeCommand(player.page, command);
+  await waitForMessage(player.page, reply, timeout);
 }
 
 /** Start a test with E2ETutorial in a brand new tutorial, standing in Independence Square holding its Sling. */
