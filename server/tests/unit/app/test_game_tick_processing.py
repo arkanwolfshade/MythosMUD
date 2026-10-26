@@ -34,6 +34,7 @@ from server.app.game_tick_processing import (
     _validate_mp_regeneration_services,
     get_current_tick,
     get_tick_interval,
+    player_registry_sweep_ticks,
     process_casting_progress,
     process_combat_cleanup,
     process_combat_tick,
@@ -42,6 +43,7 @@ from server.app.game_tick_processing import (
     process_player_effects_expiration,
     process_status_effects,
     reset_current_tick,
+    schedule_player_registry_sweep,
     update_world_presence,
 )
 
@@ -75,6 +77,46 @@ def test_get_tick_interval() -> None:
 
         interval = get_tick_interval()
         assert interval == 0.5
+
+
+def test_player_registry_sweep_ticks_follows_save_interval() -> None:
+    game: MagicMock = MagicMock()
+    config: MagicMock = MagicMock()
+    config.game = game
+    with patch("server.app.game_tick_processing.get_config", return_value=config):
+        game.save_interval = 2
+        game.server_tick_rate = 0.1
+        assert player_registry_sweep_ticks() == 20
+        game.save_interval = 1
+        game.server_tick_rate = 5.0
+        assert player_registry_sweep_ticks() == 1  # never zero
+
+
+class _SweepCounter:
+    def __init__(self) -> None:
+        self.sweeps: int = 0
+
+    def schedule_sweep(self) -> None:
+        self.sweeps += 1
+
+
+class _SweepContainer:
+    def __init__(self, registry: _SweepCounter | None) -> None:
+        self.player_registry: _SweepCounter | None = registry
+
+
+def test_schedule_player_registry_sweep_runs_on_its_tick_only() -> None:
+    app = FastAPI()
+    registry = _SweepCounter()
+    app.state.container = _SweepContainer(registry)
+
+    schedule_player_registry_sweep(app, 19, 20)
+    assert registry.sweeps == 0
+    schedule_player_registry_sweep(app, 20, 20)
+    assert registry.sweeps == 1
+
+    app.state.container = _SweepContainer(None)
+    schedule_player_registry_sweep(app, 40, 20)  # no registry wired: nothing to do
 
 
 def test_validate_app_state_for_status_effects_no_container() -> None:

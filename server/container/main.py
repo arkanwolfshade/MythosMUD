@@ -20,6 +20,7 @@ from server.utils.project_paths import get_project_root
 
 if TYPE_CHECKING:
     from server.game.instance_manager import InstanceContentLifecycle
+    from server.game.player_registry import PlayerRegistry
     from server.game.skill_service import SkillService
     from server.services.instance_flush_service import InstanceFlushService
 
@@ -59,6 +60,7 @@ class ApplicationContainer:
     nats_service: Any
     nats_message_handler: Any
     event_publisher: Any
+    player_registry: "PlayerRegistry | None"
     player_service: Any
     room_service: Any
     movement_service: Any
@@ -133,6 +135,7 @@ class ApplicationContainer:
         self.event_publisher = None
 
     def _init_game_attributes(self) -> None:
+        self.player_registry = None
         self.player_service = None
         self.room_service = None
         self.movement_service = None

@@ -29,7 +29,18 @@ class GameConfig(BaseSettings):
     )
     server_tick_rate: float = Field(default=0.1, gt=0, description="Server tick rate in seconds (100ms default)")
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
-    save_interval: int = Field(default=60, description="Player save interval in seconds")
+    save_interval: int = Field(
+        default=2, ge=1, description="Seconds between lazy player-registry flushes (DP, MP, XP, ...; ADR-029)"
+    )
+    player_registry_flush_concurrency: int = Field(
+        default=4, ge=1, description="Player transactions a lazy registry flush may run at once (ADR-029)"
+    )
+    player_registry_idle_ttl_seconds: float = Field(
+        default=60.0, gt=0, description="Seconds an unpinned, clean player stays in the registry after use (ADR-029)"
+    )
+    player_registry_failure_alert_after: int = Field(
+        default=5, ge=1, description="Consecutive failed flushes of one player before it is reported (ADR-029)"
+    )
 
     # Disconnect/login/rest grace periods (#297)
     disconnect_grace_period_seconds: float = Field(

@@ -25,6 +25,8 @@ from server.structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.events.event_bus import EventBus
+    from server.game.player_registry import PlayerRegistry
     from server.game.skill_service import SkillService
     from server.realtime.connection_manager import ConnectionManager
     from server.services.instance_flush_service import InstanceFlushService
@@ -33,6 +35,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 GAME_ATTRS = (
+    "player_registry",
     "instance_manager",
     "instance_flush_service",
     "movement_service",
@@ -62,6 +65,7 @@ GAME_ATTRS = (
 class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Game services: movement, player, room, user, container, caches, items."""
 
+    player_registry: PlayerRegistry | None = None
     instance_manager: Any = None
     instance_flush_service: InstanceFlushService | None = None
     movement_service: Any = None
@@ -137,6 +141,31 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             logger.warning("Caching services initialization failed - will use persistence directly", error=str(e))
             self.room_cache_service = None
             self.profession_cache_service = None
+
+    def _init_player_registry(self, container: ApplicationContainer) -> None:
+        """Build the authoritative player registry (ADR-029); its sweep runs from the game tick loop."""
+        from server.config import get_config
+        from server.database import get_session_maker
+        from server.game.player_registry import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            PlayerRegistry,
+            RegistrySettings,
+            SessionFactory,
+        )
+
+        game = get_config().game
+        # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible; pylint sees FieldInfo
+        event_bus = cast("EventBus | None", container.event_bus)
+        self.player_registry = PlayerRegistry(
+            cast(SessionFactory, get_session_maker()),
+            publish=event_bus.publish if event_bus is not None else None,
+            settings=RegistrySettings(
+                idle_ttl_seconds=game.player_registry_idle_ttl_seconds,
+                flush_concurrency=game.player_registry_flush_concurrency,
+                failure_alert_after=game.player_registry_failure_alert_after,
+                retry_base_seconds=float(game.save_interval),
+            ),
+        )
+        # pylint: enable=no-member
 
     def _init_movement_layer(self, container: ApplicationContainer) -> None:
         """Wire exploration, movement, follow, and party services."""
@@ -294,6 +323,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         """Initialize game services. Requires Core and Realtime."""
         self._require_core_services(container)
         logger.debug("Initializing gameplay services...")
+        self._init_player_registry(container)
         self._init_movement_layer(container)
         logger.debug("Initializing game services...")
         self._init_player_quest_layer(container)
