@@ -77,7 +77,6 @@ class Rig:
 def _player(corruption: int = 0) -> Player:
     player = Player(player_id=str(uuid.uuid4()), name="Tester")
     player.set_stats({"corruption": corruption})
-    player.set_status_effects([])
     return player
 
 
@@ -201,7 +200,7 @@ async def test_apply_effect_stores_the_effect_for_the_player_without_a_player_sa
     await run_scripted_actions([ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
     assert rig.stored_effects == [(uuid.UUID(str(rig.player.player_id)), HOT_EFFECT)]
-    assert rig.persistence.saved == []  # a player_effects row, not the players.status_effects column
+    assert rig.persistence.saved == []  # a player_effects row, not a player save
 
 
 @pytest.mark.asyncio

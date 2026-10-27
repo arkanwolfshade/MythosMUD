@@ -10202,14 +10202,6 @@
             "title": "Inventory",
             "description": "Player inventory"
           },
-          "status_effects": {
-            "items": {
-              "$ref": "#/components/schemas/StatusEffect"
-            },
-            "type": "array",
-            "title": "Status Effects",
-            "description": "Player status effects"
-          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -10248,7 +10240,6 @@
           "user_id",
           "stats",
           "inventory",
-          "status_effects",
           "created_at",
           "last_active"
         ],
@@ -10276,12 +10267,6 @@
             "health": 95,
             "strength": 12
           },
-          "status_effects": [
-            {
-              "duration": 5,
-              "type": "poison"
-            }
-          ],
           "user_id": "123e4567-e89b-12d3-a456-426614174000"
         }
       },
@@ -12015,76 +12000,6 @@
         ],
         "title": "Stats",
         "description": "Core character statistics with Lovecraftian horror elements."
-      },
-      "StatusEffect": {
-        "properties": {
-          "effect_type": {
-            "$ref": "#/components/schemas/StatusEffectType"
-          },
-          "duration": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Duration",
-            "description": "Duration in game ticks (0 = permanent)"
-          },
-          "intensity": {
-            "type": "integer",
-            "maximum": 10.0,
-            "minimum": 1.0,
-            "title": "Intensity",
-            "description": "Effect intensity from 1-10"
-          },
-          "source": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source",
-            "description": "Source of the effect (item, spell, etc.)"
-          },
-          "applied_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Applied At",
-            "description": "When the effect was applied"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "effect_type",
-          "duration",
-          "intensity"
-        ],
-        "title": "StatusEffect",
-        "description": "Represents a status effect applied to a character."
-      },
-      "StatusEffectType": {
-        "type": "string",
-        "enum": [
-          "stunned",
-          "poisoned",
-          "hallucinating",
-          "paranoid",
-          "trembling",
-          "corrupted",
-          "delirious",
-          "buff",
-          "login_warded",
-          "dominated",
-          "cloud_memory",
-          "fear",
-          "evil_eye",
-          "blinded",
-          "warded",
-          "extinguish_fire"
-        ],
-        "title": "StatusEffectType",
-        "description": "Status effects that can be applied to characters."
       },
       "StatusMessageResponse": {
         "properties": {

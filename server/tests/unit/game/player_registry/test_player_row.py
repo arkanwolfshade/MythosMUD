@@ -34,7 +34,7 @@ def test_load_sql_calls_the_procedure_and_selects_every_column_the_row_reads() -
     read_by_from_row = {
         "player_id", "user_id", "name", "current_room_id", "respawn_room_id", "experience_points", "level",
         "is_admin", "profession_id", "created_at", "last_active", "is_deleted", "deleted_at",
-        "tutorial_instance_id", "stats", "inventory", "equipped_json", "status_effects",
+        "tutorial_instance_id", "stats", "inventory", "equipped_json",
     }  # fmt: skip
     assert read_by_from_row <= selected
 

@@ -132,10 +132,10 @@ E2E_USER_SPECS: tuple[E2eUserSpec, ...] = (
 
 UPSERT_PLAYER_SQL = """
 CALL upsert_player(
-    $1::uuid, $2::uuid, $3::varchar(50), $4::text, $5::text,
-    $6::varchar(255), $7::varchar(100), $8::int, $9::int, $10::int,
-    $11::bigint, $12::timestamptz, $13::timestamptz, $14::jsonb,
-    $15::boolean, $16::timestamptz, $17::varchar(255), $18::text, $19::text
+    $1::uuid, $2::uuid, $3::varchar(50), $4::text,
+    $5::varchar(255), $6::varchar(100), $7::int, $8::int, $9::int,
+    $10::bigint, $11::timestamptz, $12::timestamptz, $13::jsonb,
+    $14::boolean, $15::timestamptz, $16::varchar(255), $17::text, $18::text
 )
 """
 
@@ -159,7 +159,6 @@ async def _ensure_player_for_user(
         player_id,
         user_id,
         character_name,
-        "[]",
         "[]",
         DEFAULT_RESPAWN_ROOM,
         DEFAULT_RESPAWN_ROOM,

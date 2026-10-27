@@ -15,7 +15,7 @@ from server.schemas.shared import InventorySchemaValidationError, validate_inven
 
 UPSERT_PLAYER_SQL = text(
     "CALL upsert_player("
-    ":player_id, :user_id, :name, :inventory, :status_effects,"
+    ":player_id, :user_id, :name, :inventory,"
     ":current_room_id, :respawn_room_id, :experience_points, :level, :is_admin,"
     ":profession_id, :created_at, :last_active, :stats, :is_deleted, :deleted_at,"
     ":tutorial_instance_id, :inventory_json, :equipped_json)"
@@ -90,7 +90,6 @@ class PlayerSavePreparer:
         default_room = "earth_arkhamcity_sanitarium_room_foyer_001"
         return {
             "inventory": player.inventory or "[]",
-            "status_effects": player.status_effects or "[]",
             "current_room_id": player.current_room_id or default_room,
             "respawn_room_id": player.respawn_room_id or default_room,
         }

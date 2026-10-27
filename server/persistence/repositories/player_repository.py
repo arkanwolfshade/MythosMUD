@@ -100,7 +100,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -144,7 +144,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -192,7 +192,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -238,7 +238,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -376,7 +376,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -416,7 +416,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -601,7 +601,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "

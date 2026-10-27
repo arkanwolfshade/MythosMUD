@@ -5,8 +5,8 @@ It is read through ``get_player_by_id`` and written through ``upsert_player``, t
 PlayerRepository uses, which also write ``player_inventories``. Inventory and equipped changes are synchronous
 (they must be committed before the command returns); every other change here is lazy.
 
-``status_effects`` is a duplicate store that ADR-029 step 3b removes; until then this part carries it through
-unchanged, so a write never erases it. (Lucidity left ``stats`` in step 3a; it lives in ``player_lucidity``.)
+Status effects and lucidity are not here: they live in ``player_effects`` (ADR-029 step 3b) and
+``player_lucidity`` (step 3a).
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ from .part import DbSession, Part, PartWrite
 LOAD_PLAYER_SQL = text(
     """
     SELECT
-        player_id, user_id, name, inventory, status_effects, current_room_id,
+        player_id, user_id, name, inventory, current_room_id,
         respawn_room_id, experience_points, level, is_admin, profession_id,
         created_at, last_active, stats, is_deleted, deleted_at,
         tutorial_instance_id, inventory_json, equipped_json
@@ -92,8 +92,6 @@ class PlayerRowData:  # pylint: disable=too-many-instance-attributes  # Reason: 
     stats: dict[str, object] = field(default_factory=dict)
     inventory: list[dict[str, object]] = field(default_factory=list)
     equipped: dict[str, object] = field(default_factory=dict)
-    # Carried through unchanged until ADR-029 step 3 drops the column (player_effects is the real store).
-    status_effects_json: str = "[]"
 
     @classmethod
     def from_row(cls, row: Mapping[str, object]) -> PlayerRowData:
@@ -117,7 +115,6 @@ class PlayerRowData:  # pylint: disable=too-many-instance-attributes  # Reason: 
             stats=_as_dict(row.get("stats")),
             inventory=_as_stacks(row.get("inventory")),
             equipped=_as_dict(row.get("equipped_json")),
-            status_effects_json=str(row.get("status_effects") or "[]"),
         )
 
     def upsert_params(self) -> dict[str, object]:
@@ -130,7 +127,6 @@ class PlayerRowData:  # pylint: disable=too-many-instance-attributes  # Reason: 
             "user_id": self.user_id,
             "name": self.name,
             "inventory": inventory_json,
-            "status_effects": self.status_effects_json,
             "current_room_id": self.current_room_id,
             "respawn_room_id": self.respawn_room_id or DEFAULT_ROOM_ID,
             "experience_points": self.experience_points,

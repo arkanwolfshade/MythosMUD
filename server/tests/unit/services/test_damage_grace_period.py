@@ -168,7 +168,6 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
     mock_player_service = MagicMock()
     mock_persistence = MagicMock()
     mock_player = MagicMock()
-    mock_player.get_status_effects.return_value = []
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_player_service.persistence = mock_persistence
 

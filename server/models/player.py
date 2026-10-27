@@ -94,7 +94,6 @@ class Player(Base):
         },
     )
     inventory: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
-    status_effects: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
 
     # Location and progression
     # CRITICAL FIX: Increased from 50 to 255 to accommodate hierarchical room IDs
@@ -245,17 +244,6 @@ class Player(Base):
             raise TypeError(msg)
 
         self.inventory = json.dumps(list(inventory), default=_inventory_json_default)
-
-    def get_status_effects(self) -> list[dict[str, object]]:
-        """Get player status effects as list."""
-        try:
-            return cast(list[dict[str, object]], json.loads(self.status_effects))
-        except json.JSONDecodeError, TypeError:
-            return []
-
-    def set_status_effects(self, status_effects: list[dict[str, object]]) -> None:
-        """Set player status effects from list."""
-        self.status_effects = json.dumps(status_effects)
 
     def get_equipped_items(self) -> dict[str, object]:
         """Return equipped items mapping.

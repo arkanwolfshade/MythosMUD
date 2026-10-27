@@ -18,6 +18,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Protocol, cast
 
+from server.persistence.repositories.player_repository_save import UPSERT_PLAYER_SQL as SERVER_UPSERT_PLAYER_SQL
+
 PROJECT_ROOT = Path(__file__).resolve().parents[4]
 SCRIPT_PATH = PROJECT_ROOT / "scripts" / "seed_e2e_users.py"
 
@@ -27,6 +29,7 @@ class _SeedScript(Protocol):
 
     e2e_user_id: Callable[[str], uuid.UUID]
     e2e_player_id: Callable[[str], uuid.UUID]
+    UPSERT_PLAYER_SQL: str
     _ensure_player_for_user: Callable[..., Awaitable[None]]
 
 
@@ -93,3 +96,19 @@ async def test_reseeding_a_deleted_character_reuses_its_player_id() -> None:
     first_player_id, first_user_id = first.executed[0][:2]
     assert first_player_id == second.executed[0][0] == script.e2e_player_id("ArkanWolfshade")
     assert first_user_id == user_id
+
+
+async def test_the_positional_upsert_matches_the_procedure_the_server_calls() -> None:
+    """The seed calls upsert_player by position: one argument per $n, as many as the server's named parameters."""
+    script = _load_script()
+    conn = _RecordingConnection()
+
+    await script._ensure_player_for_user(
+        conn, user_id=script.e2e_user_id("Ithaqua"), character_name="Ithaqua", player_is_admin=0, now=datetime.now(UTC)
+    )
+
+    [args] = conn.executed
+    sql = script.UPSERT_PLAYER_SQL
+    assert sql.count("$") == len(args)
+    assert all(f"${n}::" in sql for n in range(1, len(args) + 1))
+    assert len(args) == len(SERVER_UPSERT_PLAYER_SQL.compile().params)

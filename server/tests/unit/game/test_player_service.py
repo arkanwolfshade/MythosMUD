@@ -55,7 +55,6 @@ async def test_create_player_success(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -105,7 +104,6 @@ async def test_get_player_by_id_found(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -149,7 +147,6 @@ async def test_get_player_by_name_found(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -203,7 +200,6 @@ async def test_resolve_player_name_found(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -254,7 +250,6 @@ async def test_create_player_with_stats_success(player_service, mock_persistence
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -318,7 +313,6 @@ async def test_validate_player_name_valid(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -373,7 +367,6 @@ async def test_validate_player_name_exists(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -411,7 +404,6 @@ async def test_search_players_by_name(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0
@@ -451,7 +443,6 @@ async def test_get_online_players(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0

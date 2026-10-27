@@ -160,7 +160,6 @@ async def test_get_player_by_id_return_shape_and_not_found(
                     user_id,
                     name,
                     inventory,
-                    status_effects,
                     current_room_id,
                     respawn_room_id,
                     experience_points,
