@@ -66,6 +66,7 @@ class Rig:
     narrated: list[str]
     adjustments: list[int]
     debriefs: list[tuple[Player, bool, object | None]]
+    stored_effects: list[tuple[uuid.UUID, dict[str, object]]]
 
     def context(self, *, with_quests: bool = True) -> ScriptedActionContext:
         return ScriptedActionContext(
@@ -111,7 +112,15 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
         return DebriefOutcome("The staff recap.", completed=True)
 
     monkeypatch.setattr(runner, "perform_debrief", fake_debrief)
-    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, adjustments, debriefs)
+    stored_effects: list[tuple[uuid.UUID, dict[str, object]]] = []
+
+    async def fake_add_content_effect(player_id: uuid.UUID, effect: dict[str, object]) -> str:
+        stored_effects.append((player_id, dict(effect)))
+        return str(uuid.uuid4())
+
+    # apply_effect stores a player_effects row (ADR-029 step 3b-i); a unit test must not reach the database.
+    monkeypatch.setattr(runner, "add_content_effect", fake_add_content_effect)
+    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, adjustments, debriefs, stored_effects)
 
 
 # --- vocabulary -------------------------------------------------------------------------------------------------
@@ -188,24 +197,21 @@ async def test_narrate_sends_the_text_to_the_player(rig: Rig) -> None:
 
 
 @pytest.mark.asyncio
-async def test_apply_effect_adds_the_effect_to_the_player_and_saves(rig: Rig) -> None:
+async def test_apply_effect_stores_the_effect_for_the_player_without_a_player_save(rig: Rig) -> None:
     await run_scripted_actions([ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
-    assert rig.player.get_status_effects() == [HOT_EFFECT]
-    assert rig.persistence.saved == [rig.player]
+    assert rig.stored_effects == [(uuid.UUID(str(rig.player.player_id)), HOT_EFFECT)]
+    assert rig.persistence.saved == []  # a player_effects row, not the players.status_effects column
 
 
 @pytest.mark.asyncio
-async def test_each_apply_effect_is_its_own_copy(rig: Rig) -> None:
+async def test_each_apply_effect_is_its_own_row_and_leaves_the_action_untouched(rig: Rig) -> None:
     action = ApplyEffectAction(effect=HOT_EFFECT)
 
     await run_scripted_actions([action, action], rig.context())
-    effects = rig.player.get_status_effects()
-    effects[0]["remaining"] = 1
-    rig.player.set_status_effects(effects)
 
-    assert "remaining" not in action.effect
-    assert len(rig.player.get_status_effects()) == 2
+    assert len(rig.stored_effects) == 2
+    assert action.effect == HOT_EFFECT
 
 
 @pytest.mark.asyncio
@@ -227,12 +233,13 @@ async def test_corruption_at_least_is_idempotent_and_never_adds(rig: Rig) -> Non
 
 
 @pytest.mark.asyncio
-async def test_a_later_save_does_not_clobber_the_corruption_the_service_wrote(rig: Rig) -> None:
-    """The service edits its own copy of the player; the script's copy must reflect the new value before it saves."""
+async def test_an_apply_effect_after_a_corruption_floor_writes_no_stale_player(rig: Rig) -> None:
+    """apply_effect no longer saves the player, so it cannot overwrite the corruption the service just wrote."""
     await run_scripted_actions([CorruptionAtLeastAction(value=2), ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
     assert rig.player.get_stats()["corruption"] == 2
-    assert rig.persistence.saved == [rig.player]
+    assert rig.persistence.saved == []
+    assert len(rig.stored_effects) == 1
 
 
 @pytest.mark.asyncio

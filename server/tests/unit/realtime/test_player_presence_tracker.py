@@ -963,10 +963,16 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
         ]
     )
 
-    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
+    with (
+        patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity,
+        patch(
+            "server.realtime.player_presence_tracker.clear_instance_scoped_effects", new=AsyncMock(return_value=1)
+        ) as clear_effects,
+    ):
         room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
 
     assert room_id is not None and room_id.endswith(START_ID)
+    clear_effects.assert_awaited_once_with(uuid.UUID(str(player.player_id)))  # the lost run's drain goes too
     assert player.tutorial_instance_id != "instance_gone"
     fresh = instance_manager.get_instance(cast(str, player.tutorial_instance_id))
     assert fresh is not None

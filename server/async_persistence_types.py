@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from datetime import datetime
 from typing import TYPE_CHECKING, Protocol, TypedDict
 
@@ -34,6 +35,8 @@ class ContainerCreateKwargs(TypedDict, total=False):
 class PlayerEffectOptions(TypedDict, total=False):
     """Optional fields for add_player_effect beyond the required scalars."""
 
+    payload: Mapping[str, object]
+    instance_scoped: bool
     intensity: int
     source: str | None
     visibility_level: str

@@ -5,7 +5,8 @@ Two kinds of player state are tied to one instance and must not outlive it:
 
 * items flagged INSTANCE_BOUND (see game.items.instance_bound), in the inventory, equipped, or inside a
   carried container;
-* status effects marked ``"instance_scoped": true``.
+* status effects marked ``"instance_scoped": true`` (player_effects rows, cleared by
+  ``effect_store.clear_instance_scoped_effects``).
 
 When a player's instance has been lost (logout, restart) and they are given a fresh one, whatever
 the old one handed them is cleared so the new run starts clean.
@@ -25,9 +26,6 @@ if TYPE_CHECKING:
     from ..models.player import Player
 
 logger = get_logger(__name__)
-
-# Status effects carrying this key set to true are removed by reset_instance_scoped_state.
-INSTANCE_SCOPED_EFFECT_KEY = "instance_scoped"
 
 
 def strip_instance_bound_items(player: Player) -> int:
@@ -49,18 +47,13 @@ def strip_instance_bound_items(player: Player) -> int:
     return inventory_removed + equipped_removed
 
 
-def strip_instance_scoped_effects(player: Player) -> int:
-    """Remove status effects marked instance_scoped; returns how many were removed."""
-    effects = player.get_status_effects()
-    kept = [effect for effect in effects if effect.get(INSTANCE_SCOPED_EFFECT_KEY) is not True]
-    if len(kept) != len(effects):
-        player.set_status_effects(kept)
-    return len(effects) - len(kept)
-
-
 def reset_instance_scoped_state(player: Player) -> int:
-    """Clear everything tied to the player's old instance; returns how many items and effects were removed."""
-    return strip_instance_bound_items(player) + strip_instance_scoped_effects(player)
+    """Clear the instance-bound items the player's old instance handed them; returns how many were removed.
+
+    Instance-scoped effects are player_effects rows, cleared by ``effect_store.clear_instance_scoped_effects``
+    (async), which every caller of this also awaits.
+    """
+    return strip_instance_bound_items(player)
 
 
 class QuestResetter(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub

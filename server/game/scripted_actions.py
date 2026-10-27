@@ -27,6 +27,7 @@ from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .chat_npc_system import deliver_personal_quest, deliver_personal_system
+from .effect_store import add_content_effect
 
 logger = get_logger(__name__)
 
@@ -53,10 +54,8 @@ class ScriptedActionContext:
 
 
 async def _apply_effect(action: ApplyEffectAction, ctx: ScriptedActionContext) -> None:
-    effects = ctx.player.get_status_effects()
-    effects.append(dict(action.effect))
-    ctx.player.set_status_effects(effects)
-    await ctx.persistence.save_player(ctx.player)
+    # A player_effects row (ADR-029 step 3b-i), not the players.status_effects column; no player save is needed.
+    _ = await add_content_effect(uuid.UUID(str(ctx.player.player_id)), action.effect)
 
 
 async def _corruption_at_least(action: CorruptionAtLeastAction, ctx: ScriptedActionContext) -> None:

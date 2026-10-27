@@ -7,10 +7,12 @@ Contains stat-modify and object-creation helpers, keeping the main engine focuse
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
+from server.game.effect_store import SPELL_EFFECT_CATEGORY
+from server.game.magic.spell_effect_types import SpellEffectsEngineEffectPort
 from server.game.magic.spell_effects_stats import apply_stat_modifications
-from server.models.game import StatusEffect, StatusEffectType
+from server.models.game import StatusEffectType
 from server.models.spell import Spell
 from server.schemas.shared import TargetMatch, TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -39,6 +41,22 @@ def _build_stat_modifications(spell: Spell) -> tuple[dict[str, Any] | None, dict
     return stat_modifications, None
 
 
+async def _add_buff_marker(
+    engine: SpellEffectsEngineEffectPort, target_id: uuid.UUID, duration: int, spell: Spell
+) -> None:
+    """A BUFF marker row for duration online game seconds (ADR-029 step 3b-i).
+
+    Nothing reverts the stat change when it runs out (pre-existing).
+    """
+    _ = await engine.player_service.persistence.add_player_effect(
+        target_id,
+        StatusEffectType.BUFF.value,
+        SPELL_EFFECT_CATEGORY,
+        duration,
+        {"intensity": 1, "source": f"spell:{spell.spell_id}"},
+    )
+
+
 async def _apply_stat_modify_to_player(
     engine: Any,
     spell: Spell,
@@ -62,22 +80,13 @@ async def _apply_stat_modify_to_player(
             spell.spell_id,
         )
 
-        if duration > 0:
-            status_effects = player.get_status_effects()
-            temp_effect = StatusEffect(
-                effect_type=StatusEffectType.BUFF,
-                duration=duration,
-                intensity=1,
-                source=f"spell:{spell.spell_id}",
-            )
-            status_effects.append(temp_effect.model_dump())
-            player.set_status_effects(status_effects)
-
         player.set_stats(stats)
         await engine.player_service.persistence.save_player(player)
+        if duration > 0:
+            await _add_buff_marker(cast(SpellEffectsEngineEffectPort, engine), target_id, duration, spell)
 
         stat_list = ", ".join(modified_stats)
-        duration_text = f" for {duration} ticks" if duration > 0 else " permanently"
+        duration_text = f" for {duration} seconds" if duration > 0 else " permanently"
         return {
             "success": True,
             "message": f"Modified {target.target_name}'s stats{duration_text}: {stat_list}",

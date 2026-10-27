@@ -9,6 +9,7 @@ import uuid
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -67,6 +68,8 @@ async def test_the_respawn_service_gets_a_finisher_that_resolves_services_from_t
         "server.services.passive_corruption_flux.service.PassiveCorruptionFluxService",
     ):
         _stub(monkeypatch, target)
+    # The finish clears instance-scoped effect rows; keep it off the real database.
+    monkeypatch.setattr("server.game.first_exposure.clear_instance_scoped_effects", AsyncMock(return_value=0))
     rig = Rig()
     container = SimpleNamespace(
         persistence=object(),

@@ -22,14 +22,8 @@ from server.app.game_tick_corpses import (
     cleanup_decayed_corpses,
 )
 from server.app.game_tick_processing import (
-    _process_all_status_effects,
-    _process_damage_over_time_effect,
-    _process_heal_over_time_effect,
     _process_mp_regeneration,
-    _process_single_effect,
     _process_single_player_mp_regeneration,
-    _update_player_status_effects,
-    _validate_and_get_player,
     _validate_app_state_for_status_effects,
     _validate_mp_regeneration_services,
     get_current_tick,
@@ -40,8 +34,6 @@ from server.app.game_tick_processing import (
     process_combat_tick,
     process_dp_decay_and_death,
     process_npc_maintenance,
-    process_player_effects_expiration,
-    process_status_effects,
     reset_current_tick,
     schedule_player_registry_sweep,
     update_world_presence,
@@ -207,108 +199,6 @@ def test_validate_mp_regeneration_services() -> None:
 
 def test_log_cleanup_results() -> None:
     _log_cleanup_results(tick_count=60, cleaned_count=2, total_decayed=3)
-
-
-@pytest.mark.asyncio
-async def test_process_heal_over_time_effect() -> None:
-    heal_player: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.heal_player = heal_player
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "heal_over_time", "healing": 5, "duration": 2, "remaining": 2}
-    applied = await _process_heal_over_time_effect(container, player, effect, 1, "player-1")
-    assert applied is True
-    heal_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_damage_over_time_zero_remaining() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "damage_over_time", "damage": 3}
-    applied = await _process_damage_over_time_effect(app, container, player, effect, 0, "player-1")
-    assert applied is False
-
-
-@pytest.mark.asyncio
-async def test_process_single_effect_heal_expires() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    container.async_persistence = AsyncMock()
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "heal_over_time", "healing": 2, "duration": 2, "remaining": 2}
-    updated, applied = await _process_single_effect(app, container, player, effect, "p1")
-    assert updated is not None
-    assert updated["remaining"] == 1
-    assert applied is True
-
-
-@pytest.mark.asyncio
-async def test_validate_and_get_player_invalid_id() -> None:
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    player, player_uuid = await _validate_and_get_player(container, "not-a-uuid")
-    assert player is None
-    assert player_uuid is None
-
-
-@pytest.mark.asyncio
-async def test_validate_and_get_player_success() -> None:
-    player_id = uuid.uuid4()
-    container: MagicMock = MagicMock()
-    mock_player: MagicMock = MagicMock()
-    get_player_by_id: AsyncMock = AsyncMock(return_value=mock_player)
-    async_persistence: MagicMock = MagicMock()
-    async_persistence.get_player_by_id = get_player_by_id
-    container.async_persistence = async_persistence
-    player, player_uuid = await _validate_and_get_player(container, str(player_id))
-    assert player is mock_player
-    assert player_uuid == player_id
-
-
-@pytest.mark.asyncio
-async def test_update_player_status_effects_saves() -> None:
-    save_player: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.save_player = save_player
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    set_status_effects: MagicMock = MagicMock()
-    player: MagicMock = MagicMock()
-    player.set_status_effects = set_status_effects
-    updated = await _update_player_status_effects(container, player, [], 1, True)
-    assert updated is True
-    set_status_effects.assert_called_once()
-    save_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_all_status_effects_empty() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    get_status_effects: MagicMock = MagicMock(return_value=[])
-    player: MagicMock = MagicMock()
-    player.get_status_effects = get_status_effects
-    effects, applied, count = await _process_all_status_effects(app, container, player, "p1")
-    assert effects == []
-    assert applied is False
-    assert count == 0
-
-
-@pytest.mark.asyncio
-async def test_process_status_effects_no_online_players() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    connection_manager: MagicMock = MagicMock()
-    connection_manager.online_players = {}
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    container.connection_manager = connection_manager
-    app.state.container = container
-    await process_status_effects(app, tick_count=1)
 
 
 @pytest.mark.asyncio
@@ -488,71 +378,6 @@ async def test_process_dp_decay_and_death_no_service() -> None:
     app.state = MagicMock()
     app.state.container = MagicMock(player_death_service=None)
     await process_dp_decay_and_death(app, tick_count=1)
-
-
-@pytest.mark.asyncio
-async def test_process_player_effects_expiration_login_warded() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    expire_player_effects_for_tick: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.expire_player_effects_for_tick = expire_player_effects_for_tick
-    connection_manager: MagicMock = MagicMock()
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    container.connection_manager = connection_manager
-    player_id = str(uuid.uuid4())
-    expire_player_effects_for_tick.return_value = [(player_id, "login_warded")]
-    app.state.container = container
-    with patch(
-        "server.app.game_tick_status_effects.handle_login_grace_period_expiration",
-        new_callable=AsyncMock,
-    ) as mock_handler:
-        await process_player_effects_expiration(app, tick_count=1)
-    mock_handler.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_player_effects_expiration_survives_database_error() -> None:
-    """A DatabaseError (plain Exception subclass, not RuntimeError) must not escape and
-    kill the caller's game_tick_loop -- regression for the tick loop dying permanently
-    when expire_player_effects_for_tick fails."""
-    app = FastAPI()
-    app.state = MagicMock()
-    expire_player_effects_for_tick: AsyncMock = AsyncMock(side_effect=Exception("get_effects_expiring_this_tick"))
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.expire_player_effects_for_tick = expire_player_effects_for_tick
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    container.connection_manager = MagicMock()
-    app.state.container = container
-
-    with patch("server.app.game_tick_status_effects.track_exception") as mock_track_exception:
-        # Must not raise.
-        await process_player_effects_expiration(app, tick_count=57)
-
-    # Loud, not silent: tracked (feeds the existing monitoring-dashboard alert threshold).
-    mock_track_exception.assert_called_once()
-    assert mock_track_exception.call_args.args[1]["severity"] == "error"
-
-
-@pytest.mark.asyncio
-async def test_process_status_effects_with_online_player() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    connection_manager: MagicMock = MagicMock()
-    pid = uuid.uuid4()
-    connection_manager.online_players = {pid: {}}
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    container.connection_manager = connection_manager
-    app.state.container = container
-    with patch(
-        "server.app.game_tick_status_effects._process_player_status_effects",
-        new_callable=AsyncMock,
-        return_value=True,
-    ):
-        await process_status_effects(app, tick_count=2)
 
 
 @pytest.mark.asyncio

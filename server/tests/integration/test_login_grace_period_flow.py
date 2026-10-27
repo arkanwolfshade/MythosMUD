@@ -195,17 +195,11 @@ async def test_effect_based_grace_start_then_tick_expiration_clears_in_memory(
     """Start grace with effect (ADR-019); simulate tick expiration; in-memory state is cleared."""
     player_id = uuid.uuid4()
     mock_persistence: MagicMock = MagicMock()
-    mock_persistence.add_player_effect = AsyncMock(return_value=str(uuid.uuid4()))
-    get_current_tick = MagicMock(return_value=0)
-    get_tick_interval = MagicMock(return_value=0.1)
+    add_effect = AsyncMock(return_value=str(uuid.uuid4()))
+    mock_persistence.add_player_effect = add_effect
 
-    await start_login_grace_period(
-        player_id,
-        mock_connection_manager,
-        async_persistence=mock_persistence,
-        get_current_tick=get_current_tick,
-        get_tick_interval=get_tick_interval,
-    )
+    await start_login_grace_period(player_id, mock_connection_manager, async_persistence=mock_persistence)
+    add_effect.assert_awaited_once()  # the effect-based ward, not the fallback timer
     assert is_player_in_login_grace_period(player_id, mock_connection_manager) is True
     assert mock_connection_manager.login_grace_period_players[player_id] is True
 

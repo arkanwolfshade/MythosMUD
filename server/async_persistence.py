@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from datetime import datetime
 from typing import TYPE_CHECKING, Unpack, cast
 
@@ -382,50 +382,48 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Async alias for damage_player. Delegates to HealthRepository."""
         await self._health_repo.damage_player(player, amount, damage_type)
 
-    # Player effects (ADR-019)
+    # Player effects (ADR-019, ADR-029 step 3b-i)
     async def add_player_effect(
         self,
         player_id: uuid.UUID | str,
         effect_type: str,
         category: str,
-        duration: int,
-        applied_at_tick: int,
+        remaining_seconds: int | None,
         options: PlayerEffectOptions | None = None,
     ) -> str:
-        """Add a player effect. Returns effect id."""
+        """Add a player effect lasting ``remaining_seconds`` online game seconds (None = until removed). Returns its id."""
         effect_options = options or {}
-        payload: AddEffectInput = {
+        data: AddEffectInput = {
             "effect_type": effect_type,
             "category": category,
-            "duration": duration,
-            "applied_at_tick": applied_at_tick,
+            "remaining_seconds": remaining_seconds,
+            "payload": effect_options.get("payload", {}),
+            "instance_scoped": effect_options.get("instance_scoped", False),
             "intensity": effect_options.get("intensity", 1),
             "source": effect_options.get("source"),
             "visibility_level": effect_options.get("visibility_level", "visible"),
         }
-        return await self._player_effect_repo.add_effect(player_id, payload)
+        return await self._player_effect_repo.add_effect(player_id, data)
 
     async def remove_player_effect_by_id(self, effect_id: uuid.UUID | str) -> None:
         """Remove a player effect by id."""
         await self._player_effect_repo.delete_effect(effect_id)
 
-    async def get_active_player_effects(self, player_id: uuid.UUID | str, current_tick: int) -> list[PlayerEffect]:
-        """Get active effects for a player (remaining_ticks > 0). Returns list of PlayerEffect."""
-        return await self._player_effect_repo.get_active_effects_for_player(player_id, current_tick)
+    async def remove_player_effects_by_type(self, player_id: uuid.UUID | str, effect_type: str) -> int:
+        """Remove every effect of one type on a player; returns how many."""
+        return await self._player_effect_repo.delete_effects_by_type(player_id, effect_type)
 
-    async def has_player_effect(self, player_id: uuid.UUID | str, effect_type: str, current_tick: int) -> bool:
-        """Return True if player has an active effect of the given type."""
-        return await self._player_effect_repo.has_effect(player_id, effect_type, current_tick)
+    async def get_active_player_effects(self, player_id: uuid.UUID | str) -> list[PlayerEffect]:
+        """A player's effects with time left (or no limit), oldest first."""
+        return await self._player_effect_repo.get_active_effects_for_player(player_id)
 
-    async def get_player_effect_remaining_ticks(
-        self, player_id: uuid.UUID | str, effect_type: str, current_tick: int
-    ) -> int | None:
-        """Return remaining ticks for the effect, or None."""
-        return await self._player_effect_repo.get_effect_remaining_ticks(player_id, effect_type, current_tick)
+    async def update_player_effect_payload(self, effect_id: uuid.UUID | str, payload: Mapping[str, object]) -> None:
+        """Replace an effect's payload (its mutable state, e.g. the drain's elapsed)."""
+        await self._player_effect_repo.update_effect_payload(effect_id, payload)
 
-    async def expire_player_effects_for_tick(self, current_tick: int) -> list[tuple[str, str]]:
-        """Expire effects for current tick; return list of (player_id, effect_type) expired."""
-        return await self._player_effect_repo.expire_effects_for_tick(current_tick)
+    async def advance_player_effects(self, player_ids: Sequence[uuid.UUID]) -> list[tuple[str, str]]:
+        """One game second passes for these online players; returns the (player_id, effect_type) that ran out."""
+        return await self._player_effect_repo.advance_effects(player_ids)
 
     # Container methods
     async def create_container(

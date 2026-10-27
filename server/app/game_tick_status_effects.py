@@ -1,4 +1,11 @@
-"""Status-effect processing for the game tick loop."""
+"""Status-effect processing for the game tick loop (ADR-029 step 3b-i).
+
+Every player status effect is a player_effects row. Once per game second, for each online player, each active effect
+runs its per-second action (heal over time, damage over time, the lucidity drain); a finished effect is deleted and a
+changed one (the drain's ``elapsed``) has its payload written back. Then every online player's timed effects lose one
+second, and the ones that run out are deleted (ending a login ward among them). Effects pause while a player is
+offline: only online players are advanced.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +15,8 @@ from typing import TYPE_CHECKING
 from fastapi import FastAPI
 
 from ..events.event_types import PlayerDPUpdated
+from ..exceptions import DatabaseError
+from ..game.effect_store import effect_dict, effect_payload
 from ..monitoring.exception_tracker import track_exception
 from ..realtime.login_grace_period import handle_login_grace_period_expiration, is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -25,19 +34,17 @@ from .game_tick_protocols import (
 logger = get_logger("server.game_tick")
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
     from ..models.player import Player
+    from ..models.player_effect import PlayerEffect
 
 __all__ = [
     "_handle_login_warded_expirations",
-    "_process_all_status_effects",
     "_process_damage_over_time_effect",
     "_process_heal_over_time_effect",
     "_process_player_status_effects",
     "_process_single_effect",
-    "_update_player_status_effects",
-    "_validate_and_get_player",
     "_validate_app_state_for_status_effects",
-    "process_player_effects_expiration",
     "process_status_effects",
 ]
 
@@ -54,22 +61,14 @@ def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, _TickCon
     return True, container
 
 
-async def _process_damage_over_time_effect(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Effect processing requires many parameters for game state and effect context
-    _app: FastAPI,
-    container: _TickContainer,
-    player: Player,
-    effect: dict[str, object],
-    remaining: int,
-    player_id: str,
+async def _process_damage_over_time_effect(
+    container: _TickContainer, player: Player, effect: dict[str, object], player_id: str
 ) -> bool:
-    """Process a damage over time effect.
+    """Apply one second of a damage over time effect; blocked during the login grace period.
 
     Returns:
         True if effect was applied, False otherwise.
     """
-    if remaining <= 0:
-        return False
-
     # Check if player is in login grace period - block negative effects
     try:
         if container.connection_manager:
@@ -113,16 +112,13 @@ def _publish_heal_dp_update(container: _TickContainer, player: Player, old_dp: i
 
 
 async def _process_heal_over_time_effect(
-    container: _TickContainer, player: Player, effect: dict[str, object], remaining: int, player_id: str
+    container: _TickContainer, player: Player, effect: dict[str, object], player_id: str
 ) -> bool:
-    """Process a heal over time effect.
+    """Apply one second of a heal over time effect.
 
     Returns:
         True if effect was applied, False otherwise.
     """
-    if remaining <= 0:
-        return False
-
     healing = coerce_int(effect.get("healing", 0), default=0)
     if healing > 0 and container.async_persistence is not None:
         old_dp = coerce_int(player.get_stats().get("current_dp", 0), default=0)
@@ -134,148 +130,62 @@ async def _process_heal_over_time_effect(
 
 
 async def _process_single_effect(
-    app: FastAPI,
-    container: _TickContainer,
-    player: Player,
-    effect: dict[str, object],
-    player_id: str,
-    *,
-    second_tick: bool = True,
+    container: _TickContainer, player: Player, effect: dict[str, object]
 ) -> tuple[dict[str, object] | None, bool]:
-    """Process a single status effect.
-
-    heal_over_time counts duration in game seconds: it only heals and burns duration when ``second_tick`` is true
-    (ticks run at 10 Hz, so per-tick healing would be ten times the stated rate). lucidity_drain_over_time is gated the
-    same way and owns its own lifetime (see game_tick_lucidity_drain).
+    """Run one second of one effect.
 
     Returns:
-        Tuple of (updated_effect_dict or None if expired, effect_applied) where effect_applied indicates if the effect had an impact.
+        (the effect, updated, or None once it has finished; whether it had an impact). Effects with no per-second
+        action (spell effects, the login ward) come back unchanged: they only run out.
     """
     effect_type = str(effect.get("type", ""))
-    if effect_type in ("heal_over_time", LUCIDITY_DRAIN_EFFECT) and not second_tick:
-        return effect, False
+    player_id = str(player.player_id)
     if effect_type == LUCIDITY_DRAIN_EFFECT:
         return await process_lucidity_drain(container, player, effect)
-    duration = coerce_int(effect.get("duration", 0), default=0)
-    remaining = coerce_int(effect.get("remaining", duration), default=duration) - 1
-    effect_applied = False
-
     if effect_type == "damage_over_time":
-        effect_applied = await _process_damage_over_time_effect(app, container, player, effect, remaining, player_id)
-        if remaining > 0:
-            return {**effect, "remaining": remaining}, effect_applied
-        return None, effect_applied
+        return effect, await _process_damage_over_time_effect(container, player, effect, player_id)
     if effect_type == "heal_over_time":
-        effect_applied = await _process_heal_over_time_effect(container, player, effect, remaining, player_id)
-        if remaining > 0:
-            return {**effect, "remaining": remaining}, effect_applied
-        return None, effect_applied
-    if remaining > 0:
-        return {**effect, "remaining": remaining}, False
-
-    return None, False
+        return effect, await _process_heal_over_time_effect(container, player, effect, player_id)
+    return effect, False
 
 
-async def _update_player_status_effects(
-    container: _TickContainer,
-    player: Player,
-    updated_effects: list[dict[str, object]],
-    original_count: int,
-    effect_applied: bool,
-) -> bool:
-    """Update and save player status effects if changes occurred.
-
-    Returns:
-        True if player was updated, False otherwise.
-    """
-    effects_changed = len(updated_effects) != original_count
-    if (effects_changed or effect_applied) and container.async_persistence is not None:
-        player.set_status_effects(updated_effects)
-        await container.async_persistence.save_player(player)
-        return True
-    return False
+async def _store_effect_outcome(
+    persistence: AsyncPersistenceLayer, stored: PlayerEffect, updated: dict[str, object] | None
+) -> None:
+    """Delete a finished effect, or write back its payload if the second changed it."""
+    if updated is None:
+        await persistence.remove_player_effect_by_id(stored.id)
+        return
+    payload = effect_payload(updated)
+    if payload != stored.payload:
+        await persistence.update_player_effect_payload(stored.id, payload)
 
 
-async def _validate_and_get_player(container: _TickContainer, player_id: str) -> tuple[Player | None, uuid.UUID | None]:
-    """
-    Validate container and retrieve player by ID.
-
-    Args:
-        container: Application container
-        player_id: Player ID as string
+async def _process_player_status_effects(container: _TickContainer, player_id: str) -> bool:
+    """Run one second of every active effect on one online player.
 
     Returns:
-        Tuple of (player object or None, player_uuid or None)
+        True if any effect had an impact, False otherwise.
     """
-    if not container.async_persistence:
-        return None, None
-
-    # Convert player_id from str to UUID
+    persistence = container.async_persistence
+    if persistence is None:
+        return False
     try:
         player_uuid = uuid.UUID(player_id)
-    except ValueError, AttributeError:
-        logger.warning("Invalid player_id format", player_id=player_id)
-        return None, None
-
-    player = await container.async_persistence.get_player_by_id(player_uuid)
-    return player, player_uuid
-
-
-async def _process_all_status_effects(
-    app: FastAPI, container: _TickContainer, player: Player, player_id: str, *, second_tick: bool = True
-) -> tuple[list[dict[str, object]], bool, int]:
-    """
-    Process all status effects for a player.
-
-    Args:
-        app: FastAPI application
-        container: Application container
-        player: Player object
-        player_id: Player ID as string
-        second_tick: True once per game second (gates heal_over_time)
-
-    Returns:
-        Tuple of (updated_effects list, effect_applied bool, original_count int)
-    """
-    status_effects = player.get_status_effects()
-    if not status_effects:
-        return [], False, 0
-
-    updated_effects: list[dict[str, object]] = []
-    effect_applied = False
-    original_count = len(status_effects)
-
-    for effect in status_effects:
-        updated_effect, was_applied = await _process_single_effect(
-            app, container, player, effect, player_id, second_tick=second_tick
-        )
-        if updated_effect is not None:
-            updated_effects.append(updated_effect)
-        if was_applied:
-            effect_applied = True
-
-    return updated_effects, effect_applied, original_count
-
-
-async def _process_player_status_effects(
-    app: FastAPI, container: _TickContainer, player_id: str, *, second_tick: bool = True
-) -> bool:
-    """Process status effects for a single player.
-
-    Returns:
-        True if player was processed and updated, False otherwise.
-    """
-    try:
-        player, _ = await _validate_and_get_player(container, player_id)
-        if not player:
+        effects = await persistence.get_active_player_effects(player_uuid)
+        if not effects:
             return False
-
-        updated_effects, effect_applied, original_count = await _process_all_status_effects(
-            app, container, player, player_id, second_tick=second_tick
-        )
-
-        return await _update_player_status_effects(container, player, updated_effects, original_count, effect_applied)
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        player = await persistence.get_player_by_id(player_uuid)
+        if player is None:
+            return False
+        applied_any = False
+        for stored in effects:
+            updated, applied = await _process_single_effect(container, player, effect_dict(stored))
+            applied_any = applied_any or applied
+            await _store_effect_outcome(persistence, stored, updated)
+        return applied_any
+    except (DatabaseError, AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        # One player's failure must not stop the others' effects this second.
         logger.warning("Error processing status effects for player", player_id=player_id, error=str(e))
         return False
 
@@ -299,47 +209,33 @@ async def _handle_login_warded_expirations(
             )
 
 
-async def process_player_effects_expiration(app: FastAPI, tick_count: int) -> None:
-    """Expire player_effects for this tick; for LOGIN_WARDED clear in-memory state and trigger room update."""
-    is_valid, container = _validate_app_state_for_status_effects(app)
-    if not is_valid or not container or not container.async_persistence or not container.connection_manager:
+async def process_status_effects(app: FastAPI, tick_count: int) -> None:
+    """Once per game second: run every online player's effects, then advance and expire their timed effects."""
+    if not is_game_second_tick(tick_count):
         return
-
+    is_valid, container = _validate_app_state_for_status_effects(app)
+    if not is_valid or container is None or container.async_persistence is None or not container.connection_manager:
+        return
+    online = _online_player_ids(container)
+    if not online:
+        return
     try:
-        expired = await container.async_persistence.expire_player_effects_for_tick(tick_count)
-        await _handle_login_warded_expirations(expired, container.connection_manager)
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: expire_player_effects_for_tick raises DatabaseError (a plain Exception subclass, not RuntimeError) on any query failure; this narrower tuple let it escape and kill the whole game_tick_loop permanently (confirmed in E2E: "get_effects_expiring_this_tick does not exist" propagated past this handler with nothing left to catch it).
-        logger.warning(
-            "Error processing player effects expiration",
-            tick_count=tick_count,
-            error=str(e),
+        await _tick_online_players(
+            online,
+            tick_count,
+            "Processed status effects",
+            lambda player_id_str: _process_player_status_effects(container, player_id_str),
         )
+        expired = await container.async_persistence.advance_player_effects(online)
+        await _handle_login_warded_expirations(expired, container.connection_manager)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the effect procedures raise DatabaseError (a plain Exception subclass); a narrower tuple once let it escape and kill the whole game_tick_loop
+        logger.warning("Error processing status effects", tick_count=tick_count, error=str(e))
         _ = track_exception(
             e,
             {
                 "severity": "error",
                 "handled": True,
                 "context": {"tick_count": tick_count},
-                "metadata": {"component": "process_player_effects_expiration"},
+                "metadata": {"component": "process_status_effects"},
             },
         )
-
-
-async def process_status_effects(app: FastAPI, tick_count: int) -> None:
-    """Process status effects for online players."""
-    is_valid, container = _validate_app_state_for_status_effects(app)
-    if not is_valid or not container or not container.connection_manager:
-        return
-
-    second_tick = is_game_second_tick(tick_count)
-    try:
-        await _tick_online_players(
-            _online_player_ids(container),
-            tick_count,
-            "Processed status effects",
-            lambda player_id_str: _process_player_status_effects(
-                app, container, player_id_str, second_tick=second_tick
-            ),
-        )
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
-        logger.warning("Error processing status/effect ticks", tick_count=tick_count, error=str(e))

@@ -310,26 +310,25 @@ async def test_game_tick_loop_cancelled_on_sleep() -> None:
     )
     with patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01):
         with patch("server.app.game_tick_processing.sleep", side_effect=asyncio.CancelledError):
-            with patch("server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock):
-                with patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock):
-                    with patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock):
+            with patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock):
+                with patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock):
+                    with patch(
+                        "server.app.game_tick_processing.process_casting_progress",
+                        new_callable=AsyncMock,
+                    ):
                         with patch(
-                            "server.app.game_tick_processing.process_casting_progress",
+                            "server.app.game_tick_processing.process_dp_decay_and_death",
                             new_callable=AsyncMock,
                         ):
                             with patch(
-                                "server.app.game_tick_processing.process_dp_decay_and_death",
+                                "server.app.game_tick_processing.process_npc_maintenance",
                                 new_callable=AsyncMock,
                             ):
                                 with patch(
-                                    "server.app.game_tick_processing.process_npc_maintenance",
+                                    "server.app.game_tick_processing.cleanup_decayed_corpses",
                                     new_callable=AsyncMock,
                                 ):
-                                    with patch(
-                                        "server.app.game_tick_processing.cleanup_decayed_corpses",
-                                        new_callable=AsyncMock,
-                                    ):
-                                        await game_tick_loop(app)
+                                    await game_tick_loop(app)
 
 
 @pytest.mark.asyncio
@@ -349,7 +348,6 @@ async def test_game_tick_loop_survives_unanticipated_exception() -> None:
     with (
         patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
         patch("server.app.game_tick_processing.sleep", side_effect=[None, asyncio.CancelledError]),
-        patch("server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock),
         patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock),
         patch(
             "server.app.game_tick_processing.process_combat_tick",
@@ -391,9 +389,6 @@ async def test_game_tick_loop_throttles_db_checks_when_nobody_is_online(
         patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
         patch("server.app.game_tick_processing.sleep", side_effect=[None] * 11 + [asyncio.CancelledError]),
         patch("server.app.game_tick_processing.update_world_presence", return_value=players_online),
-        patch(
-            "server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock
-        ) as mock_expiry,
         patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock) as mock_status,
         patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock),
         patch("server.app.game_tick_processing.process_casting_progress", new_callable=AsyncMock),
@@ -405,9 +400,8 @@ async def test_game_tick_loop_throttles_db_checks_when_nobody_is_online(
     ):
         await game_tick_loop(app)
 
-    assert [call.args[1] for call in mock_expiry.await_args_list] == expected_db_check_ticks
     assert [call.args[1] for call in mock_dp.await_args_list] == expected_db_check_ticks
-    # Online-player work is not throttled: status effects still run on all 12 ticks.
+    # The loop calls the status-effect step every tick; it acts only on game seconds, for online players.
     assert mock_status.await_count == 12
 
 
