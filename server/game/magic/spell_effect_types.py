@@ -8,8 +8,11 @@ in every helper (per Pnakotic style: name the boundary, not the entire bestiary)
 from __future__ import annotations
 
 import uuid
-from collections.abc import Mapping, Sequence
-from typing import Protocol, runtime_checkable
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from server.async_persistence_types import PlayerEffectOptions
 
 # Protocol method bodies use Ellipsis per PEP 544; Pylint W2301 flags it as redundant vs pass,
 # but pass breaks pyright (no return) and triggers unnecessary-pass. Keep ... and silence W2301.
@@ -50,14 +53,6 @@ class SpellEffectPlayer(Protocol):
 
     def set_stats(self, stats: Mapping[str, object]) -> None:
         """Replace player stats after spell-driven changes."""
-        ...
-
-    def get_status_effects(self) -> Sequence[Mapping[str, object]]:
-        """Active status effects (buffs/debuffs) for spell stat modify paths."""
-        ...
-
-    def set_status_effects(self, effects: Sequence[Mapping[str, object]]) -> None:
-        """Persist updated status effect list after spell application."""
         ...
 
 
@@ -115,3 +110,44 @@ class SpellEffectsEngineHealPort(Protocol):
     """SpellEffects engine surface for spell_effects_heal (no import cycle with spell_effects)."""
 
     player_service: PlayerServiceHealPort
+
+
+class PlayerEffectSpellPort(Protocol):
+    """Persistence surface for spells that add or remove player_effects rows (ADR-029 step 3b-i)."""
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> object | None:
+        """Load player by id; None if missing."""
+        ...
+
+    async def add_player_effect(
+        self,
+        player_id: uuid.UUID,
+        effect_type: str,
+        category: str,
+        remaining_seconds: int | None,
+        options: PlayerEffectOptions | None = None,
+    ) -> str:
+        """Store an effect lasting remaining_seconds online game seconds (None: until removed); returns its id."""
+        ...
+
+    async def remove_player_effects_by_type(self, player_id: uuid.UUID, effect_type: str) -> int:
+        """Delete every effect of one type on a player; returns how many."""
+        ...
+
+
+class PlayerServiceEffectPort(Protocol):
+    """Player service surface for the status-effect and buff-marker spell paths."""
+
+    @property
+    def persistence(self) -> PlayerEffectSpellPort:
+        """The async persistence layer."""
+        ...
+
+
+class SpellEffectsEngineEffectPort(Protocol):
+    """SpellEffects engine surface for spell_effects_status and the stat-modify buff marker."""
+
+    @property
+    def player_service(self) -> PlayerServiceEffectPort:
+        """The player service."""
+        ...

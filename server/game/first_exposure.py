@@ -2,10 +2,11 @@
 
 Ending the tutorial is two steps, because the respawn commits through its own database session:
 
-* ``apply_first_exposure_end_state`` runs inside that session: the player's instance state is cleared (the amulet, the
-  drain effect), lucidity is restored to 70, health is restored, and they wake in the Recovery Ward.
+* ``apply_first_exposure_end_state`` runs inside that session: the instance-bound items (the amulet) are cleared,
+  lucidity is restored to 70, health is restored, and they wake in the Recovery Ward.
 * ``FirstExposureFinisher.finish`` runs after the commit: it raises corruption to its floor and starts the epilogue
-  quest (data, run by the scripted-action runner), then flushes the instance. Corruption is written after the commit
+  quest (data, run by the scripted-action runner), clears any instance-scoped effects (the drain), then flushes the
+  instance. Corruption is written after the commit
   because ``restore_to_full_health`` rewrites the same ``stats`` column, and it must be a floor ("at least 1"), never
   "+1", so replay, restart and skip are idempotent.
 
@@ -30,6 +31,7 @@ from ..schemas.scripted_actions import CorruptionAtLeastAction, ScriptedAction, 
 from ..services.corruption_service import CorruptionPersistenceProtocol
 from ..services.lucidity_service import resolve_tier
 from ..structured_logging.enhanced_logging_config import get_logger
+from .effect_store import clear_instance_scoped_effects
 from .instance_state import reset_instance_scoped_state
 from .scripted_actions import QuestActionService, ScriptedActionContext, run_scripted_actions
 
@@ -150,6 +152,11 @@ class FirstExposureFinisher:  # pylint: disable=too-few-public-methods  # Reason
                 await run_scripted_actions(FINISH_ACTIONS, ctx)
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the respawn already committed; a failed finish must not undo or hide it
             logger.error("First Exposure finish actions failed", player_id=str(player_id), error=str(e))
+        try:
+            # The drain ends itself at its floor; anything instance-scoped left over must not follow them out.
+            _ = await clear_instance_scoped_effects(player_id)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: as above; the respawn already committed
+            logger.error("First Exposure instance-scoped effect clear failed", player_id=str(player_id), error=str(e))
         try:
             _ = await self._flush.flush(instance_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: as above; a stuck instance is cleaned up at shutdown

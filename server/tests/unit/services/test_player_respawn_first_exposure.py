@@ -13,7 +13,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Load
 
 from server.constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
-from server.game.instance_state import INSTANCE_SCOPED_EFFECT_KEY
 from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
@@ -61,7 +60,6 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     stack: dict[str, object] = {"item_id": "jade_amulet", "prototype_id": "jade_amulet", "quantity": 1}
     stack["flags"] = [INSTANCE_BOUND_FLAG]
     player.set_inventory([stack])
-    player.set_status_effects([{"type": "lucidity_drain_over_time", INSTANCE_SCOPED_EFFECT_KEY: True}])
     lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=-10, current_tier="delirious", liabilities="[]")
     rig = Rig(player, lucidity)
 
@@ -102,8 +100,7 @@ async def test_a_tutorial_delirium_respawn_ends_the_tutorial(rig: Rig) -> None:
     assert rig.player.current_room_id == RECOVERY_WARD_ROOM_ID
     assert rig.lucidity.current_lcd == 70  # not the usual 10
     assert rig.player.tutorial_instance_id is None
-    assert rig.player.get_inventory() == []  # the amulet is gone
-    assert rig.player.get_status_effects() == []  # and so is the drain
+    assert rig.player.get_inventory() == []  # the amulet is gone (the drain row is cleared by the finisher)
     assert rig.player.get_stats()["current_dp"] == rig.player.get_stats()["max_dp"]
 
 

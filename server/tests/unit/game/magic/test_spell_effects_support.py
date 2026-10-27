@@ -58,13 +58,18 @@ async def test_process_stat_modify_success() -> None:
     target = _target()
     player = MagicMock()
     player.get_stats.return_value = {"strength": 50}
-    player.get_status_effects.return_value = []
-    engine = MagicMock()
-    engine.player_service.persistence.get_player_by_id = AsyncMock(return_value=player)
-    engine.player_service.persistence.save_player = AsyncMock()
+    save = AsyncMock()
+    add_effect = AsyncMock(return_value="effect-id")
+    persistence = MagicMock(get_player_by_id=AsyncMock(return_value=player), save_player=save)
+    persistence.add_player_effect = add_effect
+    engine = MagicMock(player_service=MagicMock(persistence=persistence))
     result = await support.process_stat_modify_effect(engine, spell, target, 1.0)
     assert result["success"] is True
-    engine.player_service.persistence.save_player.assert_awaited_once()
+    save.assert_awaited_once()
+    # The buff marker is a player_effects row (ADR-029 step 3b-i), lasting the spell's duration in game seconds.
+    add_effect.assert_awaited_once_with(
+        uuid.UUID(target.target_id), "buff", "spell", 3, {"intensity": 1, "source": "spell:buff_str"}
+    )
 
 
 @pytest.mark.asyncio

@@ -9,7 +9,6 @@ from types import SimpleNamespace
 from typing import cast
 
 import pytest
-from fastapi import FastAPI
 from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -238,7 +237,8 @@ async def test_a_malformed_effect_is_dropped_rather_than_retried_forever(rig: Ri
 
 
 @pytest.mark.asyncio
-async def test_the_tick_runs_the_drain_only_on_game_seconds(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_the_tick_routes_a_drain_effect_to_the_drain(monkeypatch: pytest.MonkeyPatch) -> None:
+    """process_status_effects only runs effects on game seconds (test_game_tick_status_effects.py)."""
     calls: list[dict[str, object]] = []
 
     async def fake_process(
@@ -249,14 +249,11 @@ async def test_the_tick_runs_the_drain_only_on_game_seconds(monkeypatch: pytest.
         return {**effect, "elapsed": 1}, True
 
     monkeypatch.setattr(tick, "process_lucidity_drain", fake_process)
-    app = cast(FastAPI, object())
     effect = _effect(rate=1)
 
-    between = await tick._process_single_effect(app, _container(), _player(), effect, "p", second_tick=False)
-    on_second = await tick._process_single_effect(app, _container(), _player(), effect, "p", second_tick=True)
+    outcome = await tick._process_single_effect(_container(), _player(), effect)
 
-    assert between == (effect, False)
-    assert on_second == ({**effect, "elapsed": 1}, True)
+    assert outcome == ({**effect, "elapsed": 1}, True)
     assert calls == [effect]
 
 

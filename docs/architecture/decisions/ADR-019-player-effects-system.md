@@ -1,6 +1,6 @@
 # ADR-019: Player Effects System
 
-**Version 1.1.0** · MythosMUD · 2026-09-15
+**Version 1.2.0** · MythosMUD · 2026-10-27
 
 ---
 
@@ -37,24 +37,30 @@ therefore records the *decision* and its contract rather than re-describing the 
 
 **[SPEC]**
 Persistent, time-bounded player status effects are stored in PostgreSQL and expired by the game tick.
+`player_effects` is the only effects store ([ADR-029](ADR-029-authoritative-player-registry.md) step 3b-i):
+spells, scripted content (dialogue `apply_effect`, container `on_put`) and the login ward all write rows.
 
-1. **Storage**: table `player_effects`, one row per active effect (schema now part of the
-   baseline, `db/schema.sql`, #811). Columns: `player_id` (FK),
-   `effect_type` (String 64), `category` (String 64), `duration` (Integer), `applied_at_tick` (Integer),
-   `intensity` (Integer, default 1), `source` (String 128, nullable).
+1. **Storage**: table `player_effects`, one row per active effect (baseline `db/schema.sql`, #811; runtime
+   columns from migration `20261027120000_player_effects_runtime_state`). Columns: `player_id` (FK),
+   `effect_type` (String 64), `category` (String 64), `remaining_seconds` (Integer, NULL = until removed),
+   `payload` (jsonb: the effect's per-type state, such as a drain's `rate` and `elapsed`), `instance_scoped`
+   (Boolean: removed when the player's instance is lost), `intensity` (Integer, default 1), `source`
+   (String 128, nullable).
 
-2. **Time base is ticks, not wall-clock.** `duration` and `applied_at_tick` are tick counts, so effect
-   lifetime is tied to simulation progress rather than real time.
+2. **Time base is online game seconds.** `remaining_seconds` counts down once per game second for online
+   players only, so an effect pauses while its player is offline. (It replaced `duration` /
+   `applied_at_tick`, which were tick counts against a counter that restarts at 0 in every process.)
 
 3. **Effect vocabulary**: `StatusEffectType` in `server/models/game.py` — lucidity-driven
    (`HALLUCINATING`, `PARANOID`, `TREMBLING`, `CORRUPTED`, `DELIRIOUS`), spell-driven (`DOMINATED`,
    `CLOUD_MEMORY`, `FEAR`, `EVIL_EYE`, `BLINDED`, `WARDED`, `EXTINGUISH_FIRE`), plus `POISONED`, `BUFF`,
    `LOGIN_WARDED`, and `STUNNED`.
 
-4. **Expiry is centralised in the tick loop.** `process_player_effects_expiration`
-   (`server/app/game_tick_status_effects.py`) calls
-   `async_persistence.expire_player_effects_for_tick(tick_count)` once per tick and acts on the returned
-   `(player_id, effect_type)` pairs. Individual services do not poll for expiry.
+4. **Expiry is centralised in the tick loop.** Once per game second, `process_status_effects`
+   (`server/app/game_tick_status_effects.py`) runs each online player's per-second effect actions, then calls
+   `async_persistence.advance_player_effects(online_ids)`, which takes a second off every timed effect,
+   deletes the ones that ran out, and returns their `(player_id, effect_type)` pairs. Individual services do
+   not poll for expiry.
 
 5. **Effects requiring in-memory state clear it on expiry.** `LOGIN_WARDED` is the first such case:
    `_handle_login_warded_expirations` invokes `handle_login_grace_period_expiration` to release grace
@@ -84,7 +90,7 @@ Persistent, time-bounded player status effects are stored in PostgreSQL and expi
 
 - **Positive**: effects survive restart and reconnect; expiry is deterministic against simulation time;
   one place to reason about lifetime; adding an effect type requires no migration.
-- **Negative**: expiry granularity is bounded by tick rate; effects needing in-memory state require an
+- **Negative**: expiry granularity is one game second; effects needing in-memory state require an
   explicit expiry hook, which is easy to omit for a new effect type.
 - **Neutral**: `category` and `intensity` are carried but not yet load-bearing for every effect type.
 
@@ -106,3 +112,4 @@ Persistent, time-bounded player status effects are stored in PostgreSQL and expi
 | --- | --- | --- |
 | 1.0.0 | 2026-08-19 | Initial ADR; closes the gap left by the unwritten `write-adr-009` todo |
 | 1.1.0 | 2026-09-15 | Correct §3.1: the cited Alembic revision was never wired up and was removed in #811; schema is now in the baseline |
+| 1.2.0 | 2026-10-27 | ADR-029 step 3b-i: the only effects store; `remaining_seconds` in online game seconds, `payload`, `instance_scoped` |

@@ -9,12 +9,10 @@ import pytest
 
 from server.constants.lucidity import STARTING_LCD
 from server.game.instance_state import (
-    INSTANCE_SCOPED_EFFECT_KEY,
     _reset_lucidity,  # pyright: ignore[reportPrivateUsage]
     reset_instance_scoped_state,
     restart_instance_run,
     strip_instance_bound_items,
-    strip_instance_scoped_effects,
 )
 from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.models.player import Player
@@ -73,20 +71,6 @@ def test_nothing_to_strip_changes_nothing() -> None:
 
     assert strip_instance_bound_items(player) == 0
     assert player.get_inventory() == [_stack("lantern")]
-
-
-def test_strips_instance_scoped_status_effects_and_keeps_the_rest() -> None:
-    player = _player()
-    player.set_status_effects(
-        [
-            {"type": "lucidity_drain_over_time", INSTANCE_SCOPED_EFFECT_KEY: True},
-            {"type": "heal_over_time", "healing": 1},
-        ]
-    )
-
-    assert strip_instance_scoped_effects(player) == 1
-
-    assert [effect["type"] for effect in player.get_status_effects()] == ["heal_over_time"]
 
 
 class _Quests:
@@ -201,12 +185,11 @@ async def test_restart_instance_run_without_a_quest_service_still_restores_dp() 
     assert player.get_stats()["current_dp"] == 100
 
 
-def test_reset_instance_scoped_state_clears_items_and_effects_together() -> None:
+def test_reset_instance_scoped_state_clears_the_instance_bound_items() -> None:
+    """Instance-scoped effects are player_effects rows now (effect_store.clear_instance_scoped_effects)."""
     player = _player()
-    player.set_inventory([_stack("jade_amulet", INSTANCE_BOUND_FLAG)])
-    player.set_status_effects([{"type": "lucidity_drain_over_time", INSTANCE_SCOPED_EFFECT_KEY: True}])
+    player.set_inventory([_stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("lantern")])
 
-    assert reset_instance_scoped_state(player) == 2
+    assert reset_instance_scoped_state(player) == 1
 
-    assert player.get_inventory() == []
-    assert player.get_status_effects() == []
+    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]

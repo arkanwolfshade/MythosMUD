@@ -64,8 +64,9 @@ GET_NPC_SYSTEM_STATISTICS_COLUMNS = {
 ADD_EFFECT_PARAMS = {
     "effect_type": "login_warded",
     "category": "entry_ward",
-    "duration": 100,
-    "applied_at_tick": 0,
+    "remaining_seconds": 10,
+    "payload": "{}",
+    "instance_scoped": False,
     "intensity": 1,
     "source": "game_entry",
     "visibility_level": "visible",
@@ -318,9 +319,8 @@ async def test_add_player_effect_generates_id(
 
         result = await session.execute(
             text(
-                "SELECT add_player_effect("
-                ":player_id, :effect_type, :category, :duration, :applied_at_tick,"
-                " :intensity, :source, :visibility_level)"
+                "SELECT add_player_effect(:player_id, :effect_type, :category, :remaining_seconds,"
+                + " CAST(:payload AS jsonb), :instance_scoped, :intensity, :source, :visibility_level)"
             ),
             {"player_id": player_id, **ADD_EFFECT_PARAMS},
         )

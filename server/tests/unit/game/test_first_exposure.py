@@ -18,7 +18,6 @@ from server.game.first_exposure import (
     FirstExposureFinisher,
     apply_first_exposure_end_state,
 )
-from server.game.instance_state import INSTANCE_SCOPED_EFFECT_KEY
 from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.game.scripted_actions import QuestActionService, ScriptedActionContext
 from server.models.lucidity import PlayerLucidity
@@ -40,12 +39,6 @@ def _tutorial_player(instance_id: str | None = "instance-abc") -> tuple[Player, 
     player.tutorial_instance_id = instance_id
     player.set_stats({"current_dp": 1, "max_dp": 100})
     player.set_inventory([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG)])
-    player.set_status_effects(
-        [
-            {"type": "lucidity_drain_over_time", INSTANCE_SCOPED_EFFECT_KEY: True},
-            {"type": "heal_over_time", "healing": 1},
-        ]
-    )
     lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=-10, current_tier="delirious", liabilities="[]")
     return player, lucidity
 
@@ -66,13 +59,13 @@ def test_the_end_state_leaves_a_tutorial_player_whole_and_in_the_ward() -> None:
     assert player.get_stats()["current_dp"] == player.get_stats()["max_dp"]
 
 
-def test_the_end_state_takes_the_amulet_and_the_drain_but_keeps_everything_else() -> None:
+def test_the_end_state_takes_the_amulet_but_keeps_everything_else() -> None:
+    """The drain is a player_effects row; the finisher clears it after the commit."""
     player, lucidity = _tutorial_player()
 
     _ = apply_first_exposure_end_state(player, lucidity)
 
     assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
-    assert [effect["type"] for effect in player.get_status_effects()] == ["heal_over_time"]
 
 
 def test_the_end_state_does_nothing_for_a_player_who_is_not_in_the_tutorial() -> None:
@@ -119,6 +112,8 @@ class Rig:
     flushed: list[str] = field(default_factory=lambda: cast(list[str], []))
     order: list[str] = field(default_factory=lambda: cast(list[str], []))
     actions_fail: bool = False
+    clear_fails: bool = False
+    cleared: list[uuid.UUID] = field(default_factory=lambda: cast(list[uuid.UUID], []))
 
 
 class FakePersistence:
@@ -157,7 +152,15 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
             raise RuntimeError("quest store down")
         rig.ran.append((tuple(actions), ctx))
 
+    async def fake_clear(player_id: uuid.UUID) -> int:
+        rig.order.append("clear")
+        if rig.clear_fails:
+            raise RuntimeError("database down")
+        rig.cleared.append(player_id)
+        return 1
+
     monkeypatch.setattr(module, "run_scripted_actions", fake_run)
+    monkeypatch.setattr(module, "clear_instance_scoped_effects", fake_clear)
     return rig
 
 
@@ -170,14 +173,25 @@ def _finisher(rig: Rig) -> FirstExposureFinisher:
 
 
 @pytest.mark.asyncio
-async def test_finishing_runs_the_finish_actions_for_the_player_then_flushes_the_instance(rig: Rig) -> None:
-    await _finisher(rig).finish(uuid.uuid4(), "instance-abc")
+async def test_finishing_runs_the_finish_actions_clears_the_drain_then_flushes_the_instance(rig: Rig) -> None:
+    player_id = uuid.uuid4()
+    await _finisher(rig).finish(player_id, "instance-abc")
 
     [(actions, ctx)] = rig.ran
     assert actions == tuple(FINISH_ACTIONS)
     assert isinstance(ctx, ScriptedActionContext)
     assert ctx.player is rig.player
-    assert rig.order == ["actions", "flush"]
+    assert rig.order == ["actions", "clear", "flush"]
+    assert rig.cleared == [player_id]  # the instance-scoped drain row does not follow them out
+    assert rig.flushed == ["instance-abc"]
+
+
+@pytest.mark.asyncio
+async def test_a_failing_effect_clear_never_stops_the_instance_being_flushed(rig: Rig) -> None:
+    rig.clear_fails = True
+
+    await _finisher(rig).finish(uuid.uuid4(), "instance-abc")
+
     assert rig.flushed == ["instance-abc"]
 
 

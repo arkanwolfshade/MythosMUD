@@ -39,14 +39,11 @@ from .game_tick_death import (
 )
 from .game_tick_protocols import _app_container
 from .game_tick_status_effects import (
-    _process_all_status_effects,
     _process_damage_over_time_effect,
     _process_heal_over_time_effect,
+    _process_player_status_effects,
     _process_single_effect,
-    _update_player_status_effects,
-    _validate_and_get_player,
     _validate_app_state_for_status_effects,
-    process_player_effects_expiration,
     process_status_effects,
 )
 
@@ -56,7 +53,6 @@ __all__ = [
     "get_current_tick",
     "reset_current_tick",
     "set_current_tick",
-    "_process_all_status_effects",
     "_process_damage_over_time_effect",
     "_process_dead_players",
     "_process_heal_over_time_effect",
@@ -64,15 +60,13 @@ __all__ = [
     "_process_mp_regeneration",
     "_process_passive_corruption_flux",
     "_process_passive_lucidity_flux",
+    "_process_player_status_effects",
     "_process_single_effect",
     "_process_single_player_mp_regeneration",
     "_process_single_player_room_flux",
-    "_update_player_status_effects",
-    "_validate_and_get_player",
     "_validate_app_state_for_status_effects",
     "_validate_mp_regeneration_services",
     "process_dp_decay_and_death",
-    "process_player_effects_expiration",
     "process_status_effects",
 ]
 
@@ -291,12 +285,11 @@ async def game_tick_loop(app: FastAPI) -> None:
     while True:
         try:
             players_online = update_world_presence(app)
-            # Nobody online: the DB-backed checks (effect expiry, offline bleed-out/death) still run,
-            # but once per game-second instead of every tick. Both tolerate lateness (expiry is
-            # `remaining <= 0`; death is a threshold), and this cuts ~20 idle DB round-trips/s to ~2.
+            # Nobody online: the DB-backed checks (offline bleed-out/death) still run, but once per
+            # game-second instead of every tick. They tolerate lateness (death is a threshold), and this
+            # cuts ~20 idle DB round-trips/s to ~2. Status effects run once per game-second for online
+            # players only (they pause while a player is offline; ADR-029 step 3b-i).
             db_checks_due = players_online or is_game_second_tick(tick_count)
-            if db_checks_due:
-                await process_player_effects_expiration(app, tick_count)
             await process_status_effects(app, tick_count)
             logger.debug("Game tick", tick_count=tick_count)
             set_current_tick(tick_count)

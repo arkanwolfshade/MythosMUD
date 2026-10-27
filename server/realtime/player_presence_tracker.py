@@ -12,6 +12,7 @@ from typing import Any, Protocol, cast
 
 from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
+from ..game.effect_store import clear_instance_scoped_effects
 from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
 from ..game.instance_state import QuestResetter, reset_instance_scoped_state, restart_instance_run
 from ..models.corruption import compute_tier
@@ -262,6 +263,7 @@ async def _start_fresh_instance(
     cleared = 0
     if lost_instance_id and lost_instance_id != PENDING_INSTANCE_ID:
         cleared = reset_instance_scoped_state(player)
+        cleared += await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
         # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
         prefix = f"{instance.instance_id}_"
         await restart_instance_run(player, [room_id.removeprefix(prefix) for room_id in instance.rooms], quests)

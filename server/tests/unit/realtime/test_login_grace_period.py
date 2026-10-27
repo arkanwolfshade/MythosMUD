@@ -228,27 +228,25 @@ async def test_grace_period_task_cancellation_cleanup(mock_connection_manager): 
 @pytest.mark.asyncio
 async def test_start_login_grace_period_effect_based_adds_effect_and_sets_in_memory(
     mock_connection_manager,
+    monkeypatch: pytest.MonkeyPatch,
 ):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name
-    """When async_persistence and tick getters are provided, add effect and set in-memory state (no asyncio task)."""
+    """When async_persistence is provided, add the ward effect and set in-memory state (no asyncio task)."""
     player_id = uuid.uuid4()
     mock_persistence = MagicMock()
     mock_persistence.add_player_effect = AsyncMock(return_value=str(uuid.uuid4()))
-    get_current_tick = MagicMock(return_value=100)
-    get_tick_interval = MagicMock(return_value=0.1)
+    monkeypatch.setattr("server.realtime.login_grace_period._login_grace_period_seconds", lambda: 9.5)
 
     await start_login_grace_period(
         player_id,
         mock_connection_manager,
         async_persistence=mock_persistence,
-        get_current_tick=get_current_tick,
-        get_tick_interval=get_tick_interval,
     )
 
     mock_persistence.add_player_effect.assert_called_once()
     call_kw = mock_persistence.add_player_effect.call_args[1]
     assert call_kw.get("effect_type") == "login_warded"
     assert call_kw.get("category") == "entry_ward"
-    assert call_kw.get("applied_at_tick") == 100
+    assert call_kw.get("remaining_seconds") == 10  # online game seconds, rounded up (ADR-029 step 3b-i)
     assert call_kw.get("options") == {
         "intensity": 1,
         "source": "game_entry",
