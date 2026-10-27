@@ -3,6 +3,22 @@
 --
 -- Python maps these rows to Player domain objects.
 
+-- ADR-029 step 3b-ii dropped players.status_effects. CREATE OR REPLACE cannot change a RETURNS TABLE, so the
+-- row readers are dropped and recreated; upsert_player lost p_status_effects, so its old signature is dropped too.
+DROP FUNCTION IF EXISTS :schema_name.get_player_by_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_player_by_name(text); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_by_user_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_active_players_by_user_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.list_players(); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_in_room(text); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_batch(uuid[]); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_not_clearly_alive(); -- noqa: PRS
+DROP PROCEDURE IF EXISTS :schema_name.upsert_player( -- noqa: PRS
+    uuid, uuid, character varying, text, text, character varying, character varying, integer, integer, integer,
+    bigint, timestamp with time zone, timestamp with time zone, jsonb, boolean, timestamp with time zone,
+    character varying, text, text
+);
+
 -- get_player_by_id: fetch single player by UUID (includes inventory)
 CREATE OR REPLACE FUNCTION :schema_name.get_player_by_id(p_id UUID) -- noqa: PRS
 RETURNS TABLE (
@@ -10,7 +26,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -35,7 +50,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -63,7 +77,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -88,7 +101,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -117,7 +129,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -142,7 +153,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -170,7 +180,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -195,7 +204,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -224,7 +232,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -249,7 +256,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -276,7 +282,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -301,7 +306,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -329,7 +333,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -354,7 +357,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -380,7 +382,7 @@ $$;
 -- get_mortally_wounded_players): in the normal case every player is healthy and this returns no rows.
 -- Deliberately a SUPERSET of "dead or mortally wounded" -- missing, null, string and other odd stored
 -- values are returned too, so the Python predicates (Player.is_dead / is_mortally_wounded, which
--- coerce via coerce_int) keep the final say. Returns the 17 columns of the players table (no inventory
+-- coerce via coerce_int) keep the final say. Returns the 16 columns of the players table (no inventory
 -- join) because the caller maps them onto session-attached Player entities via select().from_statement().
 CREATE OR REPLACE FUNCTION :schema_name.get_players_not_clearly_alive()
 RETURNS TABLE (
@@ -388,7 +390,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -411,7 +412,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -546,7 +546,6 @@ CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_user_id UUID,
     p_name VARCHAR(50),
     p_inventory TEXT,
-    p_status_effects TEXT,
     p_current_room_id VARCHAR(255),
     p_respawn_room_id VARCHAR(100),
     p_experience_points INT,
@@ -566,12 +565,12 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO players (
-        player_id, user_id, name, inventory, status_effects,
+        player_id, user_id, name, inventory,
         current_room_id, respawn_room_id, experience_points, level, is_admin,
         profession_id, created_at, last_active, stats, is_deleted, deleted_at,
         tutorial_instance_id
     ) VALUES (
-        p_player_id, p_user_id, p_name, p_inventory, p_status_effects,
+        p_player_id, p_user_id, p_name, p_inventory,
         p_current_room_id, p_respawn_room_id, p_experience_points, p_level, p_is_admin,
         p_profession_id, p_created_at, p_last_active, p_stats, p_is_deleted, p_deleted_at,
         p_tutorial_instance_id
@@ -580,7 +579,6 @@ BEGIN
         user_id = EXCLUDED.user_id,
         name = EXCLUDED.name,
         inventory = EXCLUDED.inventory,
-        status_effects = EXCLUDED.status_effects,
         current_room_id = EXCLUDED.current_room_id,
         respawn_room_id = EXCLUDED.respawn_room_id,
         experience_points = EXCLUDED.experience_points,

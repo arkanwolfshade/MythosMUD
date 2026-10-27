@@ -1,6 +1,6 @@
 # ADR-019: Player Effects System
 
-**Version 1.2.0** · MythosMUD · 2026-10-27
+**Version 1.2.1** · MythosMUD · 2026-10-27
 
 ---
 
@@ -38,7 +38,8 @@ therefore records the *decision* and its contract rather than re-describing the 
 **[SPEC]**
 Persistent, time-bounded player status effects are stored in PostgreSQL and expired by the game tick.
 `player_effects` is the only effects store ([ADR-029](ADR-029-authoritative-player-registry.md) step 3b-i):
-spells, scripted content (dialogue `apply_effect`, container `on_put`) and the login ward all write rows.
+spells, scripted content (dialogue `apply_effect`, container `on_put`) and the login ward all write rows. The old
+`players.status_effects` column was dropped in step 3b-ii (migration `20261027140000_drop_players_status_effects`).
 
 1. **Storage**: table `player_effects`, one row per active effect (baseline `db/schema.sql`, #811; runtime
    columns from migration `20261027120000_player_effects_runtime_state`). Columns: `player_id` (FK),
@@ -113,3 +114,4 @@ spells, scripted content (dialogue `apply_effect`, container `on_put`) and the l
 | 1.0.0 | 2026-08-19 | Initial ADR; closes the gap left by the unwritten `write-adr-009` todo |
 | 1.1.0 | 2026-09-15 | Correct §3.1: the cited Alembic revision was never wired up and was removed in #811; schema is now in the baseline |
 | 1.2.0 | 2026-10-27 | ADR-029 step 3b-i: the only effects store; `remaining_seconds` in online game seconds, `payload`, `instance_scoped` |
+| 1.2.1 | 2026-10-27 | ADR-029 step 3b-ii: `players.status_effects` dropped |

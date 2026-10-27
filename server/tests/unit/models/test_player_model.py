@@ -33,7 +33,6 @@ def test_player_defaults() -> None:
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
     assert player.inventory == "[]" or player.inventory is None
-    assert player.status_effects == "[]" or player.status_effects is None
     assert player.experience_points == 0 or player.experience_points is None
     assert player.level == 1 or player.level is None
     assert player.is_admin == 0 or player.is_admin is None
@@ -151,34 +150,6 @@ def test_player_set_inventory_serializes_uuid_values() -> None:
 
     inventory = player.get_inventory()
     assert inventory[0]["item_instance_id"] == str(instance_id)
-
-
-def test_player_get_status_effects() -> None:
-    """Test Player.get_status_effects() parses JSON status effects."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        status_effects='[{"type": "poisoned", "duration": 10}]',
-    )
-
-    effects = player.get_status_effects()
-
-    assert effects == [{"type": "poisoned", "duration": 10}]
-
-
-def test_player_set_status_effects() -> None:
-    """Test Player.set_status_effects() serializes to JSON."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(player_id=player_id, user_id=user_id, name="TestPlayer")
-
-    new_effects = [{"type": "stunned", "duration": 5}]
-    player.set_status_effects(new_effects)
-
-    assert player.get_status_effects() == new_effects
 
 
 def test_player_get_equipped_items() -> None:

@@ -71,7 +71,6 @@ def _make_mock_row(
     row.user_id = uid
     row.name = name
     row.inventory = "[]"
-    row.status_effects = "[]"
     row.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
     row.respawn_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
     row.experience_points = 0
@@ -110,7 +109,6 @@ def mock_player():
     player.user_id = str(uuid.uuid4())
     player.name = "TestPlayer"
     player.inventory = "[]"
-    player.status_effects = "[]"
     player.current_room_id = "arkham_square"
     player.respawn_room_id = "arkham_square"
     player.experience_points = 0
@@ -561,7 +559,6 @@ async def test_save_players_success(player_repository, mock_player):
     mock_player2.user_id = str(uuid.uuid4())
     mock_player2.name = "Player2"
     mock_player2.inventory = "[]"
-    mock_player2.status_effects = "[]"
     mock_player2.current_room_id = "arkham_square"
     mock_player2.respawn_room_id = "arkham_square"
     mock_player2.experience_points = 0

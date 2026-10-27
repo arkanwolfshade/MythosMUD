@@ -192,8 +192,6 @@ class PlayerCreationService:
         # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
         if not getattr(player, "inventory", None):
             player.set_inventory([])
-        if not getattr(player, "status_effects", None):
-            player.set_status_effects([])
 
         return player
 

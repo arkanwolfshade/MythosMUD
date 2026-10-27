@@ -191,7 +191,6 @@ async def test_create_player_read_from_object_enriches_inventory_weapon() -> Non
     player.get_inventory = lambda: [
         {"item_id": "weapon.main_hand.switchblade", "prototype_id": "weapon.main_hand.switchblade", "quantity": 1}
     ]
-    player.get_status_effects = lambda: []
 
     persistence.get_profession_by_id = MagicMock(return_value=None)
 

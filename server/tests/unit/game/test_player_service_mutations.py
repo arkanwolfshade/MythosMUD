@@ -217,7 +217,6 @@ async def test_get_user_characters(player_service, mock_persistence):
         }
     )
     mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.get_status_effects = MagicMock(return_value=[])
     mock_player.profession_id = 0
     mock_player.current_room_id = "room_001"
     mock_player.experience_points = 0

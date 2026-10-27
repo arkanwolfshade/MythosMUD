@@ -54,7 +54,7 @@ class ScriptedActionContext:
 
 
 async def _apply_effect(action: ApplyEffectAction, ctx: ScriptedActionContext) -> None:
-    # A player_effects row (ADR-029 step 3b-i), not the players.status_effects column; no player save is needed.
+    # A player_effects row (ADR-029 step 3b), not part of the players row, so no player save is needed.
     _ = await add_content_effect(uuid.UUID(str(ctx.player.player_id)), action.effect)
 
 

@@ -78,7 +78,6 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
             respawn_room_id = $2,
             tutorial_instance_id = $3,
             inventory = $4,
-            status_effects = '[]',
             stats = jsonb_set(
                 jsonb_set(
                     jsonb_set(
@@ -100,6 +99,8 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
         inventory,
     )
     _ = await conn.execute("DELETE FROM quest_instances WHERE player_id = $1", player_id)
+    # Effects pause while offline (ADR-029 step 3b), so a leftover row would resume at the next login.
+    _ = await conn.execute("DELETE FROM player_effects WHERE player_id = $1", player_id)
     _ = await conn.execute(
         """
         UPDATE player_lucidity

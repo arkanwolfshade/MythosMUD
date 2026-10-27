@@ -33,7 +33,6 @@ def row_data(player_id: uuid.UUID | None = None, **overrides: object) -> PlayerR
         "stats": {"current_dp": 20, "max_dp": 20},
         "inventory": '[{"item_id": "sling", "item_name": "Sling", "slot_type": "backpack", "quantity": 1}]',
         "equipped_json": "{}",
-        "status_effects": "[]",
     }
     row.update(overrides)
     return PlayerRowData.from_row(row)

@@ -45,7 +45,6 @@ def test_player_create():
     assert isinstance(stats_value, Stats)
     assert "lucidity" not in stats_value.model_dump()
     assert player.inventory == []
-    assert player.status_effects == []
 
 
 def test_player_create_custom_stats():
@@ -78,7 +77,6 @@ def test_player_read():
         name="TestPlayer",
         stats=Stats(),
         inventory=[],
-        status_effects=[],
         created_at=created_at,
         last_active=last_active,
     )
@@ -104,7 +102,6 @@ def test_player_read_defaults():
         name="TestPlayer",
         stats=Stats(),
         inventory=[],
-        status_effects=[],
         created_at=created_at,
         last_active=last_active,
     )

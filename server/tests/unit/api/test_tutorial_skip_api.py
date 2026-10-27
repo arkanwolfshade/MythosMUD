@@ -53,7 +53,6 @@ def _created(user: User) -> PlayerRead:
         profession_flavor_text=None,
         stats=Stats.model_validate(STATS),
         inventory=[],
-        status_effects=[],
         created_at=datetime.now(UTC),
         last_active=datetime.now(UTC),
         is_admin=False,

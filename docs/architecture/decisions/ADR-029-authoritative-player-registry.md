@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.2** · MythosMUD · 2026-10-26
+**Version 1.0.3** · MythosMUD · 2026-10-27
 
 ---
 
@@ -211,8 +211,10 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
    `get_player_by_id` / `upsert_player`). Unit-tested on its own; no callers yet. Each later step adds its own
    parts and mappers alongside the callers that use them.
 3. Schema: drop the duplicate stores and move their readers, in two PRs. 3a moves lucidity onto `player_lucidity`
-   (readers and writers through `LucidityService`, `stats.lucidity` dropped from the store and the wire). 3b
-   extends `player_effects` for the tick-driven effects and drops `players.status_effects`.
+   (readers and writers through `LucidityService`, `stats.lucidity` dropped from the store and the wire). 3b is
+   itself two PRs: 3b-i extends `player_effects` for the tick-driven and spell effects and moves every reader and
+   writer onto it; 3b-ii drops `players.status_effects` from the table, the player procedures, the ORM model and
+   `PlayerRead`.
 4. Inventory, bank, containers and transfers.
 5. Quests, lucidity, corruption, cooldowns and debrief.
 6. Ticks and periodic writers, combat, death and respawn.
@@ -224,8 +226,6 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 
 **[?]**
 
-- `players.status_effects` was empty in dev and e2e at rest (the effects are short-lived), so step 3b is expected to
-  need no data migration, only the effect-table design.
 - Whether `player.pose` is a persisted column (the survey did not confirm it) decides which part owns it.
 
 ## 8. Changelog
@@ -237,3 +237,4 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.0 | 2026-10-26 | Initial decision record |
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
+| 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |

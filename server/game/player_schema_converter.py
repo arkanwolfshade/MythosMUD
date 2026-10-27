@@ -11,11 +11,11 @@ from pydantic import ValidationError
 from ..exceptions import DatabaseError
 from ..game.items.prototype_registry import PrototypeRegistryError
 from ..models import Stats
-from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem and StatusEffect are used for type conversion
+from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem is used for type conversion
     InventoryItem,
     PositionState,
-    StatusEffect,
 )
+from ..models.player import Player
 from ..schemas.game.weapon import WeaponStats, weapon_stats_from_metadata
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -24,27 +24,6 @@ logger = get_logger(__name__)
 
 if TYPE_CHECKING:
     pass
-
-
-def status_effect_models(effects: object) -> list[StatusEffect]:
-    """Typed StatusEffect models for the effects PlayerRead carries.
-
-    The game tick loop keeps its own effects (heal_over_time, damage_over_time, lucidity_drain_over_time) in the same
-    list as ``{"type": ...}`` dicts. They have no StatusEffect shape (no effect_type or intensity), so they are not
-    part of the typed view; converting them would fail every command that reads the player while one is running.
-    """
-    if not isinstance(effects, list):
-        return []
-    models: list[StatusEffect] = []
-    for effect in cast(list[object], effects):
-        if isinstance(effect, StatusEffect):
-            models.append(effect)
-        elif isinstance(effect, dict):
-            fields = cast(dict[str, object], effect)
-            if "type" in fields and "effect_type" not in fields:
-                continue
-            models.append(StatusEffect.model_validate(fields))
-    return models
 
 
 def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponStats | None:
@@ -138,24 +117,6 @@ class PlayerSchemaConverter:
 
         return player_profession_id, profession_name, profession_description, profession_flavor_text
 
-    async def get_player_data_methods(
-        self, player: Any
-    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
-        """Get stats, inventory, and status_effects from player, handling async methods."""
-        stats = player.get_stats()
-        inventory = player.get_inventory()
-        status_effects = player.get_status_effects()
-
-        # If these are coroutines (from AsyncMock), await them
-        if hasattr(stats, "__await__"):
-            stats = await stats
-        if hasattr(inventory, "__await__"):
-            inventory = await inventory
-        if hasattr(status_effects, "__await__"):
-            status_effects = await status_effects
-
-        return stats, inventory, status_effects
-
     def compute_derived_stats_fields(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Compute derived stats fields (max_dp, max_magic_points, max_lucidity).
 
@@ -215,12 +176,14 @@ class PlayerSchemaConverter:
         """Create PlayerRead schema from player object."""
         player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
 
-        stats, inventory, status_effects = await self.get_player_data_methods(player)
+        # convert_player_to_schema sends dicts to create_player_read_from_dict, so this is a Player row.
+        player_row = cast(Player, player)
+        # The derived fields only add max_* and magic_points, so position reads the same from the copy.
+        stats = self.compute_derived_stats_fields(player_row.get_stats())
+        inventory = player_row.get_inventory()
 
         position_value = stats.get("position", PositionState.STANDING.value)
         position_state = self.get_position_state(position_value, getattr(player, "player_id", None))
-
-        stats = self.compute_derived_stats_fields(stats)
 
         # Convert dicts to typed models; enrich inventory items with weapon stats from prototype registry
         stats_model = Stats(**stats) if isinstance(stats, dict) else stats
@@ -230,7 +193,6 @@ class PlayerSchemaConverter:
             if isinstance(inventory, list)
             else inventory
         )
-        status_effects_models = status_effect_models(status_effects)
 
         return PlayerRead(
             id=player.player_id,
@@ -245,7 +207,6 @@ class PlayerSchemaConverter:
             level=player.level,
             stats=stats_model,
             inventory=inventory_models,
-            status_effects=status_effects_models,
             created_at=player.created_at,
             last_active=player.last_active,
             is_admin=bool(player.is_admin),  # Convert integer to boolean
@@ -281,7 +242,6 @@ class PlayerSchemaConverter:
             if isinstance(player["inventory"], list)
             else player["inventory"]
         )
-        status_effects_models = status_effect_models(cast(object, player["status_effects"]))
 
         return PlayerRead(
             id=player["player_id"],
@@ -296,7 +256,6 @@ class PlayerSchemaConverter:
             level=player["level"],
             stats=stats_model,
             inventory=inventory_models,
-            status_effects=status_effects_models,
             created_at=player["created_at"],
             last_active=player["last_active"],
             is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
