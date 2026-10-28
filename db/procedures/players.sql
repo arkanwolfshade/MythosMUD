@@ -599,6 +599,66 @@ BEGIN
 END;
 $$;
 
+-- update_player_inventory: the player registry's inventory write (ADR-029 step 4). Sets only the carried and
+-- equipped stacks: both copies of the carried stacks (players.inventory and player_inventories.inventory_json, as
+-- upsert_player writes them) and equipped_json, so a write never touches stats or any other column.
+CREATE OR REPLACE PROCEDURE :schema_name.update_player_inventory(
+    p_player_id UUID,
+    p_inventory TEXT,
+    p_inventory_json TEXT,
+    p_equipped_json TEXT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE players SET inventory = p_inventory WHERE player_id = p_player_id;
+
+    INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
+    VALUES (p_player_id, p_inventory_json, p_equipped_json)
+    ON CONFLICT (player_id) DO UPDATE SET
+        inventory_json = EXCLUDED.inventory_json,
+        equipped_json = EXCLUDED.equipped_json;
+END;
+$$;
+
+-- update_player_row: the player registry's players-row write (ADR-029 step 4). Every column the row part owns, and
+-- nothing about inventory (update_player_inventory) or the immutable identity columns (player_id, user_id,
+-- created_at). The registry only writes players it loaded, so this is an UPDATE, never an insert.
+CREATE OR REPLACE PROCEDURE :schema_name.update_player_row(
+    p_player_id UUID,
+    p_name VARCHAR(50),
+    p_current_room_id VARCHAR(255),
+    p_respawn_room_id VARCHAR(100),
+    p_experience_points INT,
+    p_level INT,
+    p_is_admin INT,
+    p_profession_id BIGINT,
+    p_last_active TIMESTAMP WITH TIME ZONE,
+    p_stats JSONB,
+    p_is_deleted BOOLEAN,
+    p_deleted_at TIMESTAMP WITH TIME ZONE,
+    p_tutorial_instance_id VARCHAR(255)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE players SET
+        name = p_name,
+        current_room_id = p_current_room_id,
+        respawn_room_id = p_respawn_room_id,
+        experience_points = p_experience_points,
+        level = p_level,
+        is_admin = p_is_admin,
+        profession_id = p_profession_id,
+        last_active = p_last_active,
+        stats = p_stats,
+        is_deleted = p_is_deleted,
+        deleted_at = p_deleted_at,
+        tutorial_instance_id = p_tutorial_instance_id
+    WHERE player_id = p_player_id;
+END;
+$$;
+
 -- get_user_id_by_username_ci: case-insensitive username -> user id lookup (#633). Backs both
 -- the registration existence check and the login lookup in server/auth/endpoints.py -- callers
 -- that need the mapped User ORM entity follow up with session.get(User, id) to keep identity-map

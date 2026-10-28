@@ -1,21 +1,24 @@
 """Command helper functions for inventory operations."""
 
 import inspect
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping
 from copy import deepcopy
 from typing import Any, cast
 from uuid import UUID
 
+from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from ..container import get_container
 from ..exceptions import ValidationError as MythosValidationError
+from ..game.player_registry import PlayerNotFoundError, PlayerRegistry
 from ..models.player import Player
 from ..schemas.shared import InventorySchemaValidationError
 from ..services.inventory_service import InventoryCapacityError, InventoryService, InventoryValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .command_results import command_error
+from .inventory_command_contracts import CommandResponse
 from .inventory_item_matching import match_room_drop_by_name
 
 logger: BoundLogger = get_logger(__name__)
@@ -110,7 +113,7 @@ def _player_uuid_for_quest_sync(player: Player) -> UUID | None:
     return raw_id if isinstance(raw_id, UUID) else UUID(str(raw_id))
 
 
-async def _sync_collect_quests_after_inventory_save(player: Player) -> None:
+async def sync_collect_quests_after_inventory_save(player: Player) -> None:
     """Refresh collect_n quest progress after a successful inventory persist."""
     try:
         sync = _collect_progress_sync(get_container())
@@ -142,14 +145,59 @@ async def persist_player(persistence: object, player: Player) -> dict[str, str] 
         result = save_player(player)
         if inspect.isawaitable(result):
             await result
-        await _sync_collect_quests_after_inventory_save(player)
+        await sync_collect_quests_after_inventory_save(player)
         return None
-    except InventorySchemaValidationError as exc:
+    except Exception as exc:  # noqa: B904  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
+        return _inventory_save_error(player, exc)
+
+
+def _inventory_save_error(player: Player, exc: Exception) -> dict[str, str]:
+    """The reply for an inventory change that could not be saved (rejected by validation, or the write failed)."""
+    if isinstance(exc, InventorySchemaValidationError):
         logger.error("Inventory schema validation during persistence", player=player.name, error=str(exc))
         return {"result": "Inventory data rejected by schema validation."}
-    except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
-        logger.error("Error saving player inventory", player=player.name, error=str(exc))
-        return command_error("An error occurred while saving your inventory.")
+    logger.error("Error saving player inventory", player=player.name, error=str(exc))
+    return command_error("An error occurred while saving your inventory.")
+
+
+InventoryChange = Callable[[], Awaitable[CommandResponse | None]]
+
+
+def _player_registry() -> PlayerRegistry:
+    registry = get_container().player_registry
+    if registry is None:
+        raise RuntimeError("The player registry is not initialised")
+    return registry
+
+
+def _equipped_stacks(equipped: Mapping[str, object]) -> dict[str, Mapping[str, object]]:
+    return {
+        slot: dict(cast(Mapping[str, object], stack)) for slot, stack in equipped.items() if isinstance(stack, Mapping)
+    }
+
+
+async def change_inventory(player: Player, change: InventoryChange) -> CommandResponse | None:
+    """Run a command's inventory read-modify-write as one registry unit of work on the player (ADR-029 step 4a).
+
+    The player's registry lock is held throughout, and ``player`` is first given the live carried and equipped
+    stacks, so ``change`` reads and edits the current inventory, never the copy the command loaded. ``change``
+    returns a reply to abort (nothing is written) or None to keep its edits, which are validated and committed
+    before this returns. Returns ``change``'s reply, an error reply if the inventory could not be saved, or None.
+    A failure rolls the aggregate back; the caller undoes anything outside it (a room drop it took).
+    """
+    try:
+        async with _player_registry().mutate(UUID(str(player.player_id))) as aggregate:
+            # Copies: the command edits its working copy, never the aggregate's own stacks.
+            player.set_inventory([dict(stack) for stack in aggregate.inventory.carried])
+            player.set_equipped_items(_equipped_stacks(aggregate.inventory.equipped))
+            reply = await change()
+            if reply is not None:
+                return reply
+            aggregate.inventory.replace(player.get_inventory(), player.get_equipped_items())
+    except (InventorySchemaValidationError, PlayerNotFoundError, SQLAlchemyError, OSError) as exc:
+        return _inventory_save_error(player, exc)
+    await sync_collect_quests_after_inventory_save(player)
+    return None
 
 
 def resolve_pickup_item_index(

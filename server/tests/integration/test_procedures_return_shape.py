@@ -7,12 +7,16 @@ the test database (mythos_unit or mythos_e2e) with procedures already applied.
 """
 
 import uuid
+from collections.abc import Mapping
 from typing import cast
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from server.game.player_registry import PlayerInventoryPart, PlayerRowData
+from server.game.player_registry.player_inventory import UPDATE_PLAYER_INVENTORY_SQL
+from server.game.player_registry.player_row import LOAD_PLAYER_SQL, UPDATE_PLAYER_ROW_SQL
 from server.models.player import Player, PlayerInventory
 from server.models.user import User
 from server.services.npc_startup_service import ARENA_ROOM_IDS
@@ -283,6 +287,80 @@ async def test_clear_player_inventory_empties_gear_and_leaves_stats_untouched(
     assert row["inventory_json"] == "[]"
     assert row["equipped_json"] == "{}"
     assert row["stats"] == stats
+
+
+@pytest.mark.asyncio
+async def test_the_registry_part_writes_each_touch_only_their_own_columns(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """
+    update_player_inventory and update_player_row (ADR-029 step 4a), called with the registry parts' own statements.
+
+    The inventory write must leave stats alone and the row write must leave the inventory alone: the registry relies
+    on that to never write back a stale copy of a part it did not change.
+    """
+    stats: dict[str, object] = {"current_dp": 7, "max_dp": 20}
+    sling = '[{"item_id": "sling", "item_name": "Sling", "slot_type": "inventory", "quantity": 1}]'
+    amulet = {"item_id": "jade_amulet", "item_name": "Jade Amulet", "slot_type": "backpack", "quantity": 1}
+    async with session_factory() as session:
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        session.add(
+            User(
+                id=str(user_id),
+                email=f"partwrites_{user_id}@example.com",
+                username=f"partwrites_{str(user_id)[:8]}",
+                display_name=f"Part Writes {str(user_id)[:8]}",
+                hashed_password="hashed",
+                is_active=True,
+                is_superuser=False,
+                is_verified=True,
+            )
+        )
+        await session.flush()
+        session.add(
+            Player(
+                player_id=str(player_id),
+                user_id=str(user_id),
+                name=f"partwrites_{str(player_id)[:8]}",
+                inventory=sling,
+                stats=stats,
+            )
+        )
+        await session.flush()
+        loaded = cast(
+            Mapping[str, object], (await session.execute(LOAD_PLAYER_SQL, {"id": player_id})).mappings().one()
+        )
+
+        inventory = PlayerInventoryPart.from_row(loaded)
+        inventory.set_carried([*inventory.carried, amulet])
+        _ = await session.execute(UPDATE_PLAYER_INVENTORY_SQL, inventory.write_params())
+        after_inventory = await _inventory_and_stats(session, player_id)
+
+        row = PlayerRowData.from_row(loaded)
+        row.stats["current_dp"] = 12
+        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params())
+        after_row = await _inventory_and_stats(session, player_id)
+
+    assert "Jade Amulet" in str(after_inventory["inventory"])
+    assert after_inventory["inventory"] == after_inventory["inventory_json"]
+    assert after_inventory["stats"] == stats  # the inventory write left stats alone
+    assert after_row["stats"] == {"current_dp": 12, "max_dp": 20}
+    assert after_row["inventory"] == after_inventory["inventory"]  # the row write left the inventory alone
+
+
+async def _inventory_and_stats(session: AsyncSession, player_id: uuid.UUID) -> dict[str, object]:
+    result = await session.execute(
+        text(
+            """
+            SELECT p.inventory, p.stats, pi.inventory_json
+            FROM players p JOIN player_inventories pi ON pi.player_id = p.player_id
+            WHERE p.player_id = :id
+            """
+        ),
+        {"id": player_id},
+    )
+    return dict(result.mappings().one())
 
 
 @pytest.mark.asyncio

@@ -2,18 +2,21 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from types import SimpleNamespace
 from typing import final
 from unittest.mock import AsyncMock, patch
 from uuid import UUID, uuid4
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
 from server.commands.inventory_use_command import handle_use_command
 from server.game.items.item_effects import ITEM_EFFECTS, LUCIDITY_RECOVERY_TAG, ItemEffectResult, ItemUseContext
 from server.game.items.models import ItemPrototypeModel
 from server.game.items.prototype_registry import PrototypeRegistry
 from server.services.catatonia_state import CATATONIA_BLOCK_MESSAGE
+from server.tests.fixtures.shared.player_registry import RegistryHarness, install_player_registry
 
 TONIC_ID = "consumable.folk_tonic"
 SWORD_ID = "weapon.sword"
@@ -31,12 +34,19 @@ class FakePlayer:
         self.player_id = uuid4()
         self.current_room_id = "room-1"
         self._inventory = inventory
+        self._equipped: dict[str, object] = {}
 
     def get_inventory(self) -> list[dict[str, object]]:
         return [dict(stack) for stack in self._inventory]
 
     def set_inventory(self, inventory: list[dict[str, object]]) -> None:
         self._inventory = inventory
+
+    def get_equipped_items(self) -> dict[str, object]:
+        return dict(self._equipped)
+
+    def set_equipped_items(self, equipped: Mapping[str, Mapping[str, object]]) -> None:
+        self._equipped = dict(equipped)
 
 
 def _stack(prototype_id: str, name: str, quantity: int = 1) -> dict[str, object]:
@@ -103,32 +113,39 @@ async def _use(
     player: FakePlayer,
     request: SimpleNamespace,
     command_data: dict[str, object],
+    monkeypatch: pytest.MonkeyPatch,
     *,
-    persist_error: dict[str, str] | None = None,
-) -> tuple[dict[str, object], AsyncMock, AsyncMock]:
-    persist = AsyncMock(return_value=persist_error)
+    fail_save: bool = False,
+) -> tuple[dict[str, object], RegistryHarness, AsyncMock]:
+    harness = install_player_registry(monkeypatch, player)
+    if fail_save:
+        harness.db.fail_commits = 1
+        harness.db.commit_error = SQLAlchemyError("database unavailable")
     emit = AsyncMock()
     with (
         patch(f"{MODULE}.resolve_state_and_player", new=AsyncMock(return_value=("db", "cm", player, None))),
-        patch(f"{MODULE}.persist_player", new=persist),
         patch(f"{MODULE}.emit_inventory_updated", new=emit),
     ):
         result = await handle_use_command(command_data, {"username": "tester"}, request, None, "Tester")
-    return dict(result), persist, emit
+    return dict(result), harness, emit
+
+
+def _quantities(stacks: list[dict[str, object]] | None) -> list[object]:
+    return [stack["quantity"] for stack in stacks or []]
 
 
 @pytest.mark.asyncio
 async def test_use_decrements_a_stack_and_reports_to_player_and_room(
-    request_obj: SimpleNamespace, effect: EffectProbe
+    request_obj: SimpleNamespace, effect: EffectProbe, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     player = FakePlayer([_stack("misc.rock", "Rock"), _stack(TONIC_ID, "Folk Tonic", 2)])
 
-    result, persist, emit = await _use(player, request_obj, {"search_term": "tonic"})
+    result, harness, emit = await _use(player, request_obj, {"search_term": "tonic"}, monkeypatch)
 
     assert result["result"] == "You swallow the folk tonic."
     assert result["room_message"] == "Tester drinks a folk tonic."
     assert [stack["quantity"] for stack in player.get_inventory()] == [1, 1]
-    persist.assert_awaited_once()
+    assert _quantities(harness.saved_carried()) == [1, 1]  # the decrement reached the inventory write
     emit.assert_awaited_once_with("cm", UUID(str(player.player_id)), player)
     [ctx] = effect.contexts
     assert (ctx.player_id, ctx.room_id, ctx.prototype.prototype_id) == (player.player_id, "room-1", TONIC_ID)
@@ -136,42 +153,44 @@ async def test_use_decrements_a_stack_and_reports_to_player_and_room(
 
 @pytest.mark.asyncio
 async def test_use_by_index_removes_the_last_item_from_the_stack(
-    request_obj: SimpleNamespace, effect: EffectProbe
+    request_obj: SimpleNamespace, effect: EffectProbe, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _ = effect
     player = FakePlayer([_stack(TONIC_ID, "Folk Tonic")])
 
-    _ = await _use(player, request_obj, {"index": 1})
+    _result, harness, _emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert player.get_inventory() == []
+    assert harness.saved_carried() == []
 
 
 @pytest.mark.asyncio
-async def test_a_refused_effect_keeps_the_item(request_obj: SimpleNamespace, effect: EffectProbe) -> None:
+async def test_a_refused_effect_keeps_the_item(
+    request_obj: SimpleNamespace, effect: EffectProbe, monkeypatch: pytest.MonkeyPatch
+) -> None:
     effect.outcome = ItemEffectResult(ok=False, message="You don't think you can stomach another tonic at this time.")
     player = FakePlayer([_stack(TONIC_ID, "Folk Tonic")])
 
-    result, persist, emit = await _use(player, request_obj, {"index": 1})
+    result, harness, emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert result == {"result": "You don't think you can stomach another tonic at this time."}
     assert [stack["quantity"] for stack in player.get_inventory()] == [1]
-    persist.assert_not_awaited()
+    assert harness.saved_carried() is None
     emit.assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_a_failed_save_restores_the_inventory_but_the_effect_stands(
-    request_obj: SimpleNamespace, effect: EffectProbe
+async def test_a_failed_save_keeps_the_item_but_the_effect_stands(
+    request_obj: SimpleNamespace, effect: EffectProbe, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _ = effect
     player = FakePlayer([_stack(TONIC_ID, "Folk Tonic", 2)])
 
-    result, _persist, emit = await _use(
-        player, request_obj, {"index": 1}, persist_error={"result": "An error occurred while saving your inventory."}
-    )
+    result, harness, emit = await _use(player, request_obj, {"index": 1}, monkeypatch, fail_save=True)
 
     assert result["result"] == "You swallow the folk tonic."
-    assert [stack["quantity"] for stack in player.get_inventory()] == [2]
+    view = harness.registry.peek(UUID(str(player.player_id)))
+    assert view is not None and _quantities([dict(stack) for stack in view.inventory.carried]) == [2]  # rolled back
     emit.assert_not_awaited()
 
 
@@ -185,16 +204,20 @@ async def test_a_failed_save_restores_the_inventory_but_the_effect_stands(
     ],
 )
 async def test_unusable_items_are_not_spent(
-    request_obj: SimpleNamespace, effect: EffectProbe, stack: dict[str, object], expected: str
+    request_obj: SimpleNamespace,
+    effect: EffectProbe,
+    stack: dict[str, object],
+    expected: str,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     player = FakePlayer([stack])
 
-    result, persist, _emit = await _use(player, request_obj, {"index": 1})
+    result, harness, _emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert result == {"result": expected}
     assert effect.contexts == []
     assert len(player.get_inventory()) == 1
-    persist.assert_not_awaited()
+    assert harness.saved_carried() is None
 
 
 @pytest.mark.asyncio
@@ -206,11 +229,15 @@ async def test_unusable_items_are_not_spent(
     ],
 )
 async def test_unresolvable_selectors_report_what_is_missing(
-    request_obj: SimpleNamespace, effect: EffectProbe, command_data: dict[str, object], expected: str
+    request_obj: SimpleNamespace,
+    effect: EffectProbe,
+    command_data: dict[str, object],
+    expected: str,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     player = FakePlayer([_stack(TONIC_ID, "Folk Tonic")])
 
-    result, _persist, _emit = await _use(player, request_obj, command_data)
+    result, _harness, _emit = await _use(player, request_obj, command_data, monkeypatch)
 
     assert result == {"result": expected}
     assert effect.contexts == []
@@ -245,12 +272,12 @@ async def test_a_catatonic_player_cannot_use_an_item_that_does_not_restore_lcd(
     _ = _catatonic(monkeypatch, catatonic=True)
     player = FakePlayer([_stack(OTHER_ID, "Other")])
 
-    result, persist, _emit = await _use(player, request_obj, {"index": 1})
+    result, harness, _emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert result == {"result": CATATONIA_BLOCK_MESSAGE}
     assert other.contexts == []
     assert [stack["quantity"] for stack in player.get_inventory()] == [1]
-    persist.assert_not_awaited()
+    assert harness.saved_carried() is None
 
 
 @pytest.mark.asyncio
@@ -260,7 +287,7 @@ async def test_a_catatonic_player_can_use_an_item_that_restores_lcd(
     lookup = _catatonic(monkeypatch, catatonic=True)
     player = FakePlayer([_stack(TONIC_ID, "Folk Tonic")])
 
-    result, _persist, _emit = await _use(player, request_obj, {"index": 1})
+    result, _harness, _emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert result["result"] == "You swallow the folk tonic."
     assert len(effect.contexts) == 1
@@ -276,7 +303,7 @@ async def test_an_item_that_does_not_restore_lcd_works_for_a_player_who_is_not_c
     _ = _catatonic(monkeypatch, catatonic=False)
     player = FakePlayer([_stack(OTHER_ID, "Other")])
 
-    result, _persist, _emit = await _use(player, request_obj, {"index": 1})
+    result, _harness, _emit = await _use(player, request_obj, {"index": 1}, monkeypatch)
 
     assert result["result"] == "You feel strange."
     assert player.get_inventory() == []

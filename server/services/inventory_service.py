@@ -5,7 +5,7 @@ from __future__ import annotations
 import copy
 import uuid
 from collections.abc import Mapping, Sequence
-from contextlib import AbstractContextManager
+from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -158,7 +158,9 @@ class InventoryService:
         normalized_inventory.insert(slot_index + 1, split_stack)
         return normalized_inventory
 
-    def begin_mutation(self, player_id: uuid.UUID | str, token: str | None) -> AbstractContextManager[MutationDecision]:
+    def begin_mutation(
+        self, player_id: uuid.UUID | str, token: str | None
+    ) -> AbstractAsyncContextManager[MutationDecision]:
         """
         Acquire a guarded mutation context for the given player.
 
@@ -166,17 +168,18 @@ class InventoryService:
             player_id: The player's ID (UUID or string - converted to string for mutation guard)
             token: Optional idempotency token
 
-        Returns a context manager decision that should be used via:
+        Returns an async context manager decision that should be used via:
 
-            with service.begin_mutation(player_id, token) as decision:
+            async with service.begin_mutation(player_id, token) as decision:
                 if decision.should_apply:
                     ...
 
-        This pattern ensures per-player serialization and idempotent behaviour.
+        This pattern ensures per-player serialization and idempotent behaviour. It is the guard's asyncio lock: the
+        command awaits its commit inside, and a threading lock held across an await would block the event loop.
         """
         # Convert UUID to string for mutation guard (uses strings as dictionary keys)
         player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
-        return self.mutation_guard.acquire(player_id_str, token)
+        return self.mutation_guard.acquire_async(player_id_str, token)
 
     def _extract_required_fields(self, stack: Mapping[str, Any]) -> tuple[str, str, str, str, int]:
         """

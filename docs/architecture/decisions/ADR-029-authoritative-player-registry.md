@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.3** · MythosMUD · 2026-10-27
+**Version 1.0.4** · MythosMUD · 2026-10-27
 
 ---
 
@@ -66,7 +66,7 @@ saves player-keyed rows.
 | --- | --- |
 | Scope | Every player that is touched, online or offline. An offline player is loaded on first use. |
 | Pinning | Online and disconnect-grace players are pinned. When grace ends: checkpoint flush, then evictable. |
-| Eviction | An evictable aggregate with no lock holder and nothing dirty is dropped after 60 s idle. A deleted character is flushed and evicted at once. A dirty aggregate is never evicted. |
+| Eviction | An evictable aggregate with no lock holder and nothing dirty is dropped after 60 s idle. A deleted character is flushed and evicted at once. A dirty aggregate is never evicted. Until every writer of a part goes through the registry (step 4c, and step 8 for the e2e resets), the idle TTL is 0: each unit ends by dropping its unpinned, clean players, so the next unit reads the database fresh. A part kept between units would miss what the other writers change, and its next write would put that stale copy back. |
 | Load | The first acquire loads every part in one session (per-part procedures run concurrently), so reads never await. |
 | Summary read | Account character lists (character select, `api/tutorial_skip.py`) use a read-only summary query, served from the registry when the player is loaded. It is the only sanctioned non-registry read and never writes. |
 | Out-of-band writes | Not handled. No reload on login and no row-version check; the registry is trusted. |
@@ -135,7 +135,9 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
-  commit writes every dirty part, lazy ones included.
+  commit writes every dirty part, lazy ones included. Each part's procedure writes only that part's columns
+  (`update_player_row`, `update_player_inventory`), never the full-row `upsert_player`, so a part write cannot carry
+  a stale copy of a part it did not change.
 - **Lazy sweep:** every `save_interval` (repurposed; default 2 s, configurable), the tick loop starts
   `registry.flush_dirty()` as a tracked task. At most K player transactions run concurrently (configurable), and a
   sweep is skipped while the previous one is still running.
@@ -215,7 +217,14 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
    itself two PRs: 3b-i extends `player_effects` for the tick-driven and spell effects and moves every reader and
    writer onto it; 3b-ii drops `players.status_effects` from the table, the player procedures, the ORM model and
    `PlayerRead`.
-4. Inventory, bank, containers and transfers.
+4. Inventory, bank, containers and transfers, in three PRs. Only the registry writes the inventory columns.
+   - 4a: the inventory part and its narrow write; the player-only commands (pickup, drop, equip, unequip, use) run
+     their read-modify-write as one unit of work.
+   - 4b: world-container transfers (put, get, the REST transfer and loot-all) commit the player and the container in
+     one transaction, under a per-container lock taken after the player locks; plus bank and wearable containers.
+   - 4c: the remaining inventory writers (quest rewards, spells, the instance flush, the corpse transfer, admin).
+     Then `upsert_player` stops updating the inventory columns, and the lost-update regression test lands. That
+     can't happen earlier, because until then the legacy writers save inventory only through `upsert_player`.
 5. Quests, lucidity, corruption, cooldowns and debrief.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
@@ -238,3 +247,4 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.4 | 2026-10-27 | §3: each part's procedure writes only its own columns; the idle TTL is 0 until every writer of a part goes through the registry (4a's e2e run showed a cached inventory writing back items a legacy `put` had moved). §6: step 4 splits into 4a (inventory part, player-only commands), 4b (container transfers in one transaction, bank, wearable) and 4c (remaining writers, then `upsert_player` stops writing inventory) |

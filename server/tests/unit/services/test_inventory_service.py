@@ -4,6 +4,7 @@ Unit tests for inventory service.
 Tests the InventoryService class for inventory management operations.
 """
 
+import asyncio
 import uuid
 
 import pytest
@@ -221,24 +222,47 @@ def test_split_stack_capacity_error(inventory_service):
         inventory_service.split_stack(inventory, slot_index=0, split_quantity=1)
 
 
-def test_begin_mutation_success(inventory_service):
-    """Test begin_mutation returns context manager."""
+@pytest.mark.asyncio
+async def test_begin_mutation_success(inventory_service: InventoryService) -> None:
+    """begin_mutation is an async context manager that decides whether to apply."""
     player_id = uuid.uuid4()
 
-    context = inventory_service.begin_mutation(player_id, "token123")
-
-    assert context is not None
-    # Test that it can be used as context manager
-    with context as decision:
-        assert hasattr(decision, "should_apply")
+    async with inventory_service.begin_mutation(player_id, "token123") as decision:
+        assert decision.should_apply
 
 
-def test_begin_mutation_with_string_id(inventory_service):
+@pytest.mark.asyncio
+async def test_begin_mutation_with_string_id(inventory_service: InventoryService) -> None:
     """Test begin_mutation accepts string player_id."""
-    player_id = "player123"
+    async with inventory_service.begin_mutation("player123", "token123") as decision:
+        assert decision.should_apply
 
-    context = inventory_service.begin_mutation(player_id, "token123")
 
-    assert context is not None
-    with context as decision:
-        assert hasattr(decision, "should_apply")
+@pytest.mark.asyncio
+async def test_begin_mutation_suppresses_a_repeated_token(inventory_service: InventoryService) -> None:
+    player_id = uuid.uuid4()
+    async with inventory_service.begin_mutation(player_id, "token123") as first:
+        assert first.should_apply
+    async with inventory_service.begin_mutation(player_id, "token123") as repeat:
+        assert not repeat.should_apply and repeat.duplicate
+
+
+@pytest.mark.asyncio
+async def test_overlapping_mutations_wait_without_blocking_the_event_loop(
+    inventory_service: InventoryService,
+) -> None:
+    """A mutation that awaits inside the guard (its commit) must not block a second one for the same player.
+
+    The guard used to be a threading.Lock held across that await: the second acquire blocked the event loop thread.
+    """
+    player_id = uuid.uuid4()
+    order: list[str] = []
+
+    async def mutate(name: str) -> None:
+        async with inventory_service.begin_mutation(player_id, name):
+            order.append(f"{name} in")
+            await asyncio.sleep(0)
+            order.append(f"{name} out")
+
+    _ = await asyncio.wait_for(asyncio.gather(mutate("a"), mutate("b")), timeout=2)
+    assert order == ["a in", "a out", "b in", "b out"]  # serialised, and both finished
