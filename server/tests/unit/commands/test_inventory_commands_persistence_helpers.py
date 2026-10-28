@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from server.commands.inventory_command_helpers import clone_inventory, persist_player
+from server.commands.inventory_command_helpers import clone_inventory
 from server.models.player import Player
 
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -39,22 +39,3 @@ def test_clone_inventory(mock_player):
     # Verify it's a deep copy (modifying result shouldn't affect original)
     result.append({"item_name": "shield"})
     assert len(mock_player.get_inventory()) == 1
-
-
-@pytest.mark.asyncio
-async def test_persist_player_success(mock_persistence, mock_player):
-    """Test _persist_player() successfully saves player."""
-    result = await persist_player(mock_persistence, mock_player)
-    assert result is None
-    mock_persistence.save_player.assert_called_once_with(mock_player)
-
-
-@pytest.mark.asyncio
-async def test_persist_player_error(mock_persistence, mock_player):
-    """Test _persist_player() handles save errors."""
-    from server.schemas.shared import InventorySchemaValidationError
-
-    mock_persistence.save_player = MagicMock(side_effect=InventorySchemaValidationError("Invalid inventory"))
-    result = await persist_player(mock_persistence, mock_player)
-    assert result is not None
-    assert "result" in result

@@ -238,6 +238,14 @@ async def test_validate_get_command_inputs_room_keyword() -> None:
     assert rm is room_manager
 
 
+@pytest.fixture(autouse=True)
+def registry(monkeypatch: pytest.MonkeyPatch) -> object:
+    """The registry the transfer helpers hand the container service (ADR-029); a sentinel, as the service is mocked."""
+    sentinel = object()
+    monkeypatch.setattr("server.commands.inventory_command_helpers.player_registry", lambda: sentinel)
+    return sentinel
+
+
 def _player_with_inventory(player_id: uuid.UUID) -> MagicMock:
     player = MagicMock()
     player.player_id = player_id
@@ -449,13 +457,8 @@ async def test_transfer_item_from_container_closes_session_it_opened() -> None:
     container_service.transfer_from_container = AsyncMock(return_value={"player_inventory": []})
     container_service.close_container = close_container
 
-    with patch(
-        "server.commands.inventory_command_helpers.persist_player",
-        new_callable=AsyncMock,
-    ) as mock_persist:
-        mock_persist.return_value = None
-        item_found: dict[str, object] = {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()}
-        result = await transfer_item_from_container(container_service, MagicMock(), player, cid, item_found, None)
+    item_found: dict[str, object] = {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()}
+    result = await transfer_item_from_container(container_service, player, cid, item_found, None)
 
     assert result["success"] is True
     close_container.assert_awaited_once_with(cid, pid, token)
@@ -529,10 +532,7 @@ async def test_transfer_item_to_container_transfer_raises() -> None:
 
 
 @pytest.mark.asyncio
-@patch("server.commands.inventory_command_helpers.persist_player", new_callable=AsyncMock)
-async def test_transfer_item_from_container_success_updates_inventory(
-    mock_persist: AsyncMock,
-) -> None:
+async def test_transfer_item_from_container_success_updates_inventory(registry: object) -> None:
     cid = uuid.uuid4()
     pid = uuid.uuid4()
     player = _player_with_inventory(pid)
@@ -541,15 +541,34 @@ async def test_transfer_item_from_container_success_updates_inventory(
     container_service = MagicMock()
     container_service.get_container_token = MagicMock(return_value=object())
     container_service.transfer_from_container = transfer_from
-    mock_persist.return_value = None
     item_found: dict[str, object] = {"item_name": "gem", "quantity": 1, "item_id": uuid.uuid4()}
-    result = await transfer_item_from_container(container_service, MagicMock(), player, cid, item_found, "2")
+    result = await transfer_item_from_container(container_service, player, cid, item_found, "2")
     assert result["success"] is True
     assert result["transfer_quantity"] == 2
     assert result["item_display_name"] == "gem"
     set_inv: MagicMock = cast(MagicMock, player.set_inventory)
     set_inv.assert_called_once_with(new_rows)
-    mock_persist.assert_awaited_once()
+    assert transfer_from.await_args is not None and transfer_from.await_args.kwargs["registry"] is registry
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_to_container_reports_what_actually_moved(registry: object) -> None:
+    """The service never moves more than the player holds; the reply must say what it moved, not what was asked."""
+    player = _player_with_inventory(uuid.uuid4())
+    rows = [{"item_name": "torch", "quantity": 1}]
+    transfer_to = AsyncMock(return_value={"player_inventory": rows, "quantity": 2})
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=object())
+    container_service.transfer_to_container = transfer_to
+
+    result = await transfer_item_to_container(
+        container_service, MagicMock(), player, uuid.uuid4(), {"item_id": "torch", "quantity": 3}, 5
+    )
+
+    assert result == {"success": True, "transfer_quantity": 2}
+    set_inv: MagicMock = cast(MagicMock, player.set_inventory)
+    set_inv.assert_called_once_with(rows)
+    assert transfer_to.await_args is not None and transfer_to.await_args.kwargs["registry"] is registry
 
 
 @pytest.mark.asyncio
@@ -560,7 +579,6 @@ async def test_transfer_item_from_container_rejects_non_positive_quantity() -> N
     container_service.get_container_token = MagicMock(return_value=object())
     result = await transfer_item_from_container(
         container_service,
-        MagicMock(),
         player,
         cid,
         {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4(), "quantity": 4},
@@ -570,30 +588,12 @@ async def test_transfer_item_from_container_rejects_non_positive_quantity() -> N
 
 
 @pytest.mark.asyncio
-@patch("server.commands.inventory_command_helpers.persist_player", new_callable=AsyncMock)
-async def test_transfer_item_from_container_persist_failure_returns_error(
-    mock_persist: AsyncMock,
-) -> None:
-    cid = uuid.uuid4()
-    pid = uuid.uuid4()
-    player = _player_with_inventory(pid)
-    container_service = MagicMock()
-    container_service.get_container_token = MagicMock(return_value=object())
-    container_service.transfer_from_container = AsyncMock(return_value={"player_inventory": []})
-    mock_persist.return_value = {"result": "save failed"}
-    item_found: dict[str, object] = {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()}
-    result = await transfer_item_from_container(container_service, MagicMock(), player, cid, item_found, None)
-    assert result == {"result": "save failed"}
-
-
-@pytest.mark.asyncio
 async def test_transfer_item_from_container_no_transfer_from() -> None:
     cid = uuid.uuid4()
     player = _player_with_inventory(uuid.uuid4())
     container_service = _ContainerSvcTokenOnly(object())
     result = await transfer_item_from_container(
         container_service,
-        MagicMock(),
         player,
         cid,
         {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()},
@@ -613,19 +613,13 @@ async def test_transfer_item_from_container_transfer_raises() -> None:
     container_service = MagicMock()
     container_service.get_container_token = MagicMock(return_value=object())
     container_service.transfer_from_container = boom
-    with patch(
-        "server.commands.inventory_command_helpers.persist_player",
-        new_callable=AsyncMock,
-    ) as mock_persist:
-        mock_persist.return_value = None
-        result = await transfer_item_from_container(
-            container_service,
-            MagicMock(),
-            player,
-            cid,
-            {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()},
-            None,
-        )
+    result = await transfer_item_from_container(
+        container_service,
+        player,
+        cid,
+        {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()},
+        None,
+    )
     assert result == {"error": "svc"}
 
 
@@ -640,19 +634,13 @@ async def test_transfer_item_from_container_inventory_rows_fallback_non_dict_res
     container_service = MagicMock()
     container_service.get_container_token = MagicMock(return_value=object())
     container_service.transfer_from_container = AsyncMock(return_value="not-a-dict")
-    with patch(
-        "server.commands.inventory_command_helpers.persist_player",
-        new_callable=AsyncMock,
-    ) as mock_persist:
-        mock_persist.return_value = None
-        result = await transfer_item_from_container(
-            container_service,
-            MagicMock(),
-            player,
-            cid,
-            {"item_name": "x", "item_id": uuid.uuid4()},
-            None,
-        )
+    result = await transfer_item_from_container(
+        container_service,
+        player,
+        cid,
+        {"item_name": "x", "item_id": uuid.uuid4()},
+        None,
+    )
     assert result["success"] is True
     set_inv_fb: MagicMock = cast(MagicMock, player.set_inventory)
     set_inv_fb.assert_called_once_with(fallback)

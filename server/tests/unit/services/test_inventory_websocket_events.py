@@ -1,4 +1,4 @@
-"""Unit tests for inventory_websocket_events.emit_inventory_updated."""
+"""Unit tests for inventory_websocket_events: emit_inventory_updated and emit_inventory_snapshot."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.services.inventory_websocket_events import emit_inventory_updated
+from server.services.inventory_websocket_events import emit_inventory_snapshot, emit_inventory_updated
 
 
 def _async_attr(obj: MagicMock, name: str) -> AsyncMock:
@@ -71,3 +71,28 @@ async def test_emit_inventory_updated_emission_error_is_swallowed(mock_connectio
     mock_connection_manager.send_personal_message = AsyncMock(side_effect=RuntimeError("boom"))
 
     await emit_inventory_updated(mock_connection_manager, uuid.uuid4(), _Owner([], {}))
+
+
+@pytest.mark.asyncio
+async def test_emit_inventory_snapshot_sends_the_committed_stacks(mock_connection_manager: MagicMock) -> None:
+    """The REST container transfers hold no Player, only what their registry unit committed (ADR-029 step 4b)."""
+    player_id = uuid.uuid4()
+    carried: list[dict[str, object]] = [{"item_id": "torch", "item_instance_id": "torch-1", "quantity": 1}]
+    equipped: dict[str, object] = {"main_hand": {"item_id": "sword"}}
+
+    await emit_inventory_snapshot(mock_connection_manager, player_id, carried, equipped)
+
+    send = _async_attr(mock_connection_manager, "send_personal_message")
+    call_args = send.call_args
+    assert call_args is not None
+    sent_player_id, event = cast("tuple[uuid.UUID, dict[str, object]]", call_args.args)
+    assert sent_player_id == player_id
+    assert event["event_type"] == "inventory_updated"
+    data = cast(dict[str, object], event["data"])
+    assert data == {"inventory": carried, "equipped": equipped}
+    assert data["inventory"] is not carried  # a copy: the event must not alias the caller's list
+
+
+@pytest.mark.asyncio
+async def test_emit_inventory_snapshot_no_connection_manager_is_noop() -> None:
+    await emit_inventory_snapshot(None, uuid.uuid4(), [], {})

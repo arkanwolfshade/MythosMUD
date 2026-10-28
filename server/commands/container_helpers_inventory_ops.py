@@ -168,7 +168,12 @@ async def transfer_item_to_container(
     item_found: dict[str, object],
     quantity: object | None,
 ) -> dict[str, object]:
-    """Transfer an item to container from player inventory."""
+    """Move an item from the player's inventory into a container (ADR-029: the registry commits both).
+
+    On success the command's working ``player`` is given the inventory that was committed.
+    """
+    from .inventory_command_helpers import player_registry, sync_collect_quests_after_inventory_save
+
     player_id_uuid = UUID(str(player.player_id))
     mutation_token, open_err, opened_here = await _ensure_mutation_token(
         container_service, container_id, player_id_uuid
@@ -188,7 +193,7 @@ async def transfer_item_to_container(
         transfer_to = getattr(container_service, "transfer_to_container", None)
         if not callable(transfer_to):
             return {"error": "Container transfer is unavailable."}
-        _ = await cast(
+        result = await cast(
             Awaitable[object],
             transfer_to(
                 container_id=container_id,
@@ -196,10 +201,12 @@ async def transfer_item_to_container(
                 mutation_token=mutation_token,
                 item=item_found,
                 quantity=tq_int,
+                registry=player_registry(),
             ),
         )
-
-        return {"success": True, "transfer_quantity": tq_int}
+        moved = _apply_transfer_result(player, result, tq_int)
+        await sync_collect_quests_after_inventory_save(player)
+        return {"success": True, "transfer_quantity": moved}
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable
         logger.error("Error putting item in container", player=player.name, error=str(e))
         return {"error": str(e)}
@@ -391,6 +398,13 @@ def find_item_in_container(
     return None, None
 
 
+def _apply_transfer_result(player: Player, result: object, requested: int) -> int:
+    """Give the command's working player the committed inventory; return the quantity that moved."""
+    player.set_inventory(_inventory_rows_from_transfer_result(result, player.get_inventory()))
+    moved = cast(dict[str, object], result).get("quantity") if isinstance(result, dict) else None
+    return moved if isinstance(moved, int) else requested
+
+
 def _inventory_rows_from_transfer_result(result: object, fallback_inv: object) -> list[dict[str, object]]:
     """Build typed inventory rows from transfer_from_container result; invalid shapes fall back."""
     new_inventory: object = fallback_inv
@@ -429,14 +443,16 @@ def resolve_container_id(container_found: object, container_id: UUID | None) -> 
 
 async def transfer_item_from_container(
     container_service: object,
-    persistence: object,
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
     quantity: object | None,
 ) -> dict[str, object]:
-    """Transfer an item from container to player inventory."""
-    from .inventory_command_helpers import persist_player
+    """Move an item from a container into the player's inventory (ADR-029: the registry commits both).
+
+    On success the command's working ``player`` is given the inventory that was committed.
+    """
+    from .inventory_command_helpers import player_registry, sync_collect_quests_after_inventory_save
 
     player_id_uuid = UUID(str(player.player_id))
     mutation_token, open_err, opened_here = await _ensure_mutation_token(
@@ -460,20 +476,16 @@ async def transfer_item_from_container(
                 mutation_token=mutation_token,
                 item=item_found,
                 quantity=tq_int,
+                registry=player_registry(),
             ),
         )
-
-        fallback_inv: object = player.get_inventory()
-        inv_rows = _inventory_rows_from_transfer_result(result, fallback_inv)
-        player.set_inventory(inv_rows)
-        persist_error = await persist_player(persistence, player)
-        if persist_error:
-            return cast(dict[str, object], persist_error)
+        moved = _apply_transfer_result(player, result, tq_int)
+        await sync_collect_quests_after_inventory_save(player)
 
         item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
         return {
             "success": True,
-            "transfer_quantity": tq_int,
+            "transfer_quantity": moved,
             "item_display_name": item_display_name,
         }
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must handle gracefully

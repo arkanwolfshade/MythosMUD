@@ -9,10 +9,11 @@ testing both successful paths and the various failure modes that can occur
 when services are not properly initialized.
 """
 
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
-from fastapi import Request
+from fastapi import FastAPI, Request
 
 from server.container import ApplicationContainer
 from server.dependencies import (
@@ -33,6 +34,7 @@ from server.dependencies import (
     get_passive_lucidity_flux_service,
     get_player_combat_service,
     get_player_death_service,
+    get_player_registry,
     get_player_respawn_service,
     get_player_service,
     get_player_service_for_testing,
@@ -44,6 +46,8 @@ from server.dependencies import (
     get_spell_targeting_service,
     get_stats_generator,
 )
+from server.game.player_registry import PlayerRegistry
+from server.tests.fixtures.shared.player_registry import FakeDatabase
 
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -194,6 +198,25 @@ class TestGetAsyncPersistence:
 
         with pytest.raises(RuntimeError, match="AsyncPersistenceLayer not initialized in container"):
             get_async_persistence(mock_request)
+
+
+class TestGetPlayerRegistry:
+    """Tests for get_player_registry (ADR-029): the REST container transfers commit through it."""
+
+    @staticmethod
+    def _request(player_registry: PlayerRegistry | None) -> Request:
+        app = FastAPI()
+        app.state.container = SimpleNamespace(player_registry=player_registry)
+        return Request({"type": "http", "app": app, "headers": []})
+
+    def test_get_player_registry_returns_the_containers_registry(self) -> None:
+        registry = PlayerRegistry(FakeDatabase().session)
+
+        assert get_player_registry(self._request(registry)) is registry
+
+    def test_get_player_registry_none_raises_runtime_error(self) -> None:
+        with pytest.raises(RuntimeError, match="PlayerRegistry not initialized in container"):
+            _ = get_player_registry(self._request(None))
 
 
 class TestGetExplorationService:

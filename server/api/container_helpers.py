@@ -12,10 +12,9 @@ from fastapi import Request, status
 
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError
-from ..models.container import ContainerComponent
+from ..game.player_registry import PlayerRegistry
 from ..models.user import User
 from ..services.container_service import (
-    ContainerCapacityError,
     ContainerService,
     ContainerServiceError,
 )
@@ -23,7 +22,7 @@ from ..services.container_service import get_container_service as shared_contain
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.rate_limiter import RateLimiter
-from .container_models import LootAllRequest, TransferContainerRequest
+from .container_models import TransferContainerRequest
 
 logger = get_logger(__name__)
 
@@ -151,8 +150,9 @@ async def execute_transfer(
     container_service: ContainerService,
     request_data: TransferContainerRequest,
     player_id: UUID,
-) -> dict[str, Any]:
-    """Execute the transfer operation based on direction."""
+    registry: PlayerRegistry,
+) -> dict[str, object]:
+    """Execute the transfer operation based on direction; the registry commits player and container together."""
     if request_data.direction == "to_container":
         return await container_service.transfer_to_container(
             request_data.container_id,
@@ -160,6 +160,7 @@ async def execute_transfer(
             request_data.mutation_token,
             cast(InventoryStack, request_data.stack),
             request_data.quantity,
+            registry=registry,
         )
     # to_player
     return await container_service.transfer_from_container(
@@ -168,6 +169,7 @@ async def execute_transfer(
         request_data.mutation_token,
         cast(InventoryStack, request_data.stack),
         request_data.quantity,
+        registry=registry,
     )
 
 
@@ -267,78 +269,3 @@ def apply_rate_limiting_for_loot_all(current_user: User, _request: Request) -> N
             user_id=str(current_user.id) if current_user else None,
             rate_limit_type="container_operation",
         ) from e
-
-
-async def get_container_and_player_for_loot_all(
-    persistence: Any, request_data: LootAllRequest, player_id: UUID, _request: Request, current_user: User
-) -> tuple[ContainerComponent, Any, list[InventoryStack]]:
-    """Get container and player data for loot_all operation."""
-    container_data = await persistence.get_container(request_data.container_id)
-    if not container_data:
-        raise LoggedHTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Container not found",
-            user_id=str(current_user.id) if current_user else None,
-            container_id=str(request_data.container_id),
-            operation="loot_all",
-        )
-
-    container = ContainerComponent.model_validate(container_data)
-
-    player = persistence.get_player(player_id)
-    if not player:
-        raise LoggedHTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Player not found",
-            user_id=str(current_user.id) if current_user else None,
-            player_id=str(player_id),
-            operation="loot_all",
-        )
-
-    player_inventory = getattr(player, "inventory", [])
-    return container, player, player_inventory
-
-
-async def transfer_all_items_from_container(
-    container_service: ContainerService,
-    request_data: LootAllRequest,
-    player_id: UUID,
-    container: ContainerComponent,
-    player_inventory: list[InventoryStack],
-) -> tuple[dict[str, Any], list[InventoryStack]]:
-    """Transfer all items from container to player, returning updated container and inventory."""
-    container_data = container.model_dump()
-    updated_inventory = player_inventory
-
-    for item in container.items:
-        try:
-            result = await container_service.transfer_from_container(
-                request_data.container_id,
-                player_id,
-                request_data.mutation_token,
-                item,
-                item.get("quantity", 1),
-            )
-            container_raw = result.get("container", container_data)
-            if isinstance(container_raw, dict):
-                container_data = cast(dict[str, Any], container_raw)
-            inventory_raw = result.get("player_inventory", updated_inventory)
-            if isinstance(inventory_raw, list):
-                updated_inventory = cast(list[InventoryStack], inventory_raw)
-        except ContainerCapacityError:
-            logger.warning(
-                "Loot-all stopped due to capacity",
-                container_id=str(request_data.container_id),
-                player_id=str(player_id),
-            )
-            break
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Item transfer errors unpredictable, must continue with other items
-            logger.warning(
-                "Error transferring item during loot-all",
-                error=str(e),
-                container_id=str(request_data.container_id),
-                player_id=str(player_id),
-            )
-            continue
-
-    return container_data, updated_inventory

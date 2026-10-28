@@ -7,6 +7,7 @@ from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
@@ -25,6 +26,7 @@ from server.persistence.container_persistence_async import (
     fetch_container_items_async,
     get_container_async,
     update_container_async,
+    write_container_items_async,
 )
 
 
@@ -436,3 +438,59 @@ async def test_update_container_async_capacity_calls_set_container_capacity() ->
     assert call is not None
     assert "set_container_capacity" in str(cast(object, call.args[0]))
     commit.assert_awaited_once()
+
+
+class _RecordingSession:
+    """Records each statement's procedure name; ``fail_on`` makes the statement naming it raise."""
+
+    calls: list[str]
+    commits: int
+    _fail_on: str | None
+
+    def __init__(self, fail_on: str | None = None) -> None:
+        self.calls = []
+        self.commits = 0
+        self._fail_on = fail_on
+
+    async def execute(self, statement: object, _params: object = None) -> None:
+        sql = str(statement)
+        self.calls.append(sql.removeprefix("SELECT ").split("(")[0])
+        if self._fail_on is not None and self._fail_on in sql:
+            raise SQLAlchemyError("boom")
+
+    async def commit(self) -> None:
+        self.commits += 1
+
+
+async def test_write_container_items_runs_inside_the_callers_transaction() -> None:
+    """ADR-029 transfers: the registry commits the container with the player, so this must never commit itself."""
+    session = _RecordingSession()
+    items: list[dict[str, object]] = [
+        {"item_id": "torch", "item_instance_id": "torch-1", "quantity": 2},
+        {"quantity": 1},  # no identity: nothing to write
+        {"item_id": "rope", "item_instance_id": "rope-1"},
+    ]
+
+    await write_container_items_async(cast(AsyncSession, cast(object, session)), uuid.uuid4(), items)
+
+    assert session.calls == [
+        "clear_container_contents",
+        "upsert_item_instance",
+        "add_item_to_container",
+        "upsert_item_instance",
+        "add_item_to_container",
+        "update_container",
+    ]
+    assert session.commits == 0
+
+
+async def test_write_container_items_never_skips_an_item_it_cannot_write() -> None:
+    """update_container_async skips such an item; in a transfer that would destroy it, so the failure propagates."""
+    session = _RecordingSession(fail_on="upsert_item_instance")
+
+    with pytest.raises(SQLAlchemyError):
+        await write_container_items_async(
+            cast(AsyncSession, cast(object, session)), uuid.uuid4(), [{"item_id": "torch", "item_instance_id": "t-1"}]
+        )
+
+    assert session.commits == 0

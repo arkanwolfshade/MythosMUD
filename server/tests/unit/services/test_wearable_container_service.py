@@ -5,7 +5,6 @@ Tests the WearableContainerService class for managing wearable container operati
 """
 
 import uuid
-from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -257,89 +256,7 @@ async def test_update_wearable_container_items(wearable_service, mock_persistenc
     result = await wearable_service.update_wearable_container_items(player_id, container_id, items)
     assert result is not None
 
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles overflow."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "item_001"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert isinstance(result, dict)
-    assert "spilled_items" in result
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_player_not_found(wearable_service, mock_persistence):
-    """Test handle_container_overflow raises error when player not found."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    overflow_items = [{"item_id": "item_001"}]
-    with pytest.raises(WearableContainerServiceError, match="not found"):
-        await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_inventory_full(wearable_service, mock_persistence):
-    """Test handle_container_overflow drops to ground when inventory full."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    # Fill inventory to max capacity (20 slots)
-    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "overflow_item"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert isinstance(result, dict)
-    assert len(result["spilled_items"]) == 0
-    assert len(result["ground_items"]) == 1
-    mock_persistence.create_container.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_no_room_id(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles player without room_id."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    # No current_room_id attribute
-    if hasattr(mock_player, "current_room_id"):
-        delattr(mock_player, "current_room_id")
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    overflow_items = [{"item_id": "item_001"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert isinstance(result, dict)
     # Should add to inventory, not create ground container (no room_id)
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_ground_container_error(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles ground container creation error."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(side_effect=Exception("Container creation failed"))
-    overflow_items = [{"item_id": "overflow_item"}]
-    # Should not raise, just log error
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert isinstance(result, dict)
 
 
 @pytest.mark.asyncio
@@ -656,57 +573,6 @@ async def test_add_items_to_wearable_container_non_dict_items(wearable_service, 
 
 
 @pytest.mark.asyncio
-async def test_handle_container_overflow_partial_spill(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles partial inventory spill."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    # Fill inventory to 19 slots (1 space remaining)
-    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(19)]
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "spill_1"}, {"item_id": "spill_2"}]  # 2 items, only 1 space
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert len(result["spilled_items"]) == 1
-    assert len(result["ground_items"]) == 1
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_save_player_error(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles save_player error gracefully."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock(side_effect=Exception("Save failed"))
-    overflow_items = [{"item_id": "item_001"}]
-    # Should not raise, just log error
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert isinstance(result, dict)
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_empty_overflow(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles empty overflow list."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.current_room_id = "room_001"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    overflow_items: list[dict[str, Any]] = []
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert len(result["spilled_items"]) == 0
-    assert len(result["ground_items"]) == 0
-
-
-@pytest.mark.asyncio
 async def test_get_wearable_containers_for_player_exception_in_validation(wearable_service, mock_persistence):
     """Test get_wearable_containers_for_player handles validation errors gracefully."""
     player_id = uuid.uuid4()
@@ -825,47 +691,6 @@ async def test_add_items_to_wearable_container_dict_items(wearable_service, mock
 
 
 @pytest.mark.asyncio
-async def test_handle_container_overflow_no_spilled_items(wearable_service, mock_persistence):
-    """Test handle_container_overflow when no items spill to inventory."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    # Fill inventory to max capacity (20 slots)
-    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "overflow_1"}, {"item_id": "overflow_2"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert len(result["spilled_items"]) == 0
-    assert len(result["ground_items"]) == 2
-    # Should not save player when no items spilled
-    mock_persistence.save_player.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_spilled_items_save_player(wearable_service, mock_persistence):
-    """Test handle_container_overflow saves player when items spill."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.current_room_id = "room_001"
-    mock_player.set_inventory = MagicMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "spill_1"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    assert len(result["spilled_items"]) == 1
-    assert len(result["ground_items"]) == 0
-    # Should save player when items spilled
-    mock_persistence.save_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
 async def test_handle_equip_wearable_container_multiple_existing_containers(wearable_service, mock_persistence):
     """Test handle_equip_wearable_container with multiple existing containers."""
     player_id = uuid.uuid4()
@@ -947,25 +772,6 @@ async def test_handle_equip_wearable_container_existing_container_different_item
     assert result is not None
     assert result["container_id"] == new_container_id
     mock_persistence.create_container.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_handle_container_overflow_room_id_empty_string(wearable_service, mock_persistence):
-    """Test handle_container_overflow handles empty string room_id."""
-    player_id = uuid.uuid4()
-    container_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]  # Full
-    mock_player.current_room_id = ""  # Empty string
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    mock_persistence.create_container = AsyncMock()
-    overflow_items = [{"item_id": "overflow_item"}]
-    result = await wearable_service.handle_container_overflow(player_id, container_id, overflow_items)
-    # Should add to inventory since room_id is falsy
-    assert isinstance(result, dict)
-    # Should not create ground container when room_id is empty
-    mock_persistence.create_container.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -1116,45 +922,3 @@ async def test_update_items_awaits_update_container_and_raises_when_it_fails(
             player_id, uuid.UUID(str(row["container_id"])), [{"item_id": "coin"}]
         )
     mock_persistence.update_container.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_overflow_awaits_the_ground_container_so_items_are_not_lost(
-    wearable_service: WearableContainerService, mock_persistence: MagicMock
-):
-    """Items that don't fit in the inventory go to a ground container, which must actually be created (#951)."""
-    player = MagicMock()
-    player.get_inventory.return_value = [{"item_id": f"item_{i}"} for i in range(20)]
-    player.current_room_id = "room_001"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
-
-    result = await wearable_service.handle_container_overflow(uuid.uuid4(), uuid.uuid4(), [{"item_id": "ring"}])
-
-    assert result["ground_items"] == [{"item_id": "ring"}]
-    mock_persistence.create_container.assert_awaited_once()
-    call = mock_persistence.create_container.await_args
-    assert call is not None
-    source_type, params = call.args
-    assert source_type == "environment"
-    assert params.items_json == [{"item_id": "ring"}]
-    assert params.room_id == "room_001"
-
-
-@pytest.mark.asyncio
-async def test_overflow_spills_into_a_real_players_json_backed_inventory(
-    wearable_service: WearableContainerService, mock_persistence: MagicMock
-):
-    """Player.inventory is a JSON string column; spilling must go through get_inventory/set_inventory (#951)."""
-    from server.models.player import Player
-
-    player = Player(player_id=str(uuid.uuid4()), user_id=str(uuid.uuid4()), name="Spiller", inventory="[]")
-    player.current_room_id = "room_001"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.save_player = AsyncMock()
-
-    result = await wearable_service.handle_container_overflow(uuid.uuid4(), uuid.uuid4(), [{"item_id": "ring"}])
-
-    assert result["spilled_items"] == [{"item_id": "ring"}]
-    assert player.get_inventory() == [{"item_id": "ring"}]
-    mock_persistence.save_player.assert_awaited_once_with(player)

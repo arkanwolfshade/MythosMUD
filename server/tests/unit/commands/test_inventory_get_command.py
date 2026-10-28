@@ -37,9 +37,7 @@ async def test_get_transfer_out_of_container_error() -> None:
         new_callable=AsyncMock,
         return_value={"error": "nope"},
     ):
-        result = await _get_transfer_out_of_container(
-            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
-        )
+        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
     assert result == {"result": "nope"}
 
 
@@ -53,9 +51,7 @@ async def test_get_transfer_out_of_container_success() -> None:
         new_callable=AsyncMock,
         return_value={"success": True, "transfer_quantity": 1, "item_display_name": "coin"},
     ):
-        result = await _get_transfer_out_of_container(
-            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
-        )
+        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
     assert "You get" in str(result["result"])
     assert result["game_log_channel"] == "game-log"
 
@@ -68,9 +64,7 @@ async def test_get_transfer_out_of_container_not_success() -> None:
         new_callable=AsyncMock,
         return_value={"success": False},
     ):
-        result = await _get_transfer_out_of_container(
-            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
-        )
+        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
     assert "Failed to transfer" in str(result["result"])
 
 
@@ -267,7 +261,7 @@ async def test_get_from_container_path_reads_persistence_items_json() -> None:
 
     assert result == {"result": "You get 1x Sling from chest."}
     assert transfer.await_args is not None
-    assert transfer.await_args.args[5] == sling
+    assert transfer.await_args.args[4] == sling
 
 
 @pytest.mark.asyncio

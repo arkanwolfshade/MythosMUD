@@ -11,7 +11,9 @@ import pytest
 
 from server.events.event_types import BaseEvent, PlayerEnteredRoom
 from server.game.player_registry import (
+    DbSession,
     LockOrderError,
+    PartWrite,
     PlayerNotFoundError,
     PlayerRegistry,
     RegistrySettings,
@@ -271,6 +273,134 @@ async def test_opposite_order_mutate_many_does_not_deadlock() -> None:
             await asyncio.sleep(0)
 
     _ = await asyncio.wait_for(asyncio.gather(touch([a, b]), touch([b, a])), timeout=1)
+
+
+# ---- world containers ----
+
+
+def _container_write(cid: uuid.UUID) -> PartWrite:
+    """A container write that leaves a ``{"container": cid}`` row in the fake database's statement log."""
+
+    async def write(session: DbSession) -> None:
+        _ = await session.execute("container", {"container": cid})
+
+    return write
+
+
+async def test_a_container_write_commits_with_the_players_parts_in_one_transaction() -> None:
+    pid, rows = _one()
+    cid = uuid.uuid4()
+    registry, db, _events, _clock = _registry(rows)
+
+    async with registry.mutate(pid, containers=[cid]) as player:
+        player.inventory.set_carried([])
+        registry.write_container(cid, _container_write(cid))
+
+    assert db.commits == 1
+    assert "inventory_json" in (db.executed[0] or {})
+    assert db.executed[-1] == {"container": cid}  # after the player's parts, before the one commit
+
+
+async def test_a_container_write_alone_still_commits() -> None:
+    pid, rows = _one()
+    cid = uuid.uuid4()
+    registry, db, _events, _clock = _registry(rows)
+
+    async with registry.mutate(pid, containers=[cid]):
+        registry.write_container(cid, _container_write(cid))
+
+    assert db.commits == 1
+    assert db.executed == [{"container": cid}]
+
+
+async def test_a_failed_unit_never_applies_its_container_write() -> None:
+    pid, rows = _one()
+    cid = uuid.uuid4()
+    registry, db, _events, _clock = _registry(rows)
+
+    with pytest.raises(ValueError, match="boom"):
+        async with registry.mutate(pid, containers=[cid]) as player:
+            player.inventory.set_carried([])
+            registry.write_container(cid, _container_write(cid))
+            raise ValueError("boom")
+
+    assert db.executed == []
+    view = registry.peek(pid)
+    assert view is not None and view.inventory.carried[0]["item_id"] == "sling"
+
+
+async def test_a_failed_commit_rolls_back_the_player_and_the_container_together() -> None:
+    pid, rows = _one()
+    cid = uuid.uuid4()
+    registry, db, _events, _clock = _registry(rows, FakeDatabase(fail_commits=1))
+
+    with pytest.raises(RuntimeError, match="database unavailable"):
+        async with registry.mutate(pid, containers=[cid]) as player:
+            player.inventory.set_carried([])
+            registry.write_container(cid, _container_write(cid))
+
+    assert db.commits == 0 and db.rollbacks == 1
+    view = registry.peek(pid)
+    assert view is not None and view.inventory.carried[0]["item_id"] == "sling"
+
+
+async def test_a_container_write_needs_the_container_held() -> None:
+    pid, rows = _one()
+    held, other = uuid.uuid4(), uuid.uuid4()
+    registry, _db, _events, _clock = _registry(rows)
+
+    with pytest.raises(LockOrderError):
+        registry.write_container(held, _container_write(held))  # no unit at all
+    async with registry.mutate(pid, containers=[held]):
+        with pytest.raises(LockOrderError):
+            registry.write_container(other, _container_write(other))
+        with pytest.raises(LockOrderError):
+            async with registry.mutate(pid, containers=[other]):  # taking a container lock mid-unit could deadlock
+                pass
+        async with registry.mutate(pid, containers=[held]):  # one it holds joins the open unit
+            pass
+
+
+async def test_two_players_on_one_container_are_serialized() -> None:
+    """Two players looting one corpse: the second waits for the first's commit, so it reads what that wrote."""
+    a, b = uuid.uuid4(), uuid.uuid4()
+    cid = uuid.uuid4()
+    registry, _db, _events, _clock = _registry({a: raw_row(a), b: raw_row(b)})
+    order: list[str] = []
+    a_inside = asyncio.Event()
+    release_a = asyncio.Event()
+
+    async def first() -> None:
+        async with registry.mutate(a, containers=[cid]):
+            order.append("a in")
+            a_inside.set()
+            _ = await release_a.wait()
+            order.append("a out")
+
+    async def second() -> None:
+        _ = await a_inside.wait()
+        async with registry.mutate(b, containers=[cid]):
+            order.append("b in")
+
+    tasks = [asyncio.create_task(first()), asyncio.create_task(second())]
+    _ = await a_inside.wait()
+    await asyncio.sleep(0)
+    release_a.set()
+    _ = await asyncio.gather(*tasks)
+
+    assert order == ["a in", "a out", "b in"]
+
+
+async def test_opposite_container_orders_do_not_deadlock() -> None:
+    a, b = uuid.uuid4(), uuid.uuid4()
+    c1, c2 = uuid.uuid4(), uuid.uuid4()
+    registry, _db, _events, _clock = _registry({a: raw_row(a), b: raw_row(b)})
+
+    async def touch(pid: uuid.UUID, containers: list[uuid.UUID]) -> None:
+        async with registry.mutate(pid, containers=containers):
+            await asyncio.sleep(0)
+
+    _ = await asyncio.wait_for(asyncio.gather(touch(a, [c1, c2]), touch(b, [c2, c1])), timeout=1)
 
 
 # ---- the lost update ADR-029 removes ----

@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.4** · MythosMUD · 2026-10-27
+**Version 1.0.5** · MythosMUD · 2026-10-28
 
 ---
 
@@ -110,11 +110,18 @@ async with registry.mutate(player_id, sync=False) as player:   # per-player asyn
 async with registry.mutate_many([a, b]) as (pa, pb):            # locks taken in sorted player-id order
     ...
 
+async with registry.mutate(player_id, containers=[cid]) as player:  # then the container's lock
+    player.inventory.set_carried(carried)
+    registry.write_container(cid, write)                         # committed in the unit's transaction
+
 view = registry.peek(player_id)   # live object, read-only Protocol type; no lock, never awaits
 ```
 
 - **Locking:** one `asyncio.Lock` per player covers the whole read-modify-write. A transfer with a world container
-  takes the player locks first, then the container lock.
+  names it when the unit opens (`containers=[...]`); the unit takes the player locks first, then the container
+  locks, each set in sorted id order, so two units never wait on each other. Asking for a player or container the
+  unit does not hold raises `LockOrderError`. A container session's mutation token only authorises the transfer: it
+  is the same for every transfer while the container is open, so it is never used to drop duplicates.
 - **Re-entrancy:** a nested `mutate(pid)` in the same task reuses the outer handle, found through a contextvar. The
   handle records its owning task, and reuse requires `asyncio.current_task() is handle.owner`, because child tasks
   (`create_task`, EventBus subscriber tasks) inherit contextvars. Inner changes join the outer unit; an inner
@@ -145,8 +152,11 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
   consecutive failures.
 - **Shutdown:** `flush_all()` runs in `shutdown_sequence` before the DB pool closes.
 - **Transfers** with a world container (furniture, corpse) or another player lock every party, mutate in memory, and
-  commit everything in one transaction before returning; on failure everything rolls back. Room floor drops are
-  in-memory only (`room_subscription_manager.py`), so a floor pickup or drop is a sync commit on the player alone.
+  commit everything in one transaction before returning; on failure everything rolls back. The container's new
+  contents are a write handed to the unit (`write_container`), applied after the players' parts in the same
+  transaction; that write never commits and never skips an item it cannot write, so a failure moves nothing. Room
+  floor drops are in-memory only (`room_subscription_manager.py`), so a floor pickup or drop is a sync commit on the
+  player alone.
 
 ### 3.5 Subsystem consequences
 
@@ -222,9 +232,11 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      their read-modify-write as one unit of work.
    - 4b: world-container transfers (put, get, the REST transfer and loot-all) commit the player and the container in
      one transaction, under a per-container lock taken after the player locks; plus bank and wearable containers.
-   - 4c: the remaining inventory writers (quest rewards, spells, the instance flush, the corpse transfer, admin).
-     Then `upsert_player` stops updating the inventory columns, and the lost-update regression test lands. That
-     can't happen earlier, because until then the legacy writers save inventory only through `upsert_player`.
+   - 4c: the remaining inventory writers (quest rewards, spells, the instance flush, the corpse transfer, admin),
+     and the container writers that still run outside a unit (the instance flush's bank forward, corpse creation)
+     take the container lock. Then `upsert_player` stops updating the inventory columns, and the lost-update
+     regression test lands. That can't happen earlier, because until then the legacy writers save inventory only
+     through `upsert_player`.
 5. Quests, lucidity, corruption, cooldowns and debrief.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
@@ -247,4 +259,5 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.5 | 2026-10-28 | §3.3: units name the world containers they write, whose locks follow the player locks; container session tokens are not deduplication tokens. §3.4: the container write runs in the unit's transaction and never commits or skips items on its own (4b's integration test found the item upserts committing mid-transfer). §6: 4c also puts the remaining out-of-unit container writers under the container lock |
 | 1.0.4 | 2026-10-27 | §3: each part's procedure writes only its own columns; the idle TTL is 0 until every writer of a part goes through the registry (4a's e2e run showed a cached inventory writing back items a legacy `put` had moved). §6: step 4 splits into 4a (inventory part, player-only commands), 4b (container transfers in one transaction, bank, wearable) and 4c (remaining writers, then `upsert_player` stops writing inventory) |

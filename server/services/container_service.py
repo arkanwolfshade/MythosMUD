@@ -32,8 +32,7 @@ from .container_service_helpers import (
 )
 from .container_service_lock import ContainerLockMixin
 from .container_service_session import ContainerSessionMixin
-from .container_service_transfer_from import ContainerTransferFromMixin
-from .inventory_mutation_guard import InventoryMutationGuard
+from .container_service_transfer_from import ContainerTransferFromMixin, LootAllResult
 from .inventory_service import InventoryService
 
 # Public API re-exports (stable import path: server.services.container_service)
@@ -45,6 +44,7 @@ __all__ = [
     "ContainerCapacityError",
     "ContainerAccessDeniedError",
     "ContainerOpenByAnotherPlayerError",
+    "LootAllResult",
     "audit_logger",
     "filter_container_data",
     "get_container_service",
@@ -61,8 +61,8 @@ class ContainerService(
     """
     Service for managing container operations.
 
-    Orchestrates open/close, transfer operations, and mutation guards
-    for the unified container system.
+    Orchestrates open/close and transfer operations for the unified container system. Transfers run as player
+    registry units of work (ADR-029), which serialise them per player and per container.
 
     MRO note: TransferFromMixin inherits TransferToMixin and AccessMixin;
     SessionMixin inherits AccessMixin. Listing To/Access again breaks method order.
@@ -70,7 +70,6 @@ class ContainerService(
 
     persistence: AsyncPersistenceLayer
     inventory_service: InventoryService = field(default_factory=lambda: InventoryService(max_slots=20))
-    mutation_guard: InventoryMutationGuard = field(default_factory=InventoryMutationGuard)
 
     # Track open containers: {container_id: {player_id: mutation_token}}
     _open_containers: dict[UUID, dict[UUID, str]] = field(default_factory=dict, init=False)

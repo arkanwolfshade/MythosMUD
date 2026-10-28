@@ -2,7 +2,7 @@
 Container loot-all endpoint.
 
 Handles the convenience action to transfer all eligible items from a container
-to the player's inventory in a single operation.
+to the player's inventory in a single operation (one player-registry unit of work, ADR-029).
 """
 
 from __future__ import annotations
@@ -12,18 +12,17 @@ from typing import Any, cast
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..exceptions import LoggedHTTPException
+from ..game.player_registry import PlayerRegistry
 from ..models.container import ContainerComponent
 from ..schemas.containers import ContainerLootAllResponse
+from ..services.inventory_websocket_events import emit_inventory_snapshot
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from .container_events import emit_loot_all_event
 from .container_exception_handlers import handle_loot_all_exceptions
 from .container_helpers import (
     apply_rate_limiting_for_loot_all,
-    get_container_and_player_for_loot_all,
     get_container_service,
     get_player_id_from_user,
-    transfer_all_items_from_container,
     validate_user_for_loot_all,
 )
 from .container_models import LootAllRequest
@@ -31,37 +30,8 @@ from .container_models import LootAllRequest
 logger = get_logger(__name__)
 
 
-async def _audit_loot_all(
-    player_id: Any, player: Any, request_data: LootAllRequest, final_container: Any, items_looted: int
-) -> None:
-    try:
-        # Reason: DYNAMIC_DISPATCH - player_id/player/final_container are Any per this function's
-        # own established, unsuppressed parameters; str() narrows each to str for the event.
-        # Appropriate because: same unsuppressed convention as this module's other Any handling.
-        audit_logger.log_container_interaction(
-            ContainerInteractionEvent(
-                player_id=str(player_id),  # pyright: ignore[reportAny]
-                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
-                # Appropriate because: same unsuppressed convention as this function's own signature.
-                player_name=str(player.name),  # pyright: ignore[reportAny]
-                container_id=str(request_data.container_id),
-                event_type="container_loot_all",
-                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
-                # Appropriate because: same unsuppressed convention as this function's own signature.
-                source_type=str(final_container.source_type.value),  # pyright: ignore[reportAny]
-                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
-                # Appropriate because: same unsuppressed convention as this function's own signature.
-                room_id=str(final_container.room_id),  # pyright: ignore[reportAny]
-                items_count=items_looted,
-                success=True,
-            )
-        )
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit log errors unpredictable, must not fail request
-        logger.warning("Failed to log container loot_all to audit log", error=str(e))
-
-
 def _build_loot_all_response(
-    final_container: Any, player_inventory: Any, items_looted: int
+    final_container: ContainerComponent, player_inventory: list[dict[str, object]], items_looted: int
 ) -> ContainerLootAllResponse:
     from .container_endpoints_basic import (
         _convert_container_dict_to_container_data,
@@ -69,7 +39,7 @@ def _build_loot_all_response(
     )
 
     container_data = _convert_container_dict_to_container_data(final_container.model_dump())
-    player_inventory_stacks = _convert_inventory_list_to_inventory_stacks(cast(list[dict[str, Any]], player_inventory))
+    player_inventory_stacks = _convert_inventory_list_to_inventory_stacks(player_inventory)
     return ContainerLootAllResponse(
         container=container_data,
         player_inventory=player_inventory_stacks,
@@ -77,12 +47,13 @@ def _build_loot_all_response(
     )
 
 
-async def loot_all_items(
+async def loot_all_items(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: route handler forwards each of its injected dependencies
     request_data: LootAllRequest,
     request: Request,
     current_user: Any,
     persistence: Any,
     connection_manager: Any,
+    player_registry: PlayerRegistry,
 ) -> ContainerLootAllResponse:
     """Loot all eligible items from a container."""
     validate_user_for_loot_all(current_user, request)
@@ -90,24 +61,21 @@ async def loot_all_items(
     try:
         player_id = await get_player_id_from_user(current_user, persistence)
         container_service = get_container_service(persistence)
-        container, player, player_inventory = await get_container_and_player_for_loot_all(
-            persistence, request_data, player_id, request, current_user
+        result = await container_service.loot_all(
+            request_data.container_id, player_id, request_data.mutation_token, registry=player_registry
         )
-        _, player_inventory = await transfer_all_items_from_container(
-            container_service, request_data, player_id, container, player_inventory
+        # Inventory first, as for a single transfer: the client's transfer pane must not offer stale stacks.
+        await emit_inventory_snapshot(
+            cast(object, connection_manager), player_id, result.player_inventory, result.player_equipped
         )
-        final_container_data = await persistence.get_container(request_data.container_id)
-        final_container = ContainerComponent.model_validate(final_container_data) if final_container_data else container
-        await emit_loot_all_event(connection_manager, request_data, final_container, player_id, container)
-        items_looted = len(container.items) - len(final_container.items)
+        await emit_loot_all_event(connection_manager, request_data, result.container, player_id, result.items_looted)
         logger.info(
             "Loot-all completed",
             container_id=str(request_data.container_id),
             player_id=str(player_id),
-            items_transferred=items_looted,
+            items_transferred=result.items_looted,
         )
-        await _audit_loot_all(player_id, player, request_data, final_container, items_looted)
-        return _build_loot_all_response(final_container, player_inventory, items_looted)
+        return _build_loot_all_response(result.container, result.player_inventory, result.items_looted)
     except LoggedHTTPException, HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must create error context
@@ -119,7 +87,7 @@ def register_loot_endpoints(router: APIRouter) -> None:
     """Register loot-all endpoint to the router."""
     # Import here so this module does not top-level-import auth/deps (cycle via factory).
     from ..auth.users import get_current_user
-    from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep
+    from ..dependencies import AsyncPersistenceDep, ConnectionManagerDep, get_player_registry
     from ..models.user import User
 
     async def _loot_all_route(
@@ -129,6 +97,10 @@ def register_loot_endpoints(router: APIRouter) -> None:
         persistence: Any = AsyncPersistenceDep,
         connection_manager: Any = ConnectionManagerDep,
     ) -> ContainerLootAllResponse:
-        return await loot_all_items(request_data, request, current_user, persistence, connection_manager)
+        # Not a Depends parameter: this module's annotations are strings, and FastAPI resolves them against module
+        # globals, which never see this function's local imports.
+        return await loot_all_items(
+            request_data, request, current_user, persistence, connection_manager, get_player_registry(request)
+        )
 
     router.post("/loot-all", response_model=ContainerLootAllResponse)(_loot_all_route)

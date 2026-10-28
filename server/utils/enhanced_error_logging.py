@@ -135,7 +135,7 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         context=context,
         details=details,
         user_friendly=user_friendly,
-        skip_log=skip_log_validation and exception_class is ValidationError,
+        skip_log=skip_log_validation and issubclass(exception_class, ValidationError),
     )
 
 

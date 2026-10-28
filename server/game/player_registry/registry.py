@@ -6,9 +6,13 @@ PlayerRegistry: the one place player state is read, changed and written (ADR-029
 - ``mutate(pid)`` / ``mutate_many(pids)`` run a unit of work under each player's ``asyncio.Lock`` (taken in sorted id
   order). A nested ``mutate`` of a player the current task already holds joins the open unit; asking for a player it
   does not hold raises LockOrderError, since taking a second lock mid-unit could deadlock.
-- On a successful exit, a unit that needs it (``sync=True``, or a sync part changed) commits every dirty part of its
-  players in one transaction before returning; on failure everything rolls back and the error propagates. Otherwise
-  the changes stay dirty for the lazy sweep. Queued events are published only after a successful unit.
+- ``containers=[cid, ...]`` also takes those world containers' locks, after the players' (sorted), so a unit can move
+  items between its players and the containers. ``write_container(cid, write)`` commits a container's write in the
+  unit's transaction, with its players' parts.
+- On a successful exit, a unit that needs it (``sync=True``, a sync part changed, or a container write) commits every
+  dirty part of its players, and its container writes, in one transaction before returning; on failure everything
+  rolls back and the error propagates. Otherwise the changes stay dirty for the lazy sweep. Queued events are
+  published only after a successful unit.
 - ``schedule_sweep()`` (driven by the tick loop) writes dirty players in the background, at most ``flush_concurrency``
   at a time, and then evicts idle unpinned players. ``close()`` writes everything at shutdown.
 """
@@ -27,7 +31,7 @@ from ...events.event_types import BaseEvent
 from ...monitoring.exception_tracker import track_exception
 from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
-from .part import DbSession, Part, PartWrite
+from .part import DbSession, PartWrite
 from .player_inventory import PlayerInventoryPart
 from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 
@@ -80,6 +84,8 @@ class _Unit:
 
     owner: asyncio.Task[object] | None
     aggregates: dict[uuid.UUID, PlayerAggregate] = field(default_factory=dict)
+    containers: frozenset[uuid.UUID] = frozenset()
+    container_writes: list[PartWrite] = field(default_factory=list)
     sync: bool = False
 
 
@@ -101,9 +107,10 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
     _clock: Callable[[], float]
     _settings: RegistrySettings
     _entries: dict[uuid.UUID, _Entry]
-    # shortcut: one Lock per player ever touched, never deleted (deleting one while a waiter holds it would let two
-    # tasks hold "the" lock); upgrade to refcounted locks if the number of distinct players gets large.
+    # shortcut: one Lock per player (and per world container) ever touched, never deleted (deleting one while a waiter
+    # holds it would let two tasks hold "the" lock); upgrade to refcounted locks if the number of distinct ids gets large.
     _locks: dict[uuid.UUID, asyncio.Lock]
+    _container_locks: dict[uuid.UUID, asyncio.Lock]
     _sweep_task: asyncio.Task[int] | None
 
     def __init__(
@@ -122,6 +129,7 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         self._clock = clock
         self._entries = {}
         self._locks = {}
+        self._container_locks = {}
         self._sweep_task = None
 
     # ---- reads ----
@@ -150,34 +158,53 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
     # ---- writes ----
 
     @asynccontextmanager
-    async def mutate(self, player_id: uuid.UUID, *, sync: bool = False) -> AsyncGenerator[PlayerAggregate]:
+    async def mutate(
+        self, player_id: uuid.UUID, *, sync: bool = False, containers: Sequence[uuid.UUID] = ()
+    ) -> AsyncGenerator[PlayerAggregate]:
         """A unit of work on one player. Raises PlayerNotFoundError if there is no such player."""
-        async with self.mutate_many([player_id], sync=sync) as aggregates:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        async with self.mutate_many([player_id], sync=sync, containers=containers) as aggregates:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
             yield aggregates[0]
 
     @asynccontextmanager
     async def mutate_many(
-        self, player_ids: Sequence[uuid.UUID], *, sync: bool = False
+        self, player_ids: Sequence[uuid.UUID], *, sync: bool = False, containers: Sequence[uuid.UUID] = ()
     ) -> AsyncGenerator[list[PlayerAggregate]]:
         """A unit of work on several players at once, in one transaction if it commits synchronously.
 
-        The aggregates are returned in the order the ids were given.
+        ``containers`` are the world containers the unit may write (see ``write_container``). The aggregates are
+        returned in the order the ids were given.
         """
         held = _held_unit()
         if held is not None:
             missing = [pid for pid in player_ids if pid not in held.aggregates]
             if missing:
                 raise LockOrderError(f"unit of work does not hold players {missing}")
+            missing = [cid for cid in containers if cid not in held.containers]
+            if missing:
+                raise LockOrderError(f"unit of work does not hold containers {missing}")
             held.sync = held.sync or sync
             yield [held.aggregates[pid] for pid in player_ids]
             return
-        async with self._open_unit(player_ids, sync) as unit:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        async with self._open_unit(player_ids, sync, containers) as unit:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
             yield [unit.aggregates[pid] for pid in player_ids]
 
+    def write_container(self, container_id: uuid.UUID, write: PartWrite) -> None:
+        """Commit ``write`` (of a world container the current unit holds) in the unit's transaction, with its players.
+
+        The unit commits before it returns. If anything in it fails, the write is never applied.
+        """
+        unit = _held_unit()
+        if unit is None or container_id not in unit.containers:
+            raise LockOrderError(f"unit of work does not hold container {container_id}")
+        unit.container_writes.append(write)
+        unit.sync = True
+
     @asynccontextmanager
-    async def _open_unit(self, player_ids: Sequence[uuid.UUID], sync: bool) -> AsyncGenerator[_Unit]:
+    async def _open_unit(
+        self, player_ids: Sequence[uuid.UUID], sync: bool, containers: Sequence[uuid.UUID]
+    ) -> AsyncGenerator[_Unit]:
         """Lock (sorted ids), load, checkpoint; after the caller's block, commit if needed or roll back."""
-        unit = _Unit(owner=asyncio.current_task(), sync=sync)
+        unit = _Unit(owner=asyncio.current_task(), sync=sync, containers=frozenset(containers))
         pids = sorted(set(player_ids))
         acquired: list[asyncio.Lock] = []
         events: list[BaseEvent] = []
@@ -228,12 +255,19 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
             if aggregate is None:
                 raise PlayerNotFoundError(str(pid))
             unit.aggregates[pid] = aggregate
+        # World containers always after players, each set sorted: two units can then never wait on each other.
+        for cid in sorted(unit.containers):
+            lock = self._container_lock(cid)
+            _ = await lock.acquire()
+            acquired.append(lock)
 
     async def _commit_if_needed(self, unit: _Unit, aggregates: Sequence[PlayerAggregate]) -> None:
-        """Commit every dirty part of the unit's players in one transaction, if the unit is synchronous."""
+        """Commit every dirty part of the unit's players, and its container writes, in one transaction, if the unit
+        is synchronous."""
         if not (unit.sync or any(aggregate.sync_required for aggregate in aggregates)):
             return
-        writes = [write for aggregate in aggregates for write in aggregate.take_writes()]
+        writes = [write for aggregate in aggregates for _part, write in aggregate.take_writes()]
+        writes.extend(unit.container_writes)
         if writes:
             await self._write(writes)
 
@@ -241,6 +275,12 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         lock = self._locks.get(player_id)
         if lock is None:
             lock = self._locks[player_id] = asyncio.Lock()
+        return lock
+
+    def _container_lock(self, container_id: uuid.UUID) -> asyncio.Lock:
+        lock = self._container_locks.get(container_id)
+        if lock is None:
+            lock = self._container_locks[container_id] = asyncio.Lock()
         return lock
 
     async def _load_if_needed(self, player_id: uuid.UUID) -> PlayerAggregate | None:
@@ -261,11 +301,11 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         for event in events:
             self._publish(event)
 
-    async def _write(self, writes: Sequence[tuple[Part, PartWrite]]) -> None:
+    async def _write(self, writes: Sequence[PartWrite]) -> None:
         """Apply captured writes in one transaction."""
         async with self._session_factory() as session:
             try:
-                for _part, write in writes:
+                for write in writes:
                     await write(session)
                 await session.commit()
             except BaseException:
@@ -297,7 +337,7 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
                 return
             writes = entry.aggregate.take_writes()
             if writes:
-                await self._write(writes)
+                await self._write([write for _part, write in writes])
             del self._entries[player_id]
 
     def schedule_sweep(self) -> None:
@@ -342,7 +382,7 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
             if not writes:
                 return False
             try:
-                await self._write(writes)
+                await self._write([write for _part, write in writes])
             except Exception as error:  # pylint: disable=broad-exception-caught  # Reason: a failed lazy flush must not kill the sweep; the player stays dirty and is retried
                 for part, _write in writes:
                     part.mark_dirty()

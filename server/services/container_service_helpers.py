@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from enum import Enum
-from typing import ClassVar, Literal, cast
+from typing import ClassVar, cast
 
-from ..exceptions import MythosMUDError
+from ..exceptions import LogLevel, MythosMUDError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .inventory_service import InventoryStack
 
@@ -88,14 +88,6 @@ def items_json_for_persist(items: list[InventoryStack]) -> list[dict[str, object
     return [cast(dict[str, object], cast(object, item)) for item in items]
 
 
-def player_inventory_for_response(player: object) -> list[InventoryStack]:
-    """Read player.inventory (tests/mocks) as typed stacks; empty if missing."""
-    inventory = getattr(player, "inventory", None)
-    if not isinstance(inventory, list):
-        return []
-    return cast(list[InventoryStack], inventory)
-
-
 class ContainerServiceError(MythosMUDError):
     """Base exception for container service operations."""
 
@@ -107,25 +99,25 @@ class ContainerServiceError(MythosMUDError):
 class ContainerNotFoundError(ContainerServiceError):
     """Raised when a container is not found."""
 
-    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+    log_level: ClassVar[LogLevel] = "warning"
 
 
 class ContainerLockedError(ContainerServiceError):
     """Raised when attempting to access a locked container."""
 
-    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+    log_level: ClassVar[LogLevel] = "warning"
 
 
 class ContainerCapacityError(ContainerServiceError):
     """Raised when container capacity is exceeded."""
 
-    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+    log_level: ClassVar[LogLevel] = "warning"
 
 
 class ContainerAccessDeniedError(ContainerServiceError):
     """Raised when access to container is denied (also covers ContainerOpenByAnotherPlayerError)."""
 
-    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+    log_level: ClassVar[LogLevel] = "warning"
 
 
 class ContainerOpenByAnotherPlayerError(ContainerAccessDeniedError):

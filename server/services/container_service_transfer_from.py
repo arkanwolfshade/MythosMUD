@@ -1,16 +1,18 @@
 """
 Container inventory transfer and loot operations.
 
-Mixin host: ContainerService.
+Mixin host: ContainerService. Each operation is one player-registry unit of work; see container_service_transfer_to.
 """
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from typing import cast
 from uuid import UUID
 
+from ..game.player_registry import PlayerRegistry
 from ..models.container import ContainerComponent
-from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from ..utils.error_logging import log_and_raise
@@ -18,16 +20,23 @@ from .container_service_helpers import (
     UNKNOWN_STACK,
     ContainerCapacityError,
     ContainerServiceError,
-    as_object_dict,
-    filter_container_data,
     get_enum_value,
     items_json_for_persist,
-    player_inventory_for_response,
 )
-from .container_service_transfer_to import ContainerTransferToMixin
-from .inventory_service import InventoryCapacityError, InventoryStack
+from .container_service_transfer_to import ContainerTransferToMixin, container_items_write
+from .inventory_service import InventoryCapacityError, InventoryStack, InventoryValidationError
 
 logger = get_logger(__name__)
+
+
+@dataclass(frozen=True)
+class LootAllResult:
+    """What a loot-all committed: the container and the player's stacks after it, and how many stacks moved."""
+
+    container: ContainerComponent
+    player_inventory: list[dict[str, object]]
+    player_equipped: dict[str, object]
+    items_looted: int
 
 
 class ContainerTransferFromMixin(ContainerTransferToMixin):
@@ -90,27 +99,12 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
 
         return new_container_items
 
-    def _add_item_to_player_inventory(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Inventory management requires many parameters for context and inventory operations
-        self, player: Player, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID
-    ) -> list[InventoryStack]:
-        """Add item to player inventory using InventoryService."""
-        player_inventory = player_inventory_for_response(player)
-
+    def _add_to_carried(
+        self, carried: Sequence[Mapping[str, object]], stack: InventoryStack, container_id: UUID, player_id: UUID
+    ) -> list[dict[str, object]]:
+        """The player's carried stacks with ``stack`` merged in or appended; ContainerCapacityError when full."""
         try:
-            inventory_length = len(player_inventory)
-        except TypeError:
-            inventory_length = None
-
-        logger.debug(
-            "Player inventory before add_stack",
-            container_id=str(container_id),
-            player_id=str(player_id),
-            inventory_length=inventory_length,
-            inventory_types=[type(stack).__name__ for stack in player_inventory[:5]],
-        )
-
-        try:
-            return self.inventory_service.add_stack(player_inventory, transfer_item_dict)
+            return items_json_for_persist(self.inventory_service.add_stack(carried, stack))
         except InventoryCapacityError as e:
             log_and_raise(
                 ContainerCapacityError,
@@ -118,104 +112,10 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
                 operation="add_item_to_player_inventory",
                 container_id=str(container_id),
                 player_id=str(player_id),
-                item_id=transfer_item_dict.get("item_id", "unknown"),
+                item_id=stack.get("item_id", "unknown"),
                 details={"player_id": str(player_id), "error": str(e)},
                 user_friendly="Your inventory is full",
             )
-
-    async def _persist_and_audit_transfer_from_container(
-        self,
-        container: ContainerComponent,
-        container_id: UUID,
-        player: Player,
-        item: InventoryStack,
-        transfer_item_dict: InventoryStack,
-        new_container_items: list[InventoryStack],
-        new_player_inventory: list[InventoryStack],
-    ) -> dict[str, object]:
-        """Persist container changes and log audit trail."""
-        container.items = new_container_items
-
-        _ = await self.persistence.update_container(
-            container_id,
-            items_json=items_json_for_persist(new_container_items),
-        )
-
-        logger.info(
-            "Item transferred from container",
-            container_id=str(container_id),
-            player_id=str(player.player_id),
-            item_id=item.get("item_id"),
-            quantity=transfer_item_dict.get("quantity"),
-        )
-
-        try:
-            audit_logger.log_container_interaction(
-                ContainerInteractionEvent(
-                    player_id=str(player.player_id),
-                    player_name=str(player.name),
-                    container_id=str(container_id),
-                    event_type="container_transfer",
-                    source_type=get_enum_value(container.source_type),
-                    room_id=container.room_id,
-                    direction="from_container",
-                    item_id=item.get("item_id"),
-                    item_name=item.get("item_name"),
-                    success=True,
-                )
-            )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
-            logger.warning("Failed to log container transfer to audit log", error=str(e))
-
-        return {
-            "container": container.model_dump(),
-            "player_inventory": new_player_inventory,
-        }
-
-    async def _execute_transfer_from_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Mutation-guarded transfer body needs full context
-        self,
-        container: ContainerComponent,
-        player: Player,
-        container_id: UUID,
-        player_id: UUID,
-        mutation_token: str,
-        item: InventoryStack,
-        quantity: int | None,
-    ) -> dict[str, object]:
-        """Mutation-guarded body: remove stack, add to player, persist, audit."""
-        async with self.mutation_guard.acquire_async(str(player_id), mutation_token) as decision:
-            if not decision.should_apply:
-                logger.warning(
-                    "Transfer suppressed by mutation guard",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                    duplicate=decision.duplicate,
-                )
-                raise ContainerServiceError("Transfer suppressed by mutation guard")
-            try:
-                transfer_item_dict = self._prepare_transfer_item(item, quantity)
-                new_container_items = self._remove_item_from_container(
-                    container, transfer_item_dict, container_id, player_id
-                )
-                new_player_inventory = self._add_item_to_player_inventory(
-                    player, transfer_item_dict, container_id, player_id
-                )
-                return await self._persist_and_audit_transfer_from_container(
-                    container, container_id, player, item, transfer_item_dict, new_container_items, new_player_inventory
-                )
-            except Exception as e:
-                logger.error(
-                    "Unexpected error during transfer_from_container",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                    item_type=type(item).__name__,
-                    item_value=str(item),
-                    container_items_length=len(container.items),
-                    container_items_types=[type(stack).__name__ for stack in container.items[:5]],
-                    error=str(e),
-                    error_type=type(e).__name__,
-                )
-                raise
 
     @staticmethod
     def _resolve_container_stack(container: ContainerComponent, item: InventoryStack) -> InventoryStack:
@@ -251,8 +151,13 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
         mutation_token: str,
         item: InventoryStack,
         quantity: int | None = None,
+        *,
+        registry: PlayerRegistry,
     ) -> dict[str, object]:
-        """Transfer items from container to player inventory."""
+        """Move a stack (``quantity`` of it, default all, never more than it holds) from the container to the player.
+
+        Returns the container, the player's carried and equipped stacks and the quantity moved, as committed.
+        """
         logger.info(
             "Transferring item from container",
             container_id=str(container_id),
@@ -261,126 +166,83 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
             quantity=quantity,
         )
         self._verify_container_open(container_id, player_id, mutation_token)
-        container = await self._require_container_component(container_id, player_id, item, "transfer_from_container")
-        item = self._resolve_container_stack(container, item)
-        player = await self._require_player_for_transfer(player_id, container_id, item, "transfer_from_container")
-        return await self._execute_transfer_from_container(
-            container, player, container_id, player_id, mutation_token, item, quantity
+        async with self._transfer_unit(registry, player_id, container_id, "transfer_from_container") as player:
+            container = await self._require_container_component(
+                container_id, player_id, item, "transfer_from_container"
+            )
+            moved = self._prepare_transfer_item(self._resolve_container_stack(container, item), quantity)
+            container.items = self._remove_item_from_container(container, moved, container_id, player_id)
+            carried = self._add_to_carried(player.inventory.carried, moved, container_id, player_id)
+            player.inventory.set_carried(carried)
+            registry.write_container(container_id, container_items_write(container_id, container.items))
+            player_name = player.row.name
+            equipped = dict(player.inventory.equipped)
+        logger.info(
+            "Item transferred from container",
+            container_id=str(container_id),
+            player_id=str(player_id),
+            item_id=moved.get("item_id"),
+            quantity=moved.get("quantity", 1),
         )
+        self._audit_transfer(container, container_id, player_id, player_name, moved, "from_container")
+        return {
+            "container": container.model_dump(),
+            "player_inventory": carried,
+            "player_equipped": equipped,
+            "quantity": moved.get("quantity", 1),
+        }
 
-    async def _loot_items_until_full(
-        self,
-        container: ContainerComponent,
-        container_id: UUID,
-        player_id: UUID,
-        mutation_token: str,
-        player_inventory: list[InventoryStack],
-    ) -> tuple[ContainerComponent, list[InventoryStack]]:
-        """Transfer each container stack until capacity error; returns updated state."""
-        for item in container.items:
+    def _loot_into(
+        self, carried: list[dict[str, object]], container: ContainerComponent, container_id: UUID, player_id: UUID
+    ) -> tuple[list[dict[str, object]], list[InventoryStack]]:
+        """Move each container stack into ``carried`` until the player is full. Returns (carried, stacks left)."""
+        left: list[InventoryStack] = []
+        for position, stack in enumerate(container.items):
             try:
-                result = await self.transfer_from_container(
-                    container_id,
-                    player_id,
-                    mutation_token,
-                    item,
-                    item.get("quantity", 1),
-                )
-                container_payload = result.get("container", {})
-                if isinstance(container_payload, dict):
-                    container = ContainerComponent.model_validate(
-                        filter_container_data(cast(dict[str, object], container_payload))
-                    )
-                inv_payload = result.get("player_inventory", player_inventory)
-                if isinstance(inv_payload, list):
-                    player_inventory = cast(list[InventoryStack], inv_payload)
+                carried = self._add_to_carried(carried, stack, container_id, player_id)
             except ContainerCapacityError:
-                logger.warning(
-                    "Loot-all stopped due to capacity",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                )
+                logger.warning("Loot-all stopped due to capacity", container_id=str(container_id))
+                left.extend(container.items[position:])
                 break
-            except Exception as e:  # pylint: disable=broad-exception-caught  # Continue processing other items on error  # noqa: B904
-                logger.warning(
-                    "Error transferring item during loot-all",
-                    error=str(e),
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                )
-                continue
-        return container, player_inventory
+            except InventoryValidationError as e:
+                # A malformed stack stays in the container; the rest still move.
+                logger.warning("Loot-all skipped an invalid stack", container_id=str(container_id), error=str(e))
+                left.append(stack)
+        return carried, left
 
-    async def _finalize_loot_all(
-        self,
-        container: ContainerComponent,
-        container_id: UUID,
-        player: Player,
-        player_id: UUID,
-        mutation_token: str,
-        player_inventory: list[InventoryStack],
-        initial_items_count: int,
-    ) -> dict[str, object]:
-        """Reload container, audit loot-all, and build response payload."""
-        final_raw = await self.persistence.get_container(container_id)
-        final_container = (
-            ContainerComponent.model_validate(filter_container_data(as_object_dict(final_raw)))
-            if final_raw
-            else container
-        )
+    async def loot_all(
+        self, container_id: UUID, player_id: UUID, mutation_token: str, *, registry: PlayerRegistry
+    ) -> LootAllResult:
+        """Move every stack the player can carry out of the container, as one unit of work (stops when full)."""
+        logger.info("Looting all items from container", container_id=str(container_id), player_id=str(player_id))
+        self._verify_container_open(container_id, player_id, mutation_token)
+        async with self._transfer_unit(registry, player_id, container_id, "loot_all") as player:
+            container = await self._require_container_component(container_id, player_id, UNKNOWN_STACK, "loot_all")
+            carried, left = self._loot_into(
+                [dict(stack) for stack in player.inventory.carried], container, container_id, player_id
+            )
+            looted = len(container.items) - len(left)
+            if looted:
+                container.items = left
+                player.inventory.set_carried(carried)
+                registry.write_container(container_id, container_items_write(container_id, container.items))
+            player_name = player.row.name
+            equipped = dict(player.inventory.equipped)
         audit_logger.log_container_interaction(
             ContainerInteractionEvent(
                 player_id=str(player_id),
-                player_name=str(player.name),
+                player_name=player_name,
                 container_id=str(container_id),
                 event_type="container_loot_all",
-                source_type=get_enum_value(final_container.source_type),
-                room_id=final_container.room_id,
-                items_count=initial_items_count,
+                source_type=get_enum_value(container.source_type),
+                room_id=container.room_id,
+                items_count=looted,
+                success=True,
             )
         )
-        return {
-            "container": final_container.to_dict(),
-            "player_inventory": player_inventory,
-            "mutation_token": mutation_token,
-        }
-
-    async def loot_all(
-        self,
-        container_id: UUID,
-        player_id: UUID,
-        mutation_token: str,
-    ) -> dict[str, object]:
-        """Loot all eligible items from a container (requires open mutation token)."""
-        logger.info(
-            "Looting all items from container",
-            container_id=str(container_id),
-            player_id=str(player_id),
-        )
-        self._verify_container_open(container_id, player_id, mutation_token)
-        container = await self._require_container_component(container_id, player_id, UNKNOWN_STACK, "loot_all")
-        initial_items_count = len(container.items)
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            log_and_raise(
-                ContainerServiceError,
-                f"Player not found: {player_id}",
-                operation="loot_all",
-                container_id=str(container_id),
-                player_id=str(player_id),
-                details={"player_id": str(player_id)},
-                user_friendly="Player not found",
-            )
-        player_inventory = player_inventory_for_response(player)
-        container, player_inventory = await self._loot_items_until_full(
-            container, container_id, player_id, mutation_token, player_inventory
-        )
-        return await self._finalize_loot_all(
-            container,
-            container_id,
-            player,
-            player_id,
-            mutation_token,
-            player_inventory,
-            initial_items_count,
+        return LootAllResult(
+            container=container,
+            player_inventory=[dict(stack) for stack in carried],
+            player_equipped=equipped,
+            items_looted=looted,
         )

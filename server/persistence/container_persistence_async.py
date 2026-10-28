@@ -9,7 +9,7 @@ psycopg2-based container_persistence for use by ContainerRepository.
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any, cast
 from uuid import UUID
 
@@ -392,6 +392,45 @@ async def get_container_async(session: AsyncSession, container_id: UUID) -> Cont
             user_friendly="Failed to retrieve container",
         )
     # log_and_raise always raises; no return needed here.
+
+
+async def write_container_items_async(
+    session: AsyncSession, container_id: UUID, items_json: Sequence[Mapping[str, object]]
+) -> None:
+    """Replace a container's items inside the caller's transaction (ADR-029 transfers).
+
+    Unlike update_container_async it never commits and never skips an item it cannot write: a failure propagates,
+    so the caller's whole transaction (the player's side of the transfer too) rolls back and nothing is lost.
+    """
+    from .item_instance_persistence_async import upsert_item_instance_in_transaction_async
+
+    cid = str(container_id)
+    _ = await session.execute(text("SELECT clear_container_contents(:cid)"), {"cid": cid})
+    for position, item in enumerate(items_json):
+        item_instance_id = item.get("item_instance_id") or item.get("item_id")
+        prototype_id = item.get("item_id") or item.get("prototype_id")
+        if not item_instance_id or not prototype_id:
+            continue
+        quantity = item.get("quantity", 1)
+        await upsert_item_instance_in_transaction_async(
+            session,
+            str(item_instance_id),
+            str(prototype_id),
+            {
+                "owner_type": "container",
+                "owner_id": cid,
+                "quantity": quantity if isinstance(quantity, int) else 1,
+                "metadata_payload": _metadata_with_inner_container(item),
+            },
+        )
+        _ = await session.execute(
+            text("SELECT add_item_to_container(:cid, :iid, :pos)"),
+            {"cid": cid, "iid": str(item_instance_id), "pos": position},
+        )
+    _ = await session.execute(
+        text("SELECT update_container(:cid, :lock_state, :metadata_json)"),
+        {"cid": cid, "lock_state": None, "metadata_json": None},
+    )
 
 
 async def update_container_async(  # pylint: disable=too-many-locals  # Reason: Single transactional update for items, lock_state, metadata; extracting would duplicate session/context handling

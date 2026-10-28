@@ -22,7 +22,7 @@ from .container_helpers_inventory import (
     validate_put_command_inputs,
 )
 from .inventory_command_contracts import CommandResponse
-from .inventory_command_helpers import persist_player, remove_item_from_inventory, resolve_state_and_player
+from .inventory_command_helpers import resolve_state_and_player
 from .scripted_action_support import run_on_put
 
 logger: BoundLogger = get_logger(__name__)
@@ -49,7 +49,6 @@ class PutValidatedWork:
     container_name: str
     quantity: object
     item_found: dict[str, object]
-    item_index: int
 
 
 async def _put_resolve_container_id(
@@ -87,7 +86,6 @@ async def _put_transfer_finish(
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
-    item_index: int,
     quantity: object,
     container_name: str,
     *,
@@ -104,11 +102,6 @@ async def _put_transfer_finish(
         return command_error("Error: Failed to transfer item.")
 
     transfer_quantity = cast(int, transfer_result["transfer_quantity"])
-    remove_item_from_inventory(player, item_index, transfer_quantity)
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        return persist_error
-
     await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     if request is not None:
         prototype_id = item_found.get("prototype_id")
@@ -166,7 +159,6 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
         work.player,
         container_id,
         work.item_found,
-        work.item_index,
         work.quantity,
         work.container_name,
         request=rt.request,
@@ -190,9 +182,8 @@ async def handle_put_command(
     if isinstance(validation_result, dict):
         return validation_result
 
-    item_name, container_name, quantity, container_service, room_manager, item_found, item_index = validation_result
+    item_name, container_name, quantity, container_service, room_manager, item_found, _ = validation_result
     item_found_valid = cast(dict[str, object], item_found)
-    item_index_valid = cast(int, item_index)
 
     put_rt = PutCommandRuntime(
         persistence=persistence,
@@ -208,6 +199,5 @@ async def handle_put_command(
         container_name=container_name,
         quantity=quantity,
         item_found=item_found_valid,
-        item_index=item_index_valid,
     )
     return await _put_run_validated(rt=put_rt, work=put_work)

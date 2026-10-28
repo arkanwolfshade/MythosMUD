@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest
 from fastapi import HTTPException
 
-from server.exceptions import DatabaseError, MythosMUDError, ValidationError
+from server.exceptions import ActionRejectedError, DatabaseError, MythosMUDError, ValidationError
 from server.services.container_service import (
     ContainerAccessDeniedError,
     ContainerCapacityError,
@@ -118,6 +118,7 @@ def test_log_security_event_enhanced():
         (ContainerCapacityError, "warning"),
         (ContainerAccessDeniedError, "warning"),
         (ValidationError, "warning"),
+        (ActionRejectedError, "debug"),
         (ContainerServiceError, "error"),
         (DatabaseError, "error"),
     ],
@@ -125,7 +126,8 @@ def test_log_security_event_enhanced():
 def test_log_and_raise_enhanced_uses_exception_log_level(
     exception_class: type[MythosMUDError], expected_level: str
 ) -> None:
-    """#965: expected, player-caused rejections log at warning (both lines) so errors.log shows real failures."""
+    """#965: expected, player-caused rejections log at warning (both lines) so errors.log shows real failures;
+    routine game rejections (ActionRejectedError) only at debug."""
     with (
         patch("server.utils.enhanced_error_logging.log_with_context") as mock_log,
         patch("server.exceptions.logger.error") as exception_error,
@@ -136,10 +138,23 @@ def test_log_and_raise_enhanced_uses_exception_log_level(
 
     assert mock_log.call_args.args[1] == expected_level
     # The exception's own "MythosMUD error occurred" line follows the same level (when it logs at all).
-    if expected_level == "warning":
+    if expected_level != "error":
         exception_error.assert_not_called()
-    else:
+    if expected_level != "warning":
         exception_warning.assert_not_called()
+
+
+def test_a_validation_error_subclass_is_logged_once_not_twice() -> None:
+    """skip_log_validation covers ValidationError's subclasses too: log_and_raise has already logged the line."""
+    with (
+        patch("server.utils.enhanced_error_logging.log_with_context") as mock_log,
+        patch("server.exceptions.logger.debug") as exception_debug,
+        pytest.raises(ActionRejectedError),
+    ):
+        log_and_raise_enhanced(ActionRejectedError, "You don't have that item.", logger_name=__name__)
+
+    mock_log.assert_called_once()
+    exception_debug.assert_not_called()
 
 
 def test_log_and_raise_enhanced_log_as_error_overrides_warning_level() -> None:

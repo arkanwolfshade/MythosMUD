@@ -48,10 +48,11 @@ def _item_instance_upsert_params(
     }
 
 
-async def _run_item_instance_upsert(
+async def upsert_item_instance_in_transaction_async(
     session: AsyncSession, item_instance_id: str, prototype_id: str, opts: CreateItemInstanceInput
 ) -> None:
-    await session.execute(
+    """upsert_item_instance inside the caller's transaction: no commit, and a failure propagates to the caller."""
+    _ = await session.execute(
         text(
             "SELECT upsert_item_instance("
             ":item_instance_id, :prototype_id, :owner_type, :owner_id, :location_context,"
@@ -60,6 +61,12 @@ async def _run_item_instance_upsert(
         ),
         _item_instance_upsert_params(item_instance_id, prototype_id, opts),
     )
+
+
+async def _run_item_instance_upsert(
+    session: AsyncSession, item_instance_id: str, prototype_id: str, opts: CreateItemInstanceInput
+) -> None:
+    await upsert_item_instance_in_transaction_async(session, item_instance_id, prototype_id, opts)
     await session.commit()
 
 
