@@ -86,8 +86,12 @@ async def test_reset_tutorial_character_restores_tutorial_start_state() -> None:
     # Player.get_inventory() reads players.inventory: both copies must carry the same Sling.
     assert player_update[1][3] == inventory[1][1]
     assert quest_delete == ("DELETE FROM quest_instances WHERE player_id = $1", (player_id,))
-    # Effects pause while offline (ADR-029 step 3b): a leftover row would resume at the next login.
-    assert effects_delete == ("DELETE FROM player_effects WHERE player_id = $1", (player_id,))
+    # Effects pause while offline (ADR-029 step 3b): a leftover row would resume at the next login. A running
+    # login ward stays, so it can still expire and end the in-memory grace it backs.
+    assert effects_delete == (
+        "DELETE FROM player_effects WHERE player_id = $1 AND effect_type <> 'login_warded'",
+        (player_id,),
+    )
     assert "player_lucidity" in lucidity[0] and "current_lcd = 100" in lucidity[0] and lucidity[1] == (player_id,)
     assert cooldowns == ("DELETE FROM lucidity_cooldowns WHERE player_id = $1", (player_id,))  # incl. the debrief flag
     stacks = cast(list[dict[str, object]], json.loads(cast(str, inventory[1][1])))

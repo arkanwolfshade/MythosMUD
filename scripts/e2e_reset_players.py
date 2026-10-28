@@ -99,8 +99,12 @@ async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
         inventory,
     )
     _ = await conn.execute("DELETE FROM quest_instances WHERE player_id = $1", player_id)
-    # Effects pause while offline (ADR-029 step 3b), so a leftover row would resume at the next login.
-    _ = await conn.execute("DELETE FROM player_effects WHERE player_id = $1", player_id)
+    # Effects pause while offline (ADR-029 step 3b), so a leftover row would resume at the next login. The login
+    # ward stays: the server clears its in-memory grace only when that row expires, and logging out does not end
+    # the grace, so deleting a running ward left the next login warded for good (NPC attacks blocked forever).
+    _ = await conn.execute(
+        "DELETE FROM player_effects WHERE player_id = $1 AND effect_type <> 'login_warded'", player_id
+    )
     _ = await conn.execute(
         """
         UPDATE player_lucidity
