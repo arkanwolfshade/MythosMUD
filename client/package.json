@@ -67,7 +67,7 @@
     "patch-package": "^8.0.1",
     "postcss": "^8.5.29",
     "prettier": "^3.9.10",
-    "stylelint": "^17.15.0",
+    "stylelint": "^17.16.0",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.70.1",
