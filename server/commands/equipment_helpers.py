@@ -191,10 +191,10 @@ def resolve_unequip_slot(
 
 
 async def handle_wearable_container_on_unequip(
-    request: object, player: Player, unequipped_item: dict[str, object], persistence: object
+    request: object, player: Player, unequipped_item: dict[str, object]
 ) -> None:
     """Handle wearable container preservation when unequipping a container item."""
-    from .inventory_command_helpers import persist_player
+    from .inventory_command_helpers import change_inventory
 
     if unequipped_item.get("inner_container"):
         try:
@@ -204,18 +204,25 @@ async def handle_wearable_container_on_unequip(
                 item_stack=unequipped_item,
             )
             if container_result:
-                inventory_view = player.get_inventory()
-                for inv_item in inventory_view:
-                    if inv_item.get("item_instance_id") == unequipped_item.get("item_instance_id"):
-                        inv_item["inner_container"] = container_result["inner_container"]
-                        player.set_inventory(inventory_view)
-                        _ = await persist_player(persistence, player)
-                        logger.debug(
-                            "Wearable container preserved on unequip",
-                            player_id=player.player_id,
-                            item_id=unequipped_item.get("item_id"),
-                        )
-                        break
+                inner_container = cast(object, container_result["inner_container"])
+                instance_id = unequipped_item.get("item_instance_id")
+
+                async def keep_inner_container() -> Mapping[str, object] | None:
+                    # On the live carried stack, through the registry, or its next inventory write would drop it.
+                    inventory_view = player.get_inventory()
+                    for inv_item in inventory_view:
+                        if inv_item.get("item_instance_id") == instance_id:
+                            inv_item["inner_container"] = inner_container
+                            player.set_inventory(inventory_view)
+                            break
+                    return None
+
+                if await change_inventory(player, keep_inner_container) is None:
+                    logger.debug(
+                        "Wearable container preserved on unequip",
+                        player_id=player.player_id,
+                        item_id=unequipped_item.get("item_id"),
+                    )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container preservation errors unpredictable, not critical
             logger.warning(
                 "Failed to preserve wearable container on unequip",

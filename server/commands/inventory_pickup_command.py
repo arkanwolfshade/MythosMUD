@@ -19,10 +19,9 @@ from .inventory_command_contracts import CommandResponse, RoomDropManager
 from .inventory_command_helpers import (
     add_pickup_to_inventory,
     build_and_broadcast_inventory_event,
-    clone_inventory,
+    change_inventory,
     ensure_item_instance_for_pickup,
     get_room_manager,
-    persist_player,
     prepare_extracted_stack,
     resolve_pickup_item_index,
     resolve_state_and_player,
@@ -165,34 +164,37 @@ async def _pickup_commit_inventory_after_floor_extract(
     extracted_stack: dict[str, object],
     player_id_uuid: UUID,
 ) -> tuple[CommandResponse | None, dict[str, object] | None]:
-    """Apply stack to player inventory and persist. Returns (error, None) or (None, prepared_stack)."""
+    """Add the stack to the live inventory and commit it. Returns (error, None) or (None, prepared_stack)."""
     prepared_stack = prepare_extracted_stack(extracted_stack, player.name, player_id_uuid)
 
     await ensure_item_instance_for_pickup(persistence, prepared_stack, player, room_id)
 
-    previous_inventory = clone_inventory(player)
+    added: list[bool] = []  # set by add_to_inventory once the stack is in
 
-    inventory_service = InventoryService()
-    updated_inventory, inventory_error = await add_pickup_to_inventory(
-        inventory_service, player, prepared_stack, room_manager, room_id
-    )
-    if inventory_error:
-        return inventory_error, None
+    async def add_to_inventory() -> CommandResponse | None:
+        # A rejected stack (inventory full, invalid) goes straight back to the room drops.
+        updated_inventory, inventory_error = await add_pickup_to_inventory(
+            InventoryService(), player, prepared_stack, room_manager, room_id
+        )
+        if inventory_error:
+            return inventory_error
+        if updated_inventory is None:
+            return command_error("Failed to update inventory.")
+        player.set_inventory(updated_inventory)
+        logger.info(
+            "Pickup: inventory after set_inventory",
+            player=player.name,
+            player_id=str(player.player_id),
+            inventory_length=len(updated_inventory),
+        )
+        added.append(True)
+        return None
 
-    if updated_inventory is None:
-        return command_error("Failed to update inventory."), None
-    player.set_inventory(updated_inventory)
-    logger.info(
-        "Pickup: inventory after set_inventory",
-        player=player.name,
-        player_id=str(player.player_id),
-        inventory_length=len(updated_inventory),
-    )
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        room_manager.add_room_drop(room_id, prepared_stack)
-        player.set_inventory(previous_inventory)
-        return persist_error, None
+    error = await change_inventory(player, add_to_inventory)
+    if error:
+        if added:  # the save failed after the stack left the room: put it back
+            room_manager.add_room_drop(room_id, prepared_stack)
+        return error, None
     return None, prepared_stack
 
 

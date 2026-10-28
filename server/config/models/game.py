@@ -35,8 +35,12 @@ class GameConfig(BaseSettings):
     player_registry_flush_concurrency: int = Field(
         default=4, ge=1, description="Player transactions a lazy registry flush may run at once (ADR-029)"
     )
+    # 0 until every writer of a part goes through the registry (ADR-029 step 4c; e2e resets in step 8): a part kept
+    # between units would miss what the other writers change, and the next unit would write that stale copy back.
     player_registry_idle_ttl_seconds: float = Field(
-        default=60.0, gt=0, description="Seconds an unpinned, clean player stays in the registry after use (ADR-029)"
+        default=0.0,
+        ge=0,
+        description="Seconds an unpinned, clean player stays in the registry after use; 0 drops it as each unit ends",
     )
     player_registry_failure_alert_after: int = Field(
         default=5, ge=1, description="Consecutive failed flushes of one player before it is reported (ADR-029)"

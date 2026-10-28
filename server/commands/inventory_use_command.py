@@ -18,8 +18,7 @@ from .command_results import command_error
 from .equipment_helpers import resolve_equip_item_index
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import (
-    clone_inventory,
-    persist_player,
+    change_inventory,
     remove_item_from_inventory,
     resolve_state_and_player,
 )
@@ -60,29 +59,6 @@ def _resolve_usable_or_error(
     return resolved_index, prototype, effect
 
 
-async def _spend_one(
-    persistence: object,
-    connection_manager: object,
-    player: Player,
-    inventory_index: int,
-    prototype: ItemPrototypeModel,
-) -> None:
-    """Remove one of the item after its effect happened; a failed save puts it back (the effect stands)."""
-    player_id = UUID(str(player.player_id))
-    previous_inventory = clone_inventory(player)
-    remove_item_from_inventory(player, inventory_index, 1)
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        player.set_inventory(previous_inventory)
-        logger.error(
-            "Consumable effect applied but inventory decrement failed to persist",
-            player_id=str(player_id),
-            prototype_id=prototype.prototype_id,
-        )
-        return
-    await emit_inventory_updated(connection_manager, player_id, player)
-
-
 async def handle_use_command(
     command_data: dict[str, object],
     current_user: dict[str, object],
@@ -92,36 +68,57 @@ async def handle_use_command(
 ) -> CommandResponse:
     """Use (drink, quaff) one consumable from inventory; the item is spent only if its effect happens."""
 
-    persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
+    _persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
         return error or command_error("Player information not found.")
 
     room_id = str(player.current_room_id)
-    usable = _resolve_usable_or_error(request, command_data, player, room_id)
-    if not isinstance(usable, tuple):
-        return usable
-    inventory_index, prototype, effect = usable
-
     player_id = UUID(str(player.player_id))
-    # The command gate lets `use` through for a catatonic player; only an item that restores LCD may act (#1148).
-    if not restores_lucidity(prototype) and await player_is_catatonic(
-        getattr(getattr(request, "app", None), "state", None), player_id
-    ):
-        return {"result": CATATONIA_BLOCK_MESSAGE}
-    outcome = await effect(
-        ItemUseContext(
-            app=cast(object, getattr(request, "app", None)), player_id=player_id, room_id=room_id, prototype=prototype
-        )
-    )
-    if not outcome.ok:
-        return {"result": outcome.message}
+    used: list[tuple[ItemPrototypeModel, str]] = []
 
-    await _spend_one(persistence, connection_manager, player, inventory_index, prototype)
+    async def use_one() -> CommandResponse | None:
+        # Under the player's lock from choosing the stack to spending it, so the slot can't change in between.
+        usable = _resolve_usable_or_error(request, command_data, player, room_id)
+        if not isinstance(usable, tuple):
+            return usable
+        inventory_index, prototype, effect = usable
+        # The command gate lets `use` through for a catatonic player; only an item that restores LCD may act (#1148).
+        if not restores_lucidity(prototype) and await player_is_catatonic(
+            getattr(getattr(request, "app", None), "state", None), player_id
+        ):
+            return {"result": CATATONIA_BLOCK_MESSAGE}
+        outcome = await effect(
+            ItemUseContext(
+                app=cast(object, getattr(request, "app", None)),
+                player_id=player_id,
+                room_id=room_id,
+                prototype=prototype,
+            )
+        )
+        if not outcome.ok:
+            return {"result": outcome.message}
+        remove_item_from_inventory(player, inventory_index, 1)
+        used.append((prototype, outcome.message))
+        return None
+
+    change_error = await change_inventory(player, use_one)
+    if not used:
+        return change_error or command_error("You do not have that item.")
+    prototype, message = used[0]
+    if change_error:
+        # The effect happened; only spending the item failed to save, so the player keeps it.
+        logger.error(
+            "Consumable effect applied but inventory decrement failed to persist",
+            player_id=str(player_id),
+            prototype_id=prototype.prototype_id,
+        )
+    else:
+        await emit_inventory_updated(connection_manager, player_id, player)
 
     item_name = prototype.name.lower()
     logger.info("Item used", player=player.name, player_id=str(player_id), prototype_id=prototype.prototype_id)
     return {
-        "result": outcome.message,
+        "result": message,
         "room_message": f"{player.name} drinks a {item_name}.",
         "game_log_message": f"{player.name} used {item_name}",
         "game_log_channel": "game-log",

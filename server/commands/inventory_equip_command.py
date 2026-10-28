@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Mapping
-from copy import deepcopy
 from dataclasses import dataclass
 from typing import cast
 
@@ -27,8 +26,7 @@ from .equipment_helpers import (
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import (
     build_and_broadcast_inventory_event,
-    clone_inventory,
-    persist_player,
+    change_inventory,
     resolve_state_and_player,
 )
 from .inventory_command_prototype import infer_equip_slot_from_prototype
@@ -54,14 +52,12 @@ class EquipCommandRuntime:
 
 @dataclass
 class EquipCommandInventoryStep:
-    """Inventory indices, slot choice, and rollback snapshot for equip."""
+    """Inventory indices and slot choice for equip, resolved against the live inventory."""
 
     inventory: list[dict[str, object]]
     resolved_index_zero: int
     selected_stack: dict[str, object] | None
     target_slot: str | None
-    previous_inventory: list[dict[str, object]]
-    previous_equipped: dict[str, Mapping[str, object]]
 
 
 @dataclass(init=False)
@@ -80,8 +76,6 @@ class EquipCommandWork:
     equipment_service: EquipmentService
     mutation_token: str | None
     command_data: dict[str, object]
-    previous_inventory: list[dict[str, object]]
-    previous_equipped: dict[str, Mapping[str, object]]
 
     def __init__(self, runtime: EquipCommandRuntime, inv_step: EquipCommandInventoryStep) -> None:
         self.persistence = runtime.persistence
@@ -96,8 +90,6 @@ class EquipCommandWork:
         self.resolved_index_zero = inv_step.resolved_index_zero
         self.selected_stack = inv_step.selected_stack
         self.target_slot = inv_step.target_slot
-        self.previous_inventory = inv_step.previous_inventory
-        self.previous_equipped = inv_step.previous_equipped
 
 
 def _equip_target_slot_or_error(
@@ -117,20 +109,6 @@ def _equip_target_slot_or_error(
             "result": ("Specify which slot to equip to (e.g. equip 1 main_hand or equip switchblade main_hand)."),
         }
     return None, None
-
-
-async def _equip_persist_or_rollback(
-    persistence: object,
-    player: Player,
-    previous_inventory: list[dict[str, object]],
-    previous_equipped: Mapping[str, Mapping[str, object]],
-) -> CommandResponse | None:
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        player.set_inventory(previous_inventory)
-        player.set_equipped_items(previous_equipped)
-        return persist_error
-    return None
 
 
 def _equip_try_inventory_swap(
@@ -161,41 +139,50 @@ def _equip_try_inventory_swap(
         return {"result": str(exc)}
 
 
-async def _equip_run_mutation(work: EquipCommandWork) -> CommandResponse | None:
-    player = work.player
-    player_id_for_mutation: uuid.UUID | str = str(player.player_id)
-    with work.inventory_service.begin_mutation(player_id_for_mutation, work.mutation_token) as decision:
+def _equip_apply_swap(work: EquipCommandWork) -> CommandResponse | None:
+    """Move the stack into its slot on the player's working copy; change_inventory commits it."""
+    swap = _equip_try_inventory_swap(work)
+    if isinstance(swap, dict):
+        return swap
+    new_inventory_raw, new_equipped_raw = swap
+    new_inventory = cast(list[dict[str, object]], new_inventory_raw)
+    new_equipped = cast(dict[str, InventoryStack], new_equipped_raw)
+
+    normalize_inventory_slots(new_inventory)
+    work.player.set_inventory(new_inventory)
+    work.player.set_equipped_items(normalize_equipped_items(new_equipped))
+    return None
+
+
+async def _equip_run_mutation(
+    request: object, command_data: dict[str, object], runtime: EquipCommandRuntime
+) -> CommandResponse | EquipCommandWork:
+    """Under the mutation guard and the player's registry lock: resolve the item in the live inventory, swap, commit."""
+    player = runtime.player
+    work: list[EquipCommandWork] = []
+
+    async def equip() -> CommandResponse | None:
+        built = _equip_resolve_work(request, command_data, runtime)
+        if not isinstance(built, EquipCommandWork):
+            return built
+        work.append(built)
+        return _equip_apply_swap(built)
+
+    async with runtime.inventory_service.begin_mutation(str(player.player_id), runtime.mutation_token) as decision:
         if not decision.should_apply:
             logger.info(
                 "Equip suppressed by mutation guard",
                 player=player.name,
                 player_id=player.player_id,
-                requested_slot=work.target_slot,
-                inventory_index=work.command_data.get("index"),
-                room_id=work.room_id,
-                mutation_token=work.mutation_token,
+                inventory_index=command_data.get("index"),
+                room_id=runtime.room_id,
+                mutation_token=runtime.mutation_token,
             )
             return {"result": "That action is already being processed."}
-
-        swap = _equip_try_inventory_swap(work)
-        if isinstance(swap, dict):
-            return swap
-        new_inventory_raw, new_equipped_raw = swap
-        new_inventory = cast(list[dict[str, object]], new_inventory_raw)
-        new_equipped = cast(dict[str, InventoryStack], new_equipped_raw)
-
-        normalize_inventory_slots(new_inventory)
-        normalized_equipped = normalize_equipped_items(new_equipped)
-
-        player.set_inventory(new_inventory)
-        player.set_equipped_items(normalized_equipped)
-
-        rollback = await _equip_persist_or_rollback(
-            work.persistence, player, work.previous_inventory, work.previous_equipped
-        )
-        if rollback:
-            return rollback
-    return None
+        change_error = await change_inventory(player, equip)
+    if change_error:
+        return change_error
+    return work[0] if work else command_error("Failed to resolve item index.")
 
 
 async def _equip_success_payload(
@@ -247,60 +234,53 @@ async def _equip_success_payload(
     }
 
 
-def _equip_inventory_rollback_snapshot(
-    player: Player,
-) -> tuple[list[dict[str, object]], dict[str, Mapping[str, object]]]:
-    return clone_inventory(player), cast(dict[str, Mapping[str, object]], deepcopy(player.get_equipped_items()))
-
-
-async def _equip_build_work(
+async def _equip_build_runtime(
     command_data: dict[str, object],
     current_user: dict[str, object],
     request: object,
     player_name: str,
-) -> CommandResponse | EquipCommandWork:
+) -> CommandResponse | EquipCommandRuntime:
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
         return error or command_error("Player information not found.")
 
-    inventory = player.get_inventory()
+    inventory_service, _, equipment_service = get_shared_services(request)
+    return EquipCommandRuntime(
+        persistence=persistence,
+        connection_manager=connection_manager,
+        player=player,
+        room_id=str(player.current_room_id),
+        inventory_service=inventory_service,
+        equipment_service=equipment_service,
+        mutation_token=cast(str | None, command_data.get("mutation_token")),
+        command_data=command_data,
+    )
+
+
+def _equip_resolve_work(
+    request: object, command_data: dict[str, object], runtime: EquipCommandRuntime
+) -> CommandResponse | EquipCommandWork:
+    """Find the stack and its slot in the player's (live) inventory."""
+    inventory = runtime.player.get_inventory()
     normalize_inventory_slots(inventory)
 
-    room_id = str(player.current_room_id)
     target_slot = normalize_slot_name(cast(str | None, command_data.get("target_slot")))
-
-    resolved_index_zero, error_or_stack = resolve_equip_item_index(command_data, inventory, player, room_id)
+    resolved_index_zero, error_or_stack = resolve_equip_item_index(
+        command_data, inventory, runtime.player, runtime.room_id
+    )
     if resolved_index_zero is None:
         return error_or_stack or command_error("Failed to resolve item index.")
     selected_stack = error_or_stack
 
-    slot_or_err = _equip_target_slot_or_error(request, selected_stack, target_slot)
-    target_slot, slot_error = slot_or_err
+    target_slot, slot_error = _equip_target_slot_or_error(request, selected_stack, target_slot)
     if slot_error:
         return slot_error
 
-    inventory_service, _, equipment_service = get_shared_services(request)
-    mutation_token = cast(str | None, command_data.get("mutation_token"))
-
-    previous_inventory, previous_equipped = _equip_inventory_rollback_snapshot(player)
-
-    runtime = EquipCommandRuntime(
-        persistence=persistence,
-        connection_manager=connection_manager,
-        player=player,
-        room_id=room_id,
-        inventory_service=inventory_service,
-        equipment_service=equipment_service,
-        mutation_token=mutation_token,
-        command_data=command_data,
-    )
     inv_step = EquipCommandInventoryStep(
         inventory=inventory,
         resolved_index_zero=resolved_index_zero,
         selected_stack=selected_stack,
         target_slot=target_slot,
-        previous_inventory=previous_inventory,
-        previous_equipped=previous_equipped,
     )
     return EquipCommandWork(runtime=runtime, inv_step=inv_step)
 
@@ -314,13 +294,13 @@ async def handle_equip_command(
 ) -> CommandResponse:
     """Equip an item from inventory."""
 
-    work = await _equip_build_work(command_data, current_user, request, player_name)
+    runtime = await _equip_build_runtime(command_data, current_user, request, player_name)
+    if not isinstance(runtime, EquipCommandRuntime):
+        return runtime
+
+    work = await _equip_run_mutation(request, command_data, runtime)
     if not isinstance(work, EquipCommandWork):
         return work
-
-    mutation_error = await _equip_run_mutation(work)
-    if mutation_error:
-        return mutation_error
 
     if work.selected_stack is None:
         return command_error("Selected item is invalid.")

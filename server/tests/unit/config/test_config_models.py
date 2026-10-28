@@ -117,6 +117,17 @@ def test_game_config_tick_rate_rejects_negative():
         _ = GameConfig(server_tick_rate=-0.1)
 
 
+def test_game_config_player_registry_keeps_no_idle_players_by_default() -> None:
+    """The registry idle TTL defaults to 0 until every inventory writer goes through it (ADR-029 4a).
+
+    A cached inventory kept between units missed legacy put/get and death writes, and wrote stale copies back.
+    """
+    assert GameConfig().player_registry_idle_ttl_seconds == 0.0
+    assert GameConfig(player_registry_idle_ttl_seconds=60.0).player_registry_idle_ttl_seconds == 60.0
+    with pytest.raises(ValueError, match="greater than or equal to 0"):
+        _ = GameConfig(player_registry_idle_ttl_seconds=-1.0)
+
+
 def _make_game_config(field: str, value: float) -> GameConfig:
     """Construct GameConfig with one grace/countdown field set to `value`, others default.
 

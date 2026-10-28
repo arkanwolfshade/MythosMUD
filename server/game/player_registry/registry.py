@@ -28,7 +28,8 @@ from ...monitoring.exception_tracker import track_exception
 from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
 from .part import DbSession, Part, PartWrite
-from .player_row import load_player_row
+from .player_inventory import PlayerInventoryPart
+from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 
 logger = get_logger(__name__)
 
@@ -46,9 +47,11 @@ class LockOrderError(RuntimeError):
 
 
 async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
-    """The default loader: every part of one player, read in one session."""
-    row = await load_player_row(session, player_id)
-    return PlayerAggregate(row) if row is not None else None
+    """The default loader: every part of one player, read in one session (both parts from one row today)."""
+    row = await fetch_player_row(session, player_id)
+    if row is None:
+        return None
+    return PlayerAggregate(PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row))
 
 
 @dataclass(slots=True)
@@ -135,7 +138,10 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         if _held_unit() is not None:
             raise LockOrderError("get() of an unloaded player inside a unit of work")
         async with self._lock(player_id):
-            return await self._load_if_needed(player_id)
+            view = await self._load_if_needed(player_id)
+        if self._settings.idle_ttl_seconds <= 0:
+            self._evict_now([player_id])
+        return view
 
     def is_loaded(self, player_id: uuid.UUID) -> bool:
         """True if the player's aggregate is in memory."""
@@ -199,7 +205,17 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         finally:
             for lock in reversed(acquired):
                 lock.release()
+            if self._settings.idle_ttl_seconds <= 0:
+                self._evict_now(pids)
         self._publish_all(events)
+
+    def _evict_now(self, player_ids: Sequence[uuid.UUID]) -> None:
+        """With no idle TTL, drop each unpinned, clean player as its unit ends, so the next unit reads it fresh."""
+        cutoff = self._clock()
+        for pid in player_ids:
+            entry = self._entries.get(pid)
+            if entry is not None and self._evictable(pid, entry, cutoff):
+                del self._entries[pid]
 
     async def _lock_and_load(self, pids: Sequence[uuid.UUID], unit: _Unit, acquired: list[asyncio.Lock]) -> None:
         """Take each player's lock in the given (sorted) order, recording it in ``acquired``, then load them."""

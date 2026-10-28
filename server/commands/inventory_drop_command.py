@@ -17,9 +17,9 @@ from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
 from .inventory_command_helpers import (
     build_and_broadcast_inventory_event,
+    change_inventory,
     clone_inventory,
     get_room_manager,
-    persist_player,
     resolve_state_and_player,
 )
 
@@ -173,28 +173,30 @@ async def handle_drop_command(
 ) -> CommandResponse:
     """Drop an inventory stack into the current room."""
 
-    persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
+    _persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
         return error or command_error("Player information not found.")
 
-    resolved = _drop_resolve_stack_or_error(command_data, connection_manager, player)
-    if not isinstance(resolved, tuple):
-        return resolved
+    dropped: list[tuple[RoomDropManager, str, dict[str, object], int]] = []
 
-    room_manager, room_id, stack, quantity, previous_inventory, index = resolved
-    stack_qty = coerce_int(stack.get("quantity", 1), default=1)
+    async def take_from_inventory() -> CommandResponse | None:
+        # Resolved against the live inventory, under the player's lock, so the slot number is current.
+        resolved = _drop_resolve_stack_or_error(command_data, connection_manager, player)
+        if not isinstance(resolved, tuple):
+            return resolved
+        room_manager, room_id, stack, quantity, previous_inventory, index = resolved
+        stack_qty = coerce_int(stack.get("quantity", 1), default=1)
+        player.set_inventory(_inventory_rows_after_drop(previous_inventory, index, quantity, stack_qty))
+        drop_stack = deepcopy(stack)
+        drop_stack["quantity"] = quantity
+        dropped.append((room_manager, room_id, drop_stack, quantity))
+        return None
 
-    updated_inventory = _inventory_rows_after_drop(previous_inventory, index, quantity, stack_qty)
+    change_error = await change_inventory(player, take_from_inventory)
+    if change_error or not dropped:
+        return change_error or command_error("Failed to update inventory.")
 
-    player.set_inventory(updated_inventory)
-
-    drop_stack = deepcopy(stack)
-    drop_stack["quantity"] = quantity
-
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        player.set_inventory(previous_inventory)
-        return persist_error
-
+    room_manager, room_id, drop_stack, quantity = dropped[0]
     await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
+    # The stack reaches the floor only once it has left the saved inventory.
     return await _drop_finish_after_persist(connection_manager, player, room_id, room_manager, drop_stack, quantity)

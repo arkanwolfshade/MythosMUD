@@ -14,12 +14,11 @@ from server.game.player_registry import (
     LockOrderError,
     PlayerNotFoundError,
     PlayerRegistry,
-    PlayerRowData,
     RegistrySettings,
 )
 from server.schemas.shared import InventorySchemaValidationError
 
-from .fakes import FakeDatabase, FakeLoader, row_data
+from .fakes import FakeDatabase, FakeLoader, raw_row
 
 AMULET = {"item_id": "jade_amulet", "item_name": "Jade Amulet", "slot_type": "backpack", "quantity": 1}
 
@@ -33,7 +32,9 @@ class _Clock:
 
 
 def _registry(
-    rows: dict[uuid.UUID, PlayerRowData], db: FakeDatabase | None = None, settings: RegistrySettings | None = None
+    rows: dict[uuid.UUID, Mapping[str, object]],
+    db: FakeDatabase | None = None,
+    settings: RegistrySettings | None = None,
 ) -> tuple[PlayerRegistry, FakeDatabase, list[BaseEvent], _Clock]:
     database = db or FakeDatabase()
     published: list[BaseEvent] = []
@@ -50,9 +51,9 @@ def _last_write(db: FakeDatabase) -> Mapping[str, object]:
     return params
 
 
-def _one() -> tuple[uuid.UUID, dict[uuid.UUID, PlayerRowData]]:
+def _one() -> tuple[uuid.UUID, dict[uuid.UUID, Mapping[str, object]]]:
     pid = uuid.uuid4()
-    return pid, {pid: row_data(pid)}
+    return pid, {pid: raw_row(pid)}
 
 
 def _event(pid: uuid.UUID) -> PlayerEnteredRoom:
@@ -110,7 +111,7 @@ async def test_inventory_change_commits_before_the_unit_returns() -> None:
     registry, db, _events, _clock = _registry(rows)
 
     async with registry.mutate(pid) as player:
-        player.row.set_inventory([*player.row.inventory, AMULET])
+        player.inventory.set_carried([*player.inventory.carried, AMULET])
 
     assert db.commits == 1
     assert "Jade Amulet" in str(_last_write(db)["inventory_json"])
@@ -134,12 +135,12 @@ async def test_failed_sync_commit_rolls_back_memory_and_drops_events() -> None:
     with pytest.raises(RuntimeError, match="database unavailable"):
         async with registry.mutate(pid) as player:
             player.row.set_stat("current_dp", 3)
-            player.row.set_inventory([AMULET])
+            player.inventory.set_carried([AMULET])
             player.emit(_event(pid))
 
     view = registry.peek(pid)
     assert view is not None
-    assert [stack["item_id"] for stack in view.row.inventory] == ["sling"]
+    assert [stack["item_id"] for stack in view.inventory.carried] == ["sling"]
     assert view.row.stats["current_dp"] == 20
     assert db.rollbacks == 1
     assert published == []
@@ -152,14 +153,14 @@ async def test_exception_in_the_block_rolls_back_without_writing() -> None:
 
     with pytest.raises(ValueError, match="boom"):
         async with registry.mutate(pid) as player:
-            player.row.set_inventory([AMULET])
+            player.inventory.set_carried([AMULET])
             player.emit(_event(pid))
             raise ValueError("boom")
 
     assert db.executed == []
     assert published == []
     view = registry.peek(pid)
-    assert view is not None and view.row.inventory[0]["item_id"] == "sling"
+    assert view is not None and view.inventory.carried[0]["item_id"] == "sling"
 
 
 async def test_invalid_inventory_is_rejected_inside_the_command() -> None:
@@ -168,7 +169,7 @@ async def test_invalid_inventory_is_rejected_inside_the_command() -> None:
 
     with pytest.raises(InventorySchemaValidationError):
         async with registry.mutate(pid) as player:
-            player.row.set_inventory([{"item_id": "x"}])
+            player.inventory.set_carried([{"item_id": "x"}])
 
     assert db.executed == []
 
@@ -240,7 +241,7 @@ async def test_a_child_task_does_not_inherit_the_lock() -> None:
 
 async def test_asking_for_another_player_mid_unit_is_refused() -> None:
     a, b = uuid.uuid4(), uuid.uuid4()
-    registry, _db, _events, _clock = _registry({a: row_data(a), b: row_data(b)})
+    registry, _db, _events, _clock = _registry({a: raw_row(a), b: raw_row(b)})
 
     async with registry.mutate(a):
         with pytest.raises(LockOrderError):
@@ -250,12 +251,12 @@ async def test_asking_for_another_player_mid_unit_is_refused() -> None:
 
 async def test_mutate_many_commits_all_players_in_one_transaction() -> None:
     a, b = uuid.uuid4(), uuid.uuid4()
-    registry, db, _events, _clock = _registry({a: row_data(a), b: row_data(b)})
+    registry, db, _events, _clock = _registry({a: raw_row(a), b: raw_row(b)})
 
     async with registry.mutate_many([b, a]) as (pb, pa):
         assert pb.player_id == b and pa.player_id == a
-        pa.row.set_inventory([])
-        pb.row.set_inventory([*pb.row.inventory, AMULET])
+        pa.inventory.set_carried([])
+        pb.inventory.set_carried([*pb.inventory.carried, AMULET])
 
     assert db.commits == 1
     assert len(db.executed) == 2
@@ -263,7 +264,7 @@ async def test_mutate_many_commits_all_players_in_one_transaction() -> None:
 
 async def test_opposite_order_mutate_many_does_not_deadlock() -> None:
     a, b = uuid.uuid4(), uuid.uuid4()
-    registry, _db, _events, _clock = _registry({a: row_data(a), b: row_data(b)})
+    registry, _db, _events, _clock = _registry({a: raw_row(a), b: raw_row(b)})
 
     async def touch(ids: list[uuid.UUID]) -> None:
         async with registry.mutate_many(ids):
@@ -291,14 +292,16 @@ async def test_a_tick_and_a_pickup_interleaved_keep_both_changes() -> None:
     async def pickup() -> None:
         _ = await tick_has_read.wait()
         async with registry.mutate(pid) as player:
-            player.row.set_inventory([*player.row.inventory, AMULET])
+            player.inventory.set_carried([*player.inventory.carried, AMULET])
 
     _ = await asyncio.gather(heal_tick(), pickup())
     _ = await registry.flush_dirty()
 
-    last = _last_write(db)
-    assert "Jade Amulet" in str(last["inventory_json"])
-    assert '"current_dp": 25' in str(last["stats"])
+    # The two parts write separately, each its own columns: neither write carries a stale copy of the other's.
+    writes = [params for params in db.executed if params is not None]
+    assert any("Jade Amulet" in str(params.get("inventory_json")) for params in writes)
+    assert any('"current_dp": 25' in str(params.get("stats")) for params in writes)
+    assert all("stats" not in params for params in writes if "inventory_json" in params)
 
 
 # ---- the sweep ----
@@ -343,7 +346,7 @@ async def test_flush_concurrency_is_bounded() -> None:
     in_flight = 0
     peak = 0
     registry, _db, _events, _clock = _registry(
-        {pid: row_data(pid) for pid in ids}, settings=RegistrySettings(flush_concurrency=2)
+        {pid: raw_row(pid) for pid in ids}, settings=RegistrySettings(flush_concurrency=2)
     )
     for pid in ids:
         async with registry.mutate(pid) as player:
@@ -389,10 +392,39 @@ async def test_idle_unpinned_clean_players_are_evicted_after_the_ttl() -> None:
     assert not registry.is_loaded(pid)
 
 
+async def test_with_no_idle_ttl_each_unit_reads_what_another_writer_changed() -> None:
+    """The 4a e2e duplication: a legacy writer changed the row between two units, and a cached copy wrote it back.
+
+    With no idle TTL (the setting until every writer goes through the registry) the next unit reloads the row.
+    """
+    pid, rows = _one()
+    registry, _db, _events, _clock = _registry(rows, settings=RegistrySettings(idle_ttl_seconds=0.0))
+    async with registry.mutate(pid) as player:
+        assert [stack["item_id"] for stack in player.inventory.carried] == ["sling"]
+    assert not registry.is_loaded(pid)
+
+    rows[pid] = raw_row(pid, inventory="[]")  # e.g. a legacy `put` moved the sling into a chest
+    async with registry.mutate(pid) as player:
+        assert list(player.inventory.carried) == []
+    assert (await registry.get(pid)) is not None and not registry.is_loaded(pid)
+
+
+async def test_an_idle_ttl_keeps_the_cached_copy_between_units() -> None:
+    """With an idle TTL the aggregate is the authority between units: that is only safe once nothing else writes."""
+    pid, rows = _one()
+    registry, _db, _events, _clock = _registry(rows, settings=RegistrySettings(idle_ttl_seconds=60.0))
+    async with registry.mutate(pid):
+        pass
+
+    rows[pid] = raw_row(pid, inventory="[]")
+    async with registry.mutate(pid) as player:
+        assert [stack["item_id"] for stack in player.inventory.carried] == ["sling"]
+
+
 async def test_pinned_and_dirty_players_are_never_evicted() -> None:
     pinned, dirty = uuid.uuid4(), uuid.uuid4()
     registry, _db, _events, clock = _registry(
-        {pinned: row_data(pinned), dirty: row_data(dirty)},
+        {pinned: raw_row(pinned), dirty: raw_row(dirty)},
         FakeDatabase(fail_commits=99),
         RegistrySettings(idle_ttl_seconds=1.0),
     )
