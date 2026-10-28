@@ -42,6 +42,54 @@ async def test_handle_catatonia_transitions_enters_catatonia(lucidity_record: Ma
     assert lucidity_record.catatonia_entered_at is not None
     observer.on_catatonia_entered.assert_called_once()
     send_event.assert_awaited_once()
+    # #1148: the line must not tell a player only allies can help; a restorative item can too.
+    [sent] = send_event.await_args_list
+    assert "restorative draught" in sent.kwargs["message"]
+
+
+class _RecordingLogger:
+    """Records (level, event) for the levels the handlers log at."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, str]] = []
+
+    def debug(self, event: str, **_fields: object) -> None:
+        self.calls.append(("debug", event))
+
+    def warning(self, event: str, **_fields: object) -> None:
+        self.calls.append(("warning", event))
+
+
+@pytest.mark.asyncio
+async def test_entering_catatonia_is_logged_at_debug_not_warning(
+    lucidity_record: MagicMock, player_id: uuid.UUID
+) -> None:
+    """Routine gameplay transitions must not reach warnings.log (the e2e run fails on a non-clean log)."""
+    recorder = _RecordingLogger()
+    with (
+        patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=AsyncMock()),
+        patch.object(handlers, "logger", recorder),
+    ):
+        await handle_catatonia_transitions(
+            record=lucidity_record,
+            player_id=player_id,
+            new_tier="catatonic",
+            previous_tier="disturbed",
+            new_lcd=0,
+            catatonia_observer=MagicMock(),
+        )
+    assert recorder.calls == [("debug", "Player entered catatonia")]
+
+
+@pytest.mark.asyncio
+async def test_the_delirium_threshold_is_logged_at_debug_not_warning(player_id: uuid.UUID) -> None:
+    recorder = _RecordingLogger()
+    with (
+        patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()),
+        patch.object(handlers, "logger", recorder),
+    ):
+        await handle_delirium_trigger(player_id, new_lcd=-10, previous_lcd=-8)
+    assert recorder.calls == [("debug", "Delirium respawn threshold reached")]
 
 
 @pytest.mark.asyncio
@@ -61,7 +109,29 @@ async def test_handle_catatonia_transitions_resolves_catatonia(
         )
     assert lucidity_record.catatonia_entered_at is None
     observer.on_catatonia_cleared.assert_called_once()
-    send_event.assert_awaited_once()
+    send_event.assert_awaited_once_with(
+        player_id=player_id, status="success", role="target", current_lcd=20, message="Consciousness steadies."
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("reason_code", ["ground_rescue", "rescue_command"])
+async def test_handle_catatonia_transitions_command_owned_exit_sends_no_success(
+    lucidity_record: MagicMock, player_id: uuid.UUID, reason_code: str
+) -> None:
+    """The rescue command sends the target's success itself, so the trigger must not duplicate it (#713)."""
+    lucidity_record.catatonia_entered_at = datetime.now(UTC)
+    with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
+        await handle_catatonia_transitions(
+            record=lucidity_record,
+            player_id=player_id,
+            new_tier="lucid",
+            previous_tier="catatonic",
+            new_lcd=1,
+            catatonia_observer=MagicMock(),
+            reason_code=reason_code,
+        )
+    send_event.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -69,7 +139,13 @@ async def test_handle_delirium_trigger_sends_event(player_id: uuid.UUID) -> None
     handlers._last_delirium_trigger.clear()
     with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
         await handle_delirium_trigger(player_id, new_lcd=-11, previous_lcd=0)
-    send_event.assert_awaited_once()
+    send_event.assert_awaited_once_with(
+        player_id=str(player_id),
+        status="delirium",
+        role="target",
+        current_lcd=-11,
+        message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
+    )
 
 
 @pytest.mark.asyncio

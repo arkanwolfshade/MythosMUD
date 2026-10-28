@@ -14,6 +14,7 @@ from copy import deepcopy
 from typing import Any, cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance
 
 logger = get_logger(__name__)
 
@@ -124,6 +125,13 @@ class RoomSubscriptionManager:
         except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Deepcopy errors unpredictable, must return empty list
             logger.error("Error listing room drops", room_id=room_id, error=str(exc))
             return []
+
+    def pop_room_drops_with_prefix(self, prefix: str) -> list[dict[str, object]]:
+        """Remove and return every drop in rooms whose id starts with prefix (an instance's rooms)."""
+        popped: list[dict[str, object]] = []
+        for room_id in [room_id for room_id in self.room_drops if room_id.startswith(prefix)]:
+            popped.extend(self.room_drops.pop(room_id))
+        return popped
 
     def add_room_drop(self, room_id: str, stack: Mapping[str, Any]) -> None:
         """
@@ -317,6 +325,7 @@ class RoomSubscriptionManager:
                 "player_id": npc_id,
                 "player_name": npc_name,
                 "is_npc": True,
+                "disposition": get_npc_disposition_from_instance(npc_id).value,
             }
         )
 

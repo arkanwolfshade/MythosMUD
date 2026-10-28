@@ -19,6 +19,7 @@ from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..game.chat_service import ChatService
+from ..game.first_exposure import make_first_exposure_finish
 from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..npc.population_control import NPCPopulationController, _PopulationLifecycleManager
 from ..npc.spawning_service import NPCSpawningService
@@ -149,10 +150,15 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     logger.info("Cleared stale pending messages from previous server sessions")
     await container.connection_manager.memory_monitor.start_idle_sampler()
 
-    from .lifespan_event_subscriptions import subscribe_quest_events, subscribe_room_occupants_refresh
+    from .lifespan_event_subscriptions import (
+        subscribe_npc_dialogue_events,
+        subscribe_quest_events,
+        subscribe_room_occupants_refresh,
+    )
 
     subscribe_room_occupants_refresh(container)
     subscribe_quest_events(container)
+    subscribe_npc_dialogue_events(container)
 
 
 def _validate_npc_services_prerequisites(container: ApplicationContainer) -> None:
@@ -258,7 +264,11 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     in ApplicationContainer.initialize() via _initialize_combat_services().
     This function is kept for backward compatibility but should not be used.
     """
-    app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
+    app.state.player_combat_service = PlayerCombatService(
+        cast(object, container.persistence),
+        cast(object, container.event_bus),
+        level_service=cast(object, container.level_service),
+    )
     if container.connection_manager is not None:
         container.connection_manager.set_player_combat_service(app.state.player_combat_service)
     # Update MovementService with combat service if it exists
@@ -273,7 +283,10 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
     logger.info("Player death service initialized")
 
     app.state.player_respawn_service = PlayerRespawnService(
-        event_bus=container.event_bus, player_combat_service=app.state.player_combat_service
+        event_bus=container.event_bus,
+        player_combat_service=app.state.player_combat_service,
+        room_lookup=container.async_persistence.get_room_by_id if container.async_persistence else None,
+        first_exposure_finish=make_first_exposure_finish(container),
     )
     logger.info("Player respawn service initialized")
 
@@ -376,18 +389,18 @@ async def _ensure_room_cache_before_npc_startup() -> None:
         logger.error(
             "Room cache is empty after warmup - rooms table has no data. "
             "Populate world data: run scripts/load_world_seed.py (with DATABASE_URL) or "
-            "psql -d your_db -f data/db/mythos_dev_dml.sql (or mythos_unit_dml.sql / mythos_e2e_dml.sql). See db/README.md.",
+            'psql -d your_db -c "SET search_path TO your_schema;" -f data/db/seed.sql. See db/README.md.',
             cache_size=cache_size,
             cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
         )
         raise RuntimeError(
             "Room cache is empty in production. The rooms table must be populated with world seed data. "
-            "Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -f data/db/mythos_<env>_dml.sql. "
-            "See db/README.md."
+            'Run: scripts/load_world_seed.py (set DATABASE_URL) or psql -d your_db -c "SET search_path '
+            'TO your_schema;" -f data/db/seed.sql. See db/README.md.'
         )
     logger.warning(
         "Room cache is empty after warmup - NPC spawning may fail. "
-        "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/mythos_<env>_dml.sql",
+        "To populate: run scripts/load_world_seed.py or psql -d your_db -f data/db/seed.sql (with search_path set)",
         cache_size=cache_size,
         cache_loaded=container.async_persistence._room_cache_loaded,  # pylint: disable=protected-access  # Reason: Need to check cache load status
     )
@@ -435,7 +448,7 @@ def _attach_combat_service(app: FastAPI, container: ApplicationContainer) -> Non
         set_combat_service,
     )
 
-    app.state.combat_service = CombatService(
+    combat_service = CombatService(
         app.state.player_combat_service,
         container.nats_service,
         player_lifecycle_services=PlayerLifecycleServices(
@@ -444,6 +457,8 @@ def _attach_combat_service(app: FastAPI, container: ApplicationContainer) -> Non
         ),
         event_bus=container.event_bus,
     )
+    combat_service.skill_service = container.skill_service  # graded taunt rolls (#833)
+    app.state.combat_service = combat_service
     set_combat_service(app.state.combat_service)
     if container.player_service is None:
         raise RuntimeError("PlayerService must be initialized")

@@ -86,7 +86,7 @@ async def _resolve_followee_display_name(container: "ApplicationContainer", play
         player_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         followee = await persistence.get_player_by_id(player_uuid)
         return getattr(followee, "name", None) if followee else str(player_id)
-    except (ValueError, TypeError, AttributeError):
+    except ValueError, TypeError, AttributeError:
         return str(player_id)
 
 

@@ -14,6 +14,7 @@ from fastapi import FastAPI
 
 from ..config import get_config
 from ..config.npc_config import NPCMaintenanceConfig
+from ..monitoring.exception_tracker import track_exception
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..realtime.envelope import build_event
 from ..realtime.login_grace_period import (
@@ -28,21 +29,21 @@ from .game_tick_death import (
     _process_dead_players,
     _process_mortally_wounded_player,
     _process_mp_regeneration,
+    _process_passive_corruption_flux,
     _process_passive_lucidity_flux,
     _process_single_player_mp_regeneration,
+    _process_single_player_room_flux,
     _validate_mp_regeneration_services,
+    is_game_second_tick,
     process_dp_decay_and_death,
 )
 from .game_tick_protocols import _app_container
 from .game_tick_status_effects import (
-    _process_all_status_effects,
     _process_damage_over_time_effect,
     _process_heal_over_time_effect,
+    _process_player_status_effects,
     _process_single_effect,
-    _update_player_status_effects,
-    _validate_and_get_player,
     _validate_app_state_for_status_effects,
-    process_player_effects_expiration,
     process_status_effects,
 )
 
@@ -52,21 +53,20 @@ __all__ = [
     "get_current_tick",
     "reset_current_tick",
     "set_current_tick",
-    "_process_all_status_effects",
     "_process_damage_over_time_effect",
     "_process_dead_players",
     "_process_heal_over_time_effect",
     "_process_mortally_wounded_player",
     "_process_mp_regeneration",
+    "_process_passive_corruption_flux",
     "_process_passive_lucidity_flux",
+    "_process_player_status_effects",
     "_process_single_effect",
     "_process_single_player_mp_regeneration",
-    "_update_player_status_effects",
-    "_validate_and_get_player",
+    "_process_single_player_room_flux",
     "_validate_app_state_for_status_effects",
     "_validate_mp_regeneration_services",
     "process_dp_decay_and_death",
-    "process_player_effects_expiration",
     "process_status_effects",
 ]
 
@@ -79,6 +79,23 @@ def get_tick_interval() -> float:
     """
     config = get_config()
     return config.game.server_tick_rate
+
+
+def player_registry_sweep_ticks() -> int:
+    """Ticks between lazy player-registry flushes: ``save_interval`` seconds at the server tick rate."""
+    game = get_config().game
+    # pylint: disable-next=no-member  # Reason: Pydantic model fields are dynamically accessible; pylint sees FieldInfo
+    return max(1, round(game.save_interval / game.server_tick_rate))
+
+
+def schedule_player_registry_sweep(app: FastAPI, tick_count: int, sweep_ticks: int) -> None:
+    """Start a background lazy flush of dirty players every ``sweep_ticks`` (it skips itself if one is running)."""
+    if tick_count % sweep_ticks:
+        return
+    container = _app_container(app)
+    if container is None or container.player_registry is None:
+        return
+    container.player_registry.schedule_sweep()
 
 
 async def process_combat_tick(app: FastAPI, tick_count: int) -> None:
@@ -105,13 +122,76 @@ async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
         logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
 
 
+async def process_combat_cleanup(app: FastAPI, tick_count: int) -> None:
+    """Reap stale combat instances (every 600 ticks = 1 minute).
+
+    `CombatService.cleanup_stale_combats()` (30-minute inactivity timeout) existed and was
+    unit-tested but was never wired into the tick loop -- a combat instance with no real
+    activity could live in `_active_combats` for the life of the server process, keeping
+    `_player_in_active_combat` (game_tick_death.py) True forever and permanently blocking
+    that participant's passive DP decay. Same cadence as `process_npc_maintenance`.
+    """
+    container = _app_container(app)
+    if container is None or container.combat_service is None:
+        return
+
+    if not NPCMaintenanceConfig.should_run_maintenance(tick_count):
+        return
+
+    try:
+        cleaned = await container.combat_service.cleanup_stale_combats()
+        if cleaned:
+            logger.info("Cleaned up stale combats", tick_count=tick_count, cleaned=cleaned)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error cleaning up stale combats", tick_count=tick_count, error=str(e))
+
+
+def update_world_presence(app: FastAPI) -> bool:
+    """Pause NPC workers while nobody is online; on the first login, catch up once.
+
+    The thread manager's `players_present` event doubles as the previous-tick state, so this
+    is edge-triggered without any extra variable and independent of which code path changed
+    `online_players`. Worst-case wake latency is one tick.
+
+    Returns:
+        True if at least one player is online. True as well when presence can't be determined,
+        so callers never throttle work on a half-built app.
+    """
+    container = _app_container(app)
+    if container is None or container.npc_lifecycle_manager is None or container.connection_manager is None:
+        return True
+
+    players_present = container.npc_lifecycle_manager.thread_manager.players_present
+    present = bool(container.connection_manager.online_players)
+    if present == players_present.is_set():
+        return present
+
+    if not present:
+        players_present.clear()
+        logger.info("World empty; NPC workers paused")
+        return False
+
+    players_present.set()
+    try:
+        # Respawns and optional spawns that came due while the world was paused.
+        results = container.npc_lifecycle_manager.periodic_maintenance()
+        logger.info("World awake; NPC workers resumed", **results)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        logger.error("Error during NPC catch-up maintenance", error=str(e))
+    return True
+
+
 async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
-    """Process NPC lifecycle maintenance (every 60 ticks = 1 minute)."""
+    """Process NPC lifecycle maintenance (every 600 ticks = 1 minute at the 100 ms tick)."""
     container = _app_container(app)
     if container is None or container.npc_lifecycle_manager is None:
         return
 
     if not NPCMaintenanceConfig.should_run_maintenance(tick_count):
+        return
+
+    # Paused world: update_world_presence runs the catch-up on the first login instead.
+    if not container.npc_lifecycle_manager.thread_manager.players_present.is_set():
         return
 
     try:
@@ -199,19 +279,28 @@ async def game_tick_loop(app: FastAPI) -> None:
     """
     tick_count = 0
     tick_interval = get_tick_interval()
+    sweep_ticks = player_registry_sweep_ticks()
     logger.info("Game tick loop started", tick_interval=tick_interval)
 
     while True:
         try:
-            await process_player_effects_expiration(app, tick_count)
+            players_online = update_world_presence(app)
+            # Nobody online: the DB-backed checks (offline bleed-out/death) still run, but once per
+            # game-second instead of every tick. They tolerate lateness (death is a threshold), and this
+            # cuts ~20 idle DB round-trips/s to ~2. Status effects run once per game-second for online
+            # players only (they pause while a player is offline; ADR-029 step 3b-i).
+            db_checks_due = players_online or is_game_second_tick(tick_count)
             await process_status_effects(app, tick_count)
             logger.debug("Game tick", tick_count=tick_count)
             set_current_tick(tick_count)
             await process_combat_tick(app, tick_count)
             await process_casting_progress(app, tick_count)
-            await process_dp_decay_and_death(app, tick_count)
+            if db_checks_due:
+                await process_dp_decay_and_death(app, tick_count)
+            await process_combat_cleanup(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
+            schedule_player_registry_sweep(app, tick_count, sweep_ticks)
             # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
             if not tick_count % 10:
                 await broadcast_tick_event(app, tick_count)
@@ -222,8 +311,17 @@ async def game_tick_loop(app: FastAPI) -> None:
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
             break
-        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: this loop must never die -- register_task has no restart-on-crash supervision (task_registry.py), so any exception this narrower tuple didn't cover (e.g. DatabaseError, a plain Exception subclass) used to escape and permanently kill every tick-driven subsystem (DP decay, combat, corruption flux, login-grace expiration) for the life of the server process. Matches the established "must not crash lifespan" pattern in lifespan.py's periodic tasks.
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
+            _ = track_exception(
+                e,
+                {
+                    "severity": "critical",
+                    "handled": True,
+                    "context": {"tick_count": tick_count},
+                    "metadata": {"component": "game_tick_loop"},
+                },
+            )
             try:
                 await sleep(tick_interval)
             except asyncio.CancelledError:

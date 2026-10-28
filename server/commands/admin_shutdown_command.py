@@ -18,8 +18,10 @@ from typing import Any, cast
 from anyio import sleep
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..structured_logging.admin_actions_logger import AdminActionsLogger
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .shutdown_sequence import execute_shutdown_sequence
 
 logger = get_logger(__name__)
@@ -46,7 +48,7 @@ def is_shutdown_pending(app: Any) -> bool:
             return cast(bool, app.state.container.server_shutdown_pending)
         # Fallback to app.state for backward compatibility
         return getattr(app.state, "server_shutdown_pending", False)
-    except (AttributeError, OSError):
+    except AttributeError, OSError:
         return False
 
 
@@ -156,6 +158,7 @@ async def broadcast_shutdown_notification(connection_manager: Any, seconds_remai
             "message": message,
             "seconds_remaining": seconds_remaining,
             "channel": "system",  # System channel for unignorable announcements
+            "category": MessageCategory.SYSTEM_WARNING,
         }
 
         # Handle case where connection_manager might be a mock in tests
@@ -198,7 +201,7 @@ async def _cancel_existing_shutdown_task(app: Any) -> None:
         # Only await if it's actually a coroutine/task
         if asyncio.iscoroutine(existing_task) or asyncio.isfuture(existing_task):
             await existing_task
-    except (asyncio.CancelledError, RuntimeError):
+    except asyncio.CancelledError, RuntimeError:
         # Task was cancelled or already finished
         pass
 
@@ -247,7 +250,7 @@ async def _create_countdown_task(app: Any, countdown_coro: Any) -> asyncio.Task[
                     # If register_task didn't create a task (e.g., it's a mock), create one
                     countdown_task = loop.create_task(countdown_coro)
                 return countdown_task
-            except (AttributeError, RuntimeError, TypeError):
+            except AttributeError, RuntimeError, TypeError:
                 # register_task failed or is a mock that doesn't handle coroutines
                 return loop.create_task(countdown_coro)
         else:
@@ -362,12 +365,14 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
         logger.info("Countdown complete, initiating shutdown sequence")
 
         # Execute the shutdown sequence
-        await execute_shutdown_sequence(app)
+        # Reason: DYNAMIC_DISPATCH - app is the FastAPI instance whose dynamic State attributes are untyped.
+        # Appropriate because: this is the boundary where the untyped app meets execute_shutdown_sequence's Protocol.
+        await execute_shutdown_sequence(app)  # pyright: ignore[reportAny]
 
     except asyncio.CancelledError:
         logger.info("Shutdown countdown cancelled by request")
         raise
-    except OSError as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: a detached task dies silently otherwise
         logger.error("Error in shutdown countdown loop", error=str(e), exc_info=True)
 
 
@@ -468,7 +473,7 @@ async def _cancel_countdown_task(countdown_task: Any) -> None:
             # Only await if it's actually a coroutine/task
             if asyncio.iscoroutine(countdown_task) or asyncio.isfuture(countdown_task):
                 await countdown_task
-        except (asyncio.CancelledError, RuntimeError):
+        except asyncio.CancelledError, RuntimeError:
             # Task was cancelled or already finished
             pass
 
@@ -484,6 +489,7 @@ async def _broadcast_shutdown_cancellation(connection_manager: Any) -> None:
     event_data = {
         "message": cancellation_message,
         "channel": "system",
+        "category": MessageCategory.SYSTEM_INFO,
     }
 
     await connection_manager.broadcast_global_event("shutdown_cancelled", event_data)
@@ -604,7 +610,7 @@ async def _validate_shutdown_context(
     """Validate shutdown context and get player. Returns (player_obj, error_dict)."""
     if not player_service:
         logger.warning("Shutdown command failed - no player service", player_name=player_name)
-        return None, {"result": "Shutdown functionality is not available at this time."}
+        return None, command_error("Shutdown functionality is not available at this time.")
 
     if app is None:
         raise RuntimeError("App should be available if player_service exists")
@@ -612,7 +618,7 @@ async def _validate_shutdown_context(
     player_obj = await player_service.get_player_by_name(player_name)
     if not player_obj:
         logger.warning("Shutdown command failed - player not found", player_name=player_name)
-        return None, {"result": "Unable to verify your credentials. Shutdown unavailable."}
+        return None, command_error("Unable to verify your credentials. Shutdown unavailable.")
 
     if not await validate_shutdown_admin_permission(player_obj, player_name):
         return None, {
@@ -640,7 +646,7 @@ async def _handle_shutdown_initiate(app: Any, seconds: int, player_name: str) ->
 
     success = await initiate_shutdown_countdown(app, seconds, player_name)
     if not success:
-        return {"result": "Error initiating server shutdown. Please try again."}
+        return command_error("Error initiating server shutdown. Please try again.")
 
     if is_superseding:
         return {"result": f"Previous shutdown cancelled. Server will now shut down in {seconds} seconds..."}
@@ -690,8 +696,8 @@ async def handle_shutdown_command(
 
     if action == "initiate":
         if seconds is None:
-            return {"result": "Invalid shutdown configuration. Seconds must be specified."}
+            return command_error("Invalid shutdown configuration. Seconds must be specified.")
         return await _handle_shutdown_initiate(app, seconds, player_name)
 
     logger.error("Unexpected action in shutdown command", action=action)
-    return {"result": "An unexpected error occurred processing the shutdown command."}
+    return command_error("An unexpected error occurred processing the shutdown command.")

@@ -1,10 +1,10 @@
 # Configuration Refactoring Complete
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Configuration Refactoring Complete** (0 connections) — `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
+- **Movement Subsystem** (0 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
+- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
 
 ## Audit Trail
 

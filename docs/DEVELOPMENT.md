@@ -1,6 +1,6 @@
 # MythosMUD Development Environment Setup
 
-**Version 1.3.0** · MythosMUD · 2026-09-08
+**Version 1.3.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -52,7 +52,7 @@ For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTIN
 - [ ] Security headers properly configured
 - [ ] XSS protection implemented
 - [ ] COPPA compliance verified for all features
-- [ ] SQLAlchemy async patterns follow best practices (see `SQLALCHEMY_ASYNC_BEST_PRACTICES.md`)
+- [ ] SQLAlchemy async patterns follow best practices (see `architecture/DATABASE_ARCHITECTURE.md` §2.4)
 - [ ] Enhanced logging system used correctly (see `LOGGING_BEST_PRACTICES.md`)
 
 ---
@@ -62,7 +62,7 @@ For contributor workflow and pull requests, see [CONTRIBUTING.md](../CONTRIBUTIN
 **[SPEC]**
 
 - **Git**
-- **Python 3.12+** (managed via [pyenv-win](https://github.com/pyenv-win/pyenv-win) recommended)
+- **Python 3.14+** (installed via `uv python install`; the exact patch version is pinned in `.python-version`)
 - **Node.js 22+** and **npm** (NVM for Windows recommended)
 - **PostgreSQL 15+** (**required** for local development and tests)
 - **[uv](https://github.com/astral-sh/uv)** (for Python dependency management - **required**)
@@ -124,11 +124,10 @@ above.
 
 **[NOTE]**
 
-### a. Set Python Version (if using pyenv-win)
+### a. Install the Pinned Python Version
 
 ```sh
-pyenv install 3.12.11  # if not already installed
-pyenv local 3.12.11
+uv python install  # installs the version pinned in .python-version (3.14.7)
 ```
 
 ### b. Install Dependencies
@@ -165,15 +164,21 @@ Edit `.env.local` and set at least:
 
 **Security Note**: Never commit `.env.local` or other local env files. Templates are `env.*.example` in the repo root.
 
-Ensure PostgreSQL is running. Create `mythos_dev` and apply environment DDL (uses
-`DATABASE_URL` from `.env.local`), then apply procedures:
+Ensure PostgreSQL is running. Create `mythos_dev`, apply its schema, then apply procedures and
+migrations:
 
 ```powershell
-.\scripts\setup_postgresql_test_db.ps1 -EnvFile .env.local
+psql -U postgres -f db/roles/roles.sql
+psql -U postgres -f db/databases/databases.sql
+
+# DESTRUCTIVE: drops and recreates every table. FRESH DATABASE ONLY.
+$env:CONFIRM_LOAD_WORLD_SEED = "1"; uv run python scripts/load_world_seed.py
+
 make apply-procedures
+make migrate-dev    # also applied automatically on every start_local.ps1
 ```
 
-DDL source: `db/mythos_dev_ddl.sql`. See
+DDL source: `db/schema.sql` (schema-agnostic, #811). See
 [POSTGRESQL_CONTRIBUTOR_GUIDE.md](POSTGRESQL_CONTRIBUTOR_GUIDE.md).
 
 ### e. Run the Server
@@ -431,13 +436,14 @@ This file is for **human** lab setup. Do not duplicate agent policy here.
 ### Python version issues
 
 ```sh
-# Ensure you have Python 3.12+ installed
+# Ensure you have Python 3.14+ installed
 
 python --version
 
-# If using pyenv, set the local version
+# Install the version pinned in .python-version and rebuild the venv
 
-pyenv local 3.12.11
+uv python install
+uv venv --clear
 ```
 
 ### Dependency conflicts
@@ -540,6 +546,7 @@ forces we seek to understand."_
 
 | Version | Date       | Change                                                                        |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 1.3.1   | 2026-09-16 | Repoint `SQLALCHEMY_ASYNC_BEST_PRACTICES.md` reference to `DATABASE_ARCHITECTURE.md` §2.4 (#745) |
 | 1.3.0   | 2026-09-08 | Point agents at AGENTS.md as SoT; DEVELOPMENT_AI.md is on-ramp router only    |
 | 1.2.0   | 2026-08-28 | Fix broken `PLANNING.md` link (wrong depth) (#722)                            |
 | 1.1.0   | 2026-08-03 | Fact-fix PostgreSQL/env/ports/Make; move agent rules to pointer; fix encoding |

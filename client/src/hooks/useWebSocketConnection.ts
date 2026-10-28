@@ -14,7 +14,7 @@ import { inputSanitizer } from '../utils/security';
 
 export interface WebSocketConnectionOptions {
   authToken: string;
-  characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
+  characterId?: string; // MULTI-CHARACTER: Selected character ID; connect() is a no-op without it
   sessionId: string | null;
   onConnected?: () => void;
   onMessage?: (event: MessageEvent) => void;
@@ -30,7 +30,7 @@ export interface WebSocketConnectionOptions {
  * graceful server-initiated replacement retried indefinitely against whichever session currently
  * held the connection (#297/#610).
  */
-export interface WebSocketCloseInfo {
+interface WebSocketCloseInfo {
   code: number;
   reason: string;
 }
@@ -170,8 +170,8 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   );
 
   const connect = useCallback(() => {
-    if (!authToken || !sessionId) {
-      logger.warn('WebSocketConnection', 'Cannot connect: missing auth token or session ID');
+    if (!authToken || !sessionId || !characterId) {
+      logger.warn('WebSocketConnection', 'Cannot connect: missing auth token, session ID, or character ID');
       return;
     }
 
@@ -203,11 +203,8 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
       // This causes the browser to reject the handshake
       // Production must be served over HTTPS so the same-origin WebSocket uses WSS.
-      // MULTI-CHARACTER: Include character_id if provided to connect as the selected character
-      let wsUrl = `${API_V1_BASE}/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
-      if (characterId) {
-        wsUrl += `&character_id=${encodeURIComponent(characterId)}`;
-      }
+      // MULTI-CHARACTER: the server requires character_id to know which of the account's characters connects
+      const wsUrl = `${API_V1_BASE}/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}&character_id=${encodeURIComponent(characterId)}`;
 
       logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
 

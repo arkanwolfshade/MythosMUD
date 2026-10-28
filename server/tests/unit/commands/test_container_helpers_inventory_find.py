@@ -112,10 +112,11 @@ def test_try_inner_container_by_id_resolves() -> None:
     assert data.get("items") == []
 
 
-def test_find_container_in_room_with_metadata_name() -> None:
-    rm = MagicMock()
+@pytest.mark.asyncio
+async def test_find_container_in_room_with_metadata_name() -> None:
+    persistence = MagicMock()
     cid = uuid.uuid4()
-    rm.get_containers = MagicMock(
+    persistence.get_containers_by_room_id = AsyncMock(
         return_value=[
             {
                 "container_id": str(cid),
@@ -123,32 +124,55 @@ def test_find_container_in_room_with_metadata_name() -> None:
             },
         ],
     )
-    c, uid = find_container_in_room(rm, "room1", "chest")
+    c, uid = await find_container_in_room(persistence, "room1", "chest")
     assert uid == cid
     assert c is not None
 
 
-def test_find_container_in_room_no_match() -> None:
-    rm = MagicMock()
-    rm.get_containers = MagicMock(return_value=[])
-    assert find_container_in_room(rm, "room1", "x") == (None, None)
+@pytest.mark.asyncio
+async def test_find_container_in_room_matches_by_source_type() -> None:
+    """Corpses only ever set metadata player_name, never name -- must match by source_type (#711)."""
+    persistence = MagicMock()
+    cid = uuid.uuid4()
+    persistence.get_containers_by_room_id = AsyncMock(
+        return_value=[
+            {
+                "container_id": str(cid),
+                "source_type": "corpse",
+                "metadata": {"player_name": "ArkanWolfshade"},
+            },
+        ],
+    )
+    c, uid = await find_container_in_room(persistence, "room1", "corpse")
+    assert uid == cid
+    assert c is not None
 
 
-def test_find_container_in_room_non_dict_entries_skipped() -> None:
-    rm = MagicMock()
-    rm.get_containers = MagicMock(return_value=["bad", 1])
-    assert find_container_in_room(rm, "room1", "x") == (None, None)
+@pytest.mark.asyncio
+async def test_find_container_in_room_no_match() -> None:
+    persistence = MagicMock()
+    persistence.get_containers_by_room_id = AsyncMock(return_value=[])
+    assert await find_container_in_room(persistence, "room1", "x") == (None, None)
 
 
-def test_find_container_in_room_get_containers_not_callable() -> None:
-    rm = object()
-    assert find_container_in_room(rm, "room1", "x") == (None, None)
+@pytest.mark.asyncio
+async def test_find_container_in_room_non_dict_entries_skipped() -> None:
+    persistence = MagicMock()
+    persistence.get_containers_by_room_id = AsyncMock(return_value=["bad", 1])
+    assert await find_container_in_room(persistence, "room1", "x") == (None, None)
 
 
-def test_find_container_in_room_non_list_returns_empty() -> None:
-    rm = MagicMock()
-    rm.get_containers = MagicMock(return_value={"not": "list"})
-    assert find_container_in_room(rm, "room1", "chest") == (None, None)
+@pytest.mark.asyncio
+async def test_find_container_in_room_get_containers_not_callable() -> None:
+    persistence = object()
+    assert await find_container_in_room(persistence, "room1", "x") == (None, None)
+
+
+@pytest.mark.asyncio
+async def test_find_container_in_room_non_list_returns_empty() -> None:
+    persistence = MagicMock()
+    persistence.get_containers_by_room_id = AsyncMock(return_value={"not": "list"})
+    assert await find_container_in_room(persistence, "room1", "chest") == (None, None)
 
 
 def test_check_item_matches_target_name_miss_slot_exact() -> None:

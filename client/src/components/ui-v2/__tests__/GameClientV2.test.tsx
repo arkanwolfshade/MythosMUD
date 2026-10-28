@@ -56,10 +56,6 @@ vi.mock('../panels/ChatHistoryPanel', () => ({
   ChatHistoryPanel: () => <div data-testid="chat-history-panel">Chat History</div>,
 }));
 
-vi.mock('../panels/SettingsPanel', () => ({
-  SettingsPanel: () => <div data-testid="settings-panel">Settings</div>,
-}));
-
 vi.mock('../panels/CommandHistoryPanel', () => ({
   CommandHistoryPanel: () => <div data-testid="command-history-panel">Command History</div>,
 }));
@@ -155,7 +151,6 @@ describe('GameClientV2', () => {
       stats: {
         current_dp: 75,
         max_dp: 100,
-        lucidity: 50,
         max_lucidity: 100,
         position: 'standing',
       },
@@ -229,6 +224,35 @@ describe('GameClientV2', () => {
   it('should not render the incapacitated banner when healthStatus is null', () => {
     render(<GameClientV2 {...defaultProps} healthStatus={null} player={null} />);
     expect(screen.queryByTestId('incapacitated-banner')).not.toBeInTheDocument();
+  });
+
+  it('should render the rescue banner for a server rescue phase (#713)', () => {
+    const rescueStatus = {
+      status: 'channeling' as const,
+      role: 'rescuer' as const,
+      message: 'You steady Wilmarth and begin channeling focus.',
+      etaSeconds: 10,
+      seq: 1,
+    };
+    render(<GameClientV2 {...defaultProps} rescueStatus={rescueStatus} />);
+    expect(screen.getByTestId('rescue-banner')).toHaveTextContent('You steady Wilmarth');
+  });
+
+  it('should render the rescue banner as catatonic when the lucidity tier is catatonic (#713)', () => {
+    const lucidityStatus = { current: 0, max: 100, tier: 'catatonic' as const, liabilities: [] };
+    render(<GameClientV2 {...defaultProps} lucidityStatus={lucidityStatus} />);
+    expect(screen.getByTestId('rescue-banner')).toHaveTextContent('Catatonic');
+  });
+
+  it('should pass the authoritative LCD to the catatonic banner for the delirium countdown (#1148)', () => {
+    const lucidityStatus = { current: -4, max: 100, tier: 'catatonic' as const, liabilities: [] };
+    render(<GameClientV2 {...defaultProps} lucidityStatus={lucidityStatus} />);
+    expect(screen.getByTestId('catatonia-countdown')).toHaveTextContent('12 seconds remain');
+  });
+
+  it('should not render the rescue banner without a rescue phase or catatonia (#713)', () => {
+    render(<GameClientV2 {...defaultProps} rescueStatus={null} />);
+    expect(screen.queryByTestId('rescue-banner')).not.toBeInTheDocument();
   });
 
   it('should handle lucidityStatus prop', () => {

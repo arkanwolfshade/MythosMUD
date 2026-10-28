@@ -4,10 +4,14 @@ Unit tests for inventory command factories.
 Tests the InventoryCommandFactory class methods.
 """
 
+from collections.abc import Callable
+
 import pytest
 
 from server.exceptions import ValidationError
+from server.models.command import CommandType, DepositCommand, WithdrawCommand
 from server.utils.command_factories_inventory import InventoryCommandFactory
+from server.utils.command_parser import parse_command
 
 
 def test_create_pickup_command():
@@ -169,6 +173,52 @@ def test_create_get_command_no_args():
         InventoryCommandFactory.create_get_command([])
 
 
+def test_create_bank_command_takes_no_arguments():
+    assert InventoryCommandFactory.create_bank_command([]).command_type == CommandType.BANK
+    with pytest.raises(ValidationError, match="takes no arguments"):
+        _ = InventoryCommandFactory.create_bank_command(["lantern"])
+
+
+@pytest.mark.parametrize(
+    ("create", "usage"),
+    [
+        (InventoryCommandFactory.create_deposit_command, "Usage: deposit"),
+        (InventoryCommandFactory.create_withdraw_command, "Usage: withdraw"),
+    ],
+)
+def test_deposit_and_withdraw_share_item_and_quantity_parsing(
+    create: Callable[[list[str]], DepositCommand | WithdrawCommand], usage: str
+):
+    single = create(["lantern"])
+    assert (single.item, single.quantity) == ("lantern", None)
+
+    multi_word = create(["folk", "tonic", "2"])
+    assert (multi_word.item, multi_word.quantity) == ("folk tonic", 2)
+
+    assert create(["3"]).item == "3"  # a lone number is an inventory/box index, never a quantity
+    assert create(["3"]).quantity is None
+
+    with pytest.raises(ValidationError, match=usage):
+        _ = create([])
+    with pytest.raises(ValidationError, match=usage):
+        _ = create(["   "])
+    with pytest.raises(ValidationError, match="Quantity must be a positive integer"):
+        _ = create(["lantern", "0"])
+
+
+@pytest.mark.parametrize(
+    ("line", "command_type"),
+    [
+        ("bank", CommandType.BANK),
+        ("deposit lantern 2", CommandType.DEPOSIT),
+        ("withdraw folk tonic", CommandType.WITHDRAW),
+    ],
+)
+def test_bank_verbs_are_registered_end_to_end(line: str, command_type: CommandType):
+    """Guards every registry (input allow-list, parser map, factory), not just the factory method."""
+    assert parse_command(line).command_type == command_type
+
+
 def test_create_get_command_only_item_get_from_room():
     """Test create_get_command() with single arg returns get-from-room (container='room')."""
     result = InventoryCommandFactory.create_get_command(["sword"])
@@ -188,18 +238,18 @@ def test_create_get_command_with_from_keyword():
 def test_create_get_command_quantity_zero():
     """Test create_get_command() raises error when quantity is zero."""
     with pytest.raises(ValidationError, match="Quantity must be a positive integer"):
-        InventoryCommandFactory.create_get_command(["sword", "bag", "0"])
+        _ = InventoryCommandFactory.create_get_command(["sword", "from", "bag", "0"])
 
 
 def test_create_get_command_quantity_negative():
     """Test create_get_command() raises error when quantity is negative."""
     with pytest.raises(ValidationError, match="Quantity must be a positive integer"):
-        InventoryCommandFactory.create_get_command(["sword", "bag", "-1"])
+        _ = InventoryCommandFactory.create_get_command(["sword", "from", "bag", "-1"])
 
 
 def test_create_get_command_multi_word_container():
     """Test create_get_command() handles multi-word container."""
-    result = InventoryCommandFactory.create_get_command(["sword", "leather", "bag", "5"])
+    result = InventoryCommandFactory.create_get_command(["sword", "from", "leather", "bag", "5"])
     assert result.item == "sword"
     assert result.container == "leather bag"
     assert result.quantity == 5
@@ -207,10 +257,87 @@ def test_create_get_command_multi_word_container():
 
 def test_create_get_command_multi_word_container_no_quantity():
     """Test create_get_command() handles multi-word container without quantity."""
-    result = InventoryCommandFactory.create_get_command(["sword", "leather", "bag"])
+    result = InventoryCommandFactory.create_get_command(["sword", "from", "leather", "bag"])
     assert result.item == "sword"
     assert result.container == "leather bag"
     assert result.quantity is None
+
+
+def test_create_get_command_multi_word_item_from_room():
+    """`get folk tonic` names one item on the floor, not item "folk" in container "tonic" (#982)."""
+    result = InventoryCommandFactory.create_get_command(["folk", "tonic"])
+    assert result.item == "folk tonic"
+    assert result.container == "room"
+    assert result.quantity is None
+
+
+def test_create_get_command_multi_word_item_and_container_with_quantity():
+    """`from` separates a multi-word item from a multi-word container (#982)."""
+    result = InventoryCommandFactory.create_get_command(["folk", "tonic", "from", "old", "chest", "2"])
+    assert result.item == "folk tonic"
+    assert result.container == "old chest"
+    assert result.quantity == 2
+
+
+def test_create_get_command_quantity_from_room():
+    """`get daisy 3` takes three daisies from the floor, not from a container named "3"."""
+    result = InventoryCommandFactory.create_get_command(["daisy", "3"])
+    assert result.item == "daisy"
+    assert result.container == "room"
+    assert result.quantity == 3
+
+
+def test_create_get_command_splits_on_last_from():
+    """An item name containing "from" still parses when the container follows the last "from"."""
+    result = InventoryCommandFactory.create_get_command(["letter", "from", "arkham", "FROM", "chest"])
+    assert result.item == "letter from arkham"
+    assert result.container == "chest"
+
+
+def test_create_get_command_explicit_room_sentinel():
+    """`get daisy from room 3` still routes to the floor."""
+    result = InventoryCommandFactory.create_get_command(["daisy", "from", "room", "3"])
+    assert result.item == "daisy"
+    assert result.container == "room"
+    assert result.quantity == 3
+
+
+def test_create_get_command_single_numeric_selector():
+    """A lone number is an index selector, not a quantity."""
+    result = InventoryCommandFactory.create_get_command(["2"])
+    assert result.item == "2"
+    assert result.container == "room"
+    assert result.quantity is None
+
+
+@pytest.mark.parametrize("args", [["from", "chest"], ["sling", "from"], ["from"]])
+def test_create_get_command_separator_needs_both_sides(args: list[str]) -> None:
+    """A separator with nothing on one side is a usage error."""
+    with pytest.raises(ValidationError, match="Usage: get"):
+        _ = InventoryCommandFactory.create_get_command(args)
+
+
+def test_create_put_command_multi_word_item():
+    """`put folk tonic into chest` keeps the whole item name (#982)."""
+    result = InventoryCommandFactory.create_put_command(["folk", "tonic", "into", "chest"])
+    assert result.item == "folk tonic"
+    assert result.container == "chest"
+    assert result.quantity is None
+
+
+def test_create_put_command_multi_word_item_with_quantity():
+    """Quantity after a multi-word container is still parsed."""
+    result = InventoryCommandFactory.create_put_command(["folk", "tonic", "in", "old", "chest", "2"])
+    assert result.item == "folk tonic"
+    assert result.container == "old chest"
+    assert result.quantity == 2
+
+
+@pytest.mark.parametrize("args", [["into", "chest"], ["sling", "into"]])
+def test_create_put_command_separator_needs_both_sides(args: list[str]) -> None:
+    """A separator with nothing on one side is a usage error."""
+    with pytest.raises(ValidationError, match="Usage: put"):
+        _ = InventoryCommandFactory.create_put_command(args)
 
 
 def test_create_equip_command_index_zero():
@@ -312,3 +439,50 @@ def test_create_unequip_command_all_slots():
         result = InventoryCommandFactory.create_unequip_command([slot])
         assert result.slot == slot
         assert result.search_term is None
+
+
+# --- Tests for create_read_command (#813) ---
+
+
+def test_create_read_command_no_args():
+    """Test create_read_command() with no args creates a ReadCommand with an empty args list."""
+    command = InventoryCommandFactory.create_read_command([])
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    assert command.args == []
+
+
+def test_create_read_command_with_args():
+    """create_read_command() keeps its args: handle_read_command reads them from command_data['args']."""
+    command = InventoryCommandFactory.create_read_command(["spellbook", "fireball"])
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+    assert command.args == ["spellbook", "fireball"]
+
+
+@pytest.mark.parametrize("preposition", ["in", "into", "INTO"])
+def test_create_put_command_ignores_in_and_into(preposition: str) -> None:
+    """`put sling into chest` names the chest, not a container called "into chest"."""
+    command = InventoryCommandFactory.create_put_command(["sling", preposition, "chest"])
+
+    assert command.item == "sling"
+    assert command.container == "chest"
+
+
+def test_create_use_command_by_index():
+    """Test create_use_command() treats a number as a 1-based inventory index."""
+    command = InventoryCommandFactory.create_use_command(["2"])
+    assert command.index == 2
+    assert command.search_term is None
+
+
+def test_create_use_command_by_multi_word_name():
+    """Test create_use_command() joins the arguments into a name search."""
+    command = InventoryCommandFactory.create_use_command(["folk", "tonic"])
+    assert command.index is None
+    assert command.search_term == "folk tonic"
+
+
+@pytest.mark.parametrize("args", [[], ["   "], ["0"]])
+def test_create_use_command_rejects_missing_or_zero_selector(args: list[str]) -> None:
+    """Test create_use_command() needs a name or a positive number."""
+    with pytest.raises(ValidationError):
+        _ = InventoryCommandFactory.create_use_command(args)

@@ -54,7 +54,7 @@ def find_assert_line_numbers(file_path: Path) -> list[int]:
     """Return sorted unique line numbers of ``assert`` in file; empty if none or unreadable."""
     try:
         text = file_path.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError):
+    except OSError, UnicodeDecodeError:
         return []
     if not text.strip():
         return []

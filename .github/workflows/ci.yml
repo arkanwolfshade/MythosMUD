@@ -60,11 +60,36 @@ jobs:
       # codeql[hardcoded-credential]: Test verification token secret defaults for CI environment only, not used in production
       MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI || 'test-verification-token-secret-for-development' }}
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode (#1150 triage): only the hosts below may be reached; anything else fails the job instead of
+      # raising an after-the-fact audit alert. Built from Harden-Runner's per-connection log over 15 CI runs.
+      # The agent also allows GitHub's Actions domains (GitHub meta API: github.com, *.github.com, *.githubapp.com,
+      # *.actions.githubusercontent.com, release assets, productionresultssa*.blob.core.windows.net) and Azure's
+      # platform IP 168.63.129.16; the GitHub hosts CI needs are listed anyway in case the meta fetch fails.
+      # apt over plain HTTP is integrity-checked by Ubuntu's signed InRelease/hashes, not by TLS.
+      # A new tool or download host must be added here, or the job fails with a blocked-call annotation.
+      - name: Harden the runner (block all but allowed outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            azure.archive.ubuntu.com:80
+            esm.ubuntu.com:443
+            motd.ubuntu.com:443
+            packages.microsoft.com:443
+            apt.postgresql.org:443
+            www.postgresql.org:443
+            pypi.org:443
+            files.pythonhosted.org:443
+            registry.npmjs.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
+            storage.googleapis.com:443
+            api.codacy.com:443
       # Standard bootstrap: harden + checkout
 
       # Parent repo: actions/checkout with github.token. GITHUB_TOKEN is limited to *this* repo (cannot clone sibling
@@ -132,9 +157,10 @@ jobs:
           cd ..
 
       - name: Set up Python
+        id: setup-python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version-file: ".python-version"
       # Pinned uv binary (scripts/ensure_uv_ci.sh) avoids curl|sh install.sh (supply-chain).
       - name: Install uv (pinned, SHA256-verified)
         run: |
@@ -145,9 +171,11 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .venv-ci
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
+          # Interpreter version is part of the key AND the restore prefix: a venv built on another
+          # Python (e.g. 3.12) must never be restored, since the install step skips rebuilding a valid-looking venv.
+          key: ${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
           restore-keys: |
-            ${{ runner.os }}-uv-
+            ${{ runner.os }}-py${{ steps.setup-python.outputs.python-version }}-uv-
       - name: Install dependencies
         run: |
           # UV_PROJECT_ENVIRONMENT tells uv venv to create .venv-ci instead of .venv.
@@ -169,6 +197,14 @@ jobs:
           uv pip install --python .venv-ci/bin/python "pytest-mock>=3.14.0"
           # Verify pytest was installed correctly and show where it's installed
           python -c "import pytest, sys, site; print(f'pytest {pytest.__version__}'); print(f'Python: {sys.executable}'); print(f'Site-packages: {site.getsitepackages()[0] if site.getsitepackages() else site.getusersitepackages()}')"
+      - name: Verify venv Python matches .python-version
+        run: |
+          expected="Python $(tr -d '[:space:]' < .python-version)"
+          actual="$(.venv-ci/bin/python --version)"
+          if [ "${actual}" != "${expected}" ]; then
+            echo "::error::venv-ci is '${actual}' but .python-version pins '${expected}'"
+            exit 1
+          fi
       - name: Lint with ruff
         run: |
           source .venv-ci/bin/activate
@@ -178,6 +214,23 @@ jobs:
           source .venv-ci/bin/activate
           # Use pre-commit to run mypy with identical config to local development
           pre-commit run mypy --all-files
+      - name: Type check with basedpyright (no new Any -- #784)
+        run: |
+          source .venv-ci/bin/activate
+          # Run via python -m (not pre-commit): [tool.basedpyright] pins venv = ".venv" for
+          # local/IDE import resolution, and CI builds .venv-ci instead. basedpyright treats a
+          # missing venv dir as a config error (exit 3, even at 0 errors/0 warnings), and
+          # --pythonpath does not waive that check, so link .venv -> .venv-ci. --pythonpath
+          # then pins the interpreter explicitly; scope, severities and the baseline in
+          # .basedpyright/baseline.json still come from pyproject.toml, so this run and the
+          # local pre-commit hook check exactly the same thing. Package is in .[dev] so
+          # uv pip install -e ".[dev]" puts it on PATH for this venv.
+          ln -sfn .venv-ci .venv
+          python -m basedpyright --pythonpath .venv-ci/bin/python
+      - name: Pyright suppression standard (#784)
+        run: |
+          source .venv-ci/bin/activate
+          pre-commit run pyright-suppressions --all-files
       - name: Dead code check (vulture)
         run: |
           source .venv-ci/bin/activate
@@ -205,18 +258,30 @@ jobs:
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
+          # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
+          getent hosts azure.archive.ubuntu.com || true
+          # apt probes _http(s)._tcp.<host> SRV records before the A lookup; Harden-Runner reports those names as
+          # blocked calls (they are not hosts) and fails its check, though apt falls back and succeeds.
+          echo 'Acquire::EnableSrvRecords "false";' | sudo tee /etc/apt/apt.conf.d/99-no-srv
+          apt-config dump | grep -i EnableSrvRecords || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during install-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
           playwright install chromium
           playwright install-deps chromium
+      - name: Set up Node.js for dbmate
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Install root npm dependencies (dbmate, #811)
+        run: npm ci
       - name: Install PostgreSQL 18
         if: ${{ !env.ACT }}
         run: |
           sudo apt-get update
           sudo apt-get install -y wget lsb-release gnupg
           wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
           sudo apt-get install -y postgresql-18 postgresql-contrib-18
       - name: Start PostgreSQL service and initialize databases
@@ -244,20 +309,21 @@ jobs:
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/roles/roles.sql)
           su postgres -c "psql -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/db/databases/databases.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -f db/databases/databases.sql)
-          # Apply environment-specific DDL for mythos_unit (schema mythos_unit, not public)
-          echo "Applying mythos_unit DDL..."
-          if ! su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/mythos_unit_ddl.sql" 2>&1; then
+          # Apply schema-agnostic DDL (db/schema.sql, #811) into the mythos_unit schema (not
+          # public) -- search_path must be set since object names are unqualified.
+          echo "Applying schema..."
+          if ! su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/db/schema.sql" 2>&1; then
             if command -v sudo >/dev/null 2>&1; then
-              if ! sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/mythos_unit_ddl.sql 2>&1; then
-                echo "ERROR: Failed to apply mythos_unit DDL"
+              if ! sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SET search_path TO mythos_unit;" -f db/schema.sql 2>&1; then
+                echo "ERROR: Failed to apply schema"
                 exit 1
               fi
             else
-              echo "ERROR: Failed to apply mythos_unit DDL"
+              echo "ERROR: Failed to apply schema"
               exit 1
             fi
           fi
-          echo "✓ DDL applied successfully"
+          echo "✓ Schema applied successfully"
           # Verify schema was applied - check for container_item_instance_id in mythos_unit schema
           COLUMN_CHECK=$((command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -t -A -d mythos_unit -c "SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'mythos_unit' AND table_name = 'containers' AND column_name = 'container_item_instance_id');" 2>&1) || \
             (su postgres -c "psql -t -A -d mythos_unit -c \"SELECT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema = 'mythos_unit' AND table_name = 'containers' AND column_name = 'container_item_instance_id');\"" 2>&1))
@@ -271,15 +337,27 @@ jobs:
             exit 1
           fi
           echo "✓ Verified container_item_instance_id column exists in mythos_unit.containers"
-          # Seed data: authoritative DML for mythos_unit
-          su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/data/db/mythos_unit_dml.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -c "SET search_path TO mythos_unit;" -f data/db/mythos_unit_dml.sql)
-          # Apply arena zone migration (arena removed from DML; applied via migration)
-          su postgres -c "psql -d mythos_unit -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/data/db/migrations/20260227_add_arena_zone_unit.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -v ON_ERROR_STOP=1 -f data/db/migrations/20260227_add_arena_zone_unit.sql)
-          # Apply aggression_level to npc_definitions (idempotent)
-          su postgres -c "psql -d mythos_unit -v ON_ERROR_STOP=1 -f $WORKSPACE_PATH/data/db/migrations/20260310_add_aggression_level_npc_definitions_unit.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -v ON_ERROR_STOP=1 -f data/db/migrations/20260310_add_aggression_level_npc_definitions_unit.sql)
+          # Seed data (data/db/seed.sql, #811): the single schema-agnostic seed source, includes
+          # everything the old per-environment DML plus the arena/aggression_level migrations did.
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f $WORKSPACE_PATH/data/db/seed.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SET search_path TO mythos_unit;" -f data/db/seed.sql)
+          # Stored procedures (#811 finding: CI previously installed none -- ADR-015 routes all
+          # data access through these, so tests ran against whatever the DDL dump happened to have).
+          echo "Applying procedures..."
+          for f in $WORKSPACE_PATH/db/procedures/*.sql; do
+            # Pipe via stdin rather than -f: postgres (su/sudo) reading the checked-out file
+            # directly can hit a permission denied that schema.sql/seed.sql happen not to --
+            # piping means the runner user (who owns the checkout) does the reading, and only
+            # the SQL text crosses the user boundary.
+            su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit" < "$f" || \
+            (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit < "$f") || \
+            { echo "ERROR: Failed to apply procedure $f"; exit 1; }
+          done
+          echo "✓ Procedures applied successfully"
+          # dbmate migrations (#811): tracks db/migrations/*.sql (DDL) and data/db/migrations/*.sql (DML, the
+          # data repo) beyond the baseline in schema.sql/seed.sql, as one ledger.
+          npx dbmate --url "postgres://postgres:Cthulhu1@localhost:5432/mythos_unit?sslmode=disable&search_path=mythos_unit" \
+            --migrations-dir "$WORKSPACE_PATH/db/migrations" --migrations-dir "$WORKSPACE_PATH/data/db/migrations" --no-dump-schema up
       - name: Set up test environment file
         run: |
           # Create .env.unit_test at project root from example for CI
@@ -313,7 +391,7 @@ jobs:
           .venv-ci/bin/python scripts/run_test_ci.py 2>&1 | tee pytest.log
       - name: Upload pytest log
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pytest-log
           path: pytest.log
@@ -371,7 +449,7 @@ jobs:
           python scripts/bench_cache_professions.py
       - name: Upload performance metrics
         if: ${{ success() && !env.ACT }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: perf-metrics
           path: artifacts/perf/
@@ -390,7 +468,7 @@ jobs:
           fi
       - name: Upload coverage report
         if: ${{ success() && !env.ACT }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-html
           path: htmlcov/
@@ -435,11 +513,26 @@ jobs:
       run:
         working-directory: client
     steps:
-      - name: Harden the runner (Audit all outbound calls)
+      # Block mode (#1150 triage): see the backend job's note. Same sources minus Python, PostgreSQL and the
+      # GitHub API, which this job does not use.
+      - name: Harden the runner (block all but allowed outbound calls)
         if: ${{ !env.ACT }}
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            objects.githubusercontent.com:443
+            release-assets.githubusercontent.com:443
+            azure.archive.ubuntu.com:80
+            esm.ubuntu.com:443
+            motd.ubuntu.com:443
+            packages.microsoft.com:443
+            registry.npmjs.org:443
+            cdn.playwright.dev:443
+            playwright.download.prss.microsoft.com:443
+            storage.googleapis.com:443
+            api.codacy.com:443
       # Standard bootstrap: harden + checkout
 
       - name: Checkout repository
@@ -447,7 +540,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22"
       - name: Cache npm dependencies
@@ -461,6 +554,11 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: |
+          # Log which IP the Ubuntu mirror resolves to, so a Harden-Runner call to a bare IP can be matched to it.
+          getent hosts azure.archive.ubuntu.com || true
+          # No SRV probes from apt (see the Python job's Playwright step): they show up as Harden-Runner blocked calls.
+          echo 'Acquire::EnableSrvRecords "false";' | sudo tee /etc/apt/apt.conf.d/99-no-srv
+          apt-config dump | grep -i EnableSrvRecords || true
           # GHA images ship google-chrome.list; dl.google.com Hash Sum mismatches
           # break apt during --with-deps (Playwright only needs OS libs, not Chrome).
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list
@@ -554,7 +652,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22"
           cache: npm

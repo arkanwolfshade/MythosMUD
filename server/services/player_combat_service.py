@@ -2,7 +2,6 @@
 
 # pylint: disable=too-few-public-methods  # Reason: Combat service class with focused responsibility, minimal public interface
 
-from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import cast
@@ -11,15 +10,11 @@ from uuid import UUID
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
-from server.events.event_types import PlayerXPAwardEvent
 from server.services.player_combat_service_support import (
-    EventBusPublish as _EventBusPublish,
+    LevelServiceLike as _LevelServiceLike,
 )
 from server.services.player_combat_service_support import (
     NPCCombatIntegrationReadApi as _NPCCombatIntegrationReadApi,
-)
-from server.services.player_combat_service_support import (
-    PlayerXpLike as _PlayerXpLike,
 )
 from server.services.player_combat_service_support import (
     async_load_lifecycle_manager as _async_load_lifecycle_manager,
@@ -69,6 +64,7 @@ class PlayerCombatService:
     _persistence: object
     _event_bus: object | None
     _npc_combat_integration_service: object | None
+    _level_service: object | None
     _player_combat_states: dict[UUID, PlayerCombatState]
     _combat_timeout_minutes: int
 
@@ -77,6 +73,7 @@ class PlayerCombatService:
         persistence: object,
         event_bus: object | None,
         npc_combat_integration_service: object | None = None,
+        level_service: object | None = None,
     ) -> None:
         """
         Initialize the player combat service.
@@ -86,22 +83,30 @@ class PlayerCombatService:
             event_bus: Event bus for publishing events
             npc_combat_integration_service: NPC combat integration service for
                 UUID mapping
+            level_service: LevelService -- the single XP/level authority (#879).
+                None only in tests that don't exercise XP awards.
         """
         logger.debug(
             "PlayerCombatService constructor called",
             persistence_type=type(persistence).__name__,
             has_event_bus=bool(event_bus),
             has_npc_service=bool(npc_combat_integration_service),
+            has_level_service=bool(level_service),
         )
         self._persistence = persistence
         self._event_bus = event_bus
         self._npc_combat_integration_service = npc_combat_integration_service
+        self._level_service = level_service
         self._player_combat_states = {}
         self._combat_timeout_minutes = 30  # Configurable timeout
 
     def set_npc_combat_integration_service(self, service: object | None) -> None:
         """Attach NPC combat integration for UUID/XP mapping (post-construction wiring)."""
         self._npc_combat_integration_service = service
+
+    def set_level_service(self, service: object | None) -> None:
+        """Attach the LevelService (post-construction wiring, matching set_npc_combat_integration_service)."""
+        self._level_service = service
 
     async def track_player_combat_state(
         self,
@@ -269,63 +274,6 @@ class PlayerCombatService:
             xp_amount=xp_amount,
         )
 
-    async def _award_xp_via_npc_rewards(self, player_id: UUID, npc_id: UUID, xp_amount: int) -> bool:
-        """
-        Return True if the NPC rewards path handled the award (success or logged failure).
-
-        When True, callers must not run persistence fallback.
-        """
-        integration = self._npc_combat_integration_service
-        if integration is None or xp_amount <= 0:
-            return False
-        rewards_obj = cast(_NPCCombatIntegrationReadApi, integration).get_rewards_service()
-        if rewards_obj is None:
-            return False
-        try:
-            await rewards_obj.award_xp_to_killer(str(player_id), str(npc_id), int(xp_amount))
-        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904
-            logger.error(
-                "Error awarding XP via NPCCombatRewards",
-                player_id=player_id,
-                npc_id=npc_id,
-                error=str(e),
-            )
-        return True
-
-    async def _award_xp_via_persistence_fallback(self, player_id: UUID, xp_amount: int) -> None:
-        """Fallback: load player, add XP, save, publish (used without integration in tests)."""
-        get_player_raw = getattr(self._persistence, "get_player_by_id", None)
-        save_player_raw = getattr(self._persistence, "save_player", None)
-        if not callable(get_player_raw) or not callable(save_player_raw):
-            return
-        get_player = cast(Callable[[UUID], Awaitable[_PlayerXpLike | None]], get_player_raw)
-        save_player = cast(Callable[[_PlayerXpLike], Awaitable[object]], save_player_raw)
-        player = await get_player(player_id)
-        if not player:
-            logger.warning("Player not found for XP award", player_id=player_id)
-            return
-
-        player.add_experience(xp_amount)
-        _ = await save_player(player)
-
-        event = PlayerXPAwardEvent(
-            player_id=player_id,
-            xp_amount=xp_amount,
-            new_level=int(player.level),
-        )
-        bus = self._event_bus
-        if bus is not None:
-            cast(_EventBusPublish, bus).publish(event)
-        else:
-            logger.warning("No event bus available for XP award event", player_id=player_id)
-
-        logger.info(
-            "Awarded XP to player",
-            xp_amount=xp_amount,
-            player_name=str(player.name),
-            new_level=int(player.level),
-        )
-
     async def award_xp_on_npc_death(
         self,
         player_id: UUID,
@@ -335,27 +283,28 @@ class PlayerCombatService:
         """
         Award XP to a player for defeating an NPC.
 
+        Delegates to LevelService.grant_xp -- the single XP/level authority (#879) --
+        so a kill can level a player up exactly like quest XP does. Defensive: XP
+        award errors must never disconnect the player mid-combat.
+
         Args:
             player_id: ID of the player
-            npc_id: ID of the defeated NPC
+            npc_id: ID of the defeated NPC (for logging)
             xp_amount: Amount of XP to award
         """
-        logger.debug(
-            "award_xp_on_npc_death called",
-            player_id=player_id,
-            npc_id=npc_id,
-            xp_amount=xp_amount,
-            persistence_type=type(self._persistence).__name__,
-        )
-        delegated = await self._award_xp_via_npc_rewards(player_id, npc_id, xp_amount)
-        if delegated:
+        if xp_amount <= 0:
+            return
+        level_service = self._level_service
+        if level_service is None:
+            logger.warning("No LevelService wired -- cannot award XP", player_id=player_id, npc_id=npc_id)
             return
         try:
-            await self._award_xp_via_persistence_fallback(player_id, xp_amount)
-        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: XP award errors unpredictable, must not crash service
+            await cast(_LevelServiceLike, level_service).grant_xp(player_id, xp_amount)
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.error(
                 "Error awarding XP to player",
                 player_id=player_id,
+                npc_id=npc_id,
                 error=str(e),
             )
 

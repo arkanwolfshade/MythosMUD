@@ -2,12 +2,9 @@
  * Tests for useEventProcessing hook.
  */
 
-import { HealthStatus } from '@/types/health';
-import { LucidityStatus } from '@/types/lucidity';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { EventHandlerContext, GameEvent } from '../../eventHandlers/types';
-import type { ChatMessage, MythosTimeState } from '../../types';
+import type { GameEvent } from '../../eventHandlers/types';
 import { useEventProcessing } from '../useEventProcessing';
 
 // Mock dependencies
@@ -45,47 +42,6 @@ vi.mock('../../eventLog', () => ({
 
 describe('useEventProcessing', () => {
   const mockSetGameState = vi.fn();
-  const mockCurrentMessagesRef = { current: [] as ChatMessage[] };
-  const _mockContext: EventHandlerContext = {
-    currentPlayerRef: { current: null },
-    currentRoomRef: { current: null },
-    currentMessagesRef: mockCurrentMessagesRef,
-    healthStatusRef: { current: null },
-    lucidityStatusRef: { current: null },
-    lastDaypartRef: { current: null },
-    lastHourRef: { current: null },
-    lastQuarterHourRef: { current: null },
-    lastHolidayIdsRef: { current: [] },
-    lastRoomUpdateTime: { current: 0 },
-    setDpStatus: function (_status: HealthStatus): void {
-      throw new Error('Function not implemented.');
-    },
-    setLucidityStatus: function (_status: LucidityStatus): void {
-      throw new Error('Function not implemented.');
-    },
-    setMythosTime: function (_time: MythosTimeState): void {
-      throw new Error('Function not implemented.');
-    },
-    setIsDead: function (_dead: boolean): void {
-      throw new Error('Function not implemented.');
-    },
-    setIsRespawning: function (_respawning: boolean): void {
-      throw new Error('Function not implemented.');
-    },
-    setIsDelirious: function (_delirious: boolean): void {
-      throw new Error('Function not implemented.');
-    },
-    setIsDeliriumRespawning: function (_respawning: boolean): void {
-      throw new Error('Function not implemented.');
-    },
-    setDeathLocation: function (_location: string): void {
-      throw new Error('Function not implemented.');
-    },
-    setDeliriumLocation: function (_location: string): void {
-      throw new Error('Function not implemented.');
-    },
-  };
-  void _mockContext; // Kept for test structure; context no longer passed to useEventProcessing
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -741,6 +697,70 @@ describe('useEventProcessing', () => {
     expect(mockSetGameState).toHaveBeenCalledTimes(2);
   });
 
+  it('keeps projecting new events after a finally-scheduled drain (scheduler wedge regression)', async () => {
+    // Regression: processEventQueue used not to clear processingTimeout, but the `finally`
+    // branch re-armed it with a timeout calling processEventQueue directly. After that run the
+    // handle stayed set forever, so handleGameEvent never scheduled again and every later event
+    // was queued but never projected -- the UI froze silently (e.g. a player died server-side
+    // and never saw the death interstitial).
+    let handleRef: ((e: GameEvent) => void) | null = null;
+    let injected = false;
+    const { result } = renderHook(() => {
+      const hook = useEventProcessing({
+        setGameState: state => {
+          mockSetGameState(state);
+          // Queue exactly once, during processing, to force the `finally` re-arm branch.
+          if (!injected && handleRef) {
+            injected = true;
+            handleRef({
+              event_type: 'queued_during_processing',
+              timestamp: new Date().toISOString(),
+              sequence_number: 2,
+              data: {},
+            });
+          }
+        },
+      });
+      handleRef = hook.handleGameEvent;
+      return hook;
+    });
+
+    const drain = async () => {
+      act(() => {
+        vi.advanceTimersByTime(10);
+      });
+      await act(async () => {
+        await Promise.resolve();
+      });
+    };
+
+    act(() => {
+      result.current.handleGameEvent({
+        event_type: 'first',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      });
+    });
+    await drain(); // processes 'first'; setGameState queues one more -> finally re-arms
+    await drain(); // the finally-scheduled run drains the injected event
+
+    const callsBeforeNewEvent = mockSetGameState.mock.calls.length;
+    expect(callsBeforeNewEvent).toBeGreaterThan(0);
+
+    act(() => {
+      result.current.handleGameEvent({
+        event_type: 'after_drain',
+        timestamp: new Date().toISOString(),
+        sequence_number: 3,
+        data: {},
+      });
+    });
+    await drain();
+
+    expect(mockSetGameState.mock.calls.length).toBeGreaterThan(callsBeforeNewEvent);
+  });
+
   it('should log combat event when event_type is player_attacked', async () => {
     const loggerModule = await import('../../../../utils/logger');
     const { result } = renderHook(() =>
@@ -935,43 +955,5 @@ describe('useEventProcessing', () => {
 
     expect(result.current.handleGameEvent).toBeDefined();
     vi.restoreAllMocks();
-  });
-
-  it('should clear pending follow request via event log and preserve commandHistory', async () => {
-    const eventLog = await import('../../eventLog');
-    const projectStateSpy = vi.mocked(eventLog.projectState);
-
-    const preservedHistory = ['look', 'say hello'];
-    const appliedStates: unknown[] = [];
-
-    const { result } = renderHook(() =>
-      useEventProcessing({
-        setGameState: updater => {
-          if (typeof updater === 'function') {
-            const prevState = {
-              player: null,
-              room: null,
-              messages: [],
-              commandHistory: preservedHistory,
-              loginGracePeriodActive: false,
-              loginGracePeriodRemaining: 0,
-            };
-            const nextState = updater(prevState as never);
-            appliedStates.push(nextState);
-          } else {
-            appliedStates.push(updater);
-          }
-        },
-      })
-    );
-
-    act(() => {
-      result.current.clearPendingFollowRequest('req-123');
-    });
-
-    expect(projectStateSpy).toHaveBeenCalled();
-    expect(appliedStates).toHaveLength(1);
-    const finalState = appliedStates[0] as { commandHistory: string[] };
-    expect(finalState.commandHistory).toBe(preservedHistory);
   });
 });

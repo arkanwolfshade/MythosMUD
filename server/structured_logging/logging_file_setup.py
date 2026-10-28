@@ -22,6 +22,7 @@ from server.structured_logging.logging_file_categories import (
     DEFAULT_LOG_CATEGORIES,
     LoggerNameFilter,
     add_handler_to_loggers,
+    apply_category_levels,
     create_formatter,
     create_handler_for_category,
 )
@@ -165,8 +166,9 @@ def _setup_category_handlers(
         # category logger and again from root, causing duplicate lines in aggregator files.
         if config.enable_async and config.log_queue:
             # Category handler is already in all_file_handlers; listener will dispatch to it.
-            # Skip _add_handler_to_loggers so we do not add QueueHandlers to child loggers.
-            pass
+            # Skip add_handler_to_loggers so we do not add QueueHandlers to child loggers,
+            # but still apply the category levels (#912).
+            apply_category_levels(prefixes, log_file, config.environment, config.log_level)
         else:
             add_handler_to_loggers(
                 handler,
@@ -276,7 +278,7 @@ def _setup_console_handler(
             backupCount=config.backup_count,
             encoding="utf-8",
         )
-    except (FileNotFoundError, OSError):
+    except FileNotFoundError, OSError:
         # If directory doesn't exist or was deleted, recreate it and try again
         ensure_log_directory(console_log_path)
         console_handler = handler_class(

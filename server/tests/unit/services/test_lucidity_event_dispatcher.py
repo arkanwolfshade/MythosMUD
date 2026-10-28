@@ -335,6 +335,17 @@ async def test_send_rescue_update_event_with_all_fields(mock_send_game_event: As
 
 
 @pytest.mark.asyncio
+async def test_send_rescue_update_event_includes_role_only_when_given(mock_send_game_event: AsyncMock):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+    """role tells the recipient which side of the rescue they are on (#713); omitted when not given."""
+    player_id = uuid.uuid4()
+    with patch("server.realtime.connection_manager_api.send_game_event", mock_send_game_event):
+        await send_rescue_update_event(player_id, status="channeling", role="rescuer")
+        assert cast(dict[str, object], mock_send_game_event.call_args[0][2])["role"] == "rescuer"
+        await send_rescue_update_event(player_id, status="channeling")
+        assert "role" not in cast(dict[str, object], mock_send_game_event.call_args[0][2])
+
+
+@pytest.mark.asyncio
 async def test_send_rescue_update_event_with_progress_only(mock_send_game_event: AsyncMock):  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
     """Test send_rescue_update_event with progress only."""
     player_id = uuid.uuid4()

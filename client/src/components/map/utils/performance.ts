@@ -69,23 +69,6 @@ export function throttle<T extends (...args: never[]) => unknown>(
 }
 
 /**
- * Check if an element is in the viewport.
- *
- * @param element - Element to check
- * @param margin - Margin in pixels (default: 100)
- * @returns True if element is in viewport
- */
-export function isInViewport(element: HTMLElement, margin: number = 100): boolean {
-  const rect = element.getBoundingClientRect();
-  return (
-    rect.top >= -margin &&
-    rect.left >= -margin &&
-    rect.bottom <= window.innerHeight + margin &&
-    rect.right <= window.innerWidth + margin
-  );
-}
-
-/**
  * Performance monitor for map rendering.
  */
 export class MapPerformanceMonitor {
@@ -172,8 +155,3 @@ export class MapPerformanceMonitor {
     this.renderTimes = [];
   }
 }
-
-/**
- * Global performance monitor instance.
- */
-export const mapPerformanceMonitor = new MapPerformanceMonitor();

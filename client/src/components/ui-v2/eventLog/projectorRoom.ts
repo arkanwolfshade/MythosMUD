@@ -3,11 +3,27 @@
 // AI: keep each function CCN low; prefer if/else over ?? chains (Lizard inflates ??).
 
 import type { GameEvent } from '../eventHandlers/types';
+import type { NpcOccupant } from '../../../types/messageCategory';
 import type { Room } from '../types';
+import { normalizeNpcOccupants, normalizeOptionalNpcOccupants, npcNames } from '../utils/npcOccupants';
 
 type RoomMeta = Omit<Room, 'players' | 'npcs' | 'occupants' | 'occupant_count'>;
 type RoomOrNull = Room | null;
-type OccupantPair = { players: string[]; npcsArr: string[] };
+type OccupantPair = { players: string[]; npcsArr: NpcOccupant[] };
+
+/**
+ * "Zone › Sub-zone › Room" from display names (#910). Blank/missing segments are skipped and raw IDs
+ * are never used; returns null when the room carries no usable name.
+ */
+export function formatRoomLocation(room: Room | null): string | null {
+  if (!room) {
+    return null;
+  }
+  const parts = [room.zone_name, room.sub_zone_name, room.name].filter(
+    (p): p is string => typeof p === 'string' && p.trim() !== ''
+  );
+  return parts.length > 0 ? parts.join(' › ') : null;
+}
 
 function extractRoomMetadata(roomData: Room): RoomMeta {
   // Omit occupant fields via destructuring (eslint: unused names intentional)
@@ -24,8 +40,7 @@ function hasOccupantData(room: Room): boolean {
 
 function normalizeOccupantArrays(players: unknown, npcs: unknown): OccupantPair {
   const playersArr = Array.isArray(players) ? players : [];
-  const npcsArr = Array.isArray(npcs) ? npcs : [];
-  return { players: playersArr, npcsArr };
+  return { players: playersArr, npcsArr: normalizeNpcOccupants(npcs) };
 }
 
 function coalesceCount(a?: number, b?: number, fallback = 0): number {
@@ -38,7 +53,7 @@ function coalesceCount(a?: number, b?: number, fallback = 0): number {
   return fallback;
 }
 
-function preferOccupantList(preferred?: string[], secondary?: string[]): string[] {
+function preferOccupantList<T>(preferred?: T[], secondary?: T[]): T[] {
   if (preferred !== undefined) {
     return preferred;
   }
@@ -48,12 +63,12 @@ function preferOccupantList(preferred?: string[], secondary?: string[]): string[
   return [];
 }
 
-function attachOccupants(room: Room, playersArr: string[], npcsArr: string[], occupantCount: number): Room {
+function attachOccupants(room: Room, playersArr: string[], npcsArr: NpcOccupant[], occupantCount: number): Room {
   return {
     ...room,
     players: playersArr,
     npcs: npcsArr,
-    occupants: playersArr.concat(npcsArr),
+    occupants: playersArr.concat(npcNames(npcsArr)),
     occupant_count: occupantCount,
   };
 }
@@ -90,25 +105,23 @@ function getRoomDataFromEvent(event: GameEvent): RoomOrNull {
   return raw;
 }
 
-function resolvePayloadNpcs(existingRoom: Room, payloadRoom?: Room): string[] {
-  if (payloadRoom === undefined || payloadRoom.npcs === undefined) {
-    return preferOccupantList(undefined, existingRoom.npcs);
+/**
+ * Omitted from the payload -> keep the existing list; an explicit array (even []) is authoritative.
+ * A same-room room_update carrying only npcs must not wipe players (#776), and vice versa.
+ */
+function resolvePayloadList<T>(existing: T[] | undefined, fromPayload: T[] | undefined): T[] {
+  if (fromPayload === undefined) {
+    return preferOccupantList(undefined, existing);
   }
-  if (Array.isArray(payloadRoom.npcs)) {
-    return payloadRoom.npcs;
-  }
-  return [];
+  return Array.isArray(fromPayload) ? fromPayload : [];
 }
 
-function roomAfterIdChange(existingRoom: Room, roomMetadata: RoomMeta): Room {
-  return {
-    ...existingRoom,
-    ...roomMetadata,
-    players: [],
-    npcs: undefined,
-    occupants: [],
-    occupant_count: 0,
-  };
+/**
+ * On a room change, use the payload's own occupants (which the server always populates,
+ * including self) instead of zeroing -- zeroing would discard real data the server just sent.
+ */
+function roomAfterIdChange(roomMetadata: RoomMeta, payloadRoom?: Room): Room {
+  return createInitialRoomState(roomMetadata, payloadRoom);
 }
 
 function resolvePreservedOccupantArrays(
@@ -122,10 +135,10 @@ function resolvePreservedOccupantArrays(
       npcsArr: preferOccupantList(undefined, existingRoom.npcs),
     };
   }
-  const playersFromPayload = payloadRoom === undefined ? undefined : payloadRoom.players;
-  const players = preferOccupantList(playersFromPayload, undefined);
-  const npcsArr = resolvePayloadNpcs(existingRoom, payloadRoom);
-  return { players, npcsArr };
+  return {
+    players: resolvePayloadList(existingRoom.players, payloadRoom?.players),
+    npcsArr: resolvePayloadList(existingRoom.npcs, normalizeOptionalNpcOccupants(payloadRoom?.npcs)),
+  };
 }
 
 function resolvePreservedOccupantCount(usePayloadOccupants: boolean, length: number, payloadCount?: number): number {
@@ -151,7 +164,7 @@ function createRoomUpdateWithPreservedOccupants(
   payloadRoom?: Room
 ): Room {
   if (roomIdChanged) {
-    return roomAfterIdChange(existingRoom, roomMetadata);
+    return roomAfterIdChange(roomMetadata, payloadRoom);
   }
   return roomWithPreservedOccupants(existingRoom, roomMetadata, payloadRoom);
 }
@@ -166,7 +179,7 @@ function createInitialRoomState(roomMetadata: RoomMeta, roomData?: Room): Room {
 function createMinimalRoomFromOccupantsEvent(
   eventRoomId: string,
   players?: string[],
-  npcs?: string[],
+  npcs?: NpcOccupant[],
   occupantCount?: number
 ): Room {
   const finalPlayers = preferOccupantList(players, undefined);
@@ -192,7 +205,7 @@ function validateRoomIdMatch(currentRoomId: string, eventRoomId?: string): boole
 function handleStructuredOccupantsFormat(
   currentRoom: Room,
   players?: string[],
-  npcs?: string[],
+  npcs?: NpcOccupant[],
   occupantCount?: number
 ): Room {
   const finalPlayers = preferOccupantList(players, currentRoom.players);
@@ -202,14 +215,14 @@ function handleStructuredOccupantsFormat(
   return attachOccupants(currentRoom, finalPlayers, finalNpcs, count);
 }
 
-function hasTopLevelOccupantLists(players?: string[], npcs?: string[]): boolean {
+function hasTopLevelOccupantLists(players?: string[], npcs?: NpcOccupant[]): boolean {
   return players !== undefined || npcs !== undefined;
 }
 
 function deriveRoomFromOccupantsWithoutExisting(
   eventRoomId?: string,
   players?: string[],
-  npcs?: string[],
+  npcs?: NpcOccupant[],
   occupantCount?: number
 ): RoomOrNull {
   if (!eventRoomId || !hasTopLevelOccupantLists(players, npcs)) {
@@ -218,12 +231,15 @@ function deriveRoomFromOccupantsWithoutExisting(
   return createMinimalRoomFromOccupantsEvent(eventRoomId, players, npcs, occupantCount);
 }
 
-/** Derive room from game_state event */
+/** Derive room from game_state event. Top-level occupant_count (websocket_initial_state.py) wins
+ *  over a length-derived count, since the server's count may include entities not listed. */
 export function deriveRoomFromGameState(event: GameEvent): RoomOrNull {
   if (!event.data.room) {
     return null;
   }
-  return roomWithOccupantsFromArrays(event.data.room as Room);
+  const base = roomWithOccupantsFromArrays(event.data.room as Room);
+  const occupantCount = typeof event.data.occupant_count === 'number' ? event.data.occupant_count : undefined;
+  return occupantCount === undefined ? base : { ...base, occupant_count: occupantCount };
 }
 
 /** Derive room from room_update event (pure; uses existingRoom) */
@@ -256,7 +272,7 @@ export function deriveRoomFromRoomState(event: GameEvent): RoomOrNull {
 /** Derive room from room_occupants event (pure; uses existingRoom) */
 export function deriveRoomFromRoomOccupants(event: GameEvent, existingRoom: RoomOrNull): RoomOrNull {
   const players = Array.isArray(event.data.players) ? event.data.players : undefined;
-  const npcs = Array.isArray(event.data.npcs) ? event.data.npcs : undefined;
+  const npcs = Array.isArray(event.data.npcs) ? normalizeNpcOccupants(event.data.npcs) : undefined;
   const occupantCount = typeof event.data.count === 'number' ? event.data.count : undefined;
   const eventRoomId = typeof event.room_id === 'string' ? event.room_id : undefined;
 

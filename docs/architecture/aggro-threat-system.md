@@ -33,8 +33,9 @@ This document specifies the aggro and threat management system for MythosMUD com
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Damage  | threat += damage_dealt \* damage_threat_multiplier (default 1.0; tanks may use > 1.0).                                                          |
 | Healing | threat += heal_amount \* healing_threat_factor (e.g. 0.5) applied to the mob's hate list for the healer (and/or healing target as appropriate). |
-| Utility | threat += flat or small per-application value for buffs/debuffs so support can pull if they over-apply.                                         |
-| Taunt   | Set taunter's threat to current_top_threat + margin (or "become top for N seconds"). Valid only if taunter.room_id == mob.room_id.              |
+| Utility | threat += `aggro_utility_threat` (default 5.0) per successful buff/debuff, x aggression x corruption scale; not skipped for passive_mob (#833). |
+| Taunt   | A queued action that rolls d100 vs max(intimidate, fighting): top + margin (x2 on Hard/Extreme), nothing on failure, wiped on fumble. Valid only if taunter.room_id == mob.room_id (#833). |
+| Protect | A queued action that rolls d100 vs fighting. On success the protector gains `aggro_protect_threat_share` (0.5) of the ally's threat on each mob, soaks the mob's hits aimed at the ally while cover lasts (each adds damage threat), and earns `aggro_guarding_threat_multiplier` (1.5) on damage threat (#991). |
 
 All values are per-mob: one hate list per mob (or per combat instance).
 
@@ -103,6 +104,10 @@ UpdateAggro(mob, room):
 | Tank swap            | Tank A taunts (room-local), gets top. Tank B taunts, gets top. Mob switches to B.                                                                         |
 | 40 in room           | Only 5 ever deal damage/heal; hate list has 5 entries; target resolution O(5); one broadcast on switch.                                                   |
 | Taunt from next room | Taunt has no effect; mob does not move. (Kiting uses attack/pull from adjacent room, not taunt.)                                                          |
+| Support pull         | Tank holds the mob; a support caster applies debuffs (no damage) until their threat is 110% of the tank's -> mob switches to them (#833).                  |
+| Taunt fumble         | The tank holding aggro fumbles: their hate entry is wiped, the next in line becomes the target, one line announces it (#833).                             |
+| Join and assist      | A second player attacks (or assists) in the fight's room and joins it; a player already fighting another foe is refused (#833).                          |
+| Tank covers healer   | A healer holds the mob; the tank protects them. The mob's hits land on the tank, whose threat grows 1.5x per hit until the mob turns on the tank (#991).  |
 
 ## 9. Feedback (low-latency, text-efficient)
 
@@ -118,6 +123,8 @@ The following were decided and are fixed for implementation:
 
 - **Default stability margin:** 0.10 (10%).
 - **Stealth / aggro shedding:** Option A (wipe). Stealth removes the player from the mob's hate list (or sets threat to 0); no decay-over-time while stealthed.
+- **Group combat (#833):** N players vs one NPC per combat; taunt is a graded, round-costing roll; utility threat is flat and spreads by target; `assist` is one-shot. Full rationale: ADR-016 section 8.
+- **Protect (#991):** a queued Fighting roll; success redirects the mob's hits from the covered ally to the protector for this round and the next, shares threat, and applies the guarding multiplier. No fumble case. Full rationale: ADR-016 section 9.
 
 ## 11. References
 
@@ -135,3 +142,4 @@ The following were decided and are fixed for implementation:
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix broken implementation-plan link, now in `docs/archive/` (#722) |
+| 1.2.0 | 2026-10-06 | Utility threat, graded taunt, join/assist rows and decisions (#833) |

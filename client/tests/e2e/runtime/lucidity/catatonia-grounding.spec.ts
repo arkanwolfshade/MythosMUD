@@ -33,11 +33,6 @@ test.describe('Catatonia Grounding Ritual', () => {
   test('catatonic player should see rescue status banner', async () => {
     const awContext = contexts[0];
 
-    // Check for rescue status banner
-    const banner = awContext.page.locator('[data-testid="rescue-status-banner"], text=/Catatonic/i');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _isVisible = await banner.isVisible({ timeout: 5000 }).catch(() => false);
-
     // This test verifies rescue status banner exists (may or may not appear depending on state)
     expect(awContext.page).toBeTruthy();
   });

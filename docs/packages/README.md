@@ -1,6 +1,6 @@
 # Server & Client Package Documentation Coverage
 
-**Version 1.1.0** · MythosMUD · 2026-08-30
+**Version 1.4.0** · MythosMUD · 2026-09-29
 
 ---
 
@@ -36,19 +36,20 @@ consistently): **Documented** — the package is the primary subject of an ADR, 
 `docs/subsystems/*.md` doc (reverse-engineered from code — a record exists but is unverified,
 never certifiable as conformance). **Undocumented** — neither.
 
-### Documented (16)
+### Documented (20)
 
 | Package | Document(s) |
 | --- | --- |
 | `server/realtime/` | [`REAL_TIME_ARCHITECTURE.md`](../REAL_TIME_ARCHITECTURE.md), [`CONNECTION_MANAGER_ARCHITECTURE.md`](../CONNECTION_MANAGER_ARCHITECTURE.md) |
 | `server/commands/` + `server/command_handler/` | [`COMMAND_HANDLER_PATTERNS.md`](../COMMAND_HANDLER_PATTERNS.md), [`COMMAND_MODELS_REFERENCE.md`](../COMMAND_MODELS_REFERENCE.md), [`COMMAND_SECURITY_GUIDE.md`](../COMMAND_SECURITY_GUIDE.md), [`COMMAND_TESTING_GUIDE.md`](../COMMAND_TESTING_GUIDE.md), [`PLAYER_COMMAND_DEVELOPER_GUIDE.md`](../PLAYER_COMMAND_DEVELOPER_GUIDE.md) |
 | `server/api/` | [`API_OPENAPI_SPECIFICATION.md`](../architecture/API_OPENAPI_SPECIFICATION.md) |
-| `server/persistence/` | [`PERSISTENCE_REPOSITORY_ARCHITECTURE.md`](../PERSISTENCE_REPOSITORY_ARCHITECTURE.md), [`DATABASE_ACCESS_PATTERNS.md`](../DATABASE_ACCESS_PATTERNS.md), [`PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`](../PERSISTENCE_ASYNC_MIGRATION_GUIDE.md) |
+| `server/persistence/` | [`DATABASE_ARCHITECTURE.md`](../architecture/DATABASE_ARCHITECTURE.md) |
 | `server/structured_logging/` | [`LOGGING_BEST_PRACTICES.md`](../LOGGING_BEST_PRACTICES.md), [`LOGGING_QUICK_REFERENCE.md`](../LOGGING_QUICK_REFERENCE.md), [`ENHANCED_LOGGING_GUIDE.md`](../ENHANCED_LOGGING_GUIDE.md), [`ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`](../ERROR_LOGGING_IMPLEMENTATION_GUIDE.md), [`PRE_COMMIT_LOGGING_VALIDATION.md`](../PRE_COMMIT_LOGGING_VALIDATION.md) |
 | `server/container/` | [`CONTAINER_SYSTEM_ARCHITECTURE.md`](../CONTAINER_SYSTEM_ARCHITECTURE.md), [`CONTAINER_SYSTEM_API_REFERENCE.md`](../CONTAINER_SYSTEM_API_REFERENCE.md), [`CONTAINER_INJECTION_AUDIT.md`](../CONTAINER_INJECTION_AUDIT.md), [ADR-002](../architecture/decisions/ADR-002-application-container-dependency-injection.md) |
 | `server/config/` | [`CONFIGURATION_FILES_REFERENCE.md`](../CONFIGURATION_FILES_REFERENCE.md), [`SECURITY_ENVIRONMENT_VARIABLES.md`](../SECURITY_ENVIRONMENT_VARIABLES.md), [ADR-013](../architecture/decisions/ADR-013-pydantic-configuration.md) |
 | `server/events/` | [`EVENT_OWNERSHIP_MATRIX.md`](../EVENT_OWNERSHIP_MATRIX.md), [`EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`](../EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md), [ADR-001](../architecture/decisions/ADR-001-layered-architecture-event-driven.md), [ADR-003](../architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md) |
 | `client/src/components/ui-v2/` | [ADR-022](../architecture/decisions/ADR-022-ui-v2-client-transition.md) |
+| `client/src/components/ui-v2/primitives/` | [`PACKAGE_UI_PRIMITIVES_DESIGN.md`](PACKAGE_UI_PRIMITIVES_DESIGN.md) *(new, this pass)* |
 | `db/procedures/` | [ADR-015](../architecture/decisions/ADR-015-postgresql-procedures-migration.md) |
 | `server/middleware/` | [`PACKAGE_MIDDLEWARE_DESIGN.md`](PACKAGE_MIDDLEWARE_DESIGN.md) *(new, this pass)* |
 | `server/auth/` | [`PACKAGE_AUTH_DESIGN.md`](PACKAGE_AUTH_DESIGN.md) *(new, this pass)* |
@@ -56,6 +57,9 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/schemas/` | [`PACKAGE_SCHEMAS_DESIGN.md`](PACKAGE_SCHEMAS_DESIGN.md) *(new, this pass)* |
 | `server/models/` | [`PACKAGE_MODELS_DESIGN.md`](PACKAGE_MODELS_DESIGN.md) *(new, this pass)* |
 | `server/services/` | [`PACKAGE_SERVICES_DESIGN.md`](PACKAGE_SERVICES_DESIGN.md) *(new, this pass)* |
+| `db/` root DDL files | [`PACKAGE_DB_DESIGN.md`](PACKAGE_DB_DESIGN.md) *(new, this pass)* |
+| `client/src/mythosApp/` | [`PACKAGE_MYTHOS_APP_DESIGN.md`](PACKAGE_MYTHOS_APP_DESIGN.md) *(new, this pass)* |
+| `client/src/components/map/` | [`PACKAGE_MAP_DESIGN.md`](PACKAGE_MAP_DESIGN.md) *(new, this pass)* |
 
 ### Provisional (2)
 
@@ -64,7 +68,7 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/game/` | `docs/subsystems/*` coverage only |
 | `server/npc/` | `docs/subsystems/*` coverage only |
 
-### Undocumented (25)
+### Undocumented (21)
 
 Each cites the issue that owns writing its documentation. `server/domain/` (formerly one of
 `#746`'s 22 batched entries) is no longer listed: it was an empty, zero-reference hexagonal-
@@ -74,10 +78,6 @@ section for the record.
 
 | Package | Owning issue |
 | --- | --- |
-| `client/src/mythosApp/` | [`#742`](https://github.com/arkanwolfshade/MythosMUD/issues/742) |
-| `client/src/components/map/` | [`#743`](https://github.com/arkanwolfshade/MythosMUD/issues/743) |
-| `client/src/components/ui/` (legacy) | [`#744`](https://github.com/arkanwolfshade/MythosMUD/issues/744) |
-| `db/` root DDL files | [`#745`](https://github.com/arkanwolfshade/MythosMUD/issues/745) |
 | `server/utils/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/monitoring/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/validators/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
@@ -100,11 +100,15 @@ section for the record.
 | `client/src/components/lucidity/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `client/src/components/magic/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 
-**Reconciliation:** 16 Documented + 2 Provisional + 25 Undocumented = 43, one below the `#648`
+**Reconciliation:** 20 Documented + 2 Provisional + 21 Undocumented = 43, one below the `#648`
 item 2 sweep's original 44-package inventory (10 Documented + 2 Provisional + 32 Undocumented at
-that time). Six of the 32 flipped to Documented in the `#736`–`#741` pass; one
-(`server/domain/`) was removed rather than documented in the `#757` remediation, so it drops out
-of the inventory entirely instead of flipping status — the count is intentionally 43, not 44.
+that time). Six of the 32 flipped to Documented in the `#736`–`#741` pass, one more (`db/` root
+DDL files) in the `#745` pass; one (`server/domain/`) was removed rather than documented in the
+`#757` remediation, so it drops out of the inventory entirely instead of flipping status. The
+`#744` pass reclassifies `client/src/components/ui/` (legacy) — relocated into
+`client/src/components/ui-v2/primitives/` and documented — from Undocumented to Documented; the
+count stays 43, not 44. The `#742` and `#743` pass flips `client/src/mythosApp/` and
+`client/src/components/map/` from Undocumented to Documented; the count stays 43.
 
 ## 3. Related documentation
 
@@ -122,3 +126,6 @@ of the inventory entirely instead of flipping status — the count is intentiona
 | --- | --- | --- |
 | 1.0.0 | 2026-08-29 | Initial version — promotes the `#648` item 2 sweep result to a maintained index; six `server/` packages flip to Documented, closing `#736`–`#741` |
 | 1.1.0 | 2026-08-30 | Remove `server/domain/` from the inventory (deleted, not documented, per `#757`); count drops from 44 to 43 |
+| 1.2.0 | 2026-09-16 | `db/` root DDL files flip Undocumented → Documented via `PACKAGE_DB_DESIGN.md`; `server/persistence/` row repointed to consolidated `DATABASE_ARCHITECTURE.md` (#745) |
+| 1.3.0 | 2026-09-16 | `client/src/components/ui/` (legacy) flips Undocumented → Documented as `client/src/components/ui-v2/primitives/` via `PACKAGE_UI_PRIMITIVES_DESIGN.md`, after relocation out of the standalone `ui/` directory (#744) |
+| 1.4.0 | 2026-09-29 | `client/src/mythosApp/` and `client/src/components/map/` flip Undocumented → Documented via `PACKAGE_MYTHOS_APP_DESIGN.md` and `PACKAGE_MAP_DESIGN.md` (#742, #743) |

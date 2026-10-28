@@ -19,7 +19,7 @@ export const STANDARD_DIRECTIONS = [
 
 const STANDARD_DIRECTION_SET = new Set(STANDARD_DIRECTIONS);
 
-export function isStandardExitDirection(direction: string): boolean {
+function isStandardExitDirection(direction: string): boolean {
   return STANDARD_DIRECTION_SET.has(direction);
 }
 

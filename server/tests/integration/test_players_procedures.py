@@ -7,6 +7,7 @@ pin the DDL/procedure change: unit tests mock the session and cannot exercise re
 
 import asyncio
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
@@ -39,12 +40,15 @@ async def test_get_user_id_by_username_ci_matches_regardless_of_case(
 ) -> None:
     user_id, username = user_row
     async with session_factory() as session:
-        found = (
-            await session.execute(
-                text("SELECT get_user_id_by_username_ci(:username)"),
-                {"username": username.upper()},
-            )
-        ).scalar()
+        found = cast(
+            object,
+            (
+                await session.execute(
+                    text("SELECT get_user_id_by_username_ci(:username)"),
+                    {"username": username.upper()},
+                )
+            ).scalar(),
+        )
         assert found is not None
         assert uuid.UUID(str(found)) == user_id
 
@@ -54,9 +58,12 @@ async def test_get_user_id_by_username_ci_unknown_username_returns_null(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
     async with session_factory() as session:
-        found = (
-            await session.execute(text("SELECT get_user_id_by_username_ci(:username)"), {"username": "nobody_here"})
-        ).scalar()
+        found = cast(
+            object,
+            (
+                await session.execute(text("SELECT get_user_id_by_username_ci(:username)"), {"username": "nobody_here"})
+            ).scalar(),
+        )
         assert found is None
 
 
@@ -83,7 +90,7 @@ async def test_reserve_invite_true_for_active_code(
 ) -> None:
     async with session_factory() as session:
         result = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
-        assert bool(result.scalar()) is True
+        assert bool(cast(object, result.scalar())) is True
         await session.commit()
 
 
@@ -93,7 +100,7 @@ async def test_reserve_invite_false_for_unknown_code(
 ) -> None:
     async with session_factory() as session:
         result = await session.execute(text("SELECT reserve_invite(:code)"), {"code": "does-not-exist"})
-        assert bool(result.scalar()) is False
+        assert bool(cast(object, result.scalar())) is False
         await session.commit()
 
 
@@ -105,13 +112,13 @@ async def test_capture_invite_after_reserve_deactivates_and_records_user(
     user_id, _username = user_row
     async with session_factory() as session:
         reserved = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
-        assert bool(reserved.scalar()) is True
+        assert bool(cast(object, reserved.scalar())) is True
 
         captured = await session.execute(
             text("SELECT capture_invite(:code, :user_id)"),
             {"code": invite_row, "user_id": user_id},
         )
-        assert bool(captured.scalar()) is True
+        assert bool(cast(object, captured.scalar())) is True
         await session.commit()
 
         row = (
@@ -138,7 +145,7 @@ async def test_capture_invite_unknown_code_returns_false(
             text("SELECT capture_invite(:code, :user_id)"),
             {"code": "does-not-exist", "user_id": user_id},
         )
-        assert bool(result.scalar()) is False
+        assert bool(cast(object, result.scalar())) is False
         await session.commit()
 
 
@@ -154,11 +161,11 @@ async def test_capture_invite_second_call_returns_false(
         first = await session.execute(
             text("SELECT capture_invite(:code, :user_id)"), {"code": invite_row, "user_id": user_id}
         )
-        assert bool(first.scalar()) is True
+        assert bool(cast(object, first.scalar())) is True
         second = await session.execute(
             text("SELECT capture_invite(:code, :user_id)"), {"code": invite_row, "user_id": user_id}
         )
-        assert bool(second.scalar()) is False
+        assert bool(cast(object, second.scalar())) is False
         await session.commit()
 
 
@@ -173,11 +180,15 @@ async def test_reserve_invite_blocks_concurrent_reservation_until_release(
     user_id, _username = user_row
     winner_result: list[bool] = []
     loser_result: list[bool] = []
+    # Set once the holder owns the row lock. NullPool opens a fresh connection per session, so a
+    # fixed sleep can let the racer win the lock under load and make both calls return true.
+    lock_held = asyncio.Event()
 
     async def holder() -> None:
         async with session_factory() as session:
             reserved = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
-            winner_result.append(bool(reserved.scalar()))
+            winner_result.append(bool(cast(object, reserved.scalar())))
+            lock_held.set()
             # Hold the lock briefly so the racer's reserve_invite() call is guaranteed to block
             # inside Postgres, not just get lucky with ordering.
             await asyncio.sleep(0.3)
@@ -187,10 +198,10 @@ async def test_reserve_invite_blocks_concurrent_reservation_until_release(
             await session.commit()
 
     async def racer() -> None:
-        await asyncio.sleep(0.05)  # let holder acquire the lock first
+        _ = await asyncio.wait_for(lock_held.wait(), timeout=10)  # holder must acquire the lock first
         async with session_factory() as session:
             reserved = await session.execute(text("SELECT reserve_invite(:code)"), {"code": invite_row})
-            loser_result.append(bool(reserved.scalar()))
+            loser_result.append(bool(cast(object, reserved.scalar())))
             await session.commit()
 
     _ = await asyncio.gather(holder(), racer())

@@ -299,3 +299,33 @@ def test_create_learn_command_multi_word():
     """Test create_learn_command() with multi-word spell name."""
     command = UtilityCommandFactory.create_learn_command(["basic", "heal"])
     assert command.spell_name == "basic heal"
+
+
+# --- Tests for create_stop_command (#813) ---
+
+
+def test_create_stop_command_no_args():
+    """Test create_stop_command() creates StopCommand with no args."""
+    command = UtilityCommandFactory.create_stop_command([])
+    assert command.command_type == "stop"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+
+
+def test_create_stop_command_with_args():
+    """Test create_stop_command() raises error with args (stop takes no args)."""
+    with pytest.raises(ValidationError):
+        _ = UtilityCommandFactory.create_stop_command(["now"])
+
+
+# --- Tests for create_teach_command (#813) ---
+
+
+def test_create_teach_command_no_args():
+    """Test create_teach_command() creates a bare TeachCommand with no args."""
+    command = UtilityCommandFactory.create_teach_command([])
+    assert command.command_type == "teach"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+
+
+def test_create_teach_command_with_args():
+    """Test create_teach_command() ignores args at the model level (handler parses command_data['args'])."""
+    command = UtilityCommandFactory.create_teach_command(["professor", "fireball"])
+    assert command.command_type == "teach"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime

@@ -8,6 +8,8 @@ from datetime import UTC, datetime
 from unittest.mock import patch
 from uuid import UUID, uuid4
 
+import pytest
+
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
@@ -294,6 +296,61 @@ def test_combat_participant_is_mortally_wounded_player_npc_always_false():
     assert participant.is_mortally_wounded() is False
 
 
+@pytest.mark.parametrize(
+    ("participant_type", "dp", "expected"),
+    [
+        (CombatParticipantType.PLAYER, 50, False),
+        (CombatParticipantType.PLAYER, 1, False),
+        (CombatParticipantType.PLAYER, 0, True),
+        (CombatParticipantType.PLAYER, -9, True),
+        (CombatParticipantType.PLAYER, -10, True),
+        (CombatParticipantType.NPC, 5, False),
+        (CombatParticipantType.NPC, 0, True),
+    ],
+)
+def test_combat_participant_is_incapacitated(participant_type: CombatParticipantType, dp: int, expected: bool) -> None:
+    """#1058: dead, or a player at 0 to -9 DP, is out of the fight and carries no threat."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=participant_type,
+        name="Subject",
+        current_dp=dp,
+        max_dp=100,
+        dexterity=10,
+    )
+    assert participant.is_incapacitated() is expected
+
+
+@pytest.mark.parametrize(
+    ("start_dp", "damage", "end_dp", "died", "mortally_wounded"),
+    [
+        (5, 5, 0, False, True),  # lands exactly on 0
+        (20, 25, -5, False, True),  # #1058: a big hit past 0 still puts them in the mortally wounded band
+        (5, 25, -10, True, False),  # straight to -10 is a death, not a mortal wound
+        (-3, 2, -5, False, False),  # already in the band: no second "mortally wounded" event
+        (-9, 5, -10, True, False),  # bleeding out, the next hit kills
+    ],
+)
+def test_combat_participant_apply_damage_player_band_transitions(
+    start_dp: int, damage: int, end_dp: int, died: bool, mortally_wounded: bool
+) -> None:
+    """The mortally wounded event fires once, on the hit that takes a player from above 0 into 0 to -9."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=start_dp,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(damage)
+
+    assert old_dp == start_dp
+    assert participant.current_dp == end_dp
+    assert target_died is died
+    assert target_mortally_wounded is mortally_wounded
+
+
 # --- Tests for CombatParticipant apply_damage ---
 
 
@@ -349,6 +406,59 @@ def test_combat_participant_apply_damage_player_dies():
     assert participant.current_dp == -10
     assert target_died is True
     assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_mortally_wounded_player_dies_on_the_killing_hit():
+    """A player at 0 DP (mortally wounded) is killed by the hit that reaches -10."""
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=0,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, _ = participant.apply_damage(25)
+
+    assert old_dp == 0
+    assert participant.current_dp == -10
+    assert target_died is True
+
+
+def test_combat_participant_apply_damage_already_dead_player_does_not_die_again():
+    """Later hits on a player already at the -10 floor must not re-report death (#917).
+
+    Each re-report re-fired death handling, so one death produced ~50 corpses and death events.
+    """
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=-10,
+        max_dp=100,
+        dexterity=10,
+    )
+    old_dp, target_died, target_mortally_wounded = participant.apply_damage(25)
+
+    assert old_dp == -10
+    assert participant.current_dp == -10
+    assert target_died is False
+    assert target_mortally_wounded is False
+
+
+def test_combat_participant_apply_damage_player_reports_death_exactly_once_across_hits():
+    participant = CombatParticipant(
+        participant_id=uuid4(),
+        participant_type=CombatParticipantType.PLAYER,
+        name="TestPlayer",
+        current_dp=5,
+        max_dp=100,
+        dexterity=10,
+    )
+
+    deaths = [participant.apply_damage(25)[1] for _ in range(5)]
+
+    assert deaths == [True, False, False, False, False]
 
 
 def test_combat_participant_apply_damage_player_caps_at_negative_10():

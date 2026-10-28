@@ -1,0 +1,62 @@
+# .initialize
+
+> 38 nodes · cohesion 0.11
+
+## Key Concepts
+
+- **follow_movement.py** (29 connections) — `server/game/follow_movement.py`
+- **_FollowMovementHost** (20 connections) — `server/game/follow_movement.py`
+- **test_follow_movement.py** (14 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **propagate_follower_move()** (11 connections) — `server/game/follow_movement.py`
+- **_host()** (9 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **asyncio** (8 connections)
+- **ensure_follower_standing()** (7 connections) — `server/game/follow_movement.py`
+- **stand_follower_for_move()** (7 connections) — `server/game/follow_movement.py`
+- **follower_already_in_room()** (6 connections) — `server/game/follow_movement.py`
+- **on_npc_entered_room()** (6 connections) — `server/game/follow_movement.py`
+- **follower_needs_stand()** (5 connections) — `server/game/follow_movement.py`
+- **on_player_entered_room()** (5 connections) — `server/game/follow_movement.py`
+- **test_ensure_follower_standing_swallows_lookup_errors()** (5 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_on_npc_entered_room_skips_without_movement_service()** (5 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **drop_follower()** (4 connections) — `server/game/follow_movement.py`
+- **test_follower_already_in_room_missing_persistence()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_follower_already_in_room_true_and_false()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_exception_drops_follower()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_skips_when_already_in_room()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_propagate_unfollow_when_cannot_stand()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **test_stand_follower_no_position_service_returns_true()** (4 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **.unfollow()** (3 connections) — `server/game/follow_movement.py`
+- **UUID** (2 connections)
+- **test_follower_needs_stand_rejects_non_string_position()** (2 connections) — `server/tests/unit/game/test_follow_movement.py`
+- **.get_followers()** (1 connections) — `server/game/follow_movement.py`
+- *... and 13 more nodes in this community*
+
+## Relationships
+
+- [_CombatServiceDeps](_CombatServiceDeps.md) (10 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [BaseEvent](BaseEvent.md) (4 shared connections)
+- [WearableContainerServiceError](WearableContainerServiceError.md) (3 shared connections)
+- [ManualPage.tsx](ManualPage.tsx.md) (3 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (2 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [RoomDataCache](RoomDataCache.md) (2 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (1 shared connections)
+- [connection_initialization.py](connection_initialization.py.md) (1 shared connections)
+- [LoggingConfig](LoggingConfig.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (1 shared connections)
+
+## Source Files
+
+- `server/game/follow_movement.py`
+- `server/tests/unit/game/test_follow_movement.py`
+
+## Audit Trail
+
+- EXTRACTED: 98 (89%)
+- INFERRED: 12 (11%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

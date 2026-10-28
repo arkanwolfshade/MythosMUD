@@ -139,7 +139,7 @@ class FStringLoggingFixer:
         try:
             with open(file_path, encoding="utf-8") as f:
                 return f.read()
-        except (UnicodeDecodeError, FileNotFoundError):
+        except UnicodeDecodeError, FileNotFoundError:
             if self.verbose:
                 print(f"Warning: Could not read {file_path}")
             return None

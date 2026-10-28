@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
+import { ContainerApiError, openContainer } from '../../api/containers';
 import { logger } from '../../utils/logger';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
-import { ModalContainer } from '../ui/ModalContainer';
+import { ContainerTransferModals } from './containers/ContainerTransferModal';
+import { CorpseOverlay } from './containers/CorpseOverlay';
 import { GameClientV2 } from './GameClientV2';
+import { PANEL_LAYOUT_STORAGE_KEY } from './PanelSystem/panelLayoutValidation';
+import { ModalContainer } from './primitives';
 import { TabbedInterfaceOverlay } from './components/TabbedInterfaceOverlay';
 import type { useGameClientV2Container } from './hooks/useGameClientV2Container';
+import { HEADER_COLLAPSED_STORAGE_KEY } from './utils/headerHeight';
 
 export type GameClientV2ContainerViewProps = ReturnType<typeof useGameClientV2Container>;
 
@@ -16,9 +21,7 @@ function openMapTab(
   room: NonNullable<GameClientV2ContainerViewProps['gameState']['room']>,
   authToken: string,
   addTab: GameClientV2ContainerViewProps['addTab'],
-  closeTab: GameClientV2ContainerViewProps['closeTab'],
-  hallucinate: boolean,
-  playerId: string | undefined
+  closeTab: GameClientV2ContainerViewProps['closeTab']
 ) {
   addTab({
     id: `map-${room.id}`,
@@ -30,8 +33,6 @@ function openMapTab(
         currentRoom={room}
         authToken={authToken}
         hideHeader={true}
-        hallucinate={hallucinate}
-        playerId={playerId}
       />
     ),
     closable: true,
@@ -83,6 +84,122 @@ function InviteModal({
   );
 }
 
+type PendingInviteModalsProps = Pick<
+  GameClientV2ContainerViewProps,
+  | 'clearedFollowRequestId'
+  | 'setClearedFollowRequestId'
+  | 'clearedPartyInviteId'
+  | 'setClearedPartyInviteId'
+  | 'sendMessage'
+> & {
+  pendingFollowRequest: GameClientV2ContainerViewProps['gameState']['pendingFollowRequest'];
+  pendingPartyInvite: GameClientV2ContainerViewProps['gameState']['pendingPartyInvite'];
+};
+
+/**
+ * The follow-request and party-invite prompts.
+ *
+ * clearedFollowRequestId/clearedPartyInviteId are UX-only local dismissal: the server never sends
+ * a follow_request_cleared/party_invite_cleared event, so this state is not persisted across
+ * reconnect (a stale pending request/invite will show its modal again after reconnect, which is
+ * correct -- the server still considers it pending).
+ */
+function PendingInviteModals({
+  pendingFollowRequest,
+  pendingPartyInvite,
+  clearedFollowRequestId,
+  setClearedFollowRequestId,
+  clearedPartyInviteId,
+  setClearedPartyInviteId,
+  sendMessage,
+}: PendingInviteModalsProps) {
+  const followRequest =
+    pendingFollowRequest && clearedFollowRequestId !== pendingFollowRequest.request_id ? pendingFollowRequest : null;
+  const partyInvite =
+    pendingPartyInvite && clearedPartyInviteId !== pendingPartyInvite.invite_id ? pendingPartyInvite : null;
+
+  const respondToFollow = (requestId: string, accept: boolean) => {
+    setClearedFollowRequestId(requestId);
+    sendMessage('follow_response', { request_id: requestId, accept });
+  };
+  const respondToParty = (inviteId: string, accept: boolean) => {
+    setClearedPartyInviteId(inviteId);
+    sendMessage('party_invite_response', { invite_id: inviteId, accept });
+  };
+
+  return (
+    <>
+      {followRequest && (
+        <InviteModal
+          title="Follow request"
+          message={`${followRequest.requestor_name} wants to follow you.`}
+          onDecline={() => respondToFollow(followRequest.request_id, false)}
+          onAccept={() => respondToFollow(followRequest.request_id, true)}
+        />
+      )}
+      {partyInvite && (
+        <InviteModal
+          title="Party invite"
+          message={`${partyInvite.inviter_name} has invited you to join their party.`}
+          onDecline={() => respondToParty(partyInvite.invite_id, false)}
+          onAccept={() => respondToParty(partyInvite.invite_id, true)}
+        />
+      )}
+    </>
+  );
+}
+
+/** Opening a room container, and the error to show when the server refuses. */
+function useOpenContainer(authToken: string) {
+  const [containerOpenError, setContainerOpenError] = useState<string | null>(null);
+  const handleOpenContainer = useCallback(
+    (containerId: string) => {
+      setContainerOpenError(null);
+      openContainer(authToken, containerId).catch(e => {
+        setContainerOpenError(e instanceof ContainerApiError ? e.message : 'Could not open that container.');
+      });
+    },
+    [authToken]
+  );
+  const dismissContainerOpenError = useCallback(() => setContainerOpenError(null), []);
+  return { containerOpenError, handleOpenContainer, dismissContainerOpenError };
+}
+
+/**
+ * "Reset UI Layout" (ESC menu > Settings): forget the saved panel layout and header-collapse state,
+ * then remount GameClientV2 so both re-initialize from defaults. `layoutKey` goes on GameClientV2.
+ * ponytail: remounting also drops transient UI state under it (command draft, filters, scroll).
+ * Upgrade to a RESET_LAYOUT reducer action + lifted header state if that starts to matter.
+ */
+function useResetUiLayout() {
+  const [layoutKey, setLayoutKey] = useState(0);
+  const resetUiLayout = useCallback(() => {
+    try {
+      localStorage.removeItem(PANEL_LAYOUT_STORAGE_KEY);
+      localStorage.removeItem(HEADER_COLLAPSED_STORAGE_KEY);
+    } catch {
+      // localStorage unavailable (private mode, etc.) - nothing was saved, the remount still shows defaults.
+    }
+    setLayoutKey(key => key + 1);
+  }, []);
+  return { layoutKey, resetUiLayout };
+}
+
+function ContainerOpenErrorAlert({ message, onDismiss }: { message: string | null; onDismiss: () => void }) {
+  if (!message) return null;
+  return (
+    <div
+      role="alert"
+      className="fixed bottom-4 left-4 z-[10000] max-w-sm rounded border border-mythos-terminal-error bg-mythos-terminal-background p-3 text-sm text-mythos-terminal-error shadow-xl"
+    >
+      {message}
+      <button type="button" className="ml-2 underline" onClick={onDismiss} aria-label="Dismiss">
+        Dismiss
+      </button>
+    </div>
+  );
+}
+
 function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   const {
     playerName,
@@ -111,8 +228,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     setClearedFollowRequestId,
     clearedPartyInviteId,
     setClearedPartyInviteId,
-    setGameState,
-    clearPendingFollowRequest,
     sendMessage,
     isConnected,
     isConnecting,
@@ -128,12 +243,12 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     activeEffects,
   } = props;
 
-  const isHallucinatingMap = lucidityStatus?.tier === 'deranged';
-  const mapPlayerId = gameState.player?.id ?? gameState.player?.name;
+  const { containerOpenError, handleOpenContainer, dismissContainerOpenError } = useOpenContainer(authToken);
+  const { layoutKey, resetUiLayout } = useResetUiLayout();
 
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
-      openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
+      openMapTab(gameState.room, authToken, addTab, closeTab);
       setActiveTab(`map-${gameState.room.id}`);
       return;
     }
@@ -141,30 +256,9 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   };
 
   const handleMainMenuMapClick = () => {
-    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
+    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab);
   };
 
-  const respondToFollow = (accept: boolean) => {
-    const reqId = gameState.pendingFollowRequest!.request_id;
-    setClearedFollowRequestId(reqId);
-    setGameState(prev => ({ ...prev, pendingFollowRequest: null }));
-    clearPendingFollowRequest(reqId);
-    sendMessage('follow_response', { request_id: reqId, accept });
-  };
-
-  const respondToParty = (accept: boolean) => {
-    const inviteId = gameState.pendingPartyInvite!.invite_id;
-    setClearedPartyInviteId(inviteId);
-    setGameState(prev => ({ ...prev, pendingPartyInvite: null }));
-    sendMessage('party_invite_response', { invite_id: inviteId, accept });
-  };
-
-  const showFollowModal = Boolean(
-    gameState.pendingFollowRequest && clearedFollowRequestId !== gameState.pendingFollowRequest.request_id
-  );
-  const showPartyModal = Boolean(
-    gameState.pendingPartyInvite && clearedPartyInviteId !== gameState.pendingPartyInvite.invite_id
-  );
   const containerClass = `game-terminal-container ${isDead ? 'dead' : ''}`;
   const currentRoomForMenu =
     gameState.room == null
@@ -180,6 +274,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     <div className={containerClass} data-game-container>
       {tabs.length === 0 && (
         <GameClientV2
+          key={layoutKey}
           playerName={playerName}
           authToken={authToken}
           onLogout={handleLogout}
@@ -195,6 +290,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
           mythosTime={gameState.mythosTime ?? mythosTime}
           healthStatus={healthStatus}
           lucidityStatus={lucidityStatus}
+          rescueStatus={gameState.rescueStatus ?? null}
           activeEffects={activeEffects}
           followingTarget={gameState.followingTarget ?? null}
           questLog={gameState.questLog ?? []}
@@ -204,8 +300,25 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
           onClearHistory={handleClearHistory}
           onDownloadLogs={() => logger.downloadLogs()}
           onMapClick={handleMapClickFromGame}
+          playerInventory={gameState.playerInventory}
+          playerEquipped={gameState.playerEquipped}
+          roomContainers={gameState.roomContainers}
+          onOpenContainer={handleOpenContainer}
         />
       )}
+
+      <ContainerTransferModals
+        openContainers={gameState.openContainers}
+        playerInventory={gameState.playerInventory}
+        authToken={authToken}
+        onClose={() => {}}
+      />
+      <CorpseOverlay
+        roomContainers={gameState.roomContainers}
+        playerId={gameState.player?.id}
+        onOpen={handleOpenContainer}
+      />
+      <ContainerOpenErrorAlert message={containerOpenError} onDismiss={dismissContainerOpenError} />
 
       <DeathInterstitial
         isVisible={isDead}
@@ -220,29 +333,22 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         isRespawning={isDeliriumRespawning}
       />
 
-      {showFollowModal && gameState.pendingFollowRequest && (
-        <InviteModal
-          title="Follow request"
-          message={`${gameState.pendingFollowRequest.requestor_name} wants to follow you.`}
-          onDecline={() => respondToFollow(false)}
-          onAccept={() => respondToFollow(true)}
-        />
-      )}
-
-      {showPartyModal && gameState.pendingPartyInvite && (
-        <InviteModal
-          title="Party invite"
-          message={`${gameState.pendingPartyInvite.inviter_name} has invited you to join their party.`}
-          onDecline={() => respondToParty(false)}
-          onAccept={() => respondToParty(true)}
-        />
-      )}
+      <PendingInviteModals
+        pendingFollowRequest={gameState.pendingFollowRequest}
+        pendingPartyInvite={gameState.pendingPartyInvite}
+        clearedFollowRequestId={clearedFollowRequestId}
+        setClearedFollowRequestId={setClearedFollowRequestId}
+        clearedPartyInviteId={clearedPartyInviteId}
+        setClearedPartyInviteId={setClearedPartyInviteId}
+        sendMessage={sendMessage}
+      />
 
       <MainMenuModal
         isOpen={isMainMenuOpen}
         onClose={() => setIsMainMenuOpen(false)}
         onMapClick={handleMainMenuMapClick}
         onLogoutClick={handleLogout}
+        onResetLayoutClick={resetUiLayout}
         currentRoom={currentRoomForMenu}
         openMapInNewTab={false}
         playerId={gameState.player?.id ?? null}
@@ -255,8 +361,6 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         onClose={() => setShowMap(false)}
         currentRoom={gameState.room}
         authToken={authToken}
-        hallucinate={isHallucinatingMap}
-        playerId={mapPlayerId}
       />
     </div>
   );

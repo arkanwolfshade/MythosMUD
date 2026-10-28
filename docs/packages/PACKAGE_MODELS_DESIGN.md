@@ -1,6 +1,6 @@
 # Models Package Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-30
+**Version 1.1.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -51,7 +51,7 @@ logic types actually live. Reverse-engineered from code; code is the source of t
 `schemas/`'s curated subset, this package's `__init__.py` is close to a flat namespace of
 everything defined here.
 
-**Dependents:** `server/persistence/` (documented in `PERSISTENCE_REPOSITORY_ARCHITECTURE.md`)
+**Dependents:** `server/persistence/` (documented in `DATABASE_ARCHITECTURE.md`)
 reads/writes these ORM entities; `server/schemas/` and `server/services/` both import specific
 model classes; the command dispatcher (`server/command_handler_unified.py` and
 `server/commands/`) consumes the command-model cluster.
@@ -142,8 +142,8 @@ model classes; the command dispatcher (`server/command_handler_unified.py` and
   family, behavioral rather than structural axis.
 - [`PACKAGE_SCHEMAS_DESIGN.md`](PACKAGE_SCHEMAS_DESIGN.md) — the wire-facing counterpart to this
   package's persisted entities.
-- [`PERSISTENCE_REPOSITORY_ARCHITECTURE.md`](../PERSISTENCE_REPOSITORY_ARCHITECTURE.md) — how
-  these entities are read and written.
+- [`DATABASE_ARCHITECTURE.md`](../architecture/DATABASE_ARCHITECTURE.md) — how these entities are
+  read and written.
 - [`PACKAGE_AUTH_DESIGN.md`](PACKAGE_AUTH_DESIGN.md) — consumer of `user.py`/`invite.py`.
 
 ## 9. Changelog
@@ -154,3 +154,4 @@ model classes; the command dispatcher (`server/command_handler_unified.py` and
 | --- | --- | --- |
 | 1.0.0 | 2026-08-29 | Initial version, closes #738 |
 | 1.1.0 | 2026-08-30 | Record `server/domain/`'s removal per #757 |
+| 1.1.1 | 2026-09-16 | Repoint links to `DATABASE_ARCHITECTURE.md`, which consolidates and replaces `PERSISTENCE_REPOSITORY_ARCHITECTURE.md` (#745) |

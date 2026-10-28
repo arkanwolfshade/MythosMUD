@@ -14,6 +14,7 @@ from server.models.command_inventory import (
     InventoryCommand,
     PickupCommand,
     PutCommand,
+    ReadCommand,
     UnequipCommand,
 )
 
@@ -26,6 +27,23 @@ def test_inventory_command_no_fields():
 
     # Reason: Enum values (str enums) are comparable to strings at runtime
     assert command.command_type == "inventory"  # type: ignore[comparison-overlap]
+
+
+# --- Tests for ReadCommand (#813) ---
+
+
+def test_read_command_args_are_optional_and_default_to_none():
+    """ReadCommand needs no fields to be valid; the handler reports the usage message for missing args."""
+    command = ReadCommand()
+
+    # Reason: Enum values (str enums) are comparable to strings at runtime
+    assert command.command_type == "read"  # type: ignore[comparison-overlap]
+    assert command.args == []
+
+
+def test_read_command_carries_its_args():
+    """The args (item name, optional spell name) must reach the handler through command_data."""
+    assert ReadCommand(args=["arkham", "advertiser"]).args == ["arkham", "advertiser"]
 
 
 # --- Tests for PickupCommand ---

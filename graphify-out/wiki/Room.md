@@ -1,56 +1,78 @@
 # Room
 
-> 22 nodes
+> 344 nodes · cohesion 0.01
 
 ## Key Concepts
 
-- **Room** (62 connections) — `server/models/room.py`
-- **.npc_entered()** (3 connections) — `server/models/room.py`
-- **.npc_left()** (3 connections) — `server/models/room.py`
-- **.object_added()** (3 connections) — `server/models/room.py`
-- **.object_removed()** (3 connections) — `server/models/room.py`
-- **test_room_has_object()** (3 connections) — `server/tests/unit/models/test_room_class.py`
-- **test_room_npc_entered()** (3 connections) — `server/tests/unit/models/test_room_class.py`
-- **.has_npc()** (2 connections) — `server/models/room.py`
-- **.has_object()** (2 connections) — `server/models/room.py`
-- **.__repr__()** (2 connections) — `server/models/room.py`
-- **.__str__()** (2 connections) — `server/models/room.py`
-- **Add an object to the room and trigger event. Args: object_id: The ID of the…** (1 connections) — `server/models/room.py`
-- **Remove an object from the room and trigger event. Args: object_id: The ID of…** (1 connections) — `server/models/room.py`
-- **Add an NPC to the room and trigger event. Args: npc_id: The ID of the NPC…** (1 connections) — `server/models/room.py`
-- **Remove an NPC from the room and trigger event. Args: npc_id: The ID of the NPC…** (1 connections) — `server/models/room.py`
-- **Represents a room in the MythosMUD game world. This class provides a stateless…** (1 connections) — `server/models/room.py`
-- **Check if an object is in the room. Args: object_id: The ID of the object to…** (1 connections) — `server/models/room.py`
-- **Check if an NPC is in the room. Args: npc_id: The ID of the NPC to check…** (1 connections) — `server/models/room.py`
-- **String representation of the room.** (1 connections) — `server/models/room.py`
-- **Detailed string representation of the room.** (1 connections) — `server/models/room.py`
-- **Test Room.npc_entered() adds NPC to room.** (1 connections) — `server/tests/unit/models/test_room_class.py`
-- **Test Room.has_object() returns True if object in room.** (1 connections) — `server/tests/unit/models/test_room_class.py`
+- **get_logger()** (559 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **enhanced_logging_config.py** (534 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **async_persistence.py** (105 connections) — `server/async_persistence.py`
+- **threading.py** (47 connections) — `server/npc/threading.py`
+- **event_handler.py** (42 connections) — `server/realtime/event_handler.py`
+- **nats_message_handler.py** (39 connections) — `server/realtime/nats_message_handler.py`
+- **test_config_models.py** (32 connections) — `server/tests/unit/config/test_config_models.py`
+- **nats_message_handler_processing.py** (31 connections) — `server/realtime/nats_message_handler_processing.py`
+- **config/models/__init__.py** (28 connections) — `server/config/models/__init__.py`
+- **time_service.py** (27 connections) — `server/time/time_service.py`
+- **monitoring_dashboard.py** (26 connections) — `server/monitoring/monitoring_dashboard.py`
+- **GameConfig** (25 connections) — `server/config/models/game.py`
+- **exception_tracker.py** (23 connections) — `server/monitoring/exception_tracker.py`
+- **combat_integration_base.py** (23 connections) — `server/npc/combat_integration_base.py`
+- **user_manager.py** (23 connections) — `server/services/user_manager.py`
+- **player_respawn_wrapper.py** (22 connections) — `server/game/player_respawn_wrapper.py`
+- **movement_integration.py** (22 connections) — `server/npc/movement_integration.py`
+- **connection_helpers.py** (22 connections) — `server/realtime/connection_helpers.py`
+- **nats_message_handler_broadcast.py** (22 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **npc_service/__init__.py** (22 connections) — `server/services/npc_service/__init__.py`
+- **app.py** (21 connections) — `server/config/models/app.py`
+- **inventory_mutation_guard.py** (21 connections) — `server/services/inventory_mutation_guard.py`
+- **player_death_service.py** (21 connections) — `server/services/player_death_service.py`
+- **idle_movement.py** (20 connections) — `server/npc/idle_movement.py`
+- **nats_message_handler_base.py** (20 connections) — `server/realtime/nats_message_handler_base.py`
+- *... and 319 more nodes in this community*
 
 ## Relationships
 
-- [Test Room Class](Test_Room_Class.md) (27 shared connections)
-- [Room](Room.md) (13 shared connections)
-- [Async Persistence & NPC Events](Async_Persistence_&_NPC_Events.md) (5 shared connections)
-- [Test Movement Service](Test_Movement_Service.md) (2 shared connections)
-- [NPC Behavior & Spawning](NPC_Behavior_&_Spawning.md) (2 shared connections)
-- [Test Room Utils](Test_Room_Utils.md) (1 shared connections)
-- [Player Model & Migrations](Player_Model_&_Migrations.md) (1 shared connections)
-- [Wearable Container Service](Wearable_Container_Service.md) (1 shared connections)
-- [Room Repository](Room_Repository.md) (1 shared connections)
-- [Test Player Disconnect Handlers](Test_Player_Disconnect_Handlers.md) (1 shared connections)
-- [Websocket Handler Connection](Websocket_Handler_Connection.md) (1 shared connections)
-- [Test Target Resolution Service](Test_Target_Resolution_Service.md) (1 shared connections)
+- [BaseEvent](BaseEvent.md) (47 shared connections)
+- [look_container.py](look_container.py.md) (44 shared connections)
+- [AttributeError](AttributeError.md) (42 shared connections)
+- [command_parser.py](command_parser.py.md) (39 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (31 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (28 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (27 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (26 shared connections)
+- [ErrorType](ErrorType.md) (24 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (22 shared connections)
+- [test_player_combat_service.py](test_player_combat_service.py.md) (21 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (21 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
-- `server/tests/unit/models/test_room_class.py`
+- `monitoring/webhook-receiver.py`
+- `server/async_persistence.py`
+- `server/commands/container_helpers_inventory_logging.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/config/models/__init__.py`
+- `server/config/models/_helpers.py`
+- `server/config/models/app.py`
+- `server/config/models/chat_time.py`
+- `server/config/models/cors.py`
+- `server/config/models/game.py`
+- `server/config/models/nats.py`
+- `server/config/models/player_stats.py`
+- `server/config/models/security_logging.py`
+- `server/config/models/server_db.py`
+- `server/game/chat_moderation.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_whisper_tracker.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/game/mechanics.py`
+- `server/game/player_respawn_wrapper.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 2273 (99%)
+- INFERRED: 27 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

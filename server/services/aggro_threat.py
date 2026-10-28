@@ -7,17 +7,20 @@ stealth wipe, and UpdateAggro for target resolution.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from server.config import get_config
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.config.models.game import GameConfig
+
 logger = get_logger(__name__)
 
 
-def _get_aggro_config() -> Any:
+def _get_aggro_config() -> GameConfig:
     """Return game config for aggro constants."""
     return get_config().game
 
@@ -37,6 +40,25 @@ def _aggression_scale(aggression_level: int | None) -> float:
     return 0.5 + 0.05 * level
 
 
+def _corruption_scale(npc_participant: CombatParticipant | None, source_participant: CombatParticipant | None) -> float:
+    """#815: threat scale from the NPC<->source corruption gap. Function-local import --
+    server.npc's package __init__ pulls in a combat/mechanics/corruption_service import chain that
+    risks a cycle with server.services at module scope (same reason chat_npc_system is imported
+    lazily inside NPCEventReactionTemplates' action closures)."""
+    from server.npc.corruption_reactions import corruption_hostility_scale
+
+    npc_corruption = getattr(npc_participant, "corruption", None) if npc_participant else None
+    source_corruption = getattr(source_participant, "corruption", None) if source_participant else None
+    return corruption_hostility_scale(npc_corruption, source_corruption)
+
+
+def _guarding_factor(combat: CombatInstance, source_entity_id: UUID) -> float:
+    """#991: the tank multiplier. A participant giving active Protect cover earns extra damage threat."""
+    if not combat.is_guarding(source_entity_id):
+        return 1.0
+    return _get_aggro_config().aggro_guarding_threat_multiplier
+
+
 def add_damage_threat(
     combat: CombatInstance,
     npc_id: UUID,
@@ -48,8 +70,9 @@ def add_damage_threat(
     """
     Add threat to an NPC's hate list from damage dealt.
 
-    threat += amount * multiplier (default from config aggro_damage_threat_multiplier).
-    passive_mob: no damage threat (only taunt/healing add threat). aggression_level 0-10 scales multiplier.
+    threat += amount * multiplier (default from config aggro_damage_threat_multiplier), times the guarding factor
+    while the source is covering an ally (#991). passive_mob: no damage threat (only taunt/healing add threat).
+    aggression_level 0-10 scales multiplier.
     """
     if amount <= 0:
         return
@@ -65,6 +88,8 @@ def add_damage_threat(
     mult = multiplier if multiplier is not None else getattr(config, "aggro_damage_threat_multiplier", 1.0)
     scale = _aggression_scale(getattr(participant, "aggression_level", None) if participant else None)
     mult *= scale
+    mult *= _corruption_scale(participant, combat.participants.get(source_entity_id))
+    mult *= _guarding_factor(combat, source_entity_id)
     delta = amount * mult
     hate = get_or_create_hate_list(combat, npc_id)
     hate[source_entity_id] = hate.get(source_entity_id, 0.0) + delta
@@ -98,6 +123,7 @@ def add_heal_threat(
     fac = factor if factor is not None else getattr(config, "aggro_healing_threat_factor", 0.5)
     scale = _aggression_scale(getattr(participant, "aggression_level", None) if participant else None)
     fac *= scale
+    fac *= _corruption_scale(participant, combat.participants.get(healer_entity_id))
     delta = amount * fac
     hate = get_or_create_hate_list(combat, npc_id)
     hate[healer_entity_id] = hate.get(healer_entity_id, 0.0) + delta
@@ -110,15 +136,50 @@ def add_heal_threat(
     )
 
 
+def add_utility_threat(
+    combat: CombatInstance,
+    npc_id: UUID,
+    source_entity_id: UUID,
+    amount: float | None = None,
+    npc_participant: CombatParticipant | None = None,
+) -> None:
+    """
+    Add flat threat for applying a buff or debuff, so support can pull without dealing damage (ADR-016 §3, #833).
+
+    ``amount`` defaults to ``aggro_utility_threat``. Like heal threat it is *not* skipped for passive mobs (a
+    caster working magic near one can draw it), and it is scaled by the NPC's aggression level and the
+    corruption gap to the source.
+    """
+    base = amount if amount is not None else get_config().game.aggro_utility_threat
+    if base <= 0:
+        return
+    participant = npc_participant or combat.participants.get(npc_id)
+    scale = _aggression_scale(participant.aggression_level if participant else None)
+    scale *= _corruption_scale(participant, combat.participants.get(source_entity_id))
+    delta = base * scale
+    hate = get_or_create_hate_list(combat, npc_id)
+    hate[source_entity_id] = hate.get(source_entity_id, 0.0) + delta
+    logger.debug(
+        "Utility threat added",
+        npc_id=str(npc_id),
+        source_id=str(source_entity_id),
+        amount=base,
+        delta=delta,
+    )
+
+
 def apply_taunt(
     combat: CombatInstance,
     npc_id: UUID,
     taunter_entity_id: UUID,
     combat_room_id: str,
     taunter_room_id: str,
+    margin_multiplier: float = 1.0,
 ) -> bool:
     """
     Set taunter's threat to current top + margin so they become top. Room-local only.
+
+    ``margin_multiplier`` widens the lead (a Hard or Extreme taunt roll uses 2.0, #833); 1.0 is the plain taunt.
 
     Returns True if taunt was applied (taunter in same room as combat), False otherwise.
     """
@@ -133,7 +194,7 @@ def apply_taunt(
         return False
     hate = get_or_create_hate_list(combat, npc_id)
     current_top = max(hate.values()) if hate else 0.0
-    margin = current_top * 0.10 + 1.0  # become top by at least 10% + 1
+    margin = (current_top * 0.10 + 1.0) * margin_multiplier  # become top by at least 10% + 1 (scaled)
     hate[taunter_entity_id] = current_top + margin
     logger.debug(
         "Taunt applied",
@@ -171,18 +232,30 @@ def clear_aggro_for_combat(combat: CombatInstance) -> None:
     """Clear all aggro state for this combat (call on combat end)."""
     combat.npc_hate_lists.clear()
     combat.npc_current_target.clear()
+    combat.player_current_target.clear()
     logger.debug("Aggro cleared for combat", combat_id=str(combat.combat_id))
+
+
+def remove_entity_from_aggro(combat: CombatInstance, entity_id: UUID) -> None:
+    """Drop one departed participant from every hate list and from both current-target maps (#833)."""
+    for hate in combat.npc_hate_lists.values():
+        _ = hate.pop(entity_id, None)
+    _ = combat.npc_hate_lists.pop(entity_id, None)
+    for targets in (combat.npc_current_target, combat.player_current_target):
+        _ = targets.pop(entity_id, None)
+        for holder in [k for k, v in targets.items() if v == entity_id]:
+            del targets[holder]
 
 
 def _select_top_alive_candidate(
     hate: dict[UUID, float], participants: dict[UUID, CombatParticipant]
 ) -> tuple[UUID | None, float]:
-    """Return (candidate_id, candidate_threat) for alive entity with max threat."""
+    """Return (candidate_id, candidate_threat) for the able (not dead, not incapacitated) entity with max threat."""
     candidate_id: UUID | None = None
     candidate_threat: float = 0.0
     for eid, threat in hate.items():
         p = participants.get(eid)
-        if p is not None and not p.is_dead() and threat > candidate_threat:
+        if p is not None and not p.is_incapacitated() and threat > candidate_threat:
             candidate_id = eid
             candidate_threat = threat
     return candidate_id, candidate_threat
@@ -200,7 +273,7 @@ def _should_switch_to_candidate(
     if current_target_id is None:
         return True
     current = participants.get(current_target_id)
-    if current is None or current.is_dead():
+    if current is None or current.is_incapacitated():
         return True
     current_threat = hate.get(current_target_id, 0.0)
     threshold = current_threat * (1.0 + margin)
@@ -218,10 +291,10 @@ def update_aggro(
     """
     Resolve current target for an NPC from hate list and stability rule.
 
-    - Candidate = alive participant with highest threat in hate list.
+    - Candidate = able participant with highest threat in hate list (incapacitated ones count as zero threat, #1058).
     - If no current target: set candidate and return (candidate_id, True).
     - Else: switch only if candidate.threat >= current_target_threat * (1 + stability_margin).
-    -     Dead participants are excluded from candidate selection; they remain in hate list.
+    -     Dead or incapacitated participants are excluded from candidate selection; they remain in hate list.
     Optional future: trim zero-threat entries after 30s to bound hate list size.
 
     Returns:

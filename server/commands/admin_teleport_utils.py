@@ -10,10 +10,57 @@ including player lookup, teleport effect messages, and broadcasting.
 from typing import Any, cast
 from uuid import UUID
 
+from ..constants.message_category import MessageCategory
 from ..realtime.envelope import build_event
+from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
+
+
+def log_failed_admin_move(
+    *,
+    admin_name: str,
+    target_player_name: str,
+    action_type: str,
+    from_room: str,
+    to_room: str,
+    error: Exception,
+    direction: str | None = None,
+) -> None:
+    """Best-effort audit log for a failed teleport/goto action; never raises.
+
+    Shared by handle_teleport_command, handle_confirm_teleport_command, and
+    handle_confirm_goto_command (issue #787): each had a near-identical
+    try/except-around-log_teleport_action block in its exception handler.
+    Takes room ids rather than player objects so it doesn't need an explicit
+    Any (the module's player-lookup helpers all return Any today).
+
+    A "goto" moves the admin (from_room=admin's room); a "teleport" moves the
+    target (from_room=target's room) -- admin_room_id/target_room_id are
+    derived from that instead of taking two more redundant params.
+    """
+    admin_logger = get_admin_actions_logger()
+    admin_room_id, target_room_id = (from_room, to_room) if action_type == "goto" else (to_room, from_room)
+    additional_data: dict[str, str] = {
+        "admin_room_id": admin_room_id,
+        "target_room_id": target_room_id,
+    }
+    if direction is not None:
+        additional_data["direction"] = direction
+    try:
+        admin_logger.log_teleport_action(
+            admin_name=admin_name,
+            target_player=target_player_name,
+            action_type=action_type,
+            from_room=from_room,
+            to_room=to_room,
+            success=False,
+            error_message=str(error),
+            additional_data=additional_data,
+        )
+    except OSError, AttributeError, TypeError:
+        pass  # Ignore logging errors if command itself failed
 
 
 async def get_online_player_by_display_name(display_name: str, connection_manager: Any) -> dict[str, Any] | None:
@@ -122,13 +169,13 @@ async def broadcast_teleport_effects(  # pylint: disable=too-many-arguments  # R
         if hasattr(connection_manager, "broadcast_to_room"):
             departure_event = build_event(
                 "system",
-                {"message": departure_message, "message_type": "info"},
+                {"message": departure_message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                 room_id=from_room_id,
                 connection_manager=connection_manager,
             )
             arrival_event = build_event(
                 "system",
-                {"message": arrival_message, "message_type": "info"},
+                {"message": arrival_message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                 room_id=to_room_id,
                 connection_manager=connection_manager,
             )
@@ -179,7 +226,7 @@ async def notify_player_of_teleport(
                 player_id = UUID(str(raw_player_id)) if not isinstance(raw_player_id, UUID) else raw_player_id
                 event = build_event(
                     "system",
-                    {"message": message, "message_type": "info"},
+                    {"message": message, "message_type": "info", "category": MessageCategory.SYSTEM_INFO},
                     player_id=str(player_id),
                     connection_manager=connection_manager,
                 )

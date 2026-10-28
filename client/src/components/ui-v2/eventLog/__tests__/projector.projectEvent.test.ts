@@ -5,22 +5,10 @@
 /// <reference types="vitest/globals" />
 
 import type { GameEvent } from '../../eventHandlers/types';
-import type { ChatMessage } from '../../types';
 import type { GameState } from '../../utils/stateUpdateUtils';
 import { getInitialGameState, projectEvent, projectState } from '../projector';
 import type { EventLog } from '../types';
 
-vi.mock('../../utils/messageUtils', () => ({
-  sanitizeChatMessageForState: (msg: unknown) => {
-    const m = msg as ChatMessage;
-    return {
-      ...m,
-      messageType: m.messageType ?? 'system',
-      channel: m.channel ?? 'game',
-      type: m.type ?? 'say',
-    };
-  },
-}));
 describe('projector', () => {
   describe('getInitialGameState', () => {
     it('returns initial state with null player, null room, empty messages', () => {
@@ -56,7 +44,7 @@ describe('projector', () => {
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: {
-          player: { name: 'TestPlayer', stats: { current_dp: 50, lucidity: 80 } },
+          player: { name: 'TestPlayer', stats: { current_dp: 50 } },
           room: {
             id: 'room1',
             name: 'Test Room',
@@ -110,7 +98,100 @@ describe('projector', () => {
       expect(state.room?.occupant_count).toBe(2);
     });
 
-    it('injects connected self into empty room.players after room_occupants', () => {
+    it('same-room room_update with npcs but no players keeps the existing players (#776)', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: {
+            players: ['ArkanWolfshade'],
+            npcs: [{ name: 'Dr. Armitage', disposition: 'quest_giver' }],
+            count: 2,
+          },
+        },
+        {
+          event_type: 'room_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            room: {
+              id: 'room1',
+              name: 'Main Foyer',
+              description: '',
+              exits: {},
+              npcs: [{ name: 'Nurse Ratched', disposition: 'aggressive_mob' }],
+            },
+          },
+        },
+      ];
+      const state = projectState(log);
+      expect(state.room?.players).toEqual(['ArkanWolfshade']);
+      expect(state.room?.npcs).toEqual([{ name: 'Nurse Ratched', disposition: 'aggressive_mob' }]);
+    });
+
+    it('room_occupants keeps each NPC disposition, validating the wire shape (#1025)', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: {
+            players: ['Ithaqua'],
+            npcs: [
+              { name: 'Shopkeep', disposition: 'shopkeeper' },
+              { name: 'Phantom Thing', disposition: 'aggressive_mob' },
+              { name: 'Mystery', disposition: 'unheard-of' },
+              'Legacy String',
+            ],
+            count: 4,
+          },
+        },
+      ];
+      const room = projectState(log).room;
+      expect(room?.npcs).toEqual([
+        { name: 'Shopkeep', disposition: 'shopkeeper' },
+        { name: 'Phantom Thing', disposition: 'aggressive_mob' },
+        { name: 'Mystery', disposition: 'passive_mob' },
+      ]);
+      expect(room?.occupants).toEqual(['Ithaqua', 'Shopkeep', 'Phantom Thing', 'Mystery']);
+    });
+
+    it('same-room room_update with an explicit empty players list is authoritative', () => {
+      const log: EventLog = [
+        {
+          event_type: 'room_occupants',
+          timestamp: new Date().toISOString(),
+          sequence_number: 1,
+          room_id: 'room1',
+          data: { players: ['Ithaqua'], npcs: [], count: 1 },
+        },
+        {
+          event_type: 'room_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: {
+            room: {
+              id: 'room1',
+              name: 'Main Foyer',
+              description: '',
+              exits: {},
+              players: [],
+              npcs: [{ name: 'Nurse', disposition: 'passive_mob' }],
+            },
+          },
+        },
+      ];
+      expect(projectState(log).room?.players).toEqual([]);
+    });
+
+    it('trusts the server room_occupants payload even when self is absent (no client injection)', () => {
+      // The server's occupant lists always include the connected player (see
+      // player_event_handlers_room.py get_room_occupants(ensure_player_included=...)). If a
+      // payload genuinely omits self, the client must not paper over it -- that would mask a
+      // real server bug. See CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.
       const prev = {
         ...getInitialGameState(),
         player: { name: 'ArkanWolfshade', id: 'p1' },
@@ -130,14 +211,13 @@ describe('projector', () => {
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         room_id: 'room1',
-        data: { players: [], npcs: [], count: 0 },
+        data: { players: ['SomeoneElse'], npcs: [], count: 1 },
       });
-      expect(next.room?.players).toContain('ArkanWolfshade');
-      expect(next.room?.occupants).toContain('ArkanWolfshade');
+      expect(next.room?.players).toEqual(['SomeoneElse']);
+      expect(next.room?.occupants).toEqual(['SomeoneElse']);
     });
 
-    it('preserves server occupant_count when injecting self into room.players', () => {
-      // Server count can exceed visible players/NPCs (hidden occupants, other entities).
+    it('keeps the server occupant_count as-is (no client-side recomputation)', () => {
       const prev = {
         ...getInitialGameState(),
         player: { name: 'ArkanWolfshade', id: 'p1' },
@@ -147,7 +227,7 @@ describe('projector', () => {
           description: '',
           exits: {},
           players: ['Ithaqua'],
-          npcs: ['Morgan'],
+          npcs: [{ name: 'Morgan', disposition: 'passive_mob' as const }],
           occupants: ['Ithaqua', 'Morgan'],
           occupant_count: 5,
         },
@@ -158,152 +238,7 @@ describe('projector', () => {
         sequence_number: 1,
         data: { message: 'hello', channel: 'say' },
       });
-      expect(next.room?.players).toContain('ArkanWolfshade');
       expect(next.room?.occupant_count).toBe(5);
-    });
-
-    it('does not duplicate self when already listed with different case', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: 'ArkanWolfshade', id: 'p1' },
-        room: {
-          id: 'room1',
-          name: 'Foyer',
-          description: '',
-          exits: {},
-          players: ['arkanwolfshade'],
-          npcs: [],
-          occupants: ['arkanwolfshade'],
-          occupant_count: 1,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual(['arkanwolfshade']);
-    });
-
-    it('does not duplicate self when already listed with a grace-period suffix (#669)', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: 'Arkan_Lovecraft', id: 'p1' },
-        room: {
-          id: 'room1',
-          name: 'Patient Bedroom',
-          description: '',
-          exits: {},
-          players: ['Arkan_Lovecraft (warded)'],
-          npcs: [],
-          occupants: ['Arkan_Lovecraft (warded)'],
-          occupant_count: 1,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual(['Arkan_Lovecraft (warded)']);
-    });
-
-    it('does not duplicate self when listed with both linkdead and warded suffixes', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: 'Arkan_Lovecraft', id: 'p1' },
-        room: {
-          id: 'room1',
-          name: 'Patient Bedroom',
-          description: '',
-          exits: {},
-          players: ['Arkan_Lovecraft (linkdead) (warded)'],
-          npcs: [],
-          occupants: ['Arkan_Lovecraft (linkdead) (warded)'],
-          occupant_count: 1,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual(['Arkan_Lovecraft (linkdead) (warded)']);
-    });
-
-    it('does not duplicate self when already listed with a corruption badge (#815)', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: 'Arkan_Lovecraft', id: 'p1' },
-        room: {
-          id: 'room1',
-          name: 'Patient Bedroom',
-          description: '',
-          exits: {},
-          players: ['Arkan_Lovecraft (defiled)'],
-          npcs: [],
-          occupants: ['Arkan_Lovecraft (defiled)'],
-          occupant_count: 1,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual(['Arkan_Lovecraft (defiled)']);
-    });
-
-    it('does not inject self when player name is empty', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: '   ', id: 'p1' },
-        room: {
-          id: 'room1',
-          name: 'Foyer',
-          description: '',
-          exits: {},
-          players: [],
-          npcs: [],
-          occupants: [],
-          occupant_count: 0,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual([]);
-    });
-
-    it('does not inject self when room id is missing', () => {
-      const prev = {
-        ...getInitialGameState(),
-        player: { name: 'ArkanWolfshade', id: 'p1' },
-        room: {
-          id: '',
-          name: 'Foyer',
-          description: '',
-          exits: {},
-          players: [],
-          npcs: [],
-          occupants: [],
-          occupant_count: 0,
-        },
-      };
-      const next = projectEvent(prev, {
-        event_type: 'chat_message',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { message: 'hello', channel: 'say' },
-      });
-      expect(next.room?.players).toEqual([]);
     });
 
     it('game_state with empty room then room_occupants results in occupants', () => {
@@ -378,7 +313,7 @@ describe('projector', () => {
       const prev = getInitialGameState();
       prev.player = {
         name: 'Hero',
-        stats: { current_dp: 100, max_dp: 100, lucidity: 80 },
+        stats: { current_dp: 100, max_dp: 100 },
       };
       const event: GameEvent = {
         event_type: 'player_attacked',
@@ -418,34 +353,67 @@ describe('projector', () => {
       expect(next.messages[0].text).toContain('55/80');
     });
 
-    it('follow_request_cleared clears pendingFollowRequest when projected', () => {
-      const prev = getInitialGameState();
-      const withFollow: GameState = {
-        ...prev,
-        pendingFollowRequest: { request_id: 'r1', requestor_name: 'Alice' },
-      };
-      const event: GameEvent = {
-        event_type: 'follow_request_cleared',
-        timestamp: new Date().toISOString(),
-        sequence_number: 1,
-        data: { request_id: 'r1' },
-      };
-      const next = projectEvent(withFollow, event);
-      expect(next.pendingFollowRequest).toBeNull();
-    });
-
     it('combat_target_switch appends room message to messages', () => {
       const prev = getInitialGameState();
       const event: GameEvent = {
         event_type: 'combat_target_switch',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
-        data: { message: 'The horror turns its gaze to Soandso.' },
+        data: { message: 'The horror turns its gaze to Soandso.', category: 'combat.status' },
       };
       const next = projectEvent(prev, event);
       expect(next.messages).toHaveLength(1);
       expect(next.messages[0].text).toBe('The horror turns its gaze to Soandso.');
-      expect(next.messages[0].messageType).toBe('combat');
+      expect(next.messages[0].category).toBe('combat.status');
+    });
+
+    it('combat_participant_joined appends the room join line as a combat message (#833)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_participant_joined',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft joins the fight against the ghoul!', category: 'combat.status' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('Ashcroft joins the fight against the ghoul!');
+      expect(next.messages[0].category).toBe('combat.status');
+    });
+
+    it('combat_taunt appends the taunt result line as a combat message (#833)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'combat_taunt',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft bellows a challenge at the ghoul!', category: 'combat.status' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].text).toBe('Ashcroft bellows a challenge at the ghoul!');
+      expect(next.messages[0].category).toBe('combat.status');
+    });
+
+    it('combat_protect appends the protect cast and intercept lines as combat messages (#991)', () => {
+      const prev = getInitialGameState();
+      const cast: GameEvent = {
+        event_type: 'combat_protect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Ashcroft throws themselves in front of Pickman!', category: 'combat.status' },
+      };
+      const intercept: GameEvent = {
+        event_type: 'combat_protect',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: { message: 'Ashcroft takes the blow meant for Pickman!', category: 'combat.status' },
+      };
+      const next = projectEvent(projectEvent(prev, cast), intercept);
+      expect(next.messages).toHaveLength(2);
+      expect(next.messages[0].text).toBe('Ashcroft throws themselves in front of Pickman!');
+      expect(next.messages[1].text).toBe('Ashcroft takes the blow meant for Pickman!');
+      expect(next.messages.every(m => m.category === 'combat.status')).toBe(true);
     });
 
     it('player_respawned merges onto previous player (#776: thin RespawnPlayerData must not wipe stats)', () => {
@@ -460,7 +428,7 @@ describe('projector', () => {
         stats: {
           current_dp: 10,
           max_dp: 100,
-          lucidity: 40,
+          max_lucidity: 40,
           strength: 12,
           luck: 15,
           occult: 20,
@@ -486,7 +454,7 @@ describe('projector', () => {
       expect(next.player?.level).toBe(5);
       expect(next.player?.experience).toBe(1200);
       expect(next.player?.stats?.max_dp).toBe(100);
-      expect(next.player?.stats?.lucidity).toBe(40);
+      expect(next.player?.stats?.max_lucidity).toBe(40);
       expect(next.player?.stats?.strength).toBe(12);
       expect(next.player?.stats?.luck).toBe(15);
       expect(next.player?.stats?.occult).toBe(20);
@@ -494,37 +462,381 @@ describe('projector', () => {
       expect(next.player?.stats?.current_dp).toBe(100);
     });
 
-    it('player_respawned lists self in room.players (#776)', () => {
+    it('player_respawned applies the server room payload as-is (no client-side self injection)', () => {
+      // The server's room payload for respawn already includes self (it's built the same way as
+      // room_state's occupant list) -- the client trusts it rather than injecting.
       const prev = getInitialGameState();
-      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } };
       const event: GameEvent = {
         event_type: 'player_respawned',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: {
           player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
-          room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
+          room: { id: 'room1', name: 'Main Foyer', description: '', exits: {}, players: ['ArkanWolfshade'] },
         },
       };
       const next = projectEvent(prev, event);
       expect(next.room?.players).toContain('ArkanWolfshade');
     });
 
-    it('player_respawned does not clobber lucidity with an omitted/null value', () => {
+    it('player_respawned clears isDead/deathLocation and player_died sets them from the payload', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } },
+      };
+      const died = projectEvent(prev, {
+        event_type: 'player_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { death_location: 'Main Foyer' },
+      });
+      expect(died.isDead).toBe(true);
+      expect(died.deathLocation).toBe('Main Foyer');
+
+      const respawned = projectEvent(died, {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: { player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } } },
+      });
+      expect(respawned.isDead).toBe(false);
+      expect(respawned.deathLocation).toBeNull();
+    });
+
+    it('applies a DP increase after death (no client-side discard)', () => {
+      const dead = {
+        ...getInitialGameState(),
+        isDead: true,
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: -10, max_dp: 100 } },
+      };
+      const next = projectEvent(dead, {
+        event_type: 'player_dp_updated',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { new_dp: 5 },
+      });
+      expect(next.player?.stats?.current_dp).toBe(5);
+    });
+
+    it('rescue_update(delirium) sets isDelirious and appends the server message', () => {
+      const prev = { ...getInitialGameState(), room: { id: 'room1', name: 'Sanitarium', description: '', exits: {} } };
+      const next = projectEvent(prev, {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'delirium', message: 'Your mind fractures completely.' },
+      });
+      expect(next.isDelirious).toBe(true);
+      expect(next.deliriumLocation).toBe('Sanitarium');
+      expect(next.messages[0].text).toBe('Your mind fractures completely.');
+    });
+
+    it('rescue_update(delirium) shows zone / sub-zone / room and skips missing segments (#910)', () => {
+      const room = { id: 'earth_x_y_z', name: 'Foyer', description: '', exits: {} };
+      const event = {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'delirium' },
+      };
+      const full = projectEvent(
+        { ...getInitialGameState(), room: { ...room, zone_name: 'Arkham City', sub_zone_name: 'Sanitarium' } },
+        event
+      );
+      expect(full.deliriumLocation).toBe('Arkham City › Sanitarium › Foyer');
+      const partial = projectEvent({ ...getInitialGameState(), room: { ...room, zone_name: 'Arkham City' } }, event);
+      expect(partial.deliriumLocation).toBe('Arkham City › Foyer');
+    });
+
+    it('player_died never falls back to the raw room_id (#910)', () => {
+      const died = projectEvent(getInitialGameState(), {
+        event_type: 'player_died',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { room_id: 'earth_arkhamcity_sanitarium_room_foyer_001' },
+      });
+      expect(died.deathLocation).toBeNull();
+    });
+
+    it('rescue_update(channeling) sets rescueStatus from the payload and keeps the server line in chat', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 7,
+        data: {
+          status: 'channeling',
+          role: 'rescuer',
+          rescuer_name: 'Armitage',
+          target_name: 'Wilmarth',
+          eta_seconds: 10,
+          message: 'You steady Wilmarth and begin channeling focus.',
+        },
+      });
+      expect(next.rescueStatus).toEqual({
+        status: 'channeling',
+        role: 'rescuer',
+        rescuerName: 'Armitage',
+        targetName: 'Wilmarth',
+        message: 'You steady Wilmarth and begin channeling focus.',
+        etaSeconds: 10,
+        seq: 7,
+      });
+      expect(next.messages[0].text).toBe('You steady Wilmarth and begin channeling focus.');
+      expect(next.isDelirious).toBeFalsy();
+    });
+
+    it.each(['success', 'failed', 'interrupted', 'rescued', 'sanitarium'])(
+      'rescue_update(%s) replaces the previous rescueStatus',
+      status => {
+        const prev = {
+          ...getInitialGameState(),
+          rescueStatus: { status: 'channeling' as const, role: 'target' as const, etaSeconds: 10, seq: 1 },
+        };
+        const next = projectEvent(prev, {
+          event_type: 'rescue_update',
+          timestamp: new Date().toISOString(),
+          sequence_number: 2,
+          data: { status, role: 'target' },
+        });
+        expect(next.rescueStatus).toMatchObject({ status, role: 'target', seq: 2 });
+        expect(next.rescueStatus?.etaSeconds).toBeUndefined();
+      }
+    );
+
+    it('rescue_update treats an absent role as the target', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'sanitarium', message: 'Orderlies whisk you to Arkham Sanitarium for observation.' },
+      });
+      expect(next.rescueStatus?.role).toBe('target');
+    });
+
+    it('rescue_update(delirium) does not set rescueStatus (the delirium modal owns it)', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'rescue_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { status: 'delirium', message: 'Your mind fractures completely.' },
+      });
+      expect(next.rescueStatus).toBeUndefined();
+    });
+
+    it('player_respawned clears rescueStatus', () => {
+      const prev = {
+        ...getInitialGameState(),
+        rescueStatus: { status: 'sanitarium' as const, role: 'target' as const, seq: 3 },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'player_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 4,
+        data: {},
+      });
+      expect(next.rescueStatus).toBeNull();
+    });
+
+    it('player_delirium_respawned clears isDelirious and applies the server room', () => {
+      const prev = { ...getInitialGameState(), isDelirious: true, deliriumLocation: 'Sanitarium' };
+      const next = projectEvent(prev, {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
+          room: { id: 'room1', name: 'Sanitarium', description: '', exits: {} },
+        },
+      });
+      expect(next.isDelirious).toBe(false);
+      expect(next.deliriumLocation).toBeNull();
+      expect(next.room?.id).toBe('room1');
+    });
+
+    it('lucidity_change reads the real server payload shape and updates lucidityStatus/stats', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 50 } },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'lucidity_change',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { current_lcd: 45, max_lcd: 100, delta: -15, tier: 'uneasy' },
+      });
+      expect(next.lucidityStatus?.current).toBe(45);
+      expect(next.lucidityStatus?.tier).toBe('uneasy');
+      // Lucidity is not a player stat (server: player_lucidity); only the meter carries it.
+      expect(next.player?.stats).not.toHaveProperty('lucidity');
+      expect(next.player?.stats?.max_lucidity).toBe(100);
+      // Must never touch current_dp (the old bug read event.data.current_dp, a field lucidity_change never sends).
+      expect(next.player?.stats?.current_dp).toBe(50);
+    });
+
+    it('game_state seeds lucidityStatus from lucidity_tier/current_lcd', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'game_state',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { name: 'ArkanWolfshade', stats: {} },
+          lucidity_tier: 'fractured',
+          current_lcd: -5,
+        },
+      });
+      expect(next.lucidityStatus?.tier).toBe('fractured');
+      expect(next.lucidityStatus?.current).toBe(-5);
+    });
+
+    it('mythos_time_update sets mythosTime', () => {
+      const next = projectEvent(getInitialGameState(), {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          mythos_datetime: '1928-09-23T14:00:00Z',
+          mythos_clock: '14:00 Mythos',
+          month_name: 'September',
+          day_of_month: 23,
+          day_name: 'Sunday',
+          week_of_month: 4,
+          season: 'Autumn',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      });
+      expect(next.mythosTime?.daypart).toBe('afternoon');
+    });
+
+    it('mythos_time_update appends a daypart-change message when the daypart differs from before', () => {
+      const withDaypart = projectEvent(getInitialGameState(), {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          mythos_datetime: '1928-09-23T10:00:00Z',
+          mythos_clock: '10:00 Mythos',
+          month_name: 'September',
+          day_of_month: 23,
+          day_name: 'Sunday',
+          week_of_month: 4,
+          season: 'Autumn',
+          daypart: 'morning',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      });
+      const next = projectEvent(withDaypart, {
+        event_type: 'mythos_time_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: {
+          mythos_datetime: '1928-09-23T14:00:00Z',
+          mythos_clock: '14:00 Mythos',
+          month_name: 'September',
+          day_of_month: 23,
+          day_name: 'Sunday',
+          week_of_month: 4,
+          season: 'Autumn',
+          daypart: 'afternoon',
+          is_daytime: true,
+          is_witching_hour: false,
+        },
+      });
+      expect(next.messages.some(m => m.text.includes('afternoon watch') || m.text.startsWith('[Time]'))).toBe(true);
+    });
+
+    it('a room ID change on room_update keeps the payload occupants instead of zeroing', () => {
+      const prev = {
+        ...getInitialGameState(),
+        room: {
+          id: 'room1',
+          name: 'Old Room',
+          description: '',
+          exits: {},
+          players: ['ArkanWolfshade'],
+          npcs: [],
+          occupants: ['ArkanWolfshade'],
+          occupant_count: 1,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'room_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          room: {
+            id: 'room2',
+            name: 'New Room',
+            description: '',
+            exits: {},
+            players: ['ArkanWolfshade'],
+            npcs: [],
+          },
+        },
+      });
+      expect(next.room?.id).toBe('room2');
+      expect(next.room?.players).toEqual(['ArkanWolfshade']);
+    });
+
+    it('client_message survives a later replay and client_messages_cleared empties the log', () => {
+      const withMessage = projectEvent(getInitialGameState(), {
+        event_type: 'client_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 0,
+        data: { text: 'Connection lost.', category: 'system.info' },
+      });
+      expect(withMessage.messages).toHaveLength(1);
+
+      const cleared = projectEvent(withMessage, {
+        event_type: 'client_messages_cleared',
+        timestamp: new Date().toISOString(),
+        sequence_number: 0,
+        data: {},
+      });
+      expect(cleared.messages).toHaveLength(0);
+    });
+
+    it('player_respawned (death) leaves the lucidity meter alone', () => {
       const prev = getInitialGameState();
-      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, lucidity: 40 } };
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10 } };
+      prev.lucidityStatus = { current: 40, max: 100, tier: 'uneasy', liabilities: [] };
       const event: GameEvent = {
         event_type: 'player_respawned',
         timestamp: new Date().toISOString(),
         sequence_number: 1,
         data: {
-          // Death respawn payload: no lucidity field at all.
+          // Death respawn payload: no lucidity fields at all.
           player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
           room: { id: 'room1', name: 'Main Foyer', description: '', exits: {} },
         },
       };
       const next = projectEvent(prev, event);
-      expect(next.player?.stats?.lucidity).toBe(40);
+      expect(next.lucidityStatus?.current).toBe(40);
+      expect(next.lucidityStatus?.tier).toBe('uneasy');
+    });
+
+    it('player_delirium_respawned updates the lucidity meter from top-level current_lcd/lucidity_tier', () => {
+      const prev = getInitialGameState();
+      prev.player = { name: 'ArkanWolfshade', id: 'p1', stats: { current_dp: 10, max_lucidity: 100 } };
+      prev.lucidityStatus = { current: -12, max: 100, tier: 'catatonic', liabilities: [] };
+      const event: GameEvent = {
+        event_type: 'player_delirium_respawned',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {
+          player: { id: 'p1', name: 'ArkanWolfshade', stats: { current_dp: 100 } },
+          room: { id: 'ward', name: 'Recovery Ward', description: '', exits: {} },
+          current_lcd: 70,
+          lucidity_tier: 'lucid',
+        },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.lucidityStatus?.current).toBe(70);
+      expect(next.lucidityStatus?.tier).toBe('lucid');
+      expect(next.player?.stats).not.toHaveProperty('lucidity');
     });
 
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
@@ -566,6 +878,53 @@ describe('projector', () => {
       expect(next.room?.name).toBe('New Name');
       expect(next.room?.occupants).toEqual(['NewPlayer']);
       expect(next.room?.occupant_count).toBe(1);
+    });
+  });
+
+  describe('quest_log_updated', () => {
+    it('replaces questLog when the event carries an array', () => {
+      const prev = { ...getInitialGameState(), questLog: [{ id: 'old' }] as unknown as GameState['questLog'] };
+      const next = projectEvent(prev, {
+        event_type: 'quest_log_updated',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { quest_log: [{ id: 'new' }] },
+      });
+      expect(next.questLog).toEqual([{ id: 'new' }]);
+    });
+
+    it('leaves questLog untouched when quest_log is missing or not an array', () => {
+      const prev = { ...getInitialGameState(), questLog: [{ id: 'kept' }] as unknown as GameState['questLog'] };
+      const next = projectEvent(prev, {
+        event_type: 'quest_log_updated',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: {},
+      });
+      expect(next.questLog).toEqual([{ id: 'kept' }]);
+    });
+  });
+
+  describe('effects_update', () => {
+    it('sets grace period fields only when present on the event', () => {
+      const prev = getInitialGameState();
+      const next = projectEvent(prev, {
+        event_type: 'effects_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { login_grace_period_active: true, login_grace_period_remaining: 42 },
+      });
+      expect(next.loginGracePeriodActive).toBe(true);
+      expect(next.loginGracePeriodRemaining).toBe(42);
+
+      const unchanged = projectEvent(next, {
+        event_type: 'effects_update',
+        timestamp: new Date().toISOString(),
+        sequence_number: 2,
+        data: {},
+      });
+      expect(unchanged.loginGracePeriodActive).toBe(true);
+      expect(unchanged.loginGracePeriodRemaining).toBe(42);
     });
   });
 });

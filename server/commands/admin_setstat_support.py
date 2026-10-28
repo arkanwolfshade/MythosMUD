@@ -17,6 +17,7 @@ from typing import Protocol, cast
 
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -152,6 +153,7 @@ class AdminSetStatNotifyContext:
     range_warning: str
     stat_key: str
     previous_position: str | None = None
+    include_player_update: bool = True
 
 
 STAT_NAME_MAPPING: dict[str, str] = {
@@ -247,7 +249,7 @@ def _parse_value_from_args(value_input: str | int | None, args: list[str]) -> st
         return value_input
     try:
         return int(args[2])
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return args[2]
 
 
@@ -273,15 +275,15 @@ def validate_set_stat_inputs(
     """Validate stat name and value inputs."""
     if not stat_name_input:
         logger.warning("Admin set command with no stat name", player_name=player_name)
-        return {"result": "Usage: admin set <stat_name> <target_player> <value>"}
+        return command_error("Usage: admin set <stat_name> <target_player> <value>")
 
     if not target_player:
         logger.warning("Admin set command with no target player", player_name=player_name)
-        return {"result": "Usage: admin set <stat_name> <target_player> <value>"}
+        return command_error("Usage: admin set <stat_name> <target_player> <value>")
 
     if value_input is None:
         logger.warning("Admin set command with no value", player_name=player_name)
-        return {"result": "Usage: admin set <stat_name> <target_player> <value>"}
+        return command_error("Usage: admin set <stat_name> <target_player> <value>")
 
     stat_name_lower = stat_name_input.lower()
     stat_key = STAT_NAME_MAPPING.get(stat_name_input) or STAT_NAME_MAPPING.get(stat_name_lower)
@@ -298,9 +300,9 @@ def validate_set_stat_inputs(
 
     try:
         value = int(value_input)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         logger.warning("Admin set command with invalid value", player_name=player_name, value=value_input)
-        return {"result": f"Invalid value '{value_input}'. Value must be an integer."}
+        return command_error(f"Invalid value '{value_input}'. Value must be an integer.")
 
     return stat_key, value
 
@@ -364,31 +366,31 @@ async def resolve_admin_services_and_permissions(
     user_manager_raw = app.state.user_manager
     if user_manager_raw is None:
         logger.warning("Admin set command failed - no user manager", player_name=player_name)
-        return {"result": "Admin set functionality is not available."}
+        return command_error("Admin set functionality is not available.")
     user_manager = cast(SetStatUserManager, user_manager_raw)
 
     player_service_raw = app.state.player_service
     if player_service_raw is None:
-        return {"result": "Player service not available."}
+        return command_error("Player service not available.")
     player_service = cast(SetStatPlayerService, player_service_raw)
 
     persistence_raw = app.state.persistence
     if persistence_raw is None:
-        return {"result": "Persistence layer not available."}
+        return command_error("Persistence layer not available.")
     persistence = cast(SetStatPersistence, persistence_raw)
 
     current_player_obj = await player_service.resolve_player_name(player_name)
     if not current_player_obj:
-        return {"result": "Current player not found."}
+        return command_error("Current player not found.")
 
     current_user_id = str(current_player_obj.id)
     if not await user_manager.is_admin(current_user_id):
         logger.debug("Admin set command denied - not admin", player_name=player_name)
-        return {"result": "You do not have permission to use this command."}
+        return command_error("You do not have permission to use this command.")
 
     target_player_obj = await persistence.get_player_by_name(target_player)
     if not target_player_obj:
-        return {"result": f"Player '{target_player}' not found."}
+        return command_error(f"Player '{target_player}' not found.")
 
     return persistence, target_player_obj
 
@@ -446,7 +448,7 @@ def build_set_stat_error_response(
         success=False,
         error=str(error),
     )
-    return {"result": f"Error setting {stat_s} for {target_s}: {str(error)}"}
+    return command_error(f"Error setting {stat_s} for {target_s}: {str(error)}")
 
 
 def get_app_or_error(
@@ -454,9 +456,9 @@ def get_app_or_error(
 ) -> tuple[SetStatApp | None, dict[str, str] | None]:
     """Return (app, None) if request has app, else (None, error_dict)."""
     if request is None:
-        return None, {"result": "Admin set functionality is not available."}
+        return None, command_error("Admin set functionality is not available.")
     app_raw = getattr(request, "app", None)
     if app_raw is None:
         logger.warning("Admin set command failed - no application context", player_name=player_name)
-        return None, {"result": "Admin set functionality is not available."}
+        return None, command_error("Admin set functionality is not available.")
     return cast(SetStatApp, app_raw), None

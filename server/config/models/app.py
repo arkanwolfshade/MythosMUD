@@ -4,7 +4,6 @@ Composite application configuration model.
 
 import json
 import os
-from typing import Any
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
@@ -40,14 +39,14 @@ class AppConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore")
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self) -> None:
         """Initialize configuration and set environment variables for legacy compatibility."""
         try:
-            super().__init__(**kwargs)
+            super().__init__()
         except SettingsError as error:
             if "allow_origins" in str(error):
                 self._sanitize_environment_for_nested_configs()
-                super().__init__(**kwargs)
+                super().__init__()
             else:
                 raise
 
@@ -56,7 +55,6 @@ class AppConfig(BaseSettings):
         """Set environment variables for legacy code that reads them directly."""
         # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible after validation
         database = self.database
-        game = self.game
 
         if database.url:
             os.environ["DATABASE_URL"] = database.url
@@ -64,8 +62,6 @@ class AppConfig(BaseSettings):
         if database.npc_url:
             os.environ["NPC_DATABASE_URL"] = database.npc_url
 
-        if game.aliases_dir:
-            os.environ["ALIASES_DIR"] = game.aliases_dir
         # pylint: enable=no-member
 
         return self

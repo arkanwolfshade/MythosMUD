@@ -71,7 +71,7 @@ def _metadata_dict_from_cell(md_raw: object | None) -> dict[str, object]:
         try:
             loaded = cast(object, json.loads(md_raw))
             return cast(dict[str, object], loaded) if isinstance(loaded, dict) else {}
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             return {}
     if isinstance(md_raw, dict):
         return cast(dict[str, object], md_raw)

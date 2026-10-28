@@ -12,19 +12,19 @@ from collections.abc import Awaitable, Callable, Mapping
 from typing import cast
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..exceptions import ValidationError as MythosValidationError
 from ..models.command import Command
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from ..validators.security_validator import strip_ansi_codes
 from .admin_commands import handle_admin_command
+from .admin_global_mute_commands import handle_mute_global_command, handle_unmute_global_command
 from .admin_mute_commands import (
     handle_add_admin_command,
     handle_mute_command,
-    handle_mute_global_command,
     handle_mutes_command,
     handle_unmute_command,
-    handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
 from .admin_summon_command import handle_summon_command
@@ -34,16 +34,22 @@ from .alias_commands import (
     handle_aliases_command,
     handle_unalias_command,
 )
+from .bank_commands import handle_bank_command, handle_deposit_command, handle_withdraw_command
+from .catalog_commands import handle_catalog_command
 from .channel_commands import handle_channel_command
 from .cleanse_command import handle_cleanse_command
 from .combat import (
+    handle_assist_command,
     handle_attack_command,
     handle_flee_command,
     handle_kick_command,
+    handle_protect_command,
     handle_punch_command,
     handle_strike_command,
     handle_taunt_command,
 )
+from .command_quest_activity import record_command_activity
+from .command_results import command_error
 from .communication_commands import (
     handle_global_command,
     handle_local_command,
@@ -54,7 +60,6 @@ from .communication_commands import (
     handle_system_command,
     handle_whisper_command,
 )
-from .debrief_command import handle_debrief_command
 from .exploration_commands import handle_go_command, handle_look_command
 from .follow_commands import (
     handle_follow_command,
@@ -69,13 +74,7 @@ from .inventory_commands import (
     handle_pickup_command,
     handle_put_command,
     handle_unequip_command,
-)
-from .lucidity_recovery_commands import (
-    handle_folk_tonic_command,
-    handle_group_solace_command,
-    handle_meditate_command,
-    handle_pray_command,
-    handle_therapy_command,
+    handle_use_command,
 )
 from .magic_commands import (
     handle_cast_command,
@@ -165,6 +164,7 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "status": handle_status_command,
     "time": handle_time_command,
     "skills": handle_skills_command,
+    "catalog": handle_catalog_command,
     "journal": handle_journal_command,
     "quests": handle_journal_command,
     "quest": handle_quest_command,
@@ -181,8 +181,12 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "drop": cast(CommandHandler, handle_drop_command),
     "put": cast(CommandHandler, handle_put_command),
     "get": cast(CommandHandler, handle_get_command),
+    "bank": cast(CommandHandler, handle_bank_command),
+    "deposit": cast(CommandHandler, handle_deposit_command),
+    "withdraw": cast(CommandHandler, handle_withdraw_command),
     "equip": cast(CommandHandler, handle_equip_command),
     "unequip": cast(CommandHandler, handle_unequip_command),
+    "use": cast(CommandHandler, handle_use_command),
     # Position commands
     "sit": cast(CommandHandler, handle_sit_command),
     "stand": cast(CommandHandler, handle_stand_command),
@@ -197,17 +201,21 @@ _COMMAND_HANDLERS: dict[str, CommandHandler] = {
     "strike": handle_strike_command,
     "flee": handle_flee_command,
     "taunt": handle_taunt_command,
-    # lucidity recovery rites
-    "pray": handle_pray_command,
-    "meditate": handle_meditate_command,
-    "group_solace": handle_group_solace_command,
-    "therapy": handle_therapy_command,
-    "folk_tonic": handle_folk_tonic_command,
+    "assist": handle_assist_command,
+    "protect": handle_protect_command,
     # corruption recovery rite
     "cleanse": handle_cleanse_command,
-    "debrief": handle_debrief_command,
     "ground": handle_ground_command,
+    # NOTE: pray, meditate, group_solace, therapy, debrief are
+    # intentionally NOT registered here. See lucidity_recovery_commands.py
+    # and debrief_command.py module docstrings (#813) for why.
 }
+
+
+async def _record_quest_activity(command: str, player_name: str, request: object, result: dict[str, object]) -> None:
+    """Count a command that did not fail toward cmd_<name> quest goals (see command_quest_activity)."""
+    if result.get("category") != MessageCategory.SYSTEM_ERROR:
+        await record_command_activity(command, player_name, request)
 
 
 class CommandService:
@@ -249,14 +257,14 @@ class CommandService:
         command_type_obj: object = command_data.get("command_type")
         if not isinstance(command_type_obj, str) or not command_type_obj:
             logger.error("No command type in validated command data", player=player_name, command_data=command_data)
-            return {"result": "Invalid command format"}
+            return {**command_error("Invalid command format")}
         command_type = command_type_obj
 
         # Get the appropriate handler
         handler: CommandHandler | None = self.command_handlers.get(command_type)
         if not handler:
             logger.error("No handler found for command type", player=player_name, command_type=command_type)
-            return {"result": f"Unknown command: {command_type}"}
+            return {**command_error(f"Unknown command: {command_type}")}
 
         try:
             # Call handler with command_data (standardized format)
@@ -266,6 +274,7 @@ class CommandService:
             logger.debug(
                 "Command processed successfully with command_data", player=player_name, command_type=command_type
             )
+            await _record_quest_activity(command_type, player_name, request, dict(result))
             return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             # Format exception traceback and sanitize ANSI codes for Windows compatibility
@@ -293,14 +302,14 @@ class CommandService:
                         error=str(e)[:200],  # Truncate to avoid encoding issues
                         log_error=str(log_error)[:200],
                     )
-                except (ValueError, TypeError, AttributeError, KeyError, RuntimeError):  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
+                except ValueError, TypeError, AttributeError, KeyError, RuntimeError:  # pylint: disable=broad-exception-caught  # noqa: B904                    # Last resort: silent failure to prevent test crashes
                     # Using broad exception catch as this is defensive code to prevent cascading failures
                     pass
-            return {"result": f"Error processing {command_type} command: {str(e)}"}
+            return {**command_error(f"Error processing {command_type} command: {str(e)}")}
 
     def _parse_command_string(
         self, command: str, player_name: str
-    ) -> tuple[Command, str, list[object]] | dict[str, str]:
+    ) -> tuple[Command, str, list[object]] | dict[str, object]:
         """
         Parse and validate command string.
 
@@ -324,10 +333,10 @@ class CommandService:
             return (parsed_command, cmd, args)
         except MythosValidationError as e:
             logger.info("Command validation failed", error=str(e))
-            return {"result": str(e)}
+            return {**command_error(str(e))}
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Unexpected error during command parsing", error=str(e))
-            return {"result": f"Error processing command: {str(e)}"}
+            return {**command_error(f"Error processing command: {str(e)}")}
 
     def _prepare_command_data(
         self, parsed_command: Command, cmd: str, args: list[object], player_name: str
@@ -483,6 +492,7 @@ class CommandService:
         try:
             result = await handler(command_data, current_user, request, alias_storage, player_name)
             logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+            await _record_quest_activity(cmd, player_name, request, dict(result))
             return dict(result)
         except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             logger.error(
@@ -495,7 +505,7 @@ class CommandService:
                 error_message=str(e),
                 exc_info=True,
             )
-            return {"result": f"Error processing command: {str(e)}"}
+            return {**command_error(f"Error processing command: {str(e)}")}
 
     async def process_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Command processing requires many parameters for context and routing
         self,
@@ -529,7 +539,7 @@ class CommandService:
         # Step 2: Route to appropriate handler
         if cmd not in self.command_handlers:
             logger.info("Unknown command", command=cmd)
-            return {"result": f"Unknown command: {cmd}. Use 'help' for available commands."}
+            return {**command_error(f"Unknown command: {cmd}. Use 'help' for available commands.")}
 
         handler: CommandHandler = self.command_handlers[cmd]
         command_data = self._prepare_command_data(parsed_command, cmd, args, player_name)

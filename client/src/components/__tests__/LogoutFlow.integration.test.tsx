@@ -115,7 +115,7 @@ vi.mock('../../components/StatsRollingScreen', () => ({
 }));
 
 // Mock the LogoutButton component
-vi.mock('../../components/ui/LogoutButton', () => ({
+vi.mock('../ui-v2/primitives/LogoutButton', () => ({
   LogoutButton: ({
     onLogout,
     isLoggingOut,
@@ -132,7 +132,7 @@ vi.mock('../../components/ui/LogoutButton', () => ({
 }));
 
 // Mock all other UI components
-vi.mock('../../components/ui/EldritchIcon', () => ({
+vi.mock('../ui-v2/primitives/EldritchIcon', () => ({
   EldritchIcon: ({ name }: { name: string }) => <div data-testid={`icon-${name}`}>{name}</div>,
   MythosIcons: {
     portal: 'portal',

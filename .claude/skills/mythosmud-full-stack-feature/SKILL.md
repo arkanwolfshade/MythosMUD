@@ -1,6 +1,6 @@
 ---
 name: mythosmud-full-stack-feature
-description: Implement MythosMUD features across the full stack: client (React/TypeScript), server (FastAPI/Pydantic), and persistence (PostgreSQL). Use when the user asks to implement a feature, add an endpoint, or build a new capability.
+description: "Implement MythosMUD features across the full stack: client (React/TypeScript), server (FastAPI/Pydantic), and persistence (PostgreSQL). Use when the user asks to implement a feature, add an endpoint, or build a new capability."
 ---
 
 # MythosMUD Full-Stack Feature

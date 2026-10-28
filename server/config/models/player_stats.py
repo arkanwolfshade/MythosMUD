@@ -25,7 +25,6 @@ class PlayerStatsConfig(BaseSettings):
     max_lucidity: int = Field(default=100, description="Default max lucidity")
     determination_points: int = Field(default=20, description="Default starting determination points (DP)")
     magic_points: int = Field(default=10, description="Default starting magic points (MP)")
-    lucidity: int = Field(default=100, description="Default starting lucidity")
     corruption: int = Field(default=0, description="Default corruption level")
     occult: int = Field(default=0, description="Default occult knowledge")
 
@@ -45,7 +44,6 @@ class PlayerStatsConfig(BaseSettings):
         "max_lucidity",
         "determination_points",
         "magic_points",
-        "lucidity",
     )
     @classmethod
     def validate_derived_stats(cls, v: int) -> int:
@@ -73,7 +71,6 @@ class PlayerStatsConfig(BaseSettings):
             "max_lucidity": self.max_lucidity,
             "determination_points": self.determination_points,
             "magic_points": self.magic_points,
-            "lucidity": self.lucidity,
             "corruption": self.corruption,
             "occult": self.occult,
         }

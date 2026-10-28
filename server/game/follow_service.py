@@ -116,7 +116,13 @@ class FollowService:
                 )
 
     def _schedule_coro(self, coro: Coroutine[object, object, object]) -> None:
-        """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests)."""
+        """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests).
+
+        ponytail: nothing observes the created task, so an exception raised inside coro
+        outside send_game_event's own except tuple still surfaces as "Task exception was
+        never retrieved" at GC time (#781). Add a done-callback (see
+        app/task_registry.py:149) or route through TaskRegistry if that recurs.
+        """
         try:
             _ = asyncio.create_task(coro)
         except RuntimeError:
@@ -313,7 +319,7 @@ class FollowService:
                 followee = await self._async_persistence.get_player_by_id(uuid.UUID(tid))
                 if followee is not None and followee.name:
                     target_display_name = followee.name
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 pass
         self._send_result_to_player(requestor_id, f"You are now following {target_display_name}.")
         self._send_result_to_player(tid, f"{requestor_name} is now following you.")
@@ -345,8 +351,36 @@ class FollowService:
         if removed:
             self._logger.info("Player unfollowed", follower_id=fid, target_id=removed[0])
             self._send_follow_state_to_player(fid, None)
+            if removed[1] == "player":
+                self._notify_followee_of_unfollow(removed[0], fid)
             return {"success": True, "result": "You are no longer following anyone."}
         return {"success": True, "result": "You weren't following anyone."}
+
+    def _notify_followee_of_unfollow(self, followee_id: str, follower_id: str) -> None:
+        """Tell the followee their follower left. Fire-and-forget; mirrors accept_follow's notice."""
+        if not self._connection_manager:
+            return
+        try:
+            self._schedule_coro(self._send_unfollow_notice(followee_id, follower_id))
+        except (ValueError, TypeError, RuntimeError) as e:
+            self._logger.warning(
+                "Failed to notify followee of unfollow",
+                followee_id=followee_id,
+                follower_id=follower_id,
+                error=str(e),
+            )
+
+    async def _send_unfollow_notice(self, followee_id: str, follower_id: str) -> None:
+        """Resolve the follower's display name and send the followee a command_response."""
+        follower_name = follower_id
+        if self._async_persistence:
+            try:
+                follower = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
+                if follower is not None and follower.name:
+                    follower_name = follower.name
+            except ValueError, TypeError, AttributeError:
+                pass
+        self._send_result_to_player(followee_id, f"{follower_name} is no longer following you.")
 
     def get_followers(self, target_id: str) -> list[str]:
         """Return list of follower player IDs (for movement propagation)."""
@@ -387,7 +421,7 @@ class FollowService:
             if target_player is not None and target_player.name:
                 return target_player.name
             return target_id
-        except (ValueError, TypeError, AttributeError):
+        except ValueError, TypeError, AttributeError:
             return target_id
 
     async def _followers_display_line(
@@ -408,7 +442,7 @@ class FollowService:
                     names.append(player.name)
                 else:
                     names.append(pid)
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 names.append(pid)
         return "Following you: " + ", ".join(names)
 

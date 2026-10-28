@@ -157,3 +157,18 @@ def test_create_whisper_command_too_long():
     long_message = "a" * 501
     with pytest.raises(ValidationError, match="too long"):
         CommunicationCommandFactory.create_whisper_command(["target", long_message])
+
+
+# --- Tests for create_global_command (#813) ---
+
+
+def test_create_global_command():
+    """Test create_global_command() creates GlobalCommand."""
+    command = CommunicationCommandFactory.create_global_command(["Hello", "world"])
+    assert command.message == "Hello world"
+
+
+def test_create_global_command_no_args():
+    """Test create_global_command() raises error with no args."""
+    with pytest.raises(ValidationError):
+        _ = CommunicationCommandFactory.create_global_command([])

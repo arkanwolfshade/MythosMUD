@@ -8,7 +8,37 @@
  * essential for maintaining the integrity of our dimensional mappings.
  */
 
-import type { Edge, Node } from 'reactflow';
+/**
+ * Room domain type used by the map editor/viewer (fetched via the map API, not the live
+ * game-state Room in ui-v2/types.ts -- this one carries map_x/map_y and entities).
+ */
+export interface Room {
+  id: string;
+  name: string;
+  description: string;
+  plane?: string;
+  zone?: string;
+  sub_zone?: string;
+  /** Resolved environment: this room's own value, else its subzone's, else its zone's, else 'outdoors'. */
+  environment?: string;
+  /** This room's own environment override (#663); null/undefined means it inherits -- the editor's "Not Set". */
+  room_environment?: string | null;
+  exits: Record<string, string>;
+  occupants?: string[];
+  players?: string[];
+  npcs?: string[];
+  occupant_count?: number;
+  entities?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    [key: string]: unknown;
+  }>;
+  /** Map X coordinate (admin-set position) */
+  map_x?: number | null;
+  /** Map Y coordinate (admin-set position) */
+  map_y?: number | null;
+}
 
 /**
  * Room node data structure for React Flow.
@@ -36,6 +66,14 @@ export interface RoomNodeData {
   occupants?: string[];
   /** Occupant count */
   occupantCount?: number;
+  /**
+   * Directions whose exit leaves the loaded area (another sub-zone or zone).
+   *
+   * The map is fetched for one sub-zone, so the room on the far side is not in the
+   * response and no edge can be drawn to it. Without this the only way into a
+   * building like the Sanitarium is invisible and the corner looks like a dead end.
+   */
+  departures?: string[];
   /** Stored x position from layout (admin edit / persistence) */
   map_x?: number | null;
   /** Stored y position from layout (admin edit / persistence) */
@@ -57,37 +95,3 @@ export interface ExitEdgeData {
   /** Custom exit description */
   description?: string;
 }
-
-/**
- * Custom room node type for React Flow.
- */
-export type RoomNode = Node<RoomNodeData, 'room'>;
-
-/**
- * Custom intersection node type for React Flow.
- */
-export type IntersectionNode = Node<RoomNodeData, 'intersection'>;
-
-/**
- * Custom exit edge type for React Flow.
- */
-export type ExitEdge = Edge<ExitEdgeData>;
-
-/**
- * Map layout configuration.
- */
-export interface MapLayoutConfig {
-  /** Layout algorithm type */
-  algorithm: 'grid';
-  /** Grid spacing for nodes */
-  gridSpacing?: number;
-  /** Zone-based grouping */
-  groupByZone?: boolean;
-  /** Sub-zone-based grouping */
-  groupBySubZone?: boolean;
-}
-
-/**
- * Map view mode.
- */
-export type MapViewMode = 'view' | 'edit';

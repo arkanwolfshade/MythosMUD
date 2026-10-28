@@ -22,6 +22,8 @@ from server.commands.look_room import (
     _handle_room_look,
     _try_lookup_phantom_implicit,
 )
+from server.constants.message_category import MessageCategory
+from server.constants.npc_disposition import NpcDisposition
 
 
 def test_format_items_section_empty():
@@ -75,6 +77,24 @@ async def test_format_containers_section_with_containers():
 
 
 @pytest.mark.asyncio
+async def test_format_containers_section_names_come_from_persistence_metadata_json():
+    """Persistence rows carry metadata_json, not metadata; names must not fall back to Unknown (#917)."""
+    mock_persistence = AsyncMock()
+    mock_persistence.get_containers_by_room_id = AsyncMock(
+        return_value=[
+            {"source_type": "environment", "metadata_json": {"name": "Chest"}, "items_json": []},
+            {"source_type": "corpse", "metadata_json": {"player_name": "DeadPlayer"}, "items_json": []},
+        ]
+    )
+
+    result = await _format_containers_section("test_room", mock_persistence)
+
+    assert "You see: Chest" in result
+    assert "the corpse of DeadPlayer" in result
+    assert not any("Unknown" in line for line in result)
+
+
+@pytest.mark.asyncio
 async def test_format_containers_section_empty():
     """Test _format_containers_section with no containers."""
     mock_persistence = AsyncMock()
@@ -94,9 +114,12 @@ async def test_format_npcs_section_no_room_id():
 @pytest.mark.asyncio
 async def test_format_npcs_section_with_npcs():
     """Test _format_npcs_section with NPCs."""
-    # _format_npcs_section imports _get_npcs_in_room from look_npc, patch it at the import location
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
-        mock_get_npcs.return_value = ["Goblin", "Orc"]
+    # _format_npcs_section imports _get_npc_occupants_in_room from look_npc, patch it at the import location
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
+        mock_get_npcs.return_value = [
+            {"name": "Goblin", "disposition": NpcDisposition.PASSIVE_MOB},
+            {"name": "Orc", "disposition": NpcDisposition.AGGRESSIVE_MOB},
+        ]
         result = await _format_npcs_section("test_room")
 
         assert len(result) > 0
@@ -107,8 +130,8 @@ async def test_format_npcs_section_with_npcs():
 @pytest.mark.asyncio
 async def test_format_npcs_section_empty():
     """Test _format_npcs_section with no NPCs."""
-    # _format_npcs_section imports _get_npcs_in_room from look_npc, patch it at the import location
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
+    # _format_npcs_section imports _get_npc_occupants_in_room from look_npc, patch it at the import location
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
         mock_get_npcs.return_value = []
         result = await _format_npcs_section("test_room")
         assert not result
@@ -118,7 +141,7 @@ async def test_format_npcs_section_empty():
 async def test_format_npcs_section_includes_viewer_phantom():
     """#625: the Also here: line includes the viewer's own phantom alongside real NPCs."""
     with (
-        patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs,
+        patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs,
         patch(
             "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
             return_value=["phantom_1"],
@@ -128,7 +151,7 @@ async def test_format_npcs_section_includes_viewer_phantom():
             return_value={"phantom_id": "phantom_1", "room_id": "test_room", "name": "Shambling Horror"},
         ),
     ):
-        mock_get_npcs.return_value = ["Goblin"]
+        mock_get_npcs.return_value = [{"name": "Goblin", "disposition": NpcDisposition.PASSIVE_MOB}]
         result = await _format_npcs_section("test_room", "player-1")
         line = next(line for line in result if "Also here" in line)
         assert "Goblin" in line
@@ -280,7 +303,7 @@ async def test_handle_room_look_success():
     mock_persistence.get_containers_by_room_id = AsyncMock(return_value=[])
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
-    with patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs:
+    with patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs:
         mock_get_npcs.return_value = []
 
         result = await _handle_room_look(
@@ -291,7 +314,7 @@ async def test_handle_room_look_success():
         )
 
         assert "test room description" in result["result"].lower()
-        assert "result" in result
+        assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio
@@ -309,7 +332,7 @@ async def test_handle_room_look_hallucinates_exits_for_deranged_viewer():
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
     with (
-        patch("server.commands.look_room._get_npcs_in_room", new_callable=AsyncMock) as mock_get_npcs,
+        patch("server.commands.look_room._get_npc_occupants_in_room", new_callable=AsyncMock) as mock_get_npcs,
         patch(
             "server.commands.look_room.lucidity_tier_cache.is_deranged",
             return_value=True,
@@ -333,6 +356,8 @@ async def test_handle_room_look_hallucinates_exits_for_deranged_viewer():
     rendered = cast(str, result["result"])
     assert "Exits: east, up" in rendered
     assert "north" not in rendered.lower().split("exits:")[1]
+    # ADR-024: the hallucinated look is built by the same builder, so it carries the real look's category.
+    assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio
@@ -358,6 +383,7 @@ async def test_handle_direction_look_success():
     assert result is not None
     assert "Target Room" in result["result"]
     assert "target room" in result["result"].lower()
+    assert result["category"] == MessageCategory.ROOM_DESCRIPTION
 
 
 @pytest.mark.asyncio

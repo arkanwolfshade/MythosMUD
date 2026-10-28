@@ -57,6 +57,53 @@ def test_detect_coordinate_conflicts(generator):
     assert conflicts[0][:2] == ("room_a", "room_b")
 
 
+def test_room_dict_from_row_carries_environment_columns(generator: CoordinateGenerator) -> None:
+    """#663: row[11]/row[12] (room_environment, resolved_environment) must survive the hop from
+    get_rooms_for_coordinate_generation()'s appended columns into the room dict, distinct from
+    the (unrelated) attributes JSONB blob."""
+    row: tuple[object, ...] = (
+        "uuid-1",
+        "stable_a",
+        "Room A",
+        {"rest_location": True},
+        1.0,
+        2.0,
+        True,
+        "#",
+        "style",
+        "earth/arkham",
+        "downtown",
+        "indoors",
+        "indoors",
+    )
+    room_dict = generator._room_dict_from_row(row)  # pyright: ignore[reportPrivateUsage]
+    assert room_dict["room_environment"] == "indoors"
+    assert room_dict["environment"] == "indoors"
+
+
+def test_room_dict_from_row_inherited_environment_is_none(generator: CoordinateGenerator) -> None:
+    """A room with no environment of its own (room_environment None) still carries the
+    SQL-resolved cascade value in `environment`."""
+    row: tuple[object, ...] = (
+        "uuid-2",
+        "stable_b",
+        "Room B",
+        {},
+        None,
+        None,
+        False,
+        None,
+        None,
+        "earth/arkham",
+        "downtown",
+        None,
+        "outdoors",
+    )
+    room_dict = generator._room_dict_from_row(row)  # pyright: ignore[reportPrivateUsage]
+    assert room_dict["room_environment"] is None
+    assert room_dict["environment"] == "outdoors"
+
+
 @pytest.mark.asyncio
 async def test_generate_coordinates_for_zone_empty_data(generator):
     generator._load_rooms_data = AsyncMock(return_value=[])
@@ -85,6 +132,50 @@ async def test_generate_for_subzone_positions_linked_rooms(generator):
     assert origin == "origin"
     assert coords["north_room"] == (0, -1)
     assert conflicts == []
+
+
+def test_assign_coordinates_bfs_reaches_disconnected_components(generator: CoordinateGenerator) -> None:
+    """Rooms with no path from the origin must still get coordinates (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {
+        "a": [("b", "east")],
+        "b": [("a", "west")],
+        "c": [],  # isolated room, no exits to/from the a-b component
+    }
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "a", adjacency
+    )
+    assert set(coords) == {"a", "b", "c"}
+    assert len(set(coords.values())) == 3  # all cells unique
+
+
+def test_assign_coordinates_bfs_resolves_collisions(generator: CoordinateGenerator) -> None:
+    """A cycle whose direction vectors don't sum to zero must not stack rooms (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {
+        "o": [("a", "east")],
+        "a": [("b", "north")],
+        "b": [("c", "west")],
+        "c": [("x", "south")],  # lands back on o's (0, 0) without displacement
+        "x": [],
+    }
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "o", adjacency
+    )
+    assert len(set(coords.values())) == len(coords)  # all cells unique
+    assert coords["x"] != coords["o"]
+    conflicts = generator._detect_coordinate_conflicts(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- verifying the safety-net check stays empty
+        coords
+    )
+    assert conflicts == []
+
+
+def test_assign_coordinates_bfs_displaces_up_down_exits(generator: CoordinateGenerator) -> None:
+    """up/down exits don't move x/y, so the target must be displaced off the origin (#845)."""
+    adjacency: dict[str, list[tuple[str, str]]] = {"o": [("u", "up")], "u": [("o", "down")]}
+    coords = generator._assign_coordinates_bfs(  # noqa: SLF001  # pyright: ignore[reportPrivateUsage] -- testing the BFS placement/collision logic directly
+        "o", adjacency
+    )
+    assert coords["o"] == (0, 0)
+    assert coords["u"] != (0, 0)
 
 
 def test_build_adjacency_list_adds_reverse_edges(generator):

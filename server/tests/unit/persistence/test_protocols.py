@@ -32,6 +32,10 @@ class _StubPlayerRepo:
     async def save_players(self, players: list[object]) -> None:
         return None
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        _ = player_id
+        return True
+
     async def list_players(self) -> list[object]:
         return []
 

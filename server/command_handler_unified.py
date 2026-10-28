@@ -10,6 +10,7 @@ As the Necronomicon states: "In unity there is strength, and in
 consistency there is power."
 """
 
+import uuid
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -35,7 +36,8 @@ from .command_handler.command_guards import (
     check_grace_period_block as _check_grace_period_block,
 )
 from .commands.command_service import CommandService
-from .config import get_config
+from .constants.message_category import MessageCategory
+from .container.async_persistence_access import get_container_async_persistence
 from .help.help_content import get_help_content as get_help_content_new
 from .middleware.command_rate_limiter import command_rate_limiter
 from .models.alias import Alias
@@ -58,6 +60,9 @@ class CommandRequest(SecureBaseModel):
     """Request model for command processing."""
 
     command: str
+    # MULTI-CHARACTER: the character this command acts as. Without it the account username is used, which
+    # only matches a character whose name happens to equal it.
+    character_id: str | None = None
 
 
 def _as_user_dict(current_user: object) -> dict[str, object]:
@@ -124,7 +129,7 @@ async def _check_all_command_blocks(
             command=cmd,
             message=catatonia_message,
         )
-        return {"result": catatonia_message}
+        return {"result": catatonia_message, "category": MessageCategory.STATUS_LUCIDITY}
 
     grace_period_result = await _check_grace_period_block(player_name, request)
     if grace_period_result:
@@ -151,7 +156,7 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
         if alias_storage is None:
-            return {"result": "Alias system not available"}
+            return {"result": "Alias system not available", "category": MessageCategory.SYSTEM_ERROR}
         return await command_service.process_command(command_line, user, request, alias_storage, player_name)
 
     alias_result = await _process_alias_expansion(cmd, args, alias_storage, player_name, current_user, request)
@@ -237,7 +242,10 @@ def _check_rate_limit(player_name: str) -> dict[str, object] | None:
             severity="medium",
             metadata={"wait_time": wait_time},
         )
-        return {"result": f"Too many commands. Please wait {wait_time:.1f} seconds."}
+        return {
+            "result": f"Too many commands. Please wait {wait_time:.1f} seconds.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
     return None
 
 
@@ -254,7 +262,10 @@ def _validate_command_basics(command_line: str, player_name: str) -> dict[str, o
             length=len(command_line),
             max_length=MAX_COMMAND_LENGTH,
         )
-        return {"result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)"}
+        return {
+            "result": f"Command too long (max {MAX_COMMAND_LENGTH} characters)",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
 
     # Command Content Validation (CRITICAL-3)
     # Prevent command injection and malicious input
@@ -274,29 +285,14 @@ def _validate_command_basics(command_line: str, player_name: str) -> dict[str, o
             severity="high",
             metadata={"command_sample": command_line[:100]},
         )
-        return {"result": "Invalid command format"}
+        return {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
 
     return None
 
 
-def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage | None:
+def _ensure_alias_storage(alias_storage: AliasStorage | None) -> AliasStorage:
     """Ensure alias storage is initialized."""
-    if alias_storage:
-        return alias_storage
-
-    try:
-        config = get_config()
-        aliases_dir = config.game.aliases_dir
-        storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
-        logger.debug("AliasStorage initialized")
-        return storage
-    except (OSError, ValueError, TypeError) as e:
-        logger.error(
-            "Failed to initialize AliasStorage",
-            error=str(e),
-            error_type=type(e).__name__,
-        )
-        return None
+    return alias_storage or AliasStorage()
 
 
 async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Expansion needs alias, args, user, and request context
@@ -313,7 +309,7 @@ async def _run_expanded_alias(  # pylint: disable=too-many-arguments,too-many-po
     expanded_command = alias.get_expanded_command(args)
     is_valid, validation_error = validate_expanded_command(expanded_command, player_name, alias.name, expansion_depth)
     if not is_valid:
-        return {"result": validation_error}
+        return {"result": validation_error, "category": MessageCategory.SYSTEM_ERROR}
 
     audit_logger.log_alias_expansion(
         player_name=player_name,
@@ -358,7 +354,7 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
     if not alias_storage:
         return None
 
-    alias = alias_storage.get_alias(player_name, cmd)
+    alias = await alias_storage.get_alias(player_name, cmd)
     if not alias:
         return None
 
@@ -371,11 +367,25 @@ async def _process_alias_expansion(  # pylint: disable=too-many-arguments,too-ma
 
     is_safe, error_msg, expansion_depth = await check_alias_safety(alias_storage, player_name, alias.name)
     if not is_safe:
-        return {"result": error_msg}
+        return {"result": error_msg, "category": MessageCategory.SYSTEM_ERROR}
 
     return await _run_expanded_alias(
         alias, args, cmd, alias_storage, player_name, current_user, request, expansion_depth
     )
+
+
+async def _character_name_for_user(character_id: str, user: User) -> str:
+    """Name of `character_id`, which must be a live character owned by `user` (as the WebSocket path enforces)."""
+    try:
+        character_uuid = uuid.UUID(character_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Invalid character_id") from exc
+    player = await get_container_async_persistence().get_player_by_id(character_uuid)
+    if player is None or player.is_deleted:
+        raise HTTPException(status_code=404, detail="Character not found")
+    if str(player.user_id) != str(user.id):
+        raise HTTPException(status_code=403, detail="Character does not belong to user")
+    return str(player.name)
 
 
 # HTTP API endpoint
@@ -392,7 +402,10 @@ async def handle_command(
     if not current_user:
         raise HTTPException(status_code=401, detail="Authentication required")
 
-    player_name = get_username_from_user(current_user)
+    if req.character_id:
+        player_name = await _character_name_for_user(req.character_id, current_user)
+    else:
+        player_name = get_username_from_user(current_user)
     logger.info(
         "HTTP command received",
         player=player_name,

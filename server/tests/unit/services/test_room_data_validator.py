@@ -62,7 +62,7 @@ def test_validate_room_data_room_id():
 
 def test_is_valid_room_id():
     """Test is_valid_room_id() validates room ID format."""
-    assert RoomDataValidator.is_valid_room_id("earth_arkhamcity_northside_intersection_derby_high") is True
+    assert RoomDataValidator.is_valid_room_id("earth_arkhamcity_sanitarium_room_foyer_001") is True
     assert RoomDataValidator.is_valid_room_id("room_001") is True
     assert RoomDataValidator.is_valid_room_id("invalid room") is False  # Contains space
     assert RoomDataValidator.is_valid_room_id("") is False

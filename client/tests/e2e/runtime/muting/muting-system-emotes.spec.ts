@@ -6,10 +6,9 @@
  * players' emotes are properly blocked while other communication remains unaffected.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
@@ -40,18 +39,13 @@ async function getIthaquaMuteTargetName(ithaquaContext: PlayerContext): Promise<
   return (raw ?? '').trim() || 'Ithaqua';
 }
 
-test.describe('Muting System and Emotes', () => {
+test.describe('Muting System and Emotes', { tag: '@shared-session' }, () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     // Create contexts for both players
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('AW should be able to mute Ithaqua', async () => {

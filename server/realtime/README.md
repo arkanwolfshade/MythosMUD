@@ -8,8 +8,8 @@ router and NATS for server-to-server and room events.
 
 - **API routes**: [server/api/real_time.py](../api/real_time.py) defines the WebSocket
   endpoints:
-  - `GET /api/ws` — primary endpoint (JWT via query or subprotocol; session_id optional)
-  - `GET /api/ws/{player_id}` — deprecated; prefer `/api/ws` with JWT
+  - `GET /api/ws` — the only endpoint (JWT via query or subprotocol; `character_id` required, and
+    it must belong to the token's account; `session_id` optional)
 - Incoming client connections are accepted, validated (token, persistence), then
   handed to `handle_websocket_connection` in `websocket_handler`.
 
@@ -51,6 +51,31 @@ if present.
    chat → `handle_chat_message`, ping → pong. Handlers receive the validated envelope model
    and `connection_manager` from the pipeline (or resolve via fallback for backward
    compatibility).
+
+## Message Categories
+
+Every outgoing event that carries player-visible text puts a semantic category in its payload as
+`data.category` (`domain.kind`, e.g. `chat.say`, `combat.hurt`, `room.movement`). The client styles and routes
+the line from it; it does not infer meaning from the text.
+
+- **Source of truth**: [server/constants/message_category.py](../constants/message_category.py) (`MessageCategory`).
+  Reserved, not yet populated: `lore.*`, `item.*`, `npc.*`, `command.misfire`. The client mirror and the full
+  payload reference are in `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`.
+- **Assigned only in shared builders**, never per call site: the command chokepoint
+  (`websocket_handler_commands.py`, default `command.output`), `build_event` (defaults a `command_response` that
+  names none to `command.output`), `NATSMessageHandler._build_chat_event` (channel to `chat.*`), `MessageBuilder`,
+  `posture_notify.attach_posture_self_message`, and the combat and lucidity dispatchers. Command handlers normally
+  put no `category` in their result dicts; the exception is failure: a handler (or pipeline step) that rejects a
+  command for a usage, permission, or system reason returns `command_error(msg)`
+  (`server/commands/command_results.py`), which sets `system.error`. In-world refusals ("You don't see that here")
+  stay plain and render as `command.output`.
+- **`combat_attack`** is the one event with several perspectives: it carries `data.categories`, keyed like
+  `data.messages`, instead of a single `data.category`.
+- **Hallucination code never chooses a category** (ADR-024). A hallucinated message reaches the player through the
+  same builder as the real one, so the two are indistinguishable on the wire.
+  `server/tests/unit/services/test_hallucination_category_ban.py` enforces the import ban.
+- **Adding an emitter**: tag it in a shared builder and add it to `INVENTORY` in
+  `server/tests/unit/realtime/test_message_category_invariants.py`.
 
 ## NATS and Room Updates
 

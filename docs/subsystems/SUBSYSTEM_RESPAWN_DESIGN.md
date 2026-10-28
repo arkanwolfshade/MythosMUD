@@ -1,6 +1,6 @@
 # Respawn Subsystem Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-10-14
 
 ---
 
@@ -71,6 +71,16 @@ flowchart LR
 
 - **Death at -10 DP**: Incapacitated is 0 to -9; -10 is death; respawn restores player to respawn
   location and resets DP.
+- **Bleed-out (#1059)**: A mortally wounded player (0 to -9 DP) is out of combat (SUBSYSTEM_COMBAT_DESIGN.md)
+  and loses 1 DP per second until -10. Each second the server sends `player_dp_decay` (new DP, plus the
+  "Your lifeforce ebbs away..." line). The client shows a countdown in the Incapacitated banner worked out
+  from the server's DP (`DP + 10` seconds), never from a client timer, so a heal clears it and a big hit that
+  lands at -3 shows 7 seconds. Reaching -10 brings up the death screen. A heal above 0 ends the bleed-out;
+  the player stays lying until they stand.
+- **Defeat messaging (#1057)**: Damage and bleed-out lie the player down silently. The moment is announced by
+  `player_mortally_wounded` ("... causes you to collapse as darkness begins closing in on your vision") to
+  the victim and `player_mortally_wounded_room` ("X collapses ... on the verge of death!") to the room, not by
+  the voluntary `/lie` text.
 - **Limbo room**: If player is in LIMBO_ROOM_ID they are treated as eligible for respawn (e.g. after
   crash or restart before state was persisted).
 - **Respawn by user_id**: Multi-character support; wrapper loads all non-deleted players for user,
@@ -111,8 +121,9 @@ flowchart LR
   document or implement which one is respawned (e.g. first, or by character select).
 - **Tests**: Unit tests for PlayerRespawnWrapper (eligible check, multi-player); PlayerRespawnService
   (respawn room, DP restore); integration test with persistence and session.
-- **no_death rooms**: In no_death rooms damage is capped so DP never goes below 0 (ADR-009); respawn
-  is not triggered there.
+- **no_death rooms**: In no_death rooms damage is capped so DP never goes below 1 (ADR-009, floor
+  amended by ADR-028: at 0 DP a player is mortally wounded and would still bleed out); respawn is not
+  triggered there.
 
 ## 7. Troubleshooting
 
@@ -142,3 +153,4 @@ See also [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix ADR-009 link broken across a line wrap; fix two broken §4 component links (wrong depth) (#722) |
+| 1.2.0 | 2026-10-14 | #1057/#1059: documented the bleed-out countdown (server-DP driven) and the defeat messages that replace the `/lie` text |

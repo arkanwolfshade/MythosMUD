@@ -89,8 +89,8 @@ async def test_attack_command_blocked_during_grace_period(mock_request, mock_con
 
     # Should be blocked with appropriate message
     assert "result" in result
-    assert "warded" in result["result"].lower() or "protected" in result["result"].lower()
-    assert "combat" in result["result"].lower()
+    assert "warded" in str(result["result"]).lower() or "protected" in str(result["result"]).lower()
+    assert "combat" in str(result["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -137,8 +137,8 @@ async def test_attack_command_allowed_after_grace_period(mock_request):  # pylin
     # Should not be blocked by grace period
     # (may fail for other reasons, but not grace period)
     if "result" in result:
-        assert "warded" not in result["result"].lower()
-        assert "protected" not in result["result"].lower() or "combat" not in result["result"].lower()
+        assert "warded" not in str(result["result"]).lower()
+        assert "protected" not in str(result["result"]).lower() or "combat" not in str(result["result"]).lower()
 
 
 @pytest.mark.asyncio

@@ -4,6 +4,12 @@
 -- These replace raw SQL in async_persistence and map APIs.
 
 -- get_rooms_with_exits: aggregate rooms and exits for cache warmup
+--
+-- DROP first: PostgreSQL refuses `CREATE OR REPLACE` when the return type changes
+-- ("cannot change return type of existing function"), and #829 added map_x/map_y to the
+-- RETURNS TABLE. The compiled DDL dumps already drop before creating; this incremental
+-- file has to as well, or re-applying it fails against a database built before the change.
+DROP FUNCTION IF EXISTS :schema_name.get_rooms_with_exits(); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_rooms_with_exits() -- noqa: PRS
 RETURNS TABLE (
     room_uuid uuid,
@@ -15,7 +21,20 @@ RETURNS TABLE (
     zone_stable_id text,
     plane text,
     zone text,
-    exits jsonb
+    exits jsonb,
+    -- #829: appended, never inserted mid-list. Other procedures in this file are read
+    -- positionally by CoordinateGenerator._room_dict_from_row and map_helpers.build_row_dict,
+    -- so new columns go on the end by convention even where the caller reads by name.
+    map_x numeric(10,2),
+    map_y numeric(10,2),
+    -- #663: room_environment is the room's own (possibly NULL) column; resolved_environment is
+    -- the room -> subzone -> zone -> 'outdoors' cascade. Appended for the same reason as map_x/map_y.
+    room_environment text,
+    resolved_environment text,
+    -- #910: human-readable zones.name / subzones.name for the death screen ("Arkham City > Sanitarium > Foyer").
+    -- Appended for the same reason as the columns above.
+    zone_display_name text,
+    subzone_display_name text
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -44,7 +63,13 @@ BEGIN
                 ) FILTER (WHERE rl.direction IS NOT NULL)
             )::jsonb,
             '[]'::jsonb
-        ) AS exits
+        ) AS exits,
+        r.map_x,
+        r.map_y,
+        r.environment,
+        COALESCE(r.environment, sz.environment, z.environment, 'outdoors'),
+        z.name,
+        sz.name
     FROM rooms r
     LEFT JOIN subzones sz ON r.subzone_id = sz.id
     LEFT JOIN zones z ON sz.zone_id = z.id
@@ -58,8 +83,15 @@ BEGIN
         r.name,
         r.description,
         r.attributes,
+        r.map_x,
+        r.map_y,
+        r.environment,
         sz.stable_id,
-        z.stable_id
+        sz.environment,
+        z.stable_id,
+        z.environment,
+        z.name,
+        sz.name
     ORDER BY z.stable_id, sz.stable_id, r.stable_id;
 END;
 $$ LANGUAGE plpgsql;
@@ -87,6 +119,10 @@ $$ LANGUAGE plpgsql;
 
 
 -- get_rooms_by_zone_pattern: rooms for a plane/zone/sub_zone pattern
+--
+-- DROP first: #663 appended room_environment/resolved_environment to the RETURNS TABLE (return
+-- type change) -- see get_rooms_with_exits' comment above for why this is required.
+DROP FUNCTION IF EXISTS :schema_name.get_rooms_by_zone_pattern(text); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_rooms_by_zone_pattern(p_pattern text) -- noqa: PRS
 RETURNS TABLE (
     id uuid,
@@ -97,7 +133,10 @@ RETURNS TABLE (
     map_y numeric,
     map_origin_zone boolean,
     map_symbol text,
-    map_style text
+    map_style text,
+    -- #663: appended, see get_rooms_with_exits.
+    room_environment text,
+    resolved_environment text
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -110,7 +149,9 @@ BEGIN
         r.map_y,
         r.map_origin_zone,
         r.map_symbol,
-        r.map_style
+        r.map_style,
+        r.environment,
+        COALESCE(r.environment, sz.environment, z.environment, 'outdoors')
     FROM rooms r
     JOIN subzones sz ON r.subzone_id = sz.id
     JOIN zones z ON sz.zone_id = z.id
@@ -120,6 +161,9 @@ $$ LANGUAGE plpgsql;
 
 
 -- get_room_by_stable_id: single room by exact stable_id
+--
+-- DROP first: #663 appended room_environment/resolved_environment (return type change).
+DROP FUNCTION IF EXISTS :schema_name.get_room_by_stable_id(text); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.get_room_by_stable_id(p_stable_id text) -- noqa: PRS
 RETURNS TABLE (
     id uuid,
@@ -130,7 +174,10 @@ RETURNS TABLE (
     map_y numeric,
     map_origin_zone boolean,
     map_symbol text,
-    map_style text
+    map_style text,
+    -- #663: appended, see get_rooms_with_exits.
+    room_environment text,
+    resolved_environment text
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -143,7 +190,9 @@ BEGIN
         r.map_y,
         r.map_origin_zone,
         r.map_symbol,
-        r.map_style
+        r.map_style,
+        r.environment,
+        COALESCE(r.environment, sz.environment, z.environment, 'outdoors')
     FROM rooms r
     JOIN subzones sz ON r.subzone_id = sz.id
     JOIN zones z ON sz.zone_id = z.id
@@ -226,7 +275,12 @@ $$ LANGUAGE plpgsql;
 
 -- update_room_properties: update name/description/environment for the room editor.
 -- NULL means "leave alone" for p_name/p_description; p_set_environment distinguishes
--- "leave environment alone" (false) from "clear environment to NULL" (true, p_environment NULL).
+-- "leave environment alone" (false) from "clear environment to NULL" (true, p_environment NULL,
+-- which reverts the room to inheriting from its subzone/zone -- #663).
+--
+-- DROP first: #663 changed the return type from a bare boolean to a row, so an existing
+-- database's function signature must be dropped before CREATE can redefine it.
+DROP FUNCTION IF EXISTS :schema_name.update_room_properties(text, text, text, text, boolean); -- noqa: PRS
 CREATE OR REPLACE FUNCTION :schema_name.update_room_properties( -- noqa: PRS
     p_room_id text,
     p_name text,
@@ -234,23 +288,30 @@ CREATE OR REPLACE FUNCTION :schema_name.update_room_properties( -- noqa: PRS
     p_environment text,
     p_set_environment boolean
 )
-RETURNS boolean AS $$
+RETURNS TABLE (updated boolean, resolved_environment text) AS $$
 DECLARE
     v_updated integer;
+    v_resolved text;
 BEGIN
     UPDATE rooms
     SET
         name = COALESCE(p_name, name),
         description = COALESCE(p_description, description),
-        attributes = CASE
-            WHEN NOT p_set_environment THEN attributes
-            WHEN p_environment IS NULL THEN attributes - 'environment'
-            ELSE jsonb_set(attributes, '{environment}', to_jsonb(p_environment), TRUE)
-        END
+        environment = CASE WHEN p_set_environment THEN p_environment ELSE environment END
     WHERE stable_id = p_room_id;
 
     GET DIAGNOSTICS v_updated = ROW_COUNT;
-    RETURN v_updated > 0;
+
+    IF v_updated > 0 THEN
+        SELECT COALESCE(r.environment, sz.environment, z.environment, 'outdoors')
+        INTO v_resolved
+        FROM rooms r
+        LEFT JOIN subzones sz ON r.subzone_id = sz.id
+        LEFT JOIN zones z ON sz.zone_id = z.id
+        WHERE r.stable_id = p_room_id;
+    END IF;
+
+    RETURN QUERY SELECT v_updated > 0, v_resolved;
 END;
 $$ LANGUAGE plpgsql;
 

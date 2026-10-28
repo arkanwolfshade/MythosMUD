@@ -24,6 +24,7 @@ tmp/
 *codacy-makefile-test.json
 .codacy/generated/
 .codacy/codacy.config.baseline.json
+.codacy/codacy.config.json
 
 # Local Codacy/lizard investigation dumps and one-shot scrapers (never commit)
 docs/investigations/_*.py
@@ -433,3 +434,10 @@ client/.auth/user-auth.json
 .github\instructions\codacy.instructions.md
 server/.claude/hooks/state/edited-files.json
 client/.claude/hooks/state/edited-files.json
+.codacy/generated/Lizard/lizard-filelist.txt
+.codacy/tools-configs/eslint.config.mjs
+.codacy/tools-configs/ruleset.xml
+.basedpyright/baseline.json
+.codacy/tools-configs/ruleset.xml
+client/tests/e2e/runtime/.claude/hooks/state/edited-files.json
+client/tests/e2e/.claude/hooks/state/edited-files.json

@@ -61,14 +61,8 @@ _default_hasher = PasswordHasher(
 )
 
 
-def create_hasher_with_params(
-    time_cost: int = TIME_COST,
-    memory_cost: int = MEMORY_COST,
-    parallelism: int = PARALLELISM,
-    hash_len: int = HASH_LENGTH,
-) -> PasswordHasher:
-    """Create a PasswordHasher with custom parameters."""
-    # Validate parameters are within safe ranges
+def _validate_hasher_params(time_cost: int, memory_cost: int, parallelism: int, hash_len: int) -> None:
+    """Reject out-of-range Argon2 parameters (same ranges as the module-level defaults)."""
     if time_cost < 1 or time_cost > 10:
         raise ValueError(f"time_cost must be between 1 and 10, got {time_cost}")
     if memory_cost < 1024 or memory_cost > 1048576:
@@ -78,11 +72,24 @@ def create_hasher_with_params(
     if hash_len < 16 or hash_len > 64:
         raise ValueError(f"hash_len must be between 16 and 64, got {hash_len}")
 
-    # Log warning if parameters are outside recommended ranges
+
+def _warn_if_hasher_params_below_recommended(time_cost: int, memory_cost: int) -> None:
+    """Log a warning when parameters are valid but below the recommended-security floor."""
     if time_cost < 3:
         logger.warning("time_cost is below recommended minimum of 3", time_cost=time_cost)
     if memory_cost < 65536:
         logger.warning("memory_cost is below recommended minimum of 65536 (64MB)", memory_cost=memory_cost)
+
+
+def create_hasher_with_params(
+    time_cost: int = TIME_COST,
+    memory_cost: int = MEMORY_COST,
+    parallelism: int = PARALLELISM,
+    hash_len: int = HASH_LENGTH,
+) -> PasswordHasher:
+    """Create a PasswordHasher with custom parameters."""
+    _validate_hasher_params(time_cost, memory_cost, parallelism, hash_len)
+    _warn_if_hasher_params_below_recommended(time_cost, memory_cost)
 
     logger.debug(
         "Creating custom Argon2 hasher",

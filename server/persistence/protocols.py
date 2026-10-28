@@ -55,6 +55,10 @@ class PlayerRepositoryProtocol(Protocol):
         """Save multiple players in a single transaction."""
         ...
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """Empty a player's carried and equipped items without touching stats (#917)."""
+        ...
+
     async def list_players(self) -> list[Player]:
         """List all players."""
         ...
@@ -99,3 +103,11 @@ class RoomRepositoryProtocol(Protocol):
     def list_rooms(self) -> list[Room]:
         """List all cached rooms."""
         ...
+
+
+class CurrentLcdReader(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """Reads a player's lucidity from player_lucidity (AsyncPersistenceLayer.get_current_lcd; ADR-029 step 3a)."""
+
+    async def get_current_lcd(self, player_id: uuid.UUID) -> int:
+        """The player's current LCD, or the starting value if they have no record yet."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type

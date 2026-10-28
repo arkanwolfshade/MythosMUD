@@ -1,10 +1,10 @@
-# Ci Environment Alignment
+# CI Environment Alignment
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **CI Environment Alignment** (0 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
+- **MythosMUD Code Quality for AI** (0 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CI_ENVIRONMENT_ALIGNMENT.md`
+- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
 
 ## Audit Trail
 

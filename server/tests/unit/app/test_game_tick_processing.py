@@ -9,6 +9,7 @@ Tests the game tick processing logic including status effects, combat, and maint
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -21,25 +22,21 @@ from server.app.game_tick_corpses import (
     cleanup_decayed_corpses,
 )
 from server.app.game_tick_processing import (
-    _process_all_status_effects,
-    _process_damage_over_time_effect,
-    _process_heal_over_time_effect,
     _process_mp_regeneration,
-    _process_single_effect,
     _process_single_player_mp_regeneration,
-    _update_player_status_effects,
-    _validate_and_get_player,
     _validate_app_state_for_status_effects,
     _validate_mp_regeneration_services,
     get_current_tick,
     get_tick_interval,
+    player_registry_sweep_ticks,
     process_casting_progress,
+    process_combat_cleanup,
     process_combat_tick,
     process_dp_decay_and_death,
     process_npc_maintenance,
-    process_player_effects_expiration,
-    process_status_effects,
     reset_current_tick,
+    schedule_player_registry_sweep,
+    update_world_presence,
 )
 
 JsonMap = dict[str, object]
@@ -72,6 +69,46 @@ def test_get_tick_interval() -> None:
 
         interval = get_tick_interval()
         assert interval == 0.5
+
+
+def test_player_registry_sweep_ticks_follows_save_interval() -> None:
+    game: MagicMock = MagicMock()
+    config: MagicMock = MagicMock()
+    config.game = game
+    with patch("server.app.game_tick_processing.get_config", return_value=config):
+        game.save_interval = 2
+        game.server_tick_rate = 0.1
+        assert player_registry_sweep_ticks() == 20
+        game.save_interval = 1
+        game.server_tick_rate = 5.0
+        assert player_registry_sweep_ticks() == 1  # never zero
+
+
+class _SweepCounter:
+    def __init__(self) -> None:
+        self.sweeps: int = 0
+
+    def schedule_sweep(self) -> None:
+        self.sweeps += 1
+
+
+class _SweepContainer:
+    def __init__(self, registry: _SweepCounter | None) -> None:
+        self.player_registry: _SweepCounter | None = registry
+
+
+def test_schedule_player_registry_sweep_runs_on_its_tick_only() -> None:
+    app = FastAPI()
+    registry = _SweepCounter()
+    app.state.container = _SweepContainer(registry)
+
+    schedule_player_registry_sweep(app, 19, 20)
+    assert registry.sweeps == 0
+    schedule_player_registry_sweep(app, 20, 20)
+    assert registry.sweeps == 1
+
+    app.state.container = _SweepContainer(None)
+    schedule_player_registry_sweep(app, 40, 20)  # no registry wired: nothing to do
 
 
 def test_validate_app_state_for_status_effects_no_container() -> None:
@@ -165,108 +202,6 @@ def test_log_cleanup_results() -> None:
 
 
 @pytest.mark.asyncio
-async def test_process_heal_over_time_effect() -> None:
-    heal_player: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.heal_player = heal_player
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "heal_over_time", "healing": 5, "duration": 2, "remaining": 2}
-    applied = await _process_heal_over_time_effect(container, player, effect, 1, "player-1")
-    assert applied is True
-    heal_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_damage_over_time_zero_remaining() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "damage_over_time", "damage": 3}
-    applied = await _process_damage_over_time_effect(app, container, player, effect, 0, "player-1")
-    assert applied is False
-
-
-@pytest.mark.asyncio
-async def test_process_single_effect_heal_expires() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    container.async_persistence = AsyncMock()
-    player: MagicMock = MagicMock()
-    effect: JsonMap = {"type": "heal_over_time", "healing": 2, "duration": 2, "remaining": 2}
-    updated, applied = await _process_single_effect(app, container, player, effect, "p1")
-    assert updated is not None
-    assert updated["remaining"] == 1
-    assert applied is True
-
-
-@pytest.mark.asyncio
-async def test_validate_and_get_player_invalid_id() -> None:
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    player, player_uuid = await _validate_and_get_player(container, "not-a-uuid")
-    assert player is None
-    assert player_uuid is None
-
-
-@pytest.mark.asyncio
-async def test_validate_and_get_player_success() -> None:
-    player_id = uuid.uuid4()
-    container: MagicMock = MagicMock()
-    mock_player: MagicMock = MagicMock()
-    get_player_by_id: AsyncMock = AsyncMock(return_value=mock_player)
-    async_persistence: MagicMock = MagicMock()
-    async_persistence.get_player_by_id = get_player_by_id
-    container.async_persistence = async_persistence
-    player, player_uuid = await _validate_and_get_player(container, str(player_id))
-    assert player is mock_player
-    assert player_uuid == player_id
-
-
-@pytest.mark.asyncio
-async def test_update_player_status_effects_saves() -> None:
-    save_player: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.save_player = save_player
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    set_status_effects: MagicMock = MagicMock()
-    player: MagicMock = MagicMock()
-    player.set_status_effects = set_status_effects
-    updated = await _update_player_status_effects(container, player, [], 1, True)
-    assert updated is True
-    set_status_effects.assert_called_once()
-    save_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_all_status_effects_empty() -> None:
-    app = FastAPI()
-    container: MagicMock = MagicMock()
-    get_status_effects: MagicMock = MagicMock(return_value=[])
-    player: MagicMock = MagicMock()
-    player.get_status_effects = get_status_effects
-    effects, applied, count = await _process_all_status_effects(app, container, player, "p1")
-    assert effects == []
-    assert applied is False
-    assert count == 0
-
-
-@pytest.mark.asyncio
-async def test_process_status_effects_no_online_players() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    connection_manager: MagicMock = MagicMock()
-    connection_manager.online_players = {}
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    container.connection_manager = connection_manager
-    app.state.container = container
-    await process_status_effects(app, tick_count=1)
-
-
-@pytest.mark.asyncio
 async def test_process_combat_tick_calls_service() -> None:
     app = FastAPI()
     app.state = MagicMock()
@@ -293,6 +228,44 @@ async def test_process_casting_progress_calls_magic_service() -> None:
 
 
 @pytest.mark.asyncio
+async def test_process_combat_cleanup_runs_on_interval() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    cleanup_stale_combats: AsyncMock = AsyncMock(return_value=2)
+    combat: MagicMock = MagicMock()
+    combat.cleanup_stale_combats = cleanup_stale_combats
+    container: MagicMock = MagicMock(combat_service=combat)
+    app.state.container = container
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
+        await process_combat_cleanup(app, tick_count=600)
+    cleanup_stale_combats.assert_awaited_once_with()
+
+
+@pytest.mark.asyncio
+async def test_process_combat_cleanup_skips_off_interval() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    cleanup_stale_combats: AsyncMock = AsyncMock(return_value=0)
+    combat: MagicMock = MagicMock()
+    combat.cleanup_stale_combats = cleanup_stale_combats
+    container: MagicMock = MagicMock(combat_service=combat)
+    app.state.container = container
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=False):
+        await process_combat_cleanup(app, tick_count=601)
+    cleanup_stale_combats.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_process_combat_cleanup_no_service() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    container: MagicMock = MagicMock(combat_service=None)
+    app.state.container = container
+    # Must not raise when no combat service is configured.
+    await process_combat_cleanup(app, tick_count=600)
+
+
+@pytest.mark.asyncio
 async def test_process_npc_maintenance_runs_on_interval() -> None:
     app = FastAPI()
     app.state = MagicMock()
@@ -304,6 +277,73 @@ async def test_process_npc_maintenance_runs_on_interval() -> None:
     app.state.container = container
     with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
         await process_npc_maintenance(app, tick_count=60)
+    periodic_maintenance.assert_called_once()
+
+
+def _world_app(*, online: bool, awake: bool) -> tuple[FastAPI, asyncio.Event, MagicMock]:
+    """App whose NPC thread manager carries a real players_present Event (a mock Event proves nothing).
+
+    Returns (app, players_present, periodic_maintenance).
+    """
+    players_present = asyncio.Event()
+    if awake:
+        players_present.set()
+    periodic_maintenance: MagicMock = MagicMock(return_value={"respawned_npcs": 1})
+    thread_manager: MagicMock = MagicMock(players_present=players_present)
+    lifecycle: MagicMock = MagicMock(thread_manager=thread_manager, periodic_maintenance=periodic_maintenance)
+    connection_manager: MagicMock = MagicMock(online_players={uuid.uuid4(): {}} if online else {})
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock(npc_lifecycle_manager=lifecycle, connection_manager=connection_manager)
+    return app, players_present, periodic_maintenance
+
+
+def test_update_world_presence_wakes_world_and_catches_up_once() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=True, awake=False)
+    _ = update_world_presence(app)
+    assert players_present.is_set()
+    periodic_maintenance.assert_called_once()
+    # Still online on the next tick: no edge, so no second catch-up.
+    _ = update_world_presence(app)
+    periodic_maintenance.assert_called_once()
+
+
+def test_update_world_presence_pauses_when_last_player_leaves() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=True)
+    _ = update_world_presence(app)
+    assert not players_present.is_set()
+    periodic_maintenance.assert_not_called()
+
+
+def test_update_world_presence_empty_world_stays_paused() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=False)
+    _ = update_world_presence(app)
+    assert not players_present.is_set()
+    periodic_maintenance.assert_not_called()
+
+
+def test_update_world_presence_wake_survives_catch_up_failure() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=True, awake=False)
+    periodic_maintenance.side_effect = RuntimeError("boom")
+    _ = update_world_presence(app)  # must not raise
+    assert players_present.is_set()
+
+
+def test_update_world_presence_without_container_is_noop() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = None
+    _ = update_world_presence(app)  # must not raise
+
+
+@pytest.mark.asyncio
+async def test_process_npc_maintenance_skipped_while_world_is_paused() -> None:
+    app, players_present, periodic_maintenance = _world_app(online=False, awake=False)
+    with patch("server.app.game_tick_processing.NPCMaintenanceConfig.should_run_maintenance", return_value=True):
+        await process_npc_maintenance(app, tick_count=600)
+        periodic_maintenance.assert_not_called()
+        players_present.set()
+        await process_npc_maintenance(app, tick_count=600)
     periodic_maintenance.assert_called_once()
 
 
@@ -338,47 +378,6 @@ async def test_process_dp_decay_and_death_no_service() -> None:
     app.state = MagicMock()
     app.state.container = MagicMock(player_death_service=None)
     await process_dp_decay_and_death(app, tick_count=1)
-
-
-@pytest.mark.asyncio
-async def test_process_player_effects_expiration_login_warded() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    expire_player_effects_for_tick: AsyncMock = AsyncMock()
-    async_persistence: AsyncMock = AsyncMock()
-    async_persistence.expire_player_effects_for_tick = expire_player_effects_for_tick
-    connection_manager: MagicMock = MagicMock()
-    container: MagicMock = MagicMock()
-    container.async_persistence = async_persistence
-    container.connection_manager = connection_manager
-    player_id = str(uuid.uuid4())
-    expire_player_effects_for_tick.return_value = [(player_id, "login_warded")]
-    app.state.container = container
-    with patch(
-        "server.app.game_tick_status_effects.handle_login_grace_period_expiration",
-        new_callable=AsyncMock,
-    ) as mock_handler:
-        await process_player_effects_expiration(app, tick_count=1)
-    mock_handler.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_process_status_effects_with_online_player() -> None:
-    app = FastAPI()
-    app.state = MagicMock()
-    connection_manager: MagicMock = MagicMock()
-    pid = uuid.uuid4()
-    connection_manager.online_players = {pid: {}}
-    container: MagicMock = MagicMock()
-    container.async_persistence = MagicMock()
-    container.connection_manager = connection_manager
-    app.state.container = container
-    with patch(
-        "server.app.game_tick_status_effects._process_player_status_effects",
-        new_callable=AsyncMock,
-        return_value=True,
-    ):
-        await process_status_effects(app, tick_count=2)
 
 
 @pytest.mark.asyncio

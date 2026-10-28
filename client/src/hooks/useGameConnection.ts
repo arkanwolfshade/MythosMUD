@@ -1,1 +1,1 @@
-export { useGameConnection, type UseGameConnectionOptions } from './useGameConnectionRefactored';
+export { useGameConnection } from './useGameConnectionRefactored';

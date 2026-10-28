@@ -11,7 +11,7 @@ and inventory management using PostgreSQL stored procedures.
 import traceback
 import uuid
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -100,7 +100,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -144,7 +144,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -192,7 +192,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -238,7 +238,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -299,9 +299,12 @@ class PlayerRepository:
                 # ON CONFLICT DO UPDATE writes is_deleted/deleted_at from this in-memory Player,
                 # so a stale object loaded before a delete would silently un-delete the row.
                 # NULL (not-yet-inserted player) must fall through to the upsert.
-                deleted = (
-                    await session.execute(text("SELECT player_is_deleted(:id)"), {"id": str(player.player_id)})
-                ).scalar()
+                deleted = cast(
+                    object,
+                    (
+                        await session.execute(text("SELECT player_is_deleted(:id)"), {"id": str(player.player_id)})
+                    ).scalar(),
+                )
                 if deleted is True:
                     self._logger.warning(
                         "Refusing to save deleted player (stale in-memory Player)",
@@ -324,6 +327,39 @@ class PlayerRepository:
                 user_friendly="Failed to save player",
             )
 
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """
+        Empty a player's carried and equipped items without touching any other column (#917).
+
+        Unlike save_player, this never rewrites stats, so it cannot race a concurrent DP write.
+
+        Returns:
+            bool: False if the player does not exist or is soft-deleted
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        try:
+            session_maker = get_session_maker()
+            async with session_maker() as session:
+                cleared = cast(
+                    object,
+                    (
+                        await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": str(player_id)})
+                    ).scalar(),
+                )
+                await session.commit()
+                return cleared is True
+        except (DatabaseError, SQLAlchemyError) as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error clearing player inventory: {e}",
+                operation="clear_player_inventory",
+                player_id=player_id,
+                details={"player_id": str(player_id), "error": str(e)},
+                user_friendly="Failed to clear player inventory",
+            )
+
     async def list_players(self) -> list[Player]:
         """
         List all players.
@@ -340,7 +376,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -380,7 +416,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "
@@ -453,7 +489,7 @@ class PlayerRepository:
                     text("SELECT soft_delete_player(:id)"),
                     {"id": str(player_id)},
                 )
-                deleted = result.scalar()
+                deleted = cast(object, result.scalar())
                 await session.commit()
                 if deleted:
                     self._logger.info("Player soft-deleted successfully", player_id=player_id)
@@ -490,7 +526,7 @@ class PlayerRepository:
                     text("SELECT delete_player(:id)"),
                     {"id": str(player_id)},
                 )
-                deleted = result.scalar()
+                deleted = cast(object, result.scalar())
                 await session.commit()
                 if deleted:
                     self._logger.info("Player deleted successfully", player_id=player_id)
@@ -565,7 +601,7 @@ class PlayerRepository:
                 result = await session.execute(
                     text(
                         "SELECT "
-                        "player_id, user_id, name, inventory, status_effects, current_room_id, "
+                        "player_id, user_id, name, inventory, current_room_id, "
                         "respawn_room_id, experience_points, level, is_admin, profession_id, "
                         "created_at, last_active, stats, is_deleted, deleted_at, "
                         "tutorial_instance_id, inventory_json, equipped_json "

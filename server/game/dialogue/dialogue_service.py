@@ -7,10 +7,11 @@ Cleared on leave room, other NPC, or end (next null).
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from server.persistence.repositories.dialogue_definition_repository import DialogueDefinitionRepository
 from server.schemas.dialogue import DialogueNode, DialogueTree
+from server.schemas.scripted_actions import ScriptedAction
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -29,23 +30,29 @@ class DialogueCursor:
 
 @dataclass
 class DialoguePrompt:
-    """Formatted NPC line plus numbered option labels for the player."""
+    """Formatted NPC line plus numbered option labels for the player.
+
+    ``actions`` are the presented node's scripted actions; the service only reports them, the caller runs them.
+    """
 
     text: str
     options: list[str]
     ended: bool = False
+    actions: list[ScriptedAction] = field(default_factory=list)
+
+
+def format_dialogue_options(option_labels: list[str]) -> str:
+    """The numbered answers and the usage hint: the part of a node that is not the NPC speaking (#1107)."""
+    lines = [f"{i}. {label}" for i, label in enumerate(option_labels, start=1)]
+    return "\n".join([*lines, "", "Use: talk <number> (or reply <number>)"])
 
 
 def format_dialogue_prompt(npc_name: str, node_text: str, option_labels: list[str]) -> str:
     """Build personal-system message body for a dialogue node."""
-    lines = [f'{npc_name} says: "{node_text}"']
-    if option_labels:
-        lines.append("")
-        for i, label in enumerate(option_labels, start=1):
-            lines.append(f"{i}. {label}")
-        lines.append("")
-        lines.append("Use: talk <number>")
-    return "\n".join(lines)
+    line = f'{npc_name} says: "{node_text}"'
+    if not option_labels:
+        return line
+    return f"{line}\n\n{format_dialogue_options(option_labels)}"
 
 
 class DialogueService:
@@ -180,7 +187,7 @@ class DialogueService:
             dialogue_id=dialogue_id,
         )
         labels = [opt.label for opt in node.options]
-        return DialoguePrompt(text=node.text, options=labels, ended=False)
+        return DialoguePrompt(text=node.text, options=labels, ended=False, actions=list(node.actions))
 
 
 # Module singleton used by talk command and go command (session-scoped).

@@ -1,6 +1,7 @@
 """Unit tests for WebSocket payload optimization."""
 
 import json
+from datetime import UTC, datetime
 
 import pytest
 
@@ -23,8 +24,17 @@ def test_get_payload_size_returns_byte_length(optimizer: PayloadOptimizer) -> No
     assert optimizer.get_payload_size(payload) == expected
 
 
-def test_get_payload_size_returns_zero_on_serialization_error(optimizer: PayloadOptimizer) -> None:
-    assert optimizer.get_payload_size({"bad": object()}) == 0
+def test_get_payload_size_measures_non_json_values(optimizer: PayloadOptimizer) -> None:
+    # A 0 here would let an oversized payload bypass the max-size guard (#906).
+    payload = {"at": datetime(2026, 9, 28, 12, 0, tzinfo=UTC), "bad": object()}
+    assert optimizer.get_payload_size(payload) > 0
+
+
+def test_optimize_payload_rejects_oversized_payload_with_datetime() -> None:
+    small = PayloadOptimizer(max_payload_size=100, compression_threshold=10_000)
+    payload = {"at": datetime(2026, 9, 28, tzinfo=UTC), "blob": "x" * 500}
+    with pytest.raises(ValueError, match="Payload too large"):
+        _ = small.optimize_payload(payload)
 
 
 def test_compress_payload_round_trip_metadata(optimizer: PayloadOptimizer) -> None:

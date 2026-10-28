@@ -10,17 +10,23 @@ Processes queued actions and generates default actions for automatic combat prog
 import uuid
 from typing import TYPE_CHECKING, Any, cast
 
+from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from server.config import get_config
+from server.exceptions import DatabaseError
 from server.models.combat import CombatAction, CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
-from server.services import combat_turn_participant_actions
+from server.services import combat_protect_action, combat_taunt_action, combat_turn_participant_actions
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from server.schemas.shared import TargetMatch
     from server.services.combat_service import CombatService
 
 logger: BoundLogger = get_logger(__name__)
+
+#: What ``queue_combat_action`` stores as an action's target when none was given.
+_NO_TARGET = uuid.UUID(int=0)
 
 
 class CombatTurnProcessor:
@@ -191,6 +197,10 @@ class CombatTurnProcessor:
         )
 
         for participant in participants_by_initiative:
+            # An earlier turn this round may have ended the combat (an NPC breaking off, a kill); the initiative
+            # list is a snapshot, so nobody else acts in a fight that no longer exists.
+            if combat.status != CombatStatus.ACTIVE:
+                return
             # CRITICAL: Use is_dead() instead of is_alive() to ensure mortally wounded players
             # (0 DP) remain in combat and can be attacked until -10 DP
             # is_alive() requires is_active=True, which might be False for incapacitated players
@@ -235,12 +245,46 @@ class CombatTurnProcessor:
             await self._execute_attack_action(combat, participant, action)
         elif action.action_type == "spell":
             await self._execute_spell_action(combat, participant, action, current_tick)
+        elif action.action_type == "taunt":
+            await self._execute_taunt_action(combat, participant, action)
+        elif action.action_type == "protect":
+            await self._execute_protect_action(combat, participant, action)
         elif action.action_type == "flee_skip":
             self._handle_flee_skip_action(combat, participant)
         else:
             self._log_unknown_action(action)
 
         participant.last_action_tick = current_tick
+
+    async def _execute_taunt_action(
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction
+    ) -> None:
+        """Execute a queued taunt (#833): graded Intimidate/Fighting roll, then the hate-list change."""
+        try:
+            await combat_taunt_action.resolve_taunt_action(self._combat_service, combat, participant, action)
+        except (AttributeError, ValueError, TypeError, RuntimeError, KeyError, SQLAlchemyError, DatabaseError) as e:
+            logger.error(
+                "Error executing queued taunt",
+                participant_id=participant.participant_id,
+                target_id=action.target_id,
+                error=str(e),
+                exc_info=True,
+            )
+
+    async def _execute_protect_action(
+        self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction
+    ) -> None:
+        """Execute a queued protect (#991): Fighting roll, then cover over the ally and a share of their threat."""
+        try:
+            await combat_protect_action.resolve_protect_action(self._combat_service, combat, participant, action)
+        except (AttributeError, ValueError, TypeError, RuntimeError, KeyError, SQLAlchemyError, DatabaseError) as e:
+            logger.error(
+                "Error executing queued protect",
+                participant_id=participant.participant_id,
+                target_id=action.target_id,
+                error=str(e),
+                exc_info=True,
+            )
 
     async def _execute_attack_action(
         self, combat: CombatInstance, participant: CombatParticipant, action: CombatAction
@@ -277,7 +321,7 @@ class CombatTurnProcessor:
             if not player or not room_id:
                 return
 
-            target = self._build_spell_target(action, participant, room_id)
+            target = self._build_spell_target(action, participant, room_id, combat)
             effect_result = await self._apply_spell_effects(magic_service, spell, participant, target)
             await self._finalize_spell_execution(magic_service, participant, spell, effect_result, room_id, action)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Spell execution errors unpredictable
@@ -370,18 +414,31 @@ class CombatTurnProcessor:
         room_id = player.current_room_id or combat.room_id
         return player, room_id
 
-    def _build_spell_target(self, action: CombatAction, participant: CombatParticipant, room_id: str) -> Any:
-        """Recreate the spell target from queued action data."""
+    def _build_spell_target(
+        self, action: CombatAction, participant: CombatParticipant, room_id: str, combat: CombatInstance
+    ) -> "TargetMatch":
+        """
+        Recreate the spell target from queued action data.
+
+        The nil UUID is what ``queue_combat_action`` stores when a spell had no explicit target: that means the
+        caster. Otherwise the target's type comes from the combat roster, so a buff or heal aimed at an ally is
+        a player target rather than being misread as an NPC (#833).
+        """
         from server.schemas.shared import (  # noqa: PLC0415  # Reason: Local import
             TargetMatch,
             TargetType,
         )
 
-        target_type = TargetType.NPC if action.target_id else TargetType.PLAYER
-        target_name = action.spell_name or "target"
+        if action.target_id == _NO_TARGET:
+            target_type, target_id = TargetType.PLAYER, participant.participant_id
+        else:
+            queued_target = combat.participants.get(action.target_id)
+            is_player = queued_target is not None and queued_target.participant_type == CombatParticipantType.PLAYER
+            target_type = TargetType.PLAYER if is_player else TargetType.NPC
+            target_id = action.target_id
         return TargetMatch(
-            target_id=str(action.target_id) if action.target_id else str(participant.participant_id),
-            target_name=target_name,
+            target_id=str(target_id),
+            target_name=action.spell_name or "target",
             target_type=target_type,
             room_id=room_id,
         )

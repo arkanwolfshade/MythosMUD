@@ -23,7 +23,7 @@ def _coerce_stack(stack: Mapping[str, object]) -> tuple[str, str, int]:
     if isinstance(quantity_raw, int | float | str):
         try:
             quantity = int(quantity_raw)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             quantity = 0
     else:
         quantity = 0

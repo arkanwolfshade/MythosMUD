@@ -254,7 +254,7 @@ def analyze_file(file_path: Path) -> dict[str, Any]:
     try:
         content = file_path.read_text(encoding="utf-8")
         tree = ast.parse(content, filename=str(file_path))
-    except (SyntaxError, UnicodeDecodeError, PermissionError):
+    except SyntaxError, UnicodeDecodeError, PermissionError:
         return result
 
     # Check file path and name for keywords

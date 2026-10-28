@@ -10,7 +10,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from ...models.game import InventoryItem, PositionState, Stats, StatusEffect
+from ...models.game import InventoryItem, PositionState, Stats
 from .class_definition import ClassDefinition
 
 
@@ -40,7 +40,6 @@ class PlayerCreate(PlayerBase):
     user_id: uuid.UUID = Field(..., description="Associated user ID")
     stats: Stats = Field(default_factory=Stats, description="Player stats")
     inventory: list[InventoryItem] = Field(default_factory=list, description="Player inventory")
-    status_effects: list[StatusEffect] = Field(default_factory=list, description="Player status effects")
 
     model_config = ConfigDict(
         extra="forbid",
@@ -51,12 +50,11 @@ class PlayerCreate(PlayerBase):
             "example": {
                 "user_id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "ProfessorWolfshade",
-                "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
+                "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 0,
                 "level": 1,
-                "stats": {"health": 100, "lucidity": 100, "strength": 50},
+                "stats": {"health": 100, "strength": 50},
                 "inventory": [],
-                "status_effects": [],
             }
         },
     )
@@ -75,7 +73,6 @@ class PlayerRead(PlayerBase):
     profession_flavor_text: str | None = Field(default=None, description="Player's profession flavor text")
     stats: Stats = Field(..., description="Player stats")
     inventory: list[InventoryItem] = Field(..., description="Player inventory")
-    status_effects: list[StatusEffect] = Field(..., description="Player status effects")
     created_at: datetime = Field(..., description="Player creation timestamp")
     last_active: datetime = Field(..., description="Player last active timestamp")
     is_admin: bool = Field(default=False, description="Whether player has admin privileges")
@@ -98,12 +95,11 @@ class PlayerRead(PlayerBase):
                 "profession_name": "Tramp",
                 "profession_description": "A wandering soul with no particular skills or connections.",
                 "profession_flavor_text": "You have spent your days drifting from place to place, learning to survive on your wits alone.",
-                "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
+                "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
                 "experience_points": 150,
                 "level": 2,
-                "stats": {"health": 95, "lucidity": 88, "strength": 12},
+                "stats": {"health": 95, "strength": 12},
                 "inventory": [{"id": "sword", "name": "Rusty Sword"}],
-                "status_effects": [{"type": "poison", "duration": 5}],
                 "created_at": "2024-01-01T00:00:00Z",
                 "last_active": "2024-01-01T12:00:00Z",
             }
@@ -147,7 +143,6 @@ class PlayerUpdate(BaseModel):
     level: int | None = Field(None, ge=1, description="Player level")
     stats: Stats | None = Field(None, description="Player stats")
     inventory: list[InventoryItem] | None = Field(None, description="Player inventory")
-    status_effects: list[StatusEffect] | None = Field(None, description="Player status effects")
 
     model_config = ConfigDict(
         extra="forbid",
@@ -160,9 +155,8 @@ class PlayerUpdate(BaseModel):
                 "current_room_id": "arkham_002",
                 "experience_points": 200,
                 "level": 3,
-                "stats": {"health": 100, "lucidity": 90, "strength": 15},
+                "stats": {"health": 100, "strength": 15},
                 "inventory": [{"id": "potion", "name": "Health Potion"}],
-                "status_effects": [],
             }
         },
     )

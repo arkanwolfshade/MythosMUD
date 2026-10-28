@@ -3,6 +3,22 @@
 --
 -- Python maps these rows to Player domain objects.
 
+-- ADR-029 step 3b-ii dropped players.status_effects. CREATE OR REPLACE cannot change a RETURNS TABLE, so the
+-- row readers are dropped and recreated; upsert_player lost p_status_effects, so its old signature is dropped too.
+DROP FUNCTION IF EXISTS :schema_name.get_player_by_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_player_by_name(text); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_by_user_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_active_players_by_user_id(uuid); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.list_players(); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_in_room(text); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_batch(uuid[]); -- noqa: PRS
+DROP FUNCTION IF EXISTS :schema_name.get_players_not_clearly_alive(); -- noqa: PRS
+DROP PROCEDURE IF EXISTS :schema_name.upsert_player( -- noqa: PRS
+    uuid, uuid, character varying, text, text, character varying, character varying, integer, integer, integer,
+    bigint, timestamp with time zone, timestamp with time zone, jsonb, boolean, timestamp with time zone,
+    character varying, text, text
+);
+
 -- get_player_by_id: fetch single player by UUID (includes inventory)
 CREATE OR REPLACE FUNCTION :schema_name.get_player_by_id(p_id UUID) -- noqa: PRS
 RETURNS TABLE (
@@ -10,7 +26,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -35,7 +50,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -63,7 +77,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -88,7 +101,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -117,7 +129,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -142,7 +153,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -170,7 +180,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -195,7 +204,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -224,7 +232,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -249,7 +256,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -276,7 +282,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -301,7 +306,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -329,7 +333,6 @@ RETURNS TABLE (
     user_id uuid,
     name character varying(50),
     inventory text,
-    status_effects text,
     current_room_id character varying(255),
     respawn_room_id character varying(100),
     experience_points integer,
@@ -354,7 +357,6 @@ BEGIN
         p.user_id,
         p.name,
         p.inventory,
-        p.status_effects,
         p.current_room_id,
         p.respawn_room_id,
         p.experience_points,
@@ -372,6 +374,65 @@ BEGIN
     FROM players p
     LEFT JOIN player_inventories pi ON pi.player_id = p.player_id
     WHERE p.player_id = ANY(p_ids);
+END;
+$$;
+
+-- get_players_not_clearly_alive: players whose stats.current_dp is NOT a JSON number > 0.
+-- Per-tick prefilter for the death / bleed-out checks (PlayerDeathService.get_dead_players and
+-- get_mortally_wounded_players): in the normal case every player is healthy and this returns no rows.
+-- Deliberately a SUPERSET of "dead or mortally wounded" -- missing, null, string and other odd stored
+-- values are returned too, so the Python predicates (Player.is_dead / is_mortally_wounded, which
+-- coerce via coerce_int) keep the final say. Returns the 16 columns of the players table (no inventory
+-- join) because the caller maps them onto session-attached Player entities via select().from_statement().
+CREATE OR REPLACE FUNCTION :schema_name.get_players_not_clearly_alive()
+RETURNS TABLE (
+    player_id uuid,
+    user_id uuid,
+    name character varying(50),
+    inventory text,
+    current_room_id character varying(255),
+    respawn_room_id character varying(100),
+    experience_points integer,
+    level integer,
+    is_admin integer,
+    profession_id bigint,
+    created_at timestamp with time zone,
+    last_active timestamp with time zone,
+    stats jsonb,
+    is_deleted boolean,
+    deleted_at timestamp with time zone,
+    tutorial_instance_id character varying(255)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.player_id,
+        p.user_id,
+        p.name,
+        p.inventory,
+        p.current_room_id,
+        p.respawn_room_id,
+        p.experience_points,
+        p.level,
+        p.is_admin,
+        p.profession_id,
+        p.created_at,
+        p.last_active,
+        p.stats,
+        p.is_deleted,
+        p.deleted_at,
+        p.tutorial_instance_id
+    FROM players p
+    -- The CASE guards the numeric cast: Postgres may evaluate AND operands in any order, so a bare
+    -- (stats->>'current_dp')::numeric could throw on a row holding a string.
+    WHERE NOT COALESCE(
+        CASE WHEN jsonb_typeof(p.stats->'current_dp') = 'number'
+             THEN (p.stats->>'current_dp')::numeric > 0
+        END,
+        false
+    );
 END;
 $$;
 
@@ -439,6 +500,30 @@ BEGIN
 END;
 $$;
 
+-- clear_player_inventory: empty a player's carried and equipped items and nothing else (#917).
+-- Used when death moves a player's gear onto a corpse. It must not go through upsert_player,
+-- which rewrites the whole row (stats included) from an in-memory Player: a Player loaded
+-- before the death's DP write lands would put a dead player back to their pre-death DP.
+-- Returns false for a non-existent or soft-deleted player.
+CREATE OR REPLACE FUNCTION :schema_name.clear_player_inventory(p_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE players SET inventory = '[]' WHERE player_id = p_id AND is_deleted = false;
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    IF v_updated = 0 THEN
+        RETURN false;
+    END IF;
+    UPDATE player_inventories
+    SET inventory_json = '[]', equipped_json = '{}'
+    WHERE player_id = p_id;
+    RETURN true;
+END;
+$$;
+
 -- delete_player: hard delete player and inventory
 CREATE OR REPLACE FUNCTION :schema_name.delete_player(p_id UUID)
 RETURNS BOOLEAN
@@ -461,7 +546,6 @@ CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_user_id UUID,
     p_name VARCHAR(50),
     p_inventory TEXT,
-    p_status_effects TEXT,
     p_current_room_id VARCHAR(255),
     p_respawn_room_id VARCHAR(100),
     p_experience_points INT,
@@ -481,12 +565,12 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO players (
-        player_id, user_id, name, inventory, status_effects,
+        player_id, user_id, name, inventory,
         current_room_id, respawn_room_id, experience_points, level, is_admin,
         profession_id, created_at, last_active, stats, is_deleted, deleted_at,
         tutorial_instance_id
     ) VALUES (
-        p_player_id, p_user_id, p_name, p_inventory, p_status_effects,
+        p_player_id, p_user_id, p_name, p_inventory,
         p_current_room_id, p_respawn_room_id, p_experience_points, p_level, p_is_admin,
         p_profession_id, p_created_at, p_last_active, p_stats, p_is_deleted, p_deleted_at,
         p_tutorial_instance_id
@@ -495,7 +579,6 @@ BEGIN
         user_id = EXCLUDED.user_id,
         name = EXCLUDED.name,
         inventory = EXCLUDED.inventory,
-        status_effects = EXCLUDED.status_effects,
         current_room_id = EXCLUDED.current_room_id,
         respawn_room_id = EXCLUDED.respawn_room_id,
         experience_points = EXCLUDED.experience_points,
@@ -513,6 +596,66 @@ BEGIN
     ON CONFLICT (player_id) DO UPDATE SET
         inventory_json = EXCLUDED.inventory_json,
         equipped_json = EXCLUDED.equipped_json;
+END;
+$$;
+
+-- update_player_inventory: the player registry's inventory write (ADR-029 step 4). Sets only the carried and
+-- equipped stacks: both copies of the carried stacks (players.inventory and player_inventories.inventory_json, as
+-- upsert_player writes them) and equipped_json, so a write never touches stats or any other column.
+CREATE OR REPLACE PROCEDURE :schema_name.update_player_inventory(
+    p_player_id UUID,
+    p_inventory TEXT,
+    p_inventory_json TEXT,
+    p_equipped_json TEXT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE players SET inventory = p_inventory WHERE player_id = p_player_id;
+
+    INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
+    VALUES (p_player_id, p_inventory_json, p_equipped_json)
+    ON CONFLICT (player_id) DO UPDATE SET
+        inventory_json = EXCLUDED.inventory_json,
+        equipped_json = EXCLUDED.equipped_json;
+END;
+$$;
+
+-- update_player_row: the player registry's players-row write (ADR-029 step 4). Every column the row part owns, and
+-- nothing about inventory (update_player_inventory) or the immutable identity columns (player_id, user_id,
+-- created_at). The registry only writes players it loaded, so this is an UPDATE, never an insert.
+CREATE OR REPLACE PROCEDURE :schema_name.update_player_row(
+    p_player_id UUID,
+    p_name VARCHAR(50),
+    p_current_room_id VARCHAR(255),
+    p_respawn_room_id VARCHAR(100),
+    p_experience_points INT,
+    p_level INT,
+    p_is_admin INT,
+    p_profession_id BIGINT,
+    p_last_active TIMESTAMP WITH TIME ZONE,
+    p_stats JSONB,
+    p_is_deleted BOOLEAN,
+    p_deleted_at TIMESTAMP WITH TIME ZONE,
+    p_tutorial_instance_id VARCHAR(255)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE players SET
+        name = p_name,
+        current_room_id = p_current_room_id,
+        respawn_room_id = p_respawn_room_id,
+        experience_points = p_experience_points,
+        level = p_level,
+        is_admin = p_is_admin,
+        profession_id = p_profession_id,
+        last_active = p_last_active,
+        stats = p_stats,
+        is_deleted = p_is_deleted,
+        deleted_at = p_deleted_at,
+        tutorial_instance_id = p_tutorial_instance_id
+    WHERE player_id = p_player_id;
 END;
 $$;
 

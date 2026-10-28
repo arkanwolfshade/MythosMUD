@@ -66,7 +66,7 @@ async def test_lucidity_adjustment_round_trip(
             player_id=str(player_id),
             user_id=str(user_id),
             name=f"testplayer_{str(player_id)[:8]}",
-            current_room_id="earth_arkhamcity_intersection_derby_high",
+            current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         )
 
         # CRITICAL: With NullPool and pytest-xdist parallel execution, committing

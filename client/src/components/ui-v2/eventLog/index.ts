@@ -5,7 +5,4 @@
 // prefer direct leaf imports for hot paths; here one import pulls only this small surface).
 
 export { EventStore } from './eventStore';
-export type { IEventStore } from './eventStore';
-export { getInitialGameState, projectEvent, projectState } from './projector';
-export { EMPTY_LOG } from './types';
-export type { EventLog, EventLogEntry } from './types';
+export { projectState } from './projector';

@@ -4,7 +4,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import type { Edge, EdgeChange, Node, NodeChange } from 'reactflow';
-import type { Room } from '../../stores/gameStore';
+import type { Room } from './types';
 import { getVersionedApiBaseUrl } from '../../utils/config';
 import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
 import { useMapEditing } from './hooks/useMapEditing';
@@ -115,7 +115,15 @@ function useRoomMapEditorData(props: RoomMapEditorProps) {
       edges: createEdgesFromRooms(filteredRooms),
     };
   }, [filteredRooms, currentRoomId]);
-  const { layoutNodes: initialLayoutNodes } = useMapLayout({ nodes: rawNodes, useStoredCoordinates: true });
+  // `edges` must be passed: useMapLayout only reaches applyForceLayout (and therefore
+  // the crossing-minimisation in layout.ts) when edges.length > 0. Omitting them forced
+  // every zone down the naive ceil(sqrt(n)) grid branch, which is why edges crossed
+  // nodes in the editor while the read-only viewer avoided it (#829).
+  const { layoutNodes: initialLayoutNodes } = useMapLayout({
+    nodes: rawNodes,
+    edges: rawEdges,
+    useStoredCoordinates: true,
+  });
 
   return {
     plane,
@@ -180,7 +188,7 @@ function useRoomMapEditorEditing(
   return { ...editing, onNodesChange, onEdgesChange };
 }
 
-export interface RoomMapEditorEditingApi {
+interface RoomMapEditorEditingApi {
   createEdge: ReturnType<typeof useMapEditing>['createEdge'];
   deleteEdge: ReturnType<typeof useMapEditing>['deleteEdge'];
   updateEdge: ReturnType<typeof useMapEditing>['updateEdge'];

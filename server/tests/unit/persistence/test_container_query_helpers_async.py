@@ -12,6 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from server.exceptions import DatabaseError
 from server.persistence.container_query_helpers_async import (
     _parse_jsonb,
+    get_bank_container_async,
     get_containers_by_entity_id_async,
     get_containers_by_room_id_async,
     get_decayed_containers_async,
@@ -131,3 +132,54 @@ async def test_get_decayed_containers_db_error() -> None:
 
     with pytest.raises(DatabaseError):
         await get_decayed_containers_async(mock_session, datetime.now(UTC))
+
+
+def _session_whose_fetchone_is(row: tuple[object, ...] | None) -> tuple[AsyncMock, AsyncMock]:
+    """A session whose execute() yields a result with fetchone() == row; returns (session, execute)."""
+    result = MagicMock()
+    result.configure_mock(fetchone=MagicMock(return_value=row))
+    execute = AsyncMock(return_value=result)
+    session = AsyncMock()
+    session.execute = execute
+    return session, execute
+
+
+@pytest.mark.asyncio
+async def test_get_bank_container_returns_the_owners_box() -> None:
+    session, execute = _session_whose_fetchone_is(_sample_row())
+
+    with patch(
+        "server.persistence.container_query_helpers_async.fetch_container_items_async",
+        new_callable=AsyncMock,
+        return_value=[{"item_id": "lamp"}],
+    ):
+        box = await get_bank_container_async(session, ENTITY_ID)
+
+    assert box is not None
+    assert box.container_instance_id == CONTAINER_ID
+    assert box.items_json == [{"item_id": "lamp"}]
+    assert execute.await_args is not None
+    # the procedure takes the owner as text, never a UUID object
+    assert execute.await_args.args[1] == {"owner_id": str(ENTITY_ID)}
+
+
+@pytest.mark.asyncio
+async def test_get_bank_container_is_none_when_the_player_has_no_box() -> None:
+    session, _ = _session_whose_fetchone_is(None)
+
+    with patch(
+        "server.persistence.container_query_helpers_async.fetch_container_items_async",
+        new_callable=AsyncMock,
+    ) as fetch_items:
+        assert await get_bank_container_async(session, ENTITY_ID) is None
+
+    fetch_items.assert_not_awaited()  # nothing to load items for
+
+
+@pytest.mark.asyncio
+async def test_get_bank_container_db_error() -> None:
+    session = AsyncMock()
+    session.execute = AsyncMock(side_effect=SQLAlchemyError("fail"))
+
+    with pytest.raises(DatabaseError):
+        _ = await get_bank_container_async(session, ENTITY_ID)

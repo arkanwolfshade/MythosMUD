@@ -10,7 +10,6 @@ from collections.abc import Mapping
 from typing import Protocol, cast, runtime_checkable
 
 from ..exceptions import ValidationError as MythosValidationError
-from ..models.command import CommandType
 from ..structured_logging.enhanced_logging_config import get_logger
 from .enhanced_error_logging import log_and_raise_enhanced
 
@@ -58,103 +57,6 @@ def validate_command_safety(command_string: str) -> bool:
             return False
 
     return True
-
-
-_COMMAND_HELP_TEXTS: dict[str, str] = {
-    CommandType.LOOK.value: "look [direction] - Look around or in a specific direction",
-    CommandType.GO.value: "go <direction> - Move in a specific direction",
-    CommandType.SAY.value: "say <message> - Say something to other players",
-    CommandType.TALK.value: "talk <npc> | talk <number> - Speak with an NPC (dialogue tree)",
-    CommandType.LOCAL.value: "local <message> - Send message to local channel (sub-zone)",
-    CommandType.WHISPER.value: "whisper <player> <message> - Send private message to player",
-    CommandType.REPLY.value: "reply <message> - Reply to last whisper received",
-    CommandType.EMOTE.value: "emote <action> - Perform an action",
-    CommandType.ME.value: "me <action> - Describe an action",
-    CommandType.POSE.value: "pose [description] - Set or display your pose",
-    CommandType.ALIAS.value: "alias <name> [command] - Create or view an alias",
-    CommandType.ALIASES.value: "aliases - List all your aliases",
-    CommandType.UNALIAS.value: "unalias <name> - Remove an alias",
-    CommandType.HELP.value: "help [command] - Get help on commands",
-    CommandType.MUTE.value: "mute <player> [duration] [reason] - Mute a player",
-    CommandType.UNMUTE.value: "unmute <player> - Unmute a player",
-    CommandType.MUTE_GLOBAL.value: "mute_global <player> [duration] [reason] - Globally mute a player",
-    CommandType.UNMUTE_GLOBAL.value: "unmute_global <player> - Globally unmute a player",
-    CommandType.ADD_ADMIN.value: "add_admin <player> - Make a player an admin",
-    CommandType.MUTES.value: "mutes - Show your mute status",
-    CommandType.SUMMON.value: "summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs",
-    CommandType.WHO.value: "who [player] - List online players with optional filtering",
-    CommandType.STATUS.value: "status - Show your character status",
-    CommandType.SKILLS.value: "skills - Show your character's skills",
-    CommandType.TIME.value: "time - Show the current Mythos time",
-    CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
-    CommandType.INVENTORY.value: "inventory - Show your inventory",
-    CommandType.PICKUP.value: "pickup <item-number> [quantity] - Pick up a room item",
-    CommandType.DROP.value: "drop <inventory-number> [quantity] - Drop an inventory item",
-    CommandType.EQUIP.value: "equip <inventory-number> [slot] - Equip an item",
-    CommandType.UNEQUIP.value: "unequip <slot> - Unequip an item",
-    CommandType.QUIT.value: "quit - Quit the game",
-    CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
-    CommandType.STAND.value: "stand - Return to a standing posture",
-    CommandType.LIE.value: "lie [down] - Lie down on the ground",
-    CommandType.FLEE.value: "flee - Attempt to flee from combat (random adjacent room)",
-}
-
-_GENERAL_COMMAND_HELP = """
-Available Commands:
-- look [direction] - Look around or in a specific direction
-- go <direction> - Move in a specific direction
-- say <message> - Say something to other players
-- talk <npc> | talk <number> - Speak with an NPC (dialogue tree)
-- local <message> - Send message to local channel (sub-zone)
-- whisper <player> <message> - Send private message to player
-- reply <message> - Reply to last whisper received
-- emote <action> - Perform an action
-- me <action> - Describe an action
-- pose [description] - Set or display your pose
-- alias <name> [command] - Create or view an alias
-- aliases - List all your aliases
-- unalias <name> - Remove an alias
-- help [command] - Get help on commands
-- mute <player> [duration] [reason] - Mute a player
-- unmute <player> - Unmute a player
-- mute_global <player> [duration] [reason] - Globally mute a player
-- unmute_global <player> - Globally unmute a player
-- add_admin <player> - Make a player an admin
-- mutes - Show your mute status
-- summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs
-- who [player] - List online players with optional filtering
-- status - Show your character status
-- time - Show the current Mythos time
-- whoami - Show your personal status (alias of status)
-- inventory - Show your inventory
-- quit - Quit the game
-- sit - Sit down and adopt a seated posture
-- stand - Return to a standing posture
-- lie [down] - Lie down on the ground
-- flee - Attempt to flee from combat (random adjacent room)
-
-Directions: north, south, east, west
-Use 'help <command>' for detailed information about a specific command.
-"""
-
-
-def get_command_help(command_type: str | None = None) -> str:
-    """
-    Get help text for commands.
-
-    Args:
-        command_type: Specific command to get help for, or None for general help
-
-    Returns:
-        Help text string
-    """
-    if command_type:
-        command_type = command_type.lower()
-        if command_type not in [cmd.value for cmd in CommandType]:
-            return f"Unknown command: {command_type}"
-        return _COMMAND_HELP_TEXTS.get(command_type, f"No help available for: {command_type}")
-
-    return _GENERAL_COMMAND_HELP
 
 
 def _username_from_dict(d: Mapping[str, object]) -> str | None:

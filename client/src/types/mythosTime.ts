@@ -8,7 +8,7 @@ export interface MythosHoliday {
   notes?: string | null;
 }
 
-export interface MythosScheduleSummary {
+interface MythosScheduleSummary {
   id: string;
   name: string;
   category: string;

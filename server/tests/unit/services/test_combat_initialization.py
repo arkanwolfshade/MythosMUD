@@ -3,6 +3,11 @@ Unit tests for combat initialization.
 
 Tests the CombatInitializer class for creating and initializing combat instances.
 """
+# pyright: reportUnknownParameterType=false, reportMissingParameterType=false
+# pyright: reportUnknownArgumentType=false, reportUnknownMemberType=false
+# TEST_MOCK: the `attacker_data`/`target_data` fixture parameters are untyped throughout this
+# file (66 findings already baselined for the identical pattern); new tests using them inherit
+# the same shape.
 
 import uuid
 
@@ -64,6 +69,36 @@ class TestCombatInitializer:
         assert not combat.queued_actions
         assert not combat.round_actions
 
+    def test_add_participant_joins_and_rebuilds_initiative(self, attacker_data, target_data):
+        """#833: a late joiner becomes a PLAYER participant and turn order is rebuilt by dexterity."""
+        combat = CombatInitializer.create_combat_instance(
+            room_id="room_001",
+            attacker=attacker_data,
+            target=target_data,
+            current_tick=0,
+            auto_progression_enabled=True,
+            turn_interval_seconds=10,
+        )
+        joiner = CombatParticipantData(
+            participant_id=uuid.uuid4(),
+            name="Player2",
+            current_dp=80,
+            max_dp=100,
+            dexterity=20,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+
+        CombatInitializer.add_participant(combat, joiner)
+
+        assert len(combat.participants) == 3
+        assert combat.participants[joiner.participant_id].name == "Player2"
+        assert combat.participants[joiner.participant_id].participant_type == CombatParticipantType.PLAYER
+        assert combat.turn_order == [
+            joiner.participant_id,
+            attacker_data.participant_id,
+            target_data.participant_id,
+        ]
+
     def test_create_combat_instance_participants(self, attacker_data, target_data):
         """Test create_combat_instance adds participants correctly."""
         combat = CombatInitializer.create_combat_instance(
@@ -92,6 +127,22 @@ class TestCombatInitializer:
         assert target_participant.max_dp == 50
         assert target_participant.dexterity == 10
         assert target_participant.participant_type == CombatParticipantType.NPC
+
+    def test_create_combat_instance_threads_corruption_onto_participants(self, attacker_data, target_data):
+        """#815: CombatParticipantData.corruption must survive into CombatParticipant -- the
+        aggro affinity curve reads it from combat.participants, not from the *Data intermediate."""
+        attacker_data.corruption = 10
+        target_data.corruption = 85
+        combat = CombatInitializer.create_combat_instance(
+            room_id="room_001",
+            attacker=attacker_data,
+            target=target_data,
+            current_tick=100,
+            auto_progression_enabled=True,
+            turn_interval_seconds=6,
+        )
+        assert combat.participants[attacker_data.participant_id].corruption == 10
+        assert combat.participants[target_data.participant_id].corruption == 85
 
     def test_create_combat_instance_turn_order_higher_dexterity_first(self, attacker_data, target_data):
         """Test create_combat_instance orders turns by dexterity (highest first)."""

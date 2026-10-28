@@ -38,7 +38,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: RUNTIME_PARALLEL ? PARALLEL_WORKERS : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html'], ['list']],
+  /* html open:'never': the default 'on-failure' serves the report and blocks on Ctrl+C, which stalls make test-playwright. */
+  reporter: [['html', { open: 'never' }], ['list'], ['json', { outputFile: 'test-results/runtime-results.json' }]],
   /* Global setup and teardown */
   globalSetup: './runtime/global-setup.ts',
   globalTeardown: './runtime/global-teardown.ts',
@@ -68,12 +69,23 @@ export default defineConfig({
   expect: {
     timeout: 30000,
   },
-  /* Runtime E2E project: bundled Firefox (no system Chrome required).
+  /* Runtime E2E projects: bundled Firefox (no system Chrome required).
    * Install browsers once per machine: `cd client && npx playwright install firefox`
+   *
+   * `shared-session` specs (tagged @shared-session) reuse one logged-in player pair per worker
+   * (fixtures/shared-session.ts). Everything else runs in `isolated`. The split matters: separate
+   * projects get separate workers, so the shared pair is logged out before an isolated spec logs
+   * the same accounts in.
    */
   projects: [
     {
-      name: 'firefox',
+      name: 'shared-session',
+      grep: /@shared-session/,
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'isolated',
+      grepInvert: /@shared-session/,
       use: { ...devices['Desktop Firefox'] },
     },
   ],

@@ -23,7 +23,7 @@ import {
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { reopenPlayerPageIfClosed, type PlayerContext } from './multiplayer-contexts';
 import { ensurePlayerInGame, waitForAllPlayersInGame } from './multiplayer-ready';
-import { assertPlayerAlive } from './player';
+import { assertPlayerAlive, currentLocation, waitUntil } from './player';
 import { TEST_TIMEOUTS, type TestPlayer } from './test-data';
 
 function formatOccupantsSnapshotForError(snapshot: unknown): string {
@@ -208,6 +208,16 @@ export interface EnsureMultiplayerCoLocatedOptions {
 
 const TELEPORT_SETTLE_BASE_MS = 6000;
 const MAX_COLOCATE_ATTEMPTS = 3;
+/** Cap for ensureMultiplayerCoLocated's "already together?" check before it falls back to teleporting. */
+const ALREADY_COLOCATED_CHECK_MS = 5000;
+
+/** Best-effort: resolves once all players' Location panels show the same non-empty room, or after timeoutMs. */
+async function waitForSharedLocation(contexts: PlayerContext[], timeoutMs: number): Promise<void> {
+  await waitUntil(async () => {
+    const locations = await Promise.all(contexts.map(c => currentLocation(c.page)));
+    return locations[0] !== '' && locations.every(l => l === locations[0]);
+  }, timeoutMs);
+}
 
 /**
  * Reset E2E player rows in mythos_e2e (same script as global-teardown).
@@ -281,7 +291,7 @@ async function resyncE2ePlayersAfterDatabaseReset(contexts: PlayerContext[], tim
 
     const motdVisible = await ctx.page
       .getByTestId('motd-enter-realm')
-      .isVisible({ timeout: 2500 })
+      .isVisible()
       .catch(() => false);
     if (motdVisible) {
       const motdPage = new MotdPage(ctx.page);
@@ -303,7 +313,7 @@ async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], time
   for (const ctx of contexts) {
     const motdVisible = await ctx.page
       .getByTestId('motd-enter-realm')
-      .isVisible({ timeout: 2500 })
+      .isVisible()
       .catch(() => false);
     if (motdVisible) {
       const motdPage = new MotdPage(ctx.page);
@@ -316,7 +326,7 @@ async function ensureMultiplayerReadyForCoLocate(contexts: PlayerContext[], time
   for (const ctx of contexts) {
     const onLogin = await ctx.page
       .getByTestId('username-input')
-      .isVisible({ timeout: 2000 })
+      .isVisible()
       .catch(() => false);
     if (onLogin) {
       await loginPlayer(ctx.page, ctx.player.username, ctx.player.password);
@@ -357,10 +367,12 @@ async function runCoLocateTeleportAttempt(
   });
   awContext.context = awContext.page.context();
   // Admin-only: move AW to the other character before bringing them together (Ithaqua cannot teleport).
+  // goto/teleport have landed once every player's Location panel names the same room. These waits
+  // keep the old fixed sleeps as caps but return early; ensurePlayersInSameRoom still verifies occupants.
   await executeCommand(awContext.page, `goto ${otherCharName}`);
-  await new Promise(r => setTimeout(r, 2000));
+  await waitForSharedLocation(contexts, 2000);
   await executeCommand(awContext.page, `teleport ${otherCharName}`);
-  await new Promise(r => setTimeout(r, TELEPORT_SETTLE_BASE_MS + attempt * 2000));
+  await waitForSharedLocation(contexts, TELEPORT_SETTLE_BASE_MS + attempt * 2000);
 
   for (const ctx of contexts) {
     await reopenPlayerPageIfClosed(ctx);
@@ -451,6 +463,16 @@ export async function ensureMultiplayerCoLocated(
   const coLocateTimeoutMs = options?.coLocateTimeoutMs ?? 45000;
 
   await ensureMultiplayerReadyForCoLocate(contexts, timeoutMs);
+
+  // Most callers run right after resetPlayersToMainFoyer (#956), so the players are already together.
+  // Verify that directly (same strict check the teleport path ends with) and skip goto/teleport/settle.
+  // Short timeout: when they are co-located the panels are already current; otherwise fall through.
+  const alreadyCoLocated = await ensurePlayersInSameRoom(contexts, contexts.length, ALREADY_COLOCATED_CHECK_MS)
+    .then(() => true)
+    .catch(() => false);
+  if (alreadyCoLocated) {
+    return;
+  }
 
   const [awContext, otherContext] = contexts;
   const otherCharName = await resolveOtherCharacterName(otherContext);

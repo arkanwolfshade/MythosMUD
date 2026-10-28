@@ -6,13 +6,16 @@ Tests the GameStateProvider class.
 
 # pylint: disable=redefined-outer-name  # Reason: Fixtures are injected as parameters by pytest, which is the standard pattern, suppression applied at module level since all test functions use fixtures
 # This suppression is applied at module level since all test functions use fixtures.
+# pyright: reportPrivateUsage=false
 
 import uuid
-from typing import Any
+from collections.abc import AsyncIterator
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.integration.game_state_provider import GameStateProvider
 
 
@@ -171,6 +174,72 @@ async def test_send_initial_game_state(game_state_provider):
     await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
     # Should not raise
     assert True  # If we get here, it succeeded
+
+
+@pytest.mark.asyncio
+async def test_get_lucidity_for_client_found(game_state_provider: GameStateProvider):
+    """Test _get_lucidity_for_client() returns (tier, current_lcd) when a PlayerLucidity row exists."""
+    player_id = uuid.uuid4()
+    mock_record = MagicMock()
+    mock_record.current_tier = "fractured"
+    mock_record.current_lcd = -25
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_record)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with patch("server.database.get_async_session", return_value=async_gen()):
+        tier, current_lcd = await game_state_provider._get_lucidity_for_client(player_id)
+    assert tier == "fractured"
+    assert current_lcd == -25
+
+
+@pytest.mark.asyncio
+async def test_get_lucidity_for_client_no_row(game_state_provider: GameStateProvider):
+    """Test _get_lucidity_for_client() returns (None, None) for a new character with no row yet."""
+    player_id = uuid.uuid4()
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=None)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with patch("server.database.get_async_session", return_value=async_gen()):
+        tier, current_lcd = await game_state_provider._get_lucidity_for_client(player_id)
+    assert tier is None
+    assert current_lcd is None
+
+
+@pytest.mark.asyncio
+async def test_send_initial_game_state_includes_lucidity_tier(
+    game_state_provider: GameStateProvider, mock_send_personal_message: AsyncMock, mock_room_manager: MagicMock
+):
+    """Test send_initial_game_state() includes lucidity_tier/current_lcd in the game_state payload."""
+    mock_room_manager.get_room_occupants = AsyncMock(return_value=[])
+    player_id = uuid.uuid4()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_001"
+    room_id = "room_001"
+    online_players: dict[uuid.UUID, dict[str, object]] = {}
+
+    mock_record = MagicMock()
+    mock_record.current_tier = "uneasy"
+    mock_record.current_lcd = 40
+    mock_session = MagicMock()
+    mock_session.get = AsyncMock(return_value=mock_record)
+
+    async def async_gen() -> AsyncIterator[MagicMock]:
+        yield mock_session
+
+    with patch("server.database.get_async_session", return_value=async_gen()):
+        await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
+
+    assert mock_send_personal_message.call_args is not None
+    sent_event = cast(dict[str, object], mock_send_personal_message.call_args.args[1])
+    data = cast(dict[str, object], sent_event["data"])
+    assert data["lucidity_tier"] == "uneasy"
+    assert data["current_lcd"] == 40
 
 
 @pytest.mark.asyncio
@@ -363,13 +432,19 @@ def test_get_npcs_batch_exception_fallback(game_state_provider):
 async def test_convert_room_uuids_with_npcs(game_state_provider):
     """Test convert_room_uuids_to_names() converts NPC IDs to display names."""
     room_data: dict[str, Any] = {"npcs": ["npc_patient_001"]}
-    with patch.object(
-        game_state_provider,
-        "get_npcs_batch",
-        return_value={"npc_patient_001": "Patient"},
+    with (
+        patch.object(
+            game_state_provider,
+            "get_npcs_batch",
+            return_value={"npc_patient_001": "Patient"},
+        ),
+        patch(
+            "server.realtime.integration.game_state_provider.get_npc_disposition_from_instance",
+            return_value=NpcDisposition.QUEST_GIVER,
+        ),
     ):
         result = await game_state_provider.convert_room_uuids_to_names(room_data)
-    assert result["npcs"] == ["Patient"]
+    assert result["npcs"] == [{"name": "Patient", "disposition": NpcDisposition.QUEST_GIVER}]
 
 
 @pytest.mark.asyncio
@@ -390,12 +465,16 @@ async def test_get_room_data_with_conversion(game_state_provider, mock_get_async
 
 @pytest.mark.asyncio
 async def test_process_occupants_with_grace_periods(game_state_provider, mock_get_app, mock_room_manager):
-    """Test _process_occupants_with_grace_periods() splits players and NPCs."""
-    player_id = uuid.uuid4()
+    """Test _process_occupants_with_grace_periods() splits players and NPCs.
+
+    Issue #787: player_id was dropped from the signature -- its only prior use
+    was two if/else branches whose arms did the exact same thing regardless of
+    the comparison, so it never affected the output.
+    """
     other_id = uuid.uuid4()
     mock_room_manager.get_room_occupants = AsyncMock(
         return_value=[
-            {"player_name": "NPC Guard", "is_npc": True, "player_id": "npc_1"},
+            {"player_name": "NPC Guard", "is_npc": True, "player_id": "npc_1", "disposition": "aggressive_mob"},
             {"player_name": "Peer", "is_npc": False, "player_id": str(other_id)},
         ]
     )
@@ -403,10 +482,8 @@ async def test_process_occupants_with_grace_periods(game_state_provider, mock_ge
     mock_app.state.connection_manager = MagicMock()
     mock_get_app.return_value = mock_app
 
-    occupants, players, npcs = await game_state_provider._process_occupants_with_grace_periods(
-        "room_001", player_id, {}
-    )
-    assert "NPC Guard" in npcs
+    occupants, players, npcs = await game_state_provider._process_occupants_with_grace_periods("room_001", {})
+    assert npcs == [{"name": "NPC Guard", "disposition": NpcDisposition.AGGRESSIVE_MOB}]
     assert "Peer" in players
     assert len(occupants) >= 2
 
@@ -506,3 +583,80 @@ async def test_get_player_data_for_client_with_service(game_state_provider, mock
     result = await game_state_provider._get_player_data_for_client(player, player_id, "room_001")
     assert result["name"] == "Scholar"
     assert result["xp"] == 50
+
+
+@pytest.mark.asyncio
+async def test_get_player_data_for_client_app_state_fallback(
+    game_state_provider: GameStateProvider, mock_get_app: MagicMock, mock_get_async_persistence: MagicMock
+):
+    """_resolve_player_service() falls back to app.state.player_service when there's no container.
+
+    Issue #787: _get_player_data_for_client was decomposed into _resolve_player_service +
+    _build_client_player_data; the container-preference test above never exercises this
+    fallback branch.
+    """
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    schema = MagicMock(model_dump=MagicMock(return_value={"name": "Fallback Scholar", "stats": {}}))
+    player_service = AsyncMock(convert_player_to_schema=AsyncMock(return_value=schema))
+    mock_app = MagicMock(spec=["state"], state=MagicMock(spec=["player_service"], player_service=player_service))
+    mock_get_app.return_value = mock_app
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_get_async_persistence.return_value = mock_persistence
+
+    result = await game_state_provider._get_player_data_for_client(player, player_id, "room_001")
+    assert result["name"] == "Fallback Scholar"
+
+
+@pytest.mark.asyncio
+async def test_get_player_data_for_client_dict_fallback(
+    game_state_provider: GameStateProvider, mock_get_app: MagicMock, mock_get_async_persistence: MagicMock
+):
+    """_build_client_player_data() falls back to .dict() when the schema has no model_dump (pydantic v1 style)."""
+    player_id = uuid.uuid4()
+    player = MagicMock()
+    schema = MagicMock(
+        spec=["dict"], dict=MagicMock(return_value={"name": "Legacy Scholar", "experience_points": 10, "stats": {}})
+    )
+    player_service = AsyncMock(convert_player_to_schema=AsyncMock(return_value=schema))
+    container = MagicMock(player_service=player_service)
+    mock_app = MagicMock(state=MagicMock(container=container))
+    mock_get_app.return_value = mock_app
+    mock_persistence = MagicMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_get_async_persistence.return_value = mock_persistence
+
+    result = await game_state_provider._get_player_data_for_client(player, player_id, "room_001")
+    assert result["name"] == "Legacy Scholar"
+    assert result["xp"] == 10
+
+
+def test_get_player_name_with_grace_periods_rejects_uuid_shaped_name(game_state_provider: GameStateProvider):
+    """A UUID-shaped 'name' is never a real display name, even with an otherwise valid player."""
+    player_id = uuid.uuid4()
+    player = MagicMock(spec=["name"])
+    player.name = "11111111-1111-1111-1111-111111111111"
+    assert game_state_provider._get_player_name_with_grace_periods(player_id, player) is None
+
+
+def test_get_player_name_with_grace_periods_falls_back_to_user(
+    game_state_provider: GameStateProvider, mock_get_app: MagicMock
+):
+    """No usable player.name falls back to player.user.username."""
+    player_id = uuid.uuid4()
+    # Mock's `name` constructor kwarg sets the mock's repr, not a `.name` attribute -- must
+    # assign it post-construction; `user` has no such collision.
+    player = MagicMock(spec=["name", "user"], user=MagicMock(spec=["username"], username="Backup Name"))
+    player.name = None
+    mock_get_app.return_value = None
+
+    name = game_state_provider._get_player_name_with_grace_periods(player_id, player)
+    assert name == "Backup Name"
+
+
+def test_get_player_name_with_grace_periods_no_name_no_user(game_state_provider: GameStateProvider):
+    """Neither a usable name nor a user relation yields None, not a crash."""
+    player_id = uuid.uuid4()
+    player = MagicMock(spec=[])
+    assert game_state_provider._get_player_name_with_grace_periods(player_id, player) is None

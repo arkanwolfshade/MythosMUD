@@ -1,6 +1,6 @@
 ---
 name: mythosmud-adr-authoring
-description: Create or update Architecture Decision Records in docs/architecture/decisions/: Status, Context, Decision, Alternatives Considered, Consequences. Use when documenting an architectural decision, adding an ADR, or when the user mentions ADR or architecture decision.
+description: "Create or update Architecture Decision Records in docs/architecture/decisions/: Status, Context, Decision, Alternatives Considered, Consequences. Use when documenting an architectural decision, adding an ADR, or when the user mentions ADR or architecture decision."
 ---
 
 # MythosMUD ADR Authoring

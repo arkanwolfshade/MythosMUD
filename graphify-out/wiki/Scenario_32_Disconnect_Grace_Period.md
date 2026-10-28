@@ -1,13 +1,11 @@
 # Scenario 32 Disconnect Grace Period
 
-> 4 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Scenario 32 Disconnect Grace Period** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Linkdead Zombie State** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Scenario 33 Rest Command** (1 connections) — `e2e-tests/scenarios/scenario-33-rest-command.md`
-- **Scenario 35 Player Combat** (1 connections) — `e2e-tests/scenarios/scenario-35-player-combat.md`
+- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
@@ -15,14 +13,13 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- `e2e-tests/scenarios/scenario-33-rest-command.md`
-- `e2e-tests/scenarios/scenario-35-player-combat.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

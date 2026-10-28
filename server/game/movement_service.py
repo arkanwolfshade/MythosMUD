@@ -15,31 +15,38 @@ that dimensional shifts are properly recorded.
 import threading
 import time
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
 from ..models.room import Room
+from ..realtime.connection_manager_api import send_system_notification
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
+from .instance_manager import is_template_room
 from .movement_helpers import (
     check_combat_state,
     check_player_posture,
     extract_player_id,
+    room_exit_refusal,
     validate_exit,
     validate_player_room_membership,
 )
 from .movement_monitor import get_movement_monitor
+from .movement_room_occupancy import RoomOccupancyMixin
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
     from ..models.player import Player
+    from ..services.instance_flush_service import InstanceFlushService
     from ..services.player_combat_service import PlayerCombatService
+    from .instance_manager import InstanceManager
 
 
-class MovementService:
+class MovementService(RoomOccupancyMixin):
     """
     Service for handling atomic player movement operations.
 
@@ -59,6 +66,7 @@ class MovementService:
         async_persistence: "AsyncPersistenceLayer | None" = None,
         exploration_service: Any | None = None,
         instance_manager: Any | None = None,
+        instance_flush: "InstanceFlushService | None" = None,
     ) -> None:
         """
         Initialize the movement service.
@@ -69,12 +77,15 @@ class MovementService:
             async_persistence: Optional AsyncPersistenceLayer instance (required for persistence operations)
             exploration_service: Optional ExplorationService for tracking room exploration
             instance_manager: Optional InstanceManager for tutorial exit handling
+            instance_flush: Optional InstanceFlushService; on tutorial exit the instance's floor
+                items go to the lost-and-found (without it the instance is just destroyed)
         """
         self._event_bus = event_bus
         if async_persistence is None:
             raise ValueError("async_persistence is required for MovementService")
         self._persistence = async_persistence
         self._instance_manager = instance_manager
+        self._instance_flush: InstanceFlushService | None = instance_flush
         self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
         self._player_combat_service = player_combat_service
@@ -153,7 +164,7 @@ class MovementService:
             try:
                 player_uuid = uuid.UUID(player_id)
                 player = await self._persistence.get_player_by_id(player_uuid)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 player = await self._persistence.get_player_by_name(player_id)
                 if player:
                     self._logger.info("Resolved player by name", player_name=player_id, player_id=player.player_id)
@@ -167,7 +178,7 @@ class MovementService:
         resolved_player_id_str = str(player.player_id)
         try:
             resolved_player_id: uuid.UUID | str = uuid.UUID(resolved_player_id_str)
-        except (ValueError, AttributeError, TypeError):
+        except ValueError, AttributeError, TypeError:
             resolved_player_id = resolved_player_id_str
 
         if str(resolved_player_id) != str(player_id):
@@ -210,7 +221,7 @@ class MovementService:
         self._logger.info("Moving player", player_id=resolved_player_id, from_room=from_room.id, to_room=to_room.id)
         room_update_start = time.time()
         self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room.id)
-        from_room.player_left(resolved_player_id)
+        from_room.player_left(resolved_player_id, to_room_id=cast(str, to_room.id))
         self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room.id)
         to_room.player_entered(resolved_player_id, force_event=True, from_room_id=from_room.id)
         room_update_end = time.time()
@@ -226,26 +237,40 @@ class MovementService:
         timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
 
     async def _handle_tutorial_exit_if_applicable(self, player: Any, to_room_id: str) -> None:
-        """If player exited tutorial instance (moved to fixed exit room), clear and destroy instance."""
-        if not self._instance_manager:
+        """If player exited tutorial instance (moved to fixed exit room), clear and flush instance."""
+        instance_manager = cast("InstanceManager | None", self._instance_manager)
+        tutorial_player = cast("Player", player)
+        instance_id = tutorial_player.tutorial_instance_id
+        if instance_manager is None or not instance_id:
             return
-        instance_id = getattr(player, "tutorial_instance_id", None)
-        if not instance_id:
-            return
-        exit_room_id = self._instance_manager.get_exit_room_id(instance_id)
+        exit_room_id = instance_manager.get_exit_room_id(instance_id)
         if to_room_id != exit_room_id:
             return
-        setattr(player, "tutorial_instance_id", None)  # noqa: B010  # Reason: SQLAlchemy column
-        await self._persistence.save_player(player)
-        self._instance_manager.destroy_instance(instance_id)
+        tutorial_player.tutorial_instance_id = None
+        # Safety net: a player whose respawn point is a template room (an old tutorial, an unfinished quest
+        # reward) must never keep respawning into the template.
+        respawn_room_id = tutorial_player.respawn_room_id
+        if respawn_room_id and is_template_room(self._persistence.get_room_by_id(respawn_room_id)):
+            tutorial_player.respawn_room_id = exit_room_id
+        await self._persistence.save_player(tutorial_player)
+        if self._instance_flush is not None:
+            if await self._instance_flush.flush(instance_id):
+                await send_system_notification(
+                    tutorial_player.player_id,
+                    "The things you left behind will be waiting in your deposit box at Arkham Savings & Trust.",
+                )
+        else:
+            instance_manager.destroy_instance(instance_id)
         self._logger.info(
             "Tutorial exit: cleared instance",
-            player_id=player.player_id,
+            player_id=tutorial_player.player_id,
             instance_id=instance_id,
         )
 
     def _mark_room_explored(self, resolved_player_id: uuid.UUID | str, to_room_id: str) -> None:
-        """Mark destination room as explored (non-blocking)."""
+        """Mark destination room as explored (non-blocking). Instance rooms are private copies and are skipped."""
+        if is_instance_room_id(to_room_id):
+            return
         try:
             exploration_service = self._exploration_service
             if exploration_service:
@@ -463,7 +488,7 @@ class MovementService:
             fresh = await self._persistence.get_player_by_id(player_id)
             if fresh is not None:
                 return fresh
-        except (DatabaseError, SQLAlchemyError):
+        except DatabaseError, SQLAlchemyError:
             pass
         return player_obj
 
@@ -478,6 +503,11 @@ class MovementService:
 
         if not to_room:
             self._logger.error("To room does not exist", room_id=to_room_id)
+            return False
+
+        if is_template_room(to_room):
+            # Template rooms are only ever cloned; an exit into one is a world-data bug.
+            self._logger.warning("Refused move into instance template room", player_id=player_id, room_id=to_room_id)
             return False
 
         if not await validate_player_room_membership(
@@ -532,252 +562,21 @@ class MovementService:
         if not check_player_posture(self._logger, posture_player, player_id, from_room_id, to_room_id):
             return False
 
-        return await self._validate_movement_rooms(player_id, from_room_id, to_room_id)
-
-    def _validate_add_player_ids(self, player_id: uuid.UUID | str, room_id: str) -> None:
-        """Validate player and room IDs for add_player_to_room."""
-        if not player_id:
-            log_and_raise(
-                ValidationError,
-                "Player ID cannot be empty",
-                operation="add_player_to_room",
-                details={"room_id": room_id},
-                user_friendly="Player ID is required",
-            )
-
-        if not room_id:
-            log_and_raise(
-                ValidationError,
-                "Room ID cannot be empty",
-                player_id=player_id,
-                operation="add_player_to_room",
-                details={"player_id": player_id},
-                user_friendly="Room ID is required",
-            )
-
-    async def _persist_added_player_room(self, player_id: uuid.UUID | str, room_id: str) -> None:
-        """Update player current_room_id in persistence after room add."""
-        if isinstance(player_id, str):
-            try:
-                player_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
-                return
-        else:
-            player_uuid = player_id
-
-        try:
-            player = await self._persistence.get_player_by_id(player_uuid)
-        except (ValueError, AttributeError):
-            return
-
-        if not player:
-            return
-
-        setattr(player, "current_room_id", room_id)  # noqa: B010  # Reason: SQLAlchemy column descriptor
-        await self._persistence.save_player(player)
-
-    async def add_player_to_room(self, player_id: uuid.UUID | str, room_id: str) -> bool:
-        """
-        Add a player to a room (for initial placement, teleportation, etc.).
-
-        Args:
-            player_id: The ID of the player to add
-            room_id: The ID of the room to add the player to
-
-        Returns:
-            True if the player was added successfully, False otherwise
-        """
-        self._validate_add_player_ids(player_id, room_id)
-
-        with self._lock:
-            try:
-                room = self._persistence.get_room_by_id(room_id)
-                if not room:
-                    self._logger.error("Room not found", room_id=room_id)
-                    return False
-
-                if room.has_player(player_id):
-                    self._logger.warning("Player already in room", player_id=player_id, room_id=room_id)
-                    return True
-
-                room.add_player_silently(player_id)
-                await self._persist_added_player_room(player_id, room_id)
-
-                self._logger.info("Added player to room", player_id=player_id, room_id=room_id)
-                return True
-
-            except (DatabaseError, SQLAlchemyError) as e:
-                self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
-                log_and_raise(
-                    DatabaseError,
-                    f"Error adding player {player_id} to room {room_id}: {e}",
-                    player_id=player_id,
-                    room_id=room_id,
-                    operation="add_player_to_room",
-                    details={"player_id": player_id, "room_id": room_id, "error": str(e)},
-                    user_friendly="Failed to add player to room",
-                )
-
-    def _validate_remove_player_params(self, player_id: uuid.UUID | str, room_id: str) -> None:
-        """Validate parameters for remove_player_from_room operation."""
-        if not player_id:
-            log_and_raise(
-                ValidationError,
-                "Player ID cannot be empty",
-                operation="remove_player_from_room",
-                details={"room_id": room_id},
-                user_friendly="Player ID is required",
-            )
-
-        if not room_id:
-            log_and_raise(
-                ValidationError,
-                "Room ID cannot be empty",
-                player_id=player_id,
-                operation="remove_player_from_room",
-                details={"player_id": player_id},
-                user_friendly="Room ID is required",
-            )
-
-    def remove_player_from_room(self, player_id: uuid.UUID | str, room_id: str) -> bool:
-        """
-        Remove a player from a room (for logout, teleportation, etc.).
-
-        Args:
-            player_id: The ID of the player to remove
-            room_id: The ID of the room to remove the player from
-
-        Returns:
-            True if the player was removed successfully, False otherwise
-        """
-        self._validate_remove_player_params(player_id, room_id)
-
-        with self._lock:
-            try:
-                room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
-                if not room:
-                    self._logger.error("Room not found", room_id=room_id)
-                    return False
-
-                # Check if player is in the room
-                if not room.has_player(player_id):
-                    self._logger.warning("Player not in room", player_id=player_id, room_id=room_id)
-                    return True  # Consider this a success
-
-                # Remove player from room
-                room.player_left(player_id)
-
-                self._logger.info("Removed player from room", player_id=player_id, room_id=room_id)
-                return True
-
-            except (DatabaseError, SQLAlchemyError) as e:
-                self._logger.error(
-                    "Error removing player from room", player_id=player_id, room_id=room_id, error=str(e)
-                )
-                log_and_raise(
-                    DatabaseError,
-                    f"Error removing player {player_id} from room {room_id}: {e}",
-                    player_id=player_id,
-                    room_id=room_id,
-                    operation="remove_player_from_room",
-                    details={"player_id": player_id, "room_id": room_id, "error": str(e)},
-                    user_friendly="Failed to remove player from room",
-                )
-
-    async def get_player_room(self, player_id: uuid.UUID | str) -> str | None:
-        """
-        Get the room ID where a player is currently located.
-
-        Args:
-            player_id: The ID of the player to look up (UUID or string)
-
-        Returns:
-            The room ID where the player is located, or None if not found
-        """
-        if not player_id:
-            log_and_raise(
-                ValidationError,
-                "Player ID cannot be empty",
-                operation="get_player_room",
-                user_friendly="Player ID is required",
-            )
-
-        # Convert to UUID for get_player_by_id if needed
-        player_id_uuid: uuid.UUID
-        if isinstance(player_id, str):
-            try:
-                player_id_uuid = uuid.UUID(player_id)
-            except (ValueError, AttributeError):
-                return None
-        else:
-            player_id_uuid = player_id
-
-        # Get player using async persistence
-        try:
-            player = await self._persistence.get_player_by_id(player_id_uuid)
-            if player and hasattr(player, "current_room_id") and player.current_room_id:
-                return str(player.current_room_id)
-        except (DatabaseError, SQLAlchemyError) as e:
-            self._logger.debug("Failed to get player room", player_id=player_id_uuid, error=str(e))
-
-        return None
-
-    def get_room_players(self, room_id: str) -> list[str]:
-        """
-        Get all players currently in a room.
-
-        Args:
-            room_id: The ID of the room to check
-
-        Returns:
-            List of player IDs in the room
-        """
-        if not room_id:
-            log_and_raise(
-                ValidationError,
-                "Room ID cannot be empty",
-                operation="get_room_players",
-                user_friendly="Room ID is required",
-            )
-
-        room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
-        if room:
-            return list(room.get_players())
-
-        return []
-
-    def validate_player_location(self, player_id: str, room_id: str) -> bool:
-        """
-        Validate that a player is in the specified room.
-
-        Args:
-            player_id: The ID of the player to validate
-            room_id: The ID of the room to check
-
-        Returns:
-            True if the player is in the specified room, False otherwise
-        """
-        if not player_id:
-            log_and_raise(
-                ValidationError,
-                "Player ID cannot be empty",
-                operation="validate_player_location",
-                details={"room_id": room_id},
-                user_friendly="Player ID is required",
-            )
-
-        if not room_id:
-            log_and_raise(
-                ValidationError,
-                "Room ID cannot be empty",
-                player_id=player_id,
-                operation="validate_player_location",
-                details={"player_id": player_id},
-                user_friendly="Room ID is required",
-            )
-
-        room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
-        if not room:
+        if not await self._validate_movement_rooms(player_id, from_room_id, to_room_id):
             return False
+        # The fresh persisted player decides: the in-memory one may lag a just-granted item.
+        return await self._exit_open_to_player(cast("Player", posture_player), from_room_id, to_room_id)
 
-        return bool(room.has_player(player_id))
+    async def _exit_open_to_player(self, player: "Player", from_room_id: str, to_room_id: str) -> bool:
+        """False, with the refusal logged, if the exit to to_room_id needs an item or quest progress the player lacks."""
+        from_room = self._persistence.get_room_by_id(from_room_id)
+        refusal = await room_exit_refusal(player, from_room, to_room_id) if from_room else None
+        if refusal is None:
+            return True
+        self._logger.info(
+            "Movement refused: exit requirement not met",
+            from_room=from_room_id,
+            to_room=to_room_id,
+            refusal=refusal,
+        )
+        return False

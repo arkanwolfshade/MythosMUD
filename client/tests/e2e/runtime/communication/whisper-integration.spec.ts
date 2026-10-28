@@ -6,10 +6,9 @@
  * recipient and that the whisper system maintains privacy across player sessions.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -27,19 +26,15 @@ async function nudgeStandBothPlayers(aw: PlayerContext, other: PlayerContext): P
   await new Promise(r => setTimeout(r, 3000));
 }
 
-test.describe('Whisper Integration', () => {
+test.describe('Whisper Integration', { tag: '@shared-session' }, () => {
   test.describe.configure({ mode: 'serial' });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-  });
-
-  test.afterAll(async () => {
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('should deliver whisper message to intended recipient', async () => {

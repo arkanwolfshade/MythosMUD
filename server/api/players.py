@@ -12,7 +12,6 @@ from typing import Any, cast
 from fastapi import Depends
 from fastapi import Request as FastAPIRequest
 
-from ..app.game_tick_processing import get_current_tick, get_tick_interval
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, QuestServiceDep, SkillServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
@@ -645,7 +644,7 @@ async def _end_combat_for_grace_period(player_id: uuid.UUID) -> None:
         return
 
     try:
-        await combat_service.end_combat(combat.combat_id, "Player entered login grace period")
+        _ = await combat_service.remove_participant(combat.combat_id, player_id, "Player entered login grace period")
         logger.info(
             "Ended combat for player entering login grace period",
             player_id=player_id,
@@ -690,8 +689,6 @@ async def _start_login_grace_period_body(
         player_id,
         connection_manager,
         async_persistence=async_persistence,
-        get_current_tick=get_current_tick,
-        get_tick_interval=get_tick_interval,
     )
     remaining = get_login_grace_period_remaining(player_id, connection_manager)
     logger.info(

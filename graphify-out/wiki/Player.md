@@ -1,72 +1,65 @@
 # Player
 
-> 81 nodes
+> 95 nodes · cohesion 0.05
 
 ## Key Concepts
 
-- **executeCommand()** (90 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **player.ts** (49 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensurePlayableConnection()** (36 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getMessages()** (28 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureStanding()** (27 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **executeCommandWithoutRecovery()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **despawnSanitariumCultists()** (10 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **posture-messages-game-info.spec.ts** (10 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **rest-command.spec.ts** (7 connections) — `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- *... and 56 more nodes in this community*
+- **api/monitoring.py** (60 connections) — `server/api/monitoring.py`
+- **test_monitoring_endpoints.py** (55 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **HealthResponse** (17 connections) — `server/models/health.py`
+- **asyncio** (15 connections)
+- **get** (14 connections)
+- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
+- **get_health_status()** (13 connections) — `server/api/monitoring.py`
+- **_request_with_container()** (13 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
+- **movement_monitor.py** (12 connections) — `server/game/movement_monitor.py`
+- **get_memory_stats()** (11 connections) — `server/api/monitoring.py`
+- **get_movement_metrics()** (11 connections) — `server/api/monitoring.py`
+- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
+- **resolve_connection_manager()** (11 connections) — `server/realtime/connection_manager.py`
+- **force_memory_cleanup()** (10 connections) — `server/api/monitoring.py`
+- **get_connection_health_stats()** (10 connections) — `server/api/monitoring.py`
+- **get_dual_connection_stats()** (10 connections) — `server/api/monitoring.py`
+- **reset_metrics()** (10 connections) — `server/api/monitoring.py`
+- **_resolve_memory_leak_collector_from_request()** (10 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (10 connections) — `server/api/monitoring.py`
+- **get_cache_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_eventbus_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_memory_alerts()** (9 connections) — `server/api/monitoring.py`
+- **get_memory_leak_metrics()** (9 connections) — `server/api/monitoring.py`
+- **get_performance_stats()** (9 connections) — `server/api/monitoring.py`
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
-- [Multiplayer Ready](Multiplayer_Ready.md) (112 shared connections)
-- [Auth](Auth.md) (55 shared connections)
-- [Multiplayer Colocated](Multiplayer_Colocated.md) (17 shared connections)
-- [Whisper Movement.spec](Whisper_Movement.spec.md) (12 shared connections)
-- [E2e Bootstrap](E2e_Bootstrap.md) (11 shared connections)
-- [Local Channel Isolation.spec](Local_Channel_Isolation.spec.md) (9 shared connections)
+- [FStringLoggingFixer](FStringLoggingFixer.md) (29 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (22 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (21 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (19 shared connections)
+- [Room](Room.md) (8 shared connections)
+- [MutationDecision](MutationDecision.md) (8 shared connections)
+- [handle_read_command](handle_read_command.md) (5 shared connections)
+- [✅ POSITIVE FINDINGS](✅_POSITIVE_FINDINGS.md) (4 shared connections)
+- [LucidityTierCache](LucidityTierCache.md) (2 shared connections)
+- [command_error](command_error.md) (2 shared connections)
+- [test_party_service.py](test_party_service.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/deathVoidLocation.test.ts`
-- `client/src/utils/deathVoidLocation.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
-- `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/quit-combat-guard.spec.ts`
-- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
-- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `server/api/monitoring.py`
+- `server/api/monitoring_models.py`
+- `server/game/movement_monitor.py`
+- `server/models/health.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 439 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 348 (96%)
+- INFERRED: 15 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

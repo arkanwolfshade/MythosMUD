@@ -16,6 +16,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
+from ..constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
+
 if TYPE_CHECKING:
     from ..services.inventory_service import InventoryStack
 else:
@@ -29,6 +31,7 @@ class ContainerSourceType(StrEnum):
     ENVIRONMENT = "environment"
     EQUIPMENT = "equipment"
     CORPSE = "corpse"
+    BANK = "bank"
 
 
 class ContainerLockState(StrEnum):
@@ -102,8 +105,8 @@ class ContainerComponent(BaseModel):
     capacity_slots: int = Field(
         ...,
         ge=1,
-        le=20,
-        description="Maximum number of inventory slots (1-20)",
+        le=MAX_CONTAINER_CAPACITY_SLOTS,
+        description=f"Maximum number of inventory slots (1-{MAX_CONTAINER_CAPACITY_SLOTS})",
     )
     weight_limit: int | None = Field(
         default=None,
@@ -188,7 +191,9 @@ class ContainerComponent(BaseModel):
             try:
                 return ContainerSourceType(v.lower())
             except ValueError as err:
-                raise ValueError(f"Invalid source_type: {v}. Must be 'environment', 'equipment', or 'corpse'") from err
+                raise ValueError(
+                    f"Invalid source_type: {v}. Must be 'environment', 'equipment', 'corpse', or 'bank'"
+                ) from err
         raise ValueError(f"Invalid source_type type: {type(v)}")
 
     @field_validator("lock_state", mode="before")

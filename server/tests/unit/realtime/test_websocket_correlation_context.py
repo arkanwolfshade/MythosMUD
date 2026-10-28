@@ -44,7 +44,6 @@ async def test_connection_binds_context_fields_before_message_loop(mock_websocke
             "server.realtime.websocket_helpers.check_shutdown_and_reject", new_callable=AsyncMock, return_value=False
         ),
         patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
-        patch("server.realtime.websocket_helpers.load_player_mute_data", new_callable=AsyncMock),
         patch(
             "server.realtime.websocket_initial_state.send_initial_game_state",
             new_callable=AsyncMock,

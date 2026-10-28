@@ -100,7 +100,7 @@ async def run_flee_effect(
         return _flee_effect_services_unavailable_response()
     try:
         fleeing_id = uuid.UUID(target.target_id)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         return _flee_effect_invalid_target_response()
 
     combat = await combat_service.get_combat_by_participant(fleeing_id)

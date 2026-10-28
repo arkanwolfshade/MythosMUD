@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime import player_event_handlers_respawn_room as respawn_room
 
 
@@ -20,11 +21,11 @@ def _host(*, connection_manager: object | None = None) -> MagicMock:
 
 def test_extract_occupant_names_splits_npc_and_player() -> None:
     occupants: list[dict[str, object]] = [
-        {"npc_id": "n1", "npc_name": "Cultist"},
+        {"npc_id": "n1", "npc_name": "Cultist", "disposition": "aggressive_mob"},
         {"player_id": "p1", "player_name": "Investigator"},
     ]
     npc_names, player_names, occupant_names = respawn_room.extract_occupant_names(occupants, "Respawned")
-    assert "Cultist" in npc_names
+    assert npc_names == [{"name": "Cultist", "disposition": NpcDisposition.AGGRESSIVE_MOB}]
     assert "Investigator" in player_names
     assert "Respawned" in player_names
     assert "Cultist" in occupant_names
@@ -42,18 +43,27 @@ def test_merge_player_lists_appends_missing() -> None:
 @pytest.mark.asyncio
 async def test_convert_npc_ids_to_names_resolves_lifecycle_and_short_ids() -> None:
     host = _host(connection_manager=MagicMock())
-    with patch(
-        "server.realtime.player_event_handlers_respawn_room.get_npc_name_from_lifecycle_manager",
-        return_value="Deep One",
+    with (
+        patch(
+            "server.realtime.player_event_handlers_respawn_room.get_npc_name_from_lifecycle_manager",
+            return_value="Deep One",
+        ),
+        patch(
+            "server.realtime.player_event_handlers_respawn_room.get_npc_disposition_from_instance",
+            return_value=NpcDisposition.AGGRESSIVE_MOB,
+        ),
     ):
-        names = await respawn_room.convert_npc_ids_to_names(
+        npcs = await respawn_room.convert_npc_ids_to_names(
             host,
-            ["npc_instance_aaaaaaaaaaaaaaaaaaaa", "Guard"],
+            ["npc_instance_aaaaaaaaaaaaaaaaaaaa", "Guard", {"name": "Merchant", "disposition": "shopkeeper"}],
             [],
             [],
         )
-    assert "Deep One" in names
-    assert "Guard" in names
+    assert npcs == [
+        {"name": "Deep One", "disposition": NpcDisposition.AGGRESSIVE_MOB},
+        {"name": "Guard", "disposition": NpcDisposition.PASSIVE_MOB},
+        {"name": "Merchant", "disposition": NpcDisposition.SHOPKEEPER},
+    ]
 
 
 def test_get_npc_name_from_lifecycle_manager_returns_name() -> None:
@@ -99,7 +109,7 @@ async def test_enrich_room_data_with_occupant_names() -> None:
     assert room_data["occupants"] == occupant_names
     assert room_data["occupant_count"] == len(occupant_names)
     assert "Alice" in player_names
-    assert "Guard" in npc_names
+    assert npc_names == [{"name": "Guard", "disposition": NpcDisposition.PASSIVE_MOB}]
 
 
 @pytest.mark.asyncio

@@ -1,93 +1,63 @@
 # LoggedHTTPException
 
-> God node · 235 connections · `server/exceptions.py`
+> 143 nodes · cohesion 0.02
 
-**Community:** [Test Auth Dependencies](Test_Auth_Dependencies.md)
+## Key Concepts
 
-## Connections by Relation
+- **handle_transfer_items_exceptions()** (29 connections) — `server/api/container_exception_handlers.py`
+- **test_container_exception_handlers.py** (27 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **handle_open_container_exceptions()** (24 connections) — `server/api/container_exception_handlers.py`
+- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
+- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
+- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
+- **TestHandleTransferItemsExceptions** (12 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_raise_container_http()** (10 connections) — `server/api/container_exception_handlers.py`
+- **TestHandleOpenContainerExceptions** (10 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleLootAllExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **Exception** (7 connections)
+- **_raise_unexpected_container_error()** (7 connections) — `server/api/container_exception_handlers.py`
+- **TestExceptionChaining** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestExceptionHandlerContext** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestExceptionHandlerLoggerCalls** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleCloseContainerExceptions** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleTransferItemsExceptionsEdgeCases** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_raise_for_transfer_service_error()** (6 connections) — `server/api/container_exception_handlers.py`
+- **UUID** (5 connections)
+- **TestHandleCloseContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **.test_handle_open_container_exceptions_open_by_another_player()** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestHandleOpenContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestCreateErrorContext** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_handle_close_container_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- *... and 118 more nodes in this community*
 
-### calls
-- create_character_with_stats() `EXTRACTED`
-- get_player_id_from_user() `EXTRACTED`
-- handle_container_service_error() `EXTRACTED`
-- get_container_and_player_for_loot_all() `EXTRACTED`
-- validate_character_stats() `EXTRACTED`
-- get_system_metrics() `EXTRACTED`
-- create_dialogue_definition() `EXTRACTED`
-- list_dialogue_definitions() `EXTRACTED`
-- upsert_dialogue_definition() `EXTRACTED`
-- get_npc_population_stats() `EXTRACTED`
-- replay_dlq_message() `EXTRACTED`
-- get_dialogue_definition() `EXTRACTED`
-- get_admin_sessions() `EXTRACTED`
-- _update_npc_definition_internal() `EXTRACTED`
-- get_health_status() `EXTRACTED`
-- delete_dialogue_definition() `EXTRACTED`
-- create_npc_definition() `EXTRACTED`
-- spawn_npc_instance() `EXTRACTED`
-- get_npc_system_status() `EXTRACTED`
-- get_npc_zone_stats() `EXTRACTED`
+## Relationships
 
-### contains
-- server/exceptions.py `EXTRACTED`
+- [test_command_factories.py](test_command_factories.py.md) (39 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (14 shared connections)
+- [test_look_player.py](test_look_player.py.md) (10 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [generate_arkham_grid.py](generate_arkham_grid.py.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
 
-### imports
-- api/character_creation.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
-- test_maps.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
-- test_rooms_write_api.py `EXTRACTED`
-- test_exceptions.py `EXTRACTED`
-- api/container_helpers.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
-- test_exceptions_comprehensive.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
-- npc_definitions_api.py `EXTRACTED`
-- container_endpoints_loot.py `EXTRACTED`
-- api/metrics.py `EXTRACTED`
-- test_standardized_responses.py `EXTRACTED`
-- test_error_handling_middleware.py `EXTRACTED`
-- npc_instances_api.py `EXTRACTED`
-- api/player_respawn.py `EXTRACTED`
-- test_containers.py `EXTRACTED`
-- dialogue_definitions_api.py `EXTRACTED`
+## Source Files
 
-### inherits
-- LoggedException `EXTRACTED`
-- HTTPException `EXTRACTED`
+- `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
 
-### method
-- .__init__() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
-
-### references
-- ._handle_logged_http_exception() `EXTRACTED`
-- ._get_logged_http_user_friendly_message() `EXTRACTED`
-
-### uses
-- TestLootAllItems `INFERRED`
-- TestMonitoringEndpoints `INFERRED`
-- TestRegisterLootEndpoints `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- TestOpenContainer `INFERRED`
-- TestTransferItems `INFERRED`
-- TestGetContainerAndPlayerForLootAll `INFERRED`
-- TestHelperFunctions `INFERRED`
-- test_create_room_exit_duplicate_direction_409() `INFERRED`
-- TestHandleLootAllExceptions `INFERRED`
-- TestHandleOpenContainerExceptions `INFERRED`
-- test_create_room_exit_source_room_missing_404() `INFERRED`
-- test_create_room_exit_target_room_missing_404() `INFERRED`
-- test_update_room_exit_not_found_404() `INFERRED`
-- TestCreateCharacterWithStats `INFERRED`
-- TestHandleContainerServiceErrorEdgeCases `INFERRED`
-- TestHandleContainerServiceError `INFERRED`
-- TestCloseContainer `INFERRED`
-- test_delete_room_exit_not_found_404() `INFERRED`
+- EXTRACTED: 272 (83%)
+- INFERRED: 56 (17%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

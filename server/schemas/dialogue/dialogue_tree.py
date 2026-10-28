@@ -1,6 +1,6 @@
-"""Nav-only dialogue tree schema for #583.
+"""Dialogue tree schema for #583: navigation plus optional scripted actions per node.
 
-Rejects unknown next targets, missing start, and empty nodes on write.
+Rejects unknown next targets, missing start, empty nodes, and unknown action types on write.
 """
 
 # pylint: disable=too-few-public-methods  # Reason: Pydantic models; validators are the behavior
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
+from ..scripted_actions import ScriptedAction
 from ..shared.base import SecureBaseModel
 
 
@@ -25,6 +26,8 @@ class DialogueNode(SecureBaseModel):
 
     text: str = Field(min_length=1)
     options: list[DialogueOption] = Field(default_factory=list)
+    # Run each time the node is presented to a player, so keep them idempotent or harmless to repeat.
+    actions: list[ScriptedAction] = Field(default_factory=list)
 
 
 class DialogueTree(SecureBaseModel):

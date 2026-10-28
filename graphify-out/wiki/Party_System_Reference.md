@@ -1,12 +1,11 @@
 # Party System Reference
 
-> 3 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Party System Reference** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Party Invite Command** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Ephemeral Grouping Party Planning** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
+- **run_extended_idle_memory_monitor.ps1** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
+- **Write-MonitorLog()** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- `docs/archive/PLANNING_ephemeral_grouping.md`
+- `scripts/run_extended_idle_memory_monitor.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

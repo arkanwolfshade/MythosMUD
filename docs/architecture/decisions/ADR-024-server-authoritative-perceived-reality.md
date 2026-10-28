@@ -124,6 +124,15 @@ meta/editing tool (`RoomDetailsPanel.tsx`'s `isAdmin`/`onEditRoom` mode) fed by 
 not the per-viewer realtime payload — lying in an admin editing surface would be actively harmful,
 so it stays client-side and outside this ADR's server-authority rule.
 
+**Amendment (#1025, 2026-10-12): NPC disposition tags.** The sentence above ("No client change") no longer holds.
+Occupant NPCs are now `{ name, disposition }` (`server/constants/npc_disposition.py`), where `disposition` is the
+`NPCDefinitionType` value (`shopkeeper`, `quest_giver`, `passive_mob`, `aggressive_mob`), and the Occupants panel styles
+each NPC from it. **Phantoms are always `aggressive_mob`:** `get_viewer_phantom_occupants`
+(`services/phantom_visibility.py`) tags every phantom, whatever its tier or whether it can damage anyone, so a phantom
+is indistinguishable from a real hostile. NPC names inside message lines follow the same rule through `segments` (`npc.<disposition>`), so any phantom
+line that is later segmented must tag the phantom `aggressive_mob`. The original text above is left as written; this
+note supersedes it.
+
 ## 4. Alternatives Considered
 
 **[SPEC]**
@@ -198,3 +207,4 @@ so it stays client-side and outside this ADR's server-authority rule.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-09-08 | Initial version, closes `#714`: server-authoritative per-viewer hallucination delivery; explicit reversal of `#626`'s client-side exit-hallucination placement |
+| 1.1.0 | 2026-10-12 | Amendment (`#1025`): occupant NPCs carry a disposition, phantoms are always `aggressive_mob`; see the amendment in section 3 |

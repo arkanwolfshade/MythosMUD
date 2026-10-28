@@ -14,24 +14,30 @@ the documented Temporal bounded context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUND
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+import uuid
+from typing import TYPE_CHECKING, Any, cast
 
 from pydantic import ValidationError
 
 from server.container.utils import decode_json_column
 from server.structured_logging.enhanced_logging_config import get_logger
-from server.utils.project_paths import (
-    get_environment_data_dir,
-    normalize_environment,
-)
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
+    from server.events.event_bus import EventBus
+    from server.game.player_registry import PlayerRegistry
+    from server.game.skill_service import SkillService
+    from server.realtime.connection_manager import ConnectionManager
+    from server.services.instance_flush_service import InstanceFlushService
+    from server.services.user_manager import UserManager
 
 logger = get_logger(__name__)
 
 GAME_ATTRS = (
+    "player_registry",
     "instance_manager",
+    "instance_flush_service",
     "movement_service",
     "player_position_service",
     "follow_service",
@@ -43,6 +49,7 @@ GAME_ATTRS = (
     "container_service",
     "level_service",
     "skill_service",
+    "item_catalog_service",
     "room_cache_service",
     "profession_cache_service",
     "item_prototype_registry",
@@ -58,7 +65,9 @@ GAME_ATTRS = (
 class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Game services: movement, player, room, user, container, caches, items."""
 
+    player_registry: PlayerRegistry | None = None
     instance_manager: Any = None
+    instance_flush_service: InstanceFlushService | None = None
     movement_service: Any = None
     player_position_service: Any = None
     follow_service: Any = None
@@ -69,7 +78,11 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     user_manager: Any = None
     container_service: Any = None
     level_service: Any = None
-    skill_service: Any = None
+    skill_service: SkillService | None = None
+    # Reason: DYNAMIC_DISPATCH:di-container - GameBundle flattens heterogeneous services onto ApplicationContainer.
+    # Appropriate because: sibling slots (skill_service, quest_service, ...) already use Any for the same
+    # DI flatten surface; call sites narrow with isinstance/cast rather than a shared Protocol here.
+    item_catalog_service: Any = None  # pyright: ignore[reportExplicitAny]
     room_cache_service: Any = None
     profession_cache_service: Any = None
     item_prototype_registry: Any = None
@@ -129,6 +142,31 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             self.room_cache_service = None
             self.profession_cache_service = None
 
+    def _init_player_registry(self, container: ApplicationContainer) -> None:
+        """Build the authoritative player registry (ADR-029); its sweep runs from the game tick loop."""
+        from server.config import get_config
+        from server.database import get_session_maker
+        from server.game.player_registry import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            PlayerRegistry,
+            RegistrySettings,
+            SessionFactory,
+        )
+
+        game = get_config().game
+        # pylint: disable=no-member  # Reason: Pydantic model fields are dynamically accessible; pylint sees FieldInfo
+        event_bus = cast("EventBus | None", container.event_bus)
+        self.player_registry = PlayerRegistry(
+            cast(SessionFactory, get_session_maker()),
+            publish=event_bus.publish if event_bus is not None else None,
+            settings=RegistrySettings(
+                idle_ttl_seconds=game.player_registry_idle_ttl_seconds,
+                flush_concurrency=game.player_registry_flush_concurrency,
+                failure_alert_after=game.player_registry_failure_alert_after,
+                retry_base_seconds=float(game.save_interval),
+            ),
+        )
+        # pylint: enable=no-member
+
     def _init_movement_layer(self, container: ApplicationContainer) -> None:
         """Wire exploration, movement, follow, and party services."""
         async_persistence = container.async_persistence
@@ -145,11 +183,27 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         )
         async_persistence.set_instance_manager(instance_manager)
         self.instance_manager = instance_manager
+        from server.services.instance_flush_service import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            InstanceFlushService,
+        )
+
+        # Floor drops live on the realtime room manager (bundle initialized before this one); the
+        # connection manager also flushes a departing player's tutorial instance.
+        realtime = cast("ConnectionManager | None", getattr(container, "connection_manager", None))
+        flusher = InstanceFlushService(
+            instance_manager,
+            realtime.room_manager if realtime else None,
+            cast("AsyncPersistenceLayer", async_persistence),
+        )
+        self.instance_flush_service = flusher
+        if realtime is not None:
+            realtime.instance_flush_service = flusher
         self.movement_service = MovementService(
             event_bus=event_bus,
             async_persistence=async_persistence,
             exploration_service=self.exploration_service,
             instance_manager=instance_manager,
+            instance_flush=flusher,
         )
         from server.game.follow_service import FollowService
         from server.services.player_position_service import PlayerPositionService
@@ -191,7 +245,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             async_persistence=container.async_persistence,
         )
 
-    def _init_player_quest_layer(self, container: ApplicationContainer, normalized_environment: str) -> None:
+    def _init_player_quest_layer(self, container: ApplicationContainer) -> None:
         """Wire player/room/user, container, skill, level, and quest services."""
         persistence = container.persistence
         async_persistence = container.async_persistence
@@ -199,28 +253,34 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         from server.game.room_service import RoomService
         from server.services.user_manager import UserManager
 
-        self.player_service = PlayerService(persistence=persistence, instance_manager=self.instance_manager)
+        self.player_service = PlayerService(persistence=persistence)
         self.room_service = RoomService(persistence=persistence)
-        user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
-        self.user_manager = UserManager(data_dir=user_management_dir, async_persistence=async_persistence)
+        self.user_manager = UserManager(async_persistence=cast("AsyncPersistenceLayer | None", async_persistence))
         self._wire_user_manager_after_init(self.follow_service, container.nats_message_handler, self.user_manager)
         from server.services.container_service import ContainerService
 
         self.container_service = ContainerService(persistence=persistence)
-        from server.game.skill_service import SkillService
+        from server.game.skill_service import (  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+            SkillService,
+        )
         from server.persistence.repositories.player_skill_repository import PlayerSkillRepository
         from server.persistence.repositories.skill_repository import SkillRepository
         from server.persistence.repositories.skill_use_log_repository import SkillUseLogRepository
 
-        self.skill_service = SkillService(
+        skill_service = SkillService(
             skill_repository=SkillRepository(),
             player_skill_repository=PlayerSkillRepository(),
             skill_use_log_repository=SkillUseLogRepository(),
             persistence=async_persistence,
         )
+        self.skill_service = skill_service
+        from server.game.item_catalog_service import ItemCatalogService
+        from server.persistence.repositories.item_catalog_repository import ItemCatalogRepository
 
-        async def _skill_improvement_on_level_up(player_id: Any, new_level: int) -> None:
-            await self.skill_service.run_improvement_rolls(player_id, new_level)
+        self.item_catalog_service = ItemCatalogService(ItemCatalogRepository())
+
+        async def _skill_improvement_on_level_up(player_id: uuid.UUID, new_level: int) -> None:
+            await skill_service.run_improvement_rolls(player_id, new_level)
 
         from server.game.level_service import LevelService
 
@@ -246,14 +306,28 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         await self.emote_service.load_emotes()
         logger.info("EmoteService initialized and loaded", emote_count=len(self.emote_service.emotes))
 
+    async def _load_player_mutes(self) -> None:
+        """Fill UserManager's in-memory mute index from the database (#681)."""
+        from server.exceptions import DatabaseError
+
+        user_manager = cast("UserManager | None", self.user_manager)
+        if user_manager is None:
+            return
+        try:
+            _ = await user_manager.load_all_mutes()
+        except DatabaseError as e:
+            # Degrade to "no mutes known" rather than refusing to start; new mutes still persist.
+            logger.error("Failed to load player mutes; starting with none", error=str(e))
+
     async def initialize(self, container: ApplicationContainer) -> None:
         """Initialize game services. Requires Core and Realtime."""
         self._require_core_services(container)
-        normalized_environment = normalize_environment(container.config.logging.environment)
         logger.debug("Initializing gameplay services...")
+        self._init_player_registry(container)
         self._init_movement_layer(container)
         logger.debug("Initializing game services...")
-        self._init_player_quest_layer(container, normalized_environment)
+        self._init_player_quest_layer(container)
+        await self._load_player_mutes()
         logger.info("Game services initialized")
         await self._initialize_item_services(container)
         self._wire_item_registry_to_player_service()
@@ -272,7 +346,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         if "does not exist" in str(exc).lower() or "UndefinedTableError" in type(exc).__name__:
             logger.warning(
                 "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
-                "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+                + 'the schema DDL has been applied (e.g. psql -d mythos_dev -c "SET search_path '
+                + 'TO mythos_dev;" -f db/schema.sql)',
             )
         self.item_prototype_registry = None
         self.item_factory = None

@@ -17,7 +17,7 @@ from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, cast, override
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func, text
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Integer, String, Text, event, func
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -86,7 +86,6 @@ class Player(Base):
             "education": 50,
             "charisma": 50,
             "luck": 50,
-            "lucidity": 100,
             "occult": 0,
             "corruption": 0,
             "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
@@ -95,7 +94,6 @@ class Player(Base):
         },
     )
     inventory: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
-    status_effects: Mapped[str] = mapped_column(Text(), nullable=False, default="[]")
 
     # Location and progression
     # CRITICAL FIX: Increased from 50 to 255 to accommodate hierarchical room IDs
@@ -177,7 +175,7 @@ class Player(Base):
                 stats = cast(dict[str, object], stats_val)
             else:
                 raise TypeError(f"Unexpected stats type: {type(stats_val)}")
-        except (json.JSONDecodeError, TypeError, AttributeError):
+        except json.JSONDecodeError, TypeError, AttributeError:
             stats = {
                 "strength": 50,
                 "dexterity": 50,
@@ -188,7 +186,6 @@ class Player(Base):
                 "education": 50,
                 "charisma": 50,
                 "luck": 50,
-                "lucidity": 100,
                 "occult": 0,
                 "corruption": 0,
                 "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
@@ -201,7 +198,7 @@ class Player(Base):
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
-            except (json.JSONDecodeError, TypeError, AttributeError):
+            except json.JSONDecodeError, TypeError, AttributeError:
                 # Fallback silently if persistence update fails during read-time normalization
                 pass
 
@@ -234,7 +231,7 @@ class Player(Base):
                 return cast(list[dict[str, object]], json.loads(inventory_value))
             # Handle None or other types
             return []
-        except (json.JSONDecodeError, TypeError, AttributeError):
+        except json.JSONDecodeError, TypeError, AttributeError:
             return []
 
     def set_inventory(self, inventory: Sequence[Mapping[str, object]]) -> None:
@@ -247,17 +244,6 @@ class Player(Base):
             raise TypeError(msg)
 
         self.inventory = json.dumps(list(inventory), default=_inventory_json_default)
-
-    def get_status_effects(self) -> list[dict[str, object]]:
-        """Get player status effects as list."""
-        try:
-            return cast(list[dict[str, object]], json.loads(self.status_effects))
-        except (json.JSONDecodeError, TypeError):
-            return []
-
-    def set_status_effects(self, status_effects: list[dict[str, object]]) -> None:
-        """Set player status effects from list."""
-        self.status_effects = json.dumps(status_effects)
 
     def get_equipped_items(self) -> dict[str, object]:
         """Return equipped items mapping.
@@ -276,13 +262,13 @@ class Player(Base):
                         parsed = cast(dict[str, object], parsed_raw)
                         self._equipped_items = parsed
                         return parsed
-                except (json.JSONDecodeError, TypeError, AttributeError):
+                except json.JSONDecodeError, TypeError, AttributeError:
                     pass
             return {}
         if isinstance(equipped, str):
             try:
                 equipped_dict = cast(dict[str, object], json.loads(equipped))
-            except (json.JSONDecodeError, TypeError, AttributeError):
+            except json.JSONDecodeError, TypeError, AttributeError:
                 equipped_dict = {}
             self._equipped_items = equipped_dict
             return equipped_dict
@@ -291,12 +277,6 @@ class Player(Base):
     def set_equipped_items(self, equipped: Mapping[str, Mapping[str, object]]) -> None:
         """Assign equipped items mapping."""
         self._equipped_items = dict(equipped)
-
-    def add_experience(self, amount: int) -> None:
-        """Add experience points to the player."""
-        self.experience_points += amount
-        # Simple level calculation (can be enhanced)
-        self.level = (self.experience_points // 100) + 1
 
     def is_alive(self) -> bool:
         """Check if player is alive (DP > 0)."""
@@ -541,14 +521,14 @@ class PlayerChannelPreferences(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     player: Mapped[Player] = relationship("Player", back_populates="channel_preferences")
@@ -574,7 +554,7 @@ class PlayerInventory(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=func.current_timestamp(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
     )
 
     player: Mapped[Player] = relationship("Player", back_populates="inventory_record")
@@ -587,14 +567,22 @@ class PlayerExploration(Base):
 
     __tablename__ = "player_exploration"  # pyright: ignore[reportUnannotatedClassAttribute]
 
-    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False),
+        primary_key=True,
+        server_default=func.gen_random_uuid(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
+    )
     player_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False), ForeignKey("players.player_id", ondelete="CASCADE"), nullable=False
     )
     room_id: Mapped[str] = mapped_column(
         UUID(as_uuid=False), ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False
     )
-    explored_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
+    explored_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),  # pylint: disable=not-callable  # DDL default for non-ORM inserts
+    )
 
     player: Mapped[Player] = relationship("Player", back_populates="exploration_records")
 
@@ -602,8 +590,9 @@ class PlayerExploration(Base):
 # Event listener to handle legacy string stats in database
 # Converts JSON strings to dicts before MutableDict coercion
 # As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
+# SQLAlchemy registers this listener via the decorator; basedpyright >= 1.40 no longer reports it as unused.
 @event.listens_for(Player, "load")
-def _convert_legacy_stats_string(target: Player, _context: object) -> None:  # pyright: ignore[reportUnusedFunction]  # Reason: SQLAlchemy registers this listener; static analysis does not see the hookup
+def _convert_legacy_stats_string(target: Player, _context: object) -> None:
     """
     Convert legacy string stats to dict during SQLAlchemy load event.
 
@@ -620,7 +609,7 @@ def _convert_legacy_stats_string(target: Player, _context: object) -> None:  # p
             # Parse JSON string to dict
             # MutableDict will automatically wrap this dict
             target.stats = json.loads(target.stats)
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             # If parsing fails, use default stats
             target.stats = {
                 "strength": 50,
@@ -629,7 +618,6 @@ def _convert_legacy_stats_string(target: Player, _context: object) -> None:  # p
                 "intelligence": 50,
                 "wisdom": 50,
                 "charisma": 50,
-                "lucidity": 100,
                 "occult_knowledge": 0,
                 "fear": 0,
                 "corruption": 0,

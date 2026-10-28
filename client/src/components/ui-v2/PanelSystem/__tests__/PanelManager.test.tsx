@@ -100,6 +100,12 @@ describe('PanelManager', () => {
       <PanelManagerProvider defaultPanels={defaultPanels}>{children}</PanelManagerProvider>
     );
 
+    // A saved layout only survives for ids the defaults still define (removed panels are dropped).
+    const panel1Defaults: Record<string, PanelState> = { panel1: panelStateFixture('panel1', 1000) };
+    const wrapperWithPanel1 = ({ children }: { children: React.ReactNode }) => (
+      <PanelManagerProvider defaultPanels={panel1Defaults}>{children}</PanelManagerProvider>
+    );
+
     it('should initialize with empty panels', () => {
       const { result } = renderHook(() => usePanelManager(), { wrapper });
 
@@ -122,7 +128,7 @@ describe('PanelManager', () => {
 
       localStorageMock.setItem('mythosmud-ui-v2-panel-layout', JSON.stringify(savedPanels));
 
-      const { result } = renderHook(() => usePanelManager(), { wrapper });
+      const { result } = renderHook(() => usePanelManager(), { wrapper: wrapperWithPanel1 });
 
       // Wait for useEffect to run
       act(() => {
@@ -152,7 +158,7 @@ describe('PanelManager', () => {
       const innerSpy = vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(800);
       const innerHSpy = vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(600);
 
-      const { result } = renderHook(() => usePanelManager(), { wrapper });
+      const { result } = renderHook(() => usePanelManager(), { wrapper: wrapperWithPanel1 });
 
       act(() => {});
 

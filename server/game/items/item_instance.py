@@ -6,6 +6,7 @@ item created from an item prototype, with instance-specific state and properties
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any
@@ -24,6 +25,8 @@ class ItemInstance:  # pylint: disable=too-many-instance-attributes  # Reason: I
     metadata: dict[str, Any] = field(default_factory=dict)
     origin: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    # Empty nested container built from the prototype's metadata.container (backpacks, chests).
+    inner_container: dict[str, object] | None = None
 
     def to_inventory_stack(self) -> dict[str, Any]:
         """
@@ -48,5 +51,7 @@ class ItemInstance:  # pylint: disable=too-many-instance-attributes  # Reason: I
             stack["metadata"] = dict(self.metadata)
         if self.origin:
             stack["origin"] = dict(self.origin)
+        if self.inner_container is not None:
+            stack["inner_container"] = deepcopy(self.inner_container)
         stack["created_at"] = self.created_at.isoformat()
         return stack

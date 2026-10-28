@@ -67,7 +67,7 @@ def test_log_exception_once_logged_exception_uses_mark_logged():
 
 
 @pytest.fixture(autouse=True)
-def _reset_logging_state():  # pyright: ignore[reportUnusedFunction] - pytest autouse; not called directly
+def _reset_logging_state():  # pytest autouse; not called directly
     """Snapshot/restore the module's _logging_state singleton around each test."""
     state = enhanced_logging_config._logging_state
     before_initialized, before_signature = state.initialized, state.signature

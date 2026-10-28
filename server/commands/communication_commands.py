@@ -12,8 +12,10 @@ from typing import cast
 from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
+from ..constants.message_category import MessageCategory
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 from .communication_commands_flows import (
     flow_global_command,
     flow_local_command,
@@ -27,6 +29,7 @@ from .communication_commands_support import (
     app_from_request,
     get_pose_persistence,
 )
+from .talk_command import reply_to_dialogue
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -54,9 +57,9 @@ async def handle_me_command(
     action = command_data.get("action")
     if not isinstance(action, str) or not action:
         logger.warning("Me command with no action", player_name=player_name, command_data=command_data)
-        return {"result": "Do what? Usage: me <action>"}
+        return command_error("Do what? Usage: me <action>")
     logger.debug("Player performing action", player_name=player_name, action=action)
-    return {"result": f"{player_name} {action}"}
+    return {"result": f"{player_name} {action}", "category": MessageCategory.CHAT_EMOTE, "channel": "emote"}
 
 
 async def handle_pose_command(
@@ -142,5 +145,8 @@ async def handle_reply_command(
     _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
-    """Reply to last whisper sender."""
+    """Pick answer N in an NPC conversation (`reply <n>`), else reply to the last whisper sender."""
+    answered = await reply_to_dialogue(command_data, request, player_name)
+    if answered is not None:
+        return answered
     return await flow_reply_command(command_data, request, player_name)

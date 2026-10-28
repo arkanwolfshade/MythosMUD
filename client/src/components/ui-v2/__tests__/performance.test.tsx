@@ -14,8 +14,8 @@ import type { ChatMessage } from '../types';
 // updates, channel filtering, memory, all-panels-together render, benchmark thresholds). Dropped,
 // no ui-v2 analogue: command-suggestion filtering (CommandInputPanel has no suggestion list),
 // keyboard history navigation (CommandHistoryPanel is click-to-select, not arrow-key), message
-// grouping (ui-v2 has no date-grouped log view -- game-log flows into ChatHistoryPanel as a
-// channel, already covered by the channel-filtering benchmark below).
+// grouping (ui-v2 has no date-grouped log view; the Chat panel shows chat.* messages only, already
+// covered by the channel-filtering benchmark below).
 describe('Performance Tests', () => {
   let performanceTester: PerformanceTester;
 
@@ -28,7 +28,7 @@ describe('Performance Tests', () => {
       text: `Message ${i}`,
       timestamp: new Date(Date.now() - i * 60000).toISOString(),
       isHtml: false,
-      messageType: 'chat',
+      category: 'chat.local',
       channel: 'local',
       aliasChain: [{ original: `Player${i}`, expanded: `Player${i}`, alias_name: `p${i}` }],
     }));
@@ -71,7 +71,7 @@ describe('Performance Tests', () => {
               text: 'New message',
               timestamp: new Date().toISOString(),
               isHtml: false,
-              messageType: 'chat',
+              category: 'chat.local',
               channel: 'local',
             },
           ];
@@ -141,7 +141,7 @@ describe('Performance Tests', () => {
         text: `Large message ${i} with lots of content to test memory usage`,
         timestamp: new Date(Date.now() - i * 60000).toISOString(),
         isHtml: false,
-        messageType: 'chat',
+        category: 'chat.local',
         channel: 'local',
         aliasChain: [{ original: `Player${i}`, expanded: `Player${i}`, alias_name: `p${i}` }],
       }));
@@ -178,7 +178,7 @@ describe('Performance Tests', () => {
         text: `Message ${i}`,
         timestamp: new Date(Date.now() - i * 60000).toISOString(),
         isHtml: false,
-        messageType: 'chat',
+        category: 'chat.local',
         channel: 'local',
       }));
 

@@ -12,32 +12,63 @@ from typing import cast
 from uuid import UUID
 
 from ..models.player import Player
+from .command_results import command_error
 from .container_helpers_inventory_find import find_item_in_inventory
 from .container_helpers_inventory_logging import logger
 
 
 async def _ensure_mutation_token(
     container_service: object, container_id: UUID, player_id_uuid: UUID
-) -> tuple[object | None, dict[str, object] | None]:
-    """Return (mutation_token, error_response). error_response is set only on hard failure."""
+) -> tuple[object | None, dict[str, object] | None, bool]:
+    """Return (mutation_token, error_response, opened_here).
+
+    opened_here is True only when this call opened a fresh session (as opposed to
+    reusing one the player already held, e.g. from a GUI panel). Callers use it to
+    decide whether they are responsible for closing the session afterward, so a
+    text command doesn't leave an orphaned session that later blocks the HTTP
+    /api/containers/open endpoint.
+    """
     get_token = getattr(container_service, "get_container_token", None)
     token = get_token(container_id, player_id_uuid) if callable(get_token) else None
     if token:
-        return token, None
+        return token, None, False
     open_container = getattr(container_service, "open_container", None)
     if not callable(open_container):
-        return None, {"error": "Cannot access container: service unavailable"}
+        return None, {"error": "Cannot access container: service unavailable"}, False
     try:
         open_result = await cast(
             Awaitable[object],
             open_container(container_id, player_id_uuid),
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container access errors unpredictable
-        return None, {"error": f"Cannot access container: {str(e)}"}
+        return None, {"error": f"Cannot access container: {str(e)}"}, False
     new_token: object | None = None
     if isinstance(open_result, dict):
         new_token = cast(dict[str, object], open_result).get("mutation_token")
-    return new_token, None
+    return new_token, None, True
+
+
+async def _close_session_if_opened_here(
+    container_service: object, container_id: UUID, player_id_uuid: UUID, mutation_token: object | None
+) -> None:
+    """Best-effort close for a session this command opened; never fails the command."""
+    if mutation_token is None:
+        return
+    close_container = getattr(container_service, "close_container", None)
+    if not callable(close_container):
+        return
+    try:
+        _ = await cast(
+            Awaitable[object],
+            close_container(container_id, player_id_uuid, mutation_token),
+        )
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Best-effort cleanup, must not mask the transfer's own result
+        logger.warning(
+            "Failed to close container session after text command",
+            container_id=str(container_id),
+            player_id=str(player_id_uuid),
+            error=str(e),
+        )
 
 
 def _coerce_transfer_quantity(raw: object) -> int:
@@ -93,14 +124,19 @@ def _strip_cmd_field(value: object) -> str:
     return value.strip() if isinstance(value, str) else ""
 
 
-def _app_state_container_service(request: object) -> object | None:
-    app = cast(object | None, getattr(request, "app", None))
-    if app is None:
+def _resolve_container_service(persistence: object) -> object | None:
+    """Resolve the shared ContainerService the same way the HTTP container API does.
+
+    `get_container_service` caches by persistence identity, so this returns the same
+    instance -- and thus sees the same open-container sessions -- as the HTTP
+    /api/containers/* endpoints. There is no `app.state.container_service`; nothing in
+    server/ ever set one.
+    """
+    if persistence is None:
         return None
-    state = cast(object | None, getattr(app, "state", None))
-    if state is None:
-        return None
-    return cast(object | None, getattr(state, "container_service", None))
+    from ..api.container_helpers import get_container_service
+
+    return get_container_service(persistence)
 
 
 def _extract_items_json_branch(container_found: object, container_id: UUID | None) -> tuple[object, UUID | None] | None:
@@ -115,7 +151,8 @@ def _extract_items_json_branch(container_found: object, container_id: UUID | Non
 
 
 def _extract_items_dict_branch(data: dict[str, object], container_id: UUID | None) -> tuple[object, UUID | None]:
-    items = data.get("items", [])
+    # Persistence rows (get_containers_by_room_id) carry "items_json"; ContainerData.to_dict() "items".
+    items = data["items_json"] if "items_json" in data else data.get("items", [])
     cid = container_id
     if not cid:
         raw = data.get("container_id")
@@ -133,7 +170,9 @@ async def transfer_item_to_container(
 ) -> dict[str, object]:
     """Transfer an item to container from player inventory."""
     player_id_uuid = UUID(str(player.player_id))
-    mutation_token, open_err = await _ensure_mutation_token(container_service, container_id, player_id_uuid)
+    mutation_token, open_err, opened_here = await _ensure_mutation_token(
+        container_service, container_id, player_id_uuid
+    )
     if open_err:
         return open_err
 
@@ -164,13 +203,16 @@ async def transfer_item_to_container(
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable
         logger.error("Error putting item in container", player=player.name, error=str(e))
         return {"error": str(e)}
+    finally:
+        if opened_here:
+            await _close_session_if_opened_here(container_service, container_id, player_id_uuid, mutation_token)
 
 
 async def validate_put_command_inputs(
     command_data: dict[str, object],
-    request: object,
     connection_manager: object,
     player: Player,
+    persistence: object,
 ) -> tuple[str, str, object | None, object, object, dict[str, object] | None, int | None] | dict[str, str]:
     """Validate and extract inputs for put command."""
     item_name = _strip_cmd_field(command_data.get("item", ""))
@@ -185,15 +227,15 @@ async def validate_put_command_inputs(
             container_name=container_name,
             command_data=command_data,
         )
-        return {"result": "Usage: put <item> [in] <container> [quantity]"}
+        return command_error("Usage: put <item> [in|into] <container> [quantity]")
 
-    container_service = _app_state_container_service(request)
+    container_service = _resolve_container_service(persistence)
     if not container_service:
-        return {"result": "Container service is unavailable."}
+        return command_error("Container service is unavailable.")
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        return {"result": "Room manager is unavailable."}
+        return command_error("Room manager is unavailable.")
 
     inventory = player.get_inventory()
     item_found, item_index = find_item_in_inventory(inventory, item_name)
@@ -397,7 +439,9 @@ async def transfer_item_from_container(
     from .inventory_command_helpers import persist_player
 
     player_id_uuid = UUID(str(player.player_id))
-    mutation_token, open_err = await _ensure_mutation_token(container_service, container_id, player_id_uuid)
+    mutation_token, open_err, opened_here = await _ensure_mutation_token(
+        container_service, container_id, player_id_uuid
+    )
     if open_err:
         return open_err
 
@@ -435,10 +479,13 @@ async def transfer_item_from_container(
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must handle gracefully
         logger.error("Error getting item from container", player=player.name, error=str(e))
         return {"error": str(e)}
+    finally:
+        if opened_here:
+            await _close_session_if_opened_here(container_service, container_id, player_id_uuid, mutation_token)
 
 
 async def validate_get_command_inputs(
-    command_data: dict[str, object], request: object, connection_manager: object
+    command_data: dict[str, object], connection_manager: object, persistence: object
 ) -> tuple[str, str, object | None, object | None, object] | dict[str, str]:
     """Validate and extract inputs for get command."""
     item_name = _strip_cmd_field(command_data.get("item", ""))
@@ -446,17 +493,17 @@ async def validate_get_command_inputs(
     quantity = command_data.get("quantity")
 
     if not item_name or not container_name:
-        return {"result": "Usage: get <item> [from] <container> [quantity]"}
+        return command_error("Usage: get <item> [from <container>] [quantity]")
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        return {"result": "Room manager is unavailable."}
+        return command_error("Room manager is unavailable.")
 
     if container_name.lower() == "room":
         return item_name, container_name, quantity, None, room_manager
 
-    container_service = _app_state_container_service(request)
+    container_service = _resolve_container_service(persistence)
     if not container_service:
-        return {"result": "Container service is unavailable."}
+        return command_error("Container service is unavailable.")
 
     return item_name, container_name, quantity, container_service, room_manager

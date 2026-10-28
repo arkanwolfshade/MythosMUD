@@ -170,7 +170,7 @@ def collect_repo_texts(extension: str) -> tuple[list[tuple[str, str]], int]:
         try:
             rel = str(file_path.relative_to(REPO_ROOT))
             texts.append((rel, file_path.read_text(encoding="utf-8")))
-        except (OSError, UnicodeDecodeError, ValueError):
+        except OSError, UnicodeDecodeError, ValueError:
             read_errors += 1
             continue
     return texts, read_errors

@@ -19,10 +19,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
-from server.events.event_types import PlayerDPUpdated
+from server.events.event_types import PlayerDPUpdated, PlayerXPAwardEvent
 from server.realtime.player_event_handlers_state import PlayerStateEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
-from server.services.player_combat_service import PlayerXPAwardEvent
 
 
 @pytest.fixture
@@ -305,10 +304,10 @@ async def test_handle_player_died_error_handling(
 
 
 @pytest.mark.asyncio
-async def test_handle_player_dp_updated_includes_posture_message_on_posture_change(
+async def test_handle_player_dp_updated_to_zero_sends_no_lie_message(
     player_state_event_handler: PlayerStateEventHandler, mock_connection_manager: MagicMock
 ) -> None:
-    """PlayerDPUpdated with standing->lying includes posture_message and room broadcast (M5)."""
+    """#1057: damage that drops DP to 0 lies the player down silently; the /lie text is for /lie only."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
@@ -322,16 +321,16 @@ async def test_handle_player_dp_updated_includes_posture_message_on_posture_chan
         mock_build_event.return_value = {"type": "player_dp_updated"}
         await player_state_event_handler.handle_player_dp_updated(event)
         payload = mock_build_event.call_args[0][1]
-        assert "posture_message" in payload
-        assert payload["previous_position"] == "standing"
-        mock_connection_manager.broadcast_to_room.assert_awaited_once()
+        assert "posture_message" not in payload
+        assert payload["posture"] == "lying"
+        mock_connection_manager.broadcast_to_room.assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_handle_player_dp_decay_posture_cross_includes_posture_message(
+async def test_handle_player_dp_decay_crossing_zero_sends_no_lie_message(
     player_state_event_handler: PlayerStateEventHandler, mock_connection_manager: MagicMock
 ) -> None:
-    """DP decay crossing to 0 attaches posture_message (M6)."""
+    """#1057: bleed-out crossing to 0 carries no /lie text to the player or the room."""
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
@@ -350,8 +349,8 @@ async def test_handle_player_dp_decay_posture_cross_includes_posture_message(
         mock_build_event.return_value = {"type": "player_dp_decay"}
         await player_state_event_handler.handle_player_dp_decay(event)
         payload = mock_build_event.call_args[0][1]
-        assert payload.get("posture_message")
-        mock_connection_manager.broadcast_to_room.assert_awaited_once()
+        assert "posture_message" not in payload
+        mock_connection_manager.broadcast_to_room.assert_not_awaited()
 
 
 @pytest.mark.asyncio

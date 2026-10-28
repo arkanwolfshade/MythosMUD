@@ -10,9 +10,14 @@ import uuid
 from collections.abc import Mapping
 from typing import Any, Protocol, cast
 
+from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
+from ..game.effect_store import clear_instance_scoped_effects
+from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
+from ..game.instance_state import QuestResetter, reset_instance_scoped_state, restart_instance_run
 from ..models.corruption import compute_tier
 from ..models.player import Player
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .disconnect_catchup import CatchupManager, CatchupPlayer, build_catchup_message
@@ -20,14 +25,33 @@ from .disconnect_grace_period import start_grace_period
 from .envelope import build_event
 from .player_connection_setup import handle_new_connection_setup
 from .player_disconnect_handlers import (
+    InstanceFlushOwner,
     _cleanup_player_references,
     _collect_disconnect_keys,
     _remove_player_from_online_tracking,
+    flush_departing_tutorial_instance,
     handle_player_disconnect_broadcast,
 )
 from .player_presence_utils import extract_player_name, get_player_position
 
 logger = get_logger(__name__)
+
+
+class RoomLookup(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-method structural type
+    """Anything that resolves a room id to a Room (AsyncPersistenceLayer)."""
+
+    def get_room_by_id(self, room_id: str) -> Room | None:
+        """The room, or None if unknown."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
+
+
+class _RoomLookupOwner(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-attribute structural type
+    """The ConnectionManager's room source, as the tutorial re-entry repair reads it."""
+
+    @property
+    def async_persistence(self) -> RoomLookup | None:
+        """Persistence used for room lookups (None in some tests)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
 
 
 def _warm_corruption_tier_cache(player_id: uuid.UUID, player: Player) -> None:
@@ -71,6 +95,12 @@ async def _disconnect_during_rest_is_intentional(player_id: uuid.UUID, manager: 
 
 async def _resolve_intentional_disconnect(player_id: uuid.UUID, manager: Any) -> bool:
     """True if disconnect was intentional logout or mid-/rest Exit countdown."""
+    # A dropped socket breaks a /ground ritual for both participants (#713); it is not a logout.
+    from ..commands.ground_channel import cancel_ground_channel
+
+    # Reason: DYNAMIC_DISPATCH - manager is Any per this function's own parameter.
+    # Appropriate because: same unsuppressed convention as this function's own signature; the callee takes object.
+    await cancel_ground_channel(player_id, manager)  # pyright: ignore[reportAny]
     if player_id in getattr(manager, "intentional_disconnects", set()):
         return True
     return await _disconnect_during_rest_is_intentional(player_id, manager)
@@ -149,65 +179,119 @@ def _resolve_room_id(player: Any, manager: Any) -> str | None:
 
 async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> str | None:
     """
-    For players with tutorial_instance_id, ensure instance exists and return first room.
+    Place tutorial players in a live tutorial instance on (re)entry and return its first room.
 
-    Per plan: on reconnect, place player at the beginning of the tutorial instance.
-    If instance was lost (e.g. server restart), recreate it.
+    A player whose instance was flushed (real logout, server restart) gets a fresh one. A player
+    saved in a template room with no instance at all (stranded there by the old template-room
+    leaks) is sent back through a fresh instance of that template too.
 
     Returns:
         First room ID if tutorial player, None to fall back to normal resolution
     """
-    instance_id = getattr(player, "tutorial_instance_id", None)
-    if not instance_id:
+    from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
+
+    player_obj = cast(Player, player)
+    instance_id = player_obj.tutorial_instance_id
+    rooms = cast(_RoomLookupOwner, manager).async_persistence
+    template_id = TUTORIAL_TEMPLATE_ID if player_obj.tutorial_instance_id else _stranded_template_id(player_obj, rooms)
+    if not template_id:
         return None
 
-    instance_manager = _get_instance_manager_from_manager(manager)
-    if not instance_manager:
-        logger.warning(
-            "InstanceManager not available for tutorial reconnect",
-            player_id=player.player_id,
-        )
+    services = _tutorial_instance_services(player_obj, cast(object, manager))
+    if services is None:
         return None
+    instance_manager, content_service, quest_service = services
 
-    instance = instance_manager.get_instance(instance_id)
-    if not instance:
-        logger.info(
-            "Tutorial instance missing on reconnect, recreating",
-            player_id=player.player_id,
-            instance_id=instance_id,
+    instance = instance_manager.get_instance(instance_id) if instance_id else None
+    if instance is not None and player_obj.current_room_id in instance.rooms:
+        # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
+        return player_obj.current_room_id
+    if instance is None:
+        instance = await _start_fresh_instance(
+            player_obj, instance_manager, content_service, quest_service, template_id, instance_id
         )
-        from ..game.player_creation_service import TUTORIAL_TEMPLATE_ID
 
-        instance = instance_manager.create_instance(
-            template_id=TUTORIAL_TEMPLATE_ID,
-            owner_player_id=player.player_id,
-        )
-        instance_id = instance.instance_id
-        setattr(player, "tutorial_instance_id", instance_id)  # noqa: B010  # Reason: SQLAlchemy column
-
-    first_room_id = instance_manager.get_first_room_id(instance_id)
+    first_room_id = instance_manager.get_first_room_id(instance.instance_id)
     if not first_room_id:
-        logger.warning("Tutorial instance has no rooms", instance_id=instance_id)
+        logger.warning("Tutorial instance has no rooms", instance_id=instance.instance_id)
         return None
 
     setattr(player, "current_room_id", first_room_id)  # noqa: B010  # Reason: SQLAlchemy column
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
-    return cast(str, first_room_id)
+    return first_room_id
 
 
-def _get_instance_manager_from_manager(manager: Any) -> Any:
-    """Extract InstanceManager from ConnectionManager via app.container."""
-    app_state = getattr(manager, "app", None)
-    if not app_state:
+def _tutorial_instance_services(
+    player: Player, manager: object
+) -> tuple[InstanceManager, InstanceContentLifecycle | None, QuestResetter | None] | None:
+    """The container's instance manager, content and quest services for a tutorial (re)entry, or None (logged)."""
+    services = _container_services(manager)
+    if services is None or services.instance_manager is None:
+        logger.warning("InstanceManager not available for tutorial reconnect", player_id=player.player_id)
         return None
-    app_state = getattr(app_state, "state", None)
-    if not app_state:
+    return services.instance_manager, services.instance_content_service, services.quest_service
+
+
+def _stranded_template_id(player: Player, persistence: RoomLookup | None) -> str | None:
+    """instance_template_id of the player's saved room if it is a template room, else None."""
+    room_id = player.current_room_id
+    if persistence is None or not room_id:
         return None
-    container = getattr(app_state, "container", None)
-    if not container:
-        return None
-    return getattr(container, "instance_manager", None)
+    return template_id_of(persistence.get_room_by_id(room_id))
+
+
+async def _start_fresh_instance(
+    player: Player,
+    instance_manager: InstanceManager,
+    content: InstanceContentLifecycle | None,
+    quests: QuestResetter | None,
+    template_id: str,
+    lost_instance_id: str | None,
+) -> Instance:
+    """Create and populate a new instance for the player and record it on them.
+
+    ``lost_instance_id`` is the instance the player had before, if any. A real one that no longer
+    exists means a restart (logout, server restart), so the run starts over: what the old instance
+    handed the player is cleared, and DP, lucidity and the instance's quests are reset (corruption
+    stays). The pending marker (new character) and None (stranded in a template) mean there is
+    nothing to reset.
+    """
+    instance = instance_manager.create_instance(template_id=template_id, owner_player_id=player.player_id)
+    if content is not None:
+        await content.populate(instance)
+    cleared = 0
+    if lost_instance_id and lost_instance_id != PENDING_INSTANCE_ID:
+        cleared = reset_instance_scoped_state(player)
+        cleared += await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
+        # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
+        prefix = f"{instance.instance_id}_"
+        await restart_instance_run(player, [room_id.removeprefix(prefix) for room_id in instance.rooms], quests)
+    logger.info(
+        "Tutorial instance missing on (re)entry, created a fresh one",
+        player_id=player.player_id,
+        lost_instance_id=lost_instance_id,
+        instance_id=instance.instance_id,
+        template_id=template_id,
+        cleared=cleared,
+    )
+    setattr(player, "tutorial_instance_id", instance.instance_id)  # noqa: B010  # Reason: SQLAlchemy column
+    return instance
+
+
+class _InstanceServices(Protocol):  # pylint: disable=too-few-public-methods  # Reason: attribute-only structural type
+    """The slice of the app container the tutorial reconnect path reads."""
+
+    instance_manager: InstanceManager | None
+    instance_content_service: InstanceContentLifecycle | None
+    quest_service: QuestResetter | None
+
+
+def _container_services(manager: object) -> _InstanceServices | None:
+    """The app container's instance services, reached through the ConnectionManager (app.state.container), or None."""
+    app = cast(object | None, getattr(manager, "app", None))
+    state = cast(object | None, getattr(app, "state", None))
+    return cast("_InstanceServices | None", getattr(state, "container", None))
 
 
 class _GraceReconnectManager(CatchupManager, Protocol):  # pylint: disable=too-few-public-methods
@@ -429,6 +513,7 @@ async def track_player_disconnected_impl(
             # Clean up ghost players
             manager._cleanup_ghost_players()  # pylint: disable=protected-access  # Reason: Accessing protected member _cleanup_ghost_players is necessary for player presence tracking implementation, this is part of the internal API
 
+            await flush_departing_tutorial_instance(cast(Player | None, pl), cast(InstanceFlushOwner, manager))
             # Clean up remaining references
             _cleanup_player_references(player_id, manager)
 

@@ -1,7 +1,9 @@
 // Room state merge utilities
 // As documented in "Room State Architecture" - Dr. Armitage, 1928
 
+import type { NpcOccupant } from '../../../types/messageCategory';
 import type { Room } from '../types';
+import { normalizeNpcOccupants, npcNames } from './npcOccupants';
 
 /**
  * Gets players array from room, returning empty array if not available
@@ -13,7 +15,7 @@ const getPlayersArray = (room: Room): string[] => {
 /**
  * Gets NPCs array from room, returning empty array if not available
  */
-const getNpcsArray = (room: Room): string[] => {
+const getNpcsArray = (room: Room): NpcOccupant[] => {
   return room.npcs ?? [];
 };
 
@@ -44,8 +46,8 @@ const selectPlayersArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: bo
  * Uses updates when it provides an array (including empty); preserves prev only when
  * updates omits the key (undefined) so room_occupants can clear occupants authoritatively.
  */
-const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): string[] => {
-  const updatesNpcsRaw = updatesRoom.npcs;
+const selectNpcsArray = (updatesRoom: Room, prevRoom: Room, roomIdChanged: boolean): NpcOccupant[] => {
+  const updatesNpcsRaw = Array.isArray(updatesRoom.npcs) ? normalizeNpcOccupants(updatesRoom.npcs) : updatesRoom.npcs;
   const prevNpcs = getNpcsArray(prevRoom);
   const updatesIsValidArray = Array.isArray(updatesNpcsRaw);
 
@@ -88,7 +90,7 @@ export const mergeRoomState = (updatesRoom: Room | undefined, prevRoom: Room | n
   const mergedNpcs = selectNpcsArray(updatesRoom, prevRoom, roomIdChanged);
 
   // Calculate merged occupants array
-  const mergedOccupants = [...mergedPlayers, ...mergedNpcs];
+  const mergedOccupants = [...mergedPlayers, ...npcNames(mergedNpcs)];
 
   // Calculate occupant count from merged values
   const mergedOccupantCount = updatesRoom.occupant_count ?? mergedOccupants.length;

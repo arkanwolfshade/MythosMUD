@@ -179,7 +179,7 @@ async def _dispose_engine_safely(engine: AsyncEngine) -> None:
                 pool = engine.sync_engine.pool
                 if pool:
                     pool.dispose()
-        except (RuntimeError, AttributeError, TypeError):
+        except RuntimeError, AttributeError, TypeError:
             pass
         logger.info("Database connections force closed")
 

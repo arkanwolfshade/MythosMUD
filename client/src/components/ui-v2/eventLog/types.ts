@@ -8,6 +8,3 @@ export type EventLogEntry = GameEvent;
 
 /** Immutable view of the event log (read-only array) */
 export type EventLog = readonly EventLogEntry[];
-
-/** Initial empty log */
-export const EMPTY_LOG: EventLog = [] as const;

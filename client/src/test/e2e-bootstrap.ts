@@ -24,8 +24,8 @@ export const E2E_ENV_DEFAULTS: Record<string, string> = {
   POSTGRES_SEARCH_PATH: 'mythos_e2e',
 };
 
-export const E2E_BOOTSTRAP_LOG_DIR = path.join(E2E_PROJECT_ROOT, 'logs', 'e2e_test');
-export const E2E_BOOTSTRAP_ERRORS_LOG = path.join(E2E_BOOTSTRAP_LOG_DIR, 'bootstrap-errors.log');
+const E2E_BOOTSTRAP_LOG_DIR = path.join(E2E_PROJECT_ROOT, 'logs', 'e2e_test');
+const E2E_BOOTSTRAP_ERRORS_LOG = path.join(E2E_BOOTSTRAP_LOG_DIR, 'bootstrap-errors.log');
 
 /** Parse .env file content and return only DATABASE_URL and POSTGRES_SEARCH_PATH. */
 export function parseE2eEnvContent(content: string): Record<string, string> {
@@ -64,7 +64,7 @@ export function redactDatabaseUrl(databaseUrl: string): string {
   }
 }
 
-export function appendBootstrapFailureLog(lines: string[]): void {
+function appendBootstrapFailureLog(lines: string[]): void {
   fs.mkdirSync(E2E_BOOTSTRAP_LOG_DIR, { recursive: true });
   const stamp = new Date().toISOString();
   const block = [`\n=== E2E bootstrap failure ${stamp} ===`, ...lines, ''].join('\n');

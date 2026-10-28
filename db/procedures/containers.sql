@@ -254,6 +254,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+-- set_container_capacity: resize a container to its prototype's capacity (room furniture refresh
+-- at startup). Kept separate from update_container so that function's signature never changes
+-- (a new optional parameter would leave the old overload behind and make calls ambiguous).
+CREATE OR REPLACE FUNCTION :schema_name.set_container_capacity( -- noqa: PRS
+    p_container_id uuid,
+    p_capacity_slots integer
+) RETURNS uuid AS $$
+DECLARE
+    v_id uuid;
+BEGIN
+    UPDATE containers
+    SET
+        updated_at = NOW(),
+        capacity_slots = p_capacity_slots
+    WHERE container_instance_id = p_container_id
+    RETURNING container_instance_id INTO v_id;
+    RETURN v_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- delete_container: delete by id, return true if row deleted
 CREATE OR REPLACE FUNCTION :schema_name.delete_container(p_container_id uuid) -- noqa: PRS
 RETURNS boolean AS $$
@@ -307,6 +328,47 @@ BEGIN
     FROM containers c
     WHERE c.room_id = p_room_id
     ORDER BY c.created_at;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get_bank_container: a player's bank deposit box (at most one: uq_containers_bank_owner)
+CREATE OR REPLACE FUNCTION :schema_name.get_bank_container(p_owner_id uuid) -- noqa: PRS
+RETURNS TABLE (
+    container_instance_id uuid,
+    source_type text,
+    owner_id uuid,
+    room_id character varying,
+    entity_id uuid,
+    lock_state text,
+    capacity_slots integer,
+    weight_limit integer,
+    decay_at timestamp with time zone,
+    allowed_roles jsonb,
+    metadata_json jsonb,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    container_item_instance_id character varying
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.container_instance_id,
+        c.source_type,
+        c.owner_id,
+        c.room_id,
+        c.entity_id,
+        c.lock_state,
+        c.capacity_slots,
+        c.weight_limit,
+        c.decay_at,
+        c.allowed_roles,
+        c.metadata_json,
+        c.created_at,
+        c.updated_at,
+        c.container_item_instance_id
+    FROM containers c
+    WHERE c.source_type = 'bank' AND c.owner_id = p_owner_id;
 END;
 $$ LANGUAGE plpgsql;
 

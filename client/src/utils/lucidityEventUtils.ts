@@ -2,7 +2,7 @@ import type { LucidityStatus, LucidityTier } from '../types/lucidity';
 
 const DEFAULT_MAX_LCD = 100;
 
-const sanitizeTier = (value: unknown, fallback: LucidityTier): LucidityTier => {
+const sanitizeTier = (value: unknown, fallback: LucidityTier | undefined): LucidityTier | undefined => {
   if (typeof value !== 'string') {
     return fallback;
   }
@@ -77,7 +77,7 @@ export const buildLucidityStatus = (
   const delta = parseNumber(data.delta, 0);
   const max = resolveMaxLucidity(data, previous, playerMaxLucidity);
   const current = resolveCurrentLucidity(data, previous, delta, max);
-  const tier = sanitizeTier(data.tier, previous?.tier ?? 'lucid');
+  const tier = sanitizeTier(data.tier, previous?.tier);
   const liabilities = resolveLiabilities(data, previous);
   const reason = resolveOptionalText(data.reason);
   const source = resolveOptionalText(data.source);
@@ -105,7 +105,7 @@ export const buildLucidityChangeMessage = (
 ): string => {
   const reason = typeof data.reason === 'string' ? data.reason.replace(/_/g, ' ') : undefined;
   const source = typeof data.source === 'string' ? data.source : undefined;
-  const tier = status.tier.charAt(0).toUpperCase() + status.tier.slice(1);
+  const tier = status.tier ? status.tier.charAt(0).toUpperCase() + status.tier.slice(1) : undefined;
   const direction = delta >= 0 ? 'gains' : 'loses';
   const magnitude = Math.abs(delta);
   const fragments = [`Lucidity ${direction} ${magnitude}`];
@@ -118,7 +118,7 @@ export const buildLucidityChangeMessage = (
     fragments.push(`due to ${source}`);
   }
 
-  fragments.push(`→ ${status.current}/${status.max} (${tier})`);
+  fragments.push(tier ? `→ ${status.current}/${status.max} (${tier})` : `→ ${status.current}/${status.max}`);
 
   return fragments.join(' ');
 };

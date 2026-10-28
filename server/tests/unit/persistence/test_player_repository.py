@@ -7,7 +7,7 @@ Uses procedure-based persistence; mocks return rows compatible with row_to_playe
 
 import uuid
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -71,7 +71,6 @@ def _make_mock_row(
     row.user_id = uid
     row.name = name
     row.inventory = "[]"
-    row.status_effects = "[]"
     row.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
     row.respawn_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
     row.experience_points = 0
@@ -110,7 +109,6 @@ def mock_player():
     player.user_id = str(uuid.uuid4())
     player.name = "TestPlayer"
     player.inventory = "[]"
-    player.status_effects = "[]"
     player.current_room_id = "arkham_square"
     player.respawn_room_id = "arkham_square"
     player.experience_points = 0
@@ -325,6 +323,47 @@ async def test_save_player_database_error(player_repository, mock_player):
             await player_repository.save_player(mock_player)
 
 
+@pytest.mark.parametrize(("procedure_result", "expected"), [(True, True), (False, False), (None, False)])
+@pytest.mark.asyncio
+async def test_clear_player_inventory_calls_only_the_narrow_procedure(
+    player_repository: PlayerRepository, procedure_result: bool | None, expected: bool
+) -> None:
+    """Death clears gear via clear_player_inventory, never upsert_player: the upsert rewrote
+    stats from a stale Player and revived a dead player into a death loop (#917)."""
+    player_id = uuid.uuid4()
+    mock_execute = AsyncMock(return_value=_ScalarResult(procedure_result))
+    mock_commit = AsyncMock()
+    mock_session = AsyncMock()
+    mock_session.execute = mock_execute
+    mock_session.commit = mock_commit
+
+    with patch("server.persistence.repositories.player_repository.get_session_maker") as mock_get_session:
+        mock_get_session.return_value = _session_maker_double(mock_session)
+
+        cleared = await player_repository.clear_player_inventory(player_id)
+
+    assert cleared is expected
+    mock_execute.assert_awaited_once()
+    call = mock_execute.await_args
+    assert call is not None
+    statement, params = cast(tuple[object, object], call.args)
+    assert str(statement) == "SELECT clear_player_inventory(:id)"
+    assert params == {"id": str(player_id)}
+    mock_commit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_clear_player_inventory_database_error(player_repository: PlayerRepository) -> None:
+    mock_session = AsyncMock()
+    mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
+
+    with patch("server.persistence.repositories.player_repository.get_session_maker") as mock_get_session:
+        mock_get_session.return_value = _session_maker_double(mock_session)
+
+        with pytest.raises(DatabaseError):
+            _ = await player_repository.clear_player_inventory(uuid.uuid4())
+
+
 @pytest.mark.asyncio
 async def test_list_players_success(player_repository):
     """Test list_players successfully retrieves players."""
@@ -520,7 +559,6 @@ async def test_save_players_success(player_repository, mock_player):
     mock_player2.user_id = str(uuid.uuid4())
     mock_player2.name = "Player2"
     mock_player2.inventory = "[]"
-    mock_player2.status_effects = "[]"
     mock_player2.current_room_id = "arkham_square"
     mock_player2.respawn_room_id = "arkham_square"
     mock_player2.experience_points = 0

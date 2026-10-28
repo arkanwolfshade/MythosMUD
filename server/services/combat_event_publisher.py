@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
+from ..constants.message_category import MessageCategory
 from ..events.combat_events import (
     CombatEndedEvent,
     CombatStartedEvent,
@@ -292,6 +293,7 @@ class CombatEventPublisher:
             "duration_seconds": event.duration_seconds,
             "participants": event.participants,
             "timestamp": event.timestamp.isoformat(),
+            "category": MessageCategory.COMBAT_STATUS.value,
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -332,6 +334,9 @@ class CombatEventPublisher:
             "target_current_dp": event.target_current_dp,
             "target_max_dp": event.target_max_dp,
             "timestamp": event.timestamp.isoformat(),
+            # The client words this line as "X attacks you", so it is always the recipient being hurt.
+            "category": MessageCategory.COMBAT_HURT.value,
+            **({"attacker_disposition": event.attacker_disposition} if event.attacker_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -377,6 +382,9 @@ class CombatEventPublisher:
             "target_current_dp": event.target_current_dp,
             "target_max_dp": event.target_max_dp,
             "timestamp": event.timestamp.isoformat(),
+            # The client words this line as "You attack X", so it is always the recipient dealing damage.
+            "category": MessageCategory.COMBAT_HIT.value,
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -418,6 +426,9 @@ class CombatEventPublisher:
             "current_dp": event.current_dp,
             "max_dp": event.max_dp,
             "timestamp": event.timestamp.isoformat(),
+            # The client words this line as "Dealt N damage to X": damage the recipient dealt.
+            "category": MessageCategory.COMBAT_HIT.value,
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
@@ -455,6 +466,7 @@ class CombatEventPublisher:
             "npc_name": event.npc_name,
             "xp_reward": event.xp_reward,
             "timestamp": event.timestamp.isoformat(),
+            **({"npc_disposition": event.npc_disposition} if event.npc_disposition else {}),
         }
         if getattr(event, "killer_id", None):
             event_data["killer_id"] = event.killer_id

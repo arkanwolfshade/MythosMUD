@@ -42,11 +42,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 # Directories under server/ excluded entirely -- never scanned, never allowlisted. Same set as
-# lint_raw_sql_in_python.py, for the same reasons (tests, migration tooling, admin scripts, and a
-# vendored tree are not live request-serving application code).
+# lint_raw_sql_in_python.py, for the same reasons (tests, admin scripts, and a vendored tree are
+# not live request-serving application code).
 EXCLUDED_DIR_PARTS = {
     "tests",
-    "alembic",
     "scripts",
     "graphify-out",
 }
@@ -97,9 +96,6 @@ CONTAINER_GET_INSTANCE_ALLOWLIST: tuple[AllowlistEntry, ...] = (
     AllowlistEntry(
         "server/services/npc_combat_handlers.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"
     ),
-    AllowlistEntry(
-        "server/services/npc_combat_rewards.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"
-    ),
     AllowlistEntry("server/game/magic/magic_healing_events.py", 1, "mixin, never instantiated directly"),
     AllowlistEntry("server/realtime/connection_manager_utils.py", 1, "free function"),
 )
@@ -147,7 +143,7 @@ def _code_tokens(content: str) -> list[tokenize.TokenInfo]:
             for tok in tokenize.generate_tokens(iter(content.splitlines(keepends=True)).__next__)
             if tok.type not in _SKIP_TOKEN_TYPES
         ]
-    except (tokenize.TokenError, IndentationError, SyntaxError):
+    except tokenize.TokenError, IndentationError, SyntaxError:
         # Unparsable file is not this guard's problem to diagnose; other tooling (ruff, basedpyright)
         # already fails the build on a syntax error.
         return []

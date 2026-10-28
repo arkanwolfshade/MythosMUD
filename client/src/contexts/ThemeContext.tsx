@@ -9,7 +9,7 @@ export type ColorScheme = 'default' | 'high-contrast' | 'eldritch';
 export type FontSize = 'small' | 'medium' | 'large';
 
 // UI preferences
-export interface UIPreferences {
+interface UIPreferences {
   theme: Theme;
   colorScheme: ColorScheme;
   fontSize: FontSize;
@@ -22,6 +22,8 @@ export interface UIPreferences {
   /** #804: corruption's chat-pane grain overlay. Presentation-only (ADR-025), so a client toggle
    * over it carries no fairness concern the way toggling a server-side effect would (ADR-024). */
   chatGrain: boolean;
+  /** Message-category glyphs are swapped for bracketed text prefixes such as [Combat]. */
+  textLabels: boolean;
 }
 
 // Context type
@@ -43,7 +45,10 @@ const defaultPreferences: UIPreferences = {
   highContrast: false,
   reducedMotion: false,
   chatGrain: true,
+  textLabels: false,
 };
+
+const PREFERENCES_STORAGE_KEY = 'mythosmud-ui-preferences';
 
 // Create context
 export const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -59,22 +64,26 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialPreferences = {} }) => {
   const [preferences, setPreferences] = useState<UIPreferences>(() => {
-    // Load from localStorage if available
-    const saved = localStorage.getItem('mythosmud-ui-preferences');
-    if (saved) {
-      try {
+    // Load from localStorage if available; storage can be blocked or throw (private windows)
+    try {
+      const saved = localStorage.getItem(PREFERENCES_STORAGE_KEY);
+      if (saved) {
         const parsed = JSON.parse(saved);
         return { ...defaultPreferences, ...parsed, ...initialPreferences };
-      } catch {
-        // If parsing fails, use defaults
       }
+    } catch {
+      // If storage is unavailable or parsing fails, use defaults
     }
     return { ...defaultPreferences, ...initialPreferences };
   });
 
   // Save to localStorage whenever preferences change
   useEffect(() => {
-    localStorage.setItem('mythosmud-ui-preferences', JSON.stringify(preferences));
+    try {
+      localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+    } catch {
+      // Preferences still apply for this session when storage is unavailable
+    }
   }, [preferences]);
 
   // Apply theme classes to document
@@ -104,6 +113,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, initialP
     } else {
       root.classList.remove('compact-mode');
     }
+
+    // messageCategories.css keys its AAA palette and text-label mode off these classes
+    root.classList.toggle('high-contrast', preferences.highContrast);
+    root.classList.toggle('text-labels', preferences.textLabels);
   }, [preferences]);
 
   const updatePreferences = (updates: Partial<UIPreferences>) => {

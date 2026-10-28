@@ -16,7 +16,7 @@ export class CharacterSelectionPage {
   async isVisible(): Promise<boolean> {
     return this.page
       .getByRole('heading', { name: /Select Your Character/i })
-      .isVisible({ timeout: 2000 })
+      .isVisible()
       .catch(() => false);
   }
 
@@ -36,12 +36,13 @@ export class CharacterSelectionPage {
             has: this.page.locator('h3.character-name', { hasText: new RegExp(`^${escapeRegExp(characterName)}$`) }),
           });
     const selectButton = card.getByTestId('select-character-button');
-    await expect(selectButton).toBeVisible({
+    await expect(
+      selectButton,
+      characterName === null
+        ? 'No character card with Select Character'
+        : `Character card not found for name "${characterName}"`
+    ).toBeVisible({
       timeout: TEST_TIMEOUTS.LOGIN,
-      message:
-        characterName === null
-          ? 'No character card with Select Character'
-          : `Character card not found for name "${characterName}"`,
     });
 
     const selectResponse = this.page.waitForResponse(

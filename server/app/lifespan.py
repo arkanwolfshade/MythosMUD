@@ -17,7 +17,7 @@ import uuid as uuid_lib
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from fastapi import FastAPI
 
@@ -28,6 +28,8 @@ from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..monitoring.performance_monitor import get_performance_monitor
 from ..realtime.dead_letter_queue import DeadLetterQueue
+from ..services.room_furniture_loader import FurnitureStartupPersistence, initialize_room_furniture
+from ..services.room_item_seeder import RoomListPersistence, initialize_room_items
 from ..structured_logging.enhanced_logging_config import (
     get_logger,
     log_exception_once,
@@ -36,6 +38,7 @@ from ..structured_logging.enhanced_logging_config import (
 from ..structured_logging.log_aggregator import get_log_aggregator
 from ..time.time_service import get_mythos_chronicle
 from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
+from .lifespan_instance import wire_instance_content
 from .lifespan_shutdown import shutdown_services
 from .lifespan_startup import (
     initialize_container_and_legacy_services,
@@ -204,6 +207,18 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
     await setup_connection_manager(app, container)
     # NPC, combat, magic, chat, and mythos time services are now initialized in container.initialize()
     await initialize_npc_startup_spawning(app)
+    # ApplicationContainer declares these as Any; narrow at this boundary.
+    await initialize_room_furniture(
+        cast(FurnitureStartupPersistence | None, container.async_persistence),
+        cast(object, container.item_prototype_registry),
+    )
+    await initialize_room_items(
+        cast(RoomListPersistence | None, container.async_persistence),
+        cast(object, container.item_factory),
+        cast(object | None, getattr(getattr(app.state, "connection_manager", None), "room_manager", None)),
+    )
+    # Instances populate and tear down their own furniture, items and NPCs; needs the services above.
+    _ = wire_instance_content(container)
 
     # Enhance logging system with PlayerGuidFormatter now that player service is available
     update_logging_with_player_service(container.player_service)
@@ -306,7 +321,7 @@ def _persist_mythos_state_on_error() -> None:
         chronicle = get_mythos_chronicle()
         chronicle.freeze()
         logger.info("Mythos chronicle state persisted during error shutdown")
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+    except AttributeError, KeyError, TypeError, ValueError, RuntimeError:
         logger.warning("Failed to persist mythos chronicle state during error shutdown")
 
 
@@ -316,7 +331,7 @@ async def _cleanup_container_on_error(container: ApplicationContainer | None) ->
         return
     try:
         await container.shutdown()
-    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError):
+    except AttributeError, KeyError, TypeError, ValueError, RuntimeError:
         pass
 
 

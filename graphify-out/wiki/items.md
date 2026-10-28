@@ -1,14 +1,19 @@
-# Items
+# items
 
-> 5 nodes
+> 10 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **items.sql** (3 connections) — `db/procedures/items.sql`
-- **schema_name.item_instance_exists()** (2 connections) — `db/procedures/items.sql`
-- **schema_name.get_item_instance()** (1 connections) — `db/procedures/items.sql`
-- **schema_name.upsert_item_instance()** (1 connections) — `db/procedures/items.sql`
-- **item_instances** (1 connections)
+- **skills.sql** (9 connections) — `db/procedures/skills.sql`
+- **schema_name.delete_player_skills_for_player()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_all_skills()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_player_skills_with_skill()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_by_id()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_by_key()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.get_skill_ids_used_at_level()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.insert_player_skills_many()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.record_skill_use()** (1 connections) — `db/procedures/skills.sql`
+- **schema_name.update_player_skill_value()** (1 connections) — `db/procedures/skills.sql`
 
 ## Relationships
 
@@ -16,11 +21,11 @@
 
 ## Source Files
 
-- `db/procedures/items.sql`
+- `db/procedures/skills.sql`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

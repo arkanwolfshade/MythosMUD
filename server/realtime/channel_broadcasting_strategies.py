@@ -17,6 +17,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
+# Factory keys for an NPC say or emote addressed to one player (#1103, #1107): delivered to that player alone.
+PRIVATE_ROOM_STRATEGIES = {"say": "private_say", "emote": "private_emote"}
+
 
 class ChannelBroadcastingStrategy(ABC):
     """Abstract base class for channel broadcasting strategies."""
@@ -253,7 +256,11 @@ class ChannelBroadcastingStrategyFactory:
             "whisper": WhisperChannelStrategy(),
             # System/Admin channels
             "system": SystemAdminChannelStrategy("system"),
+            "quest": SystemAdminChannelStrategy("quest"),
             "admin": SystemAdminChannelStrategy("admin"),
+            # Personal delivery, but dampened and tagged as the say or emote it is.
+            PRIVATE_ROOM_STRATEGIES["say"]: SystemAdminChannelStrategy("say"),
+            PRIVATE_ROOM_STRATEGIES["emote"]: SystemAdminChannelStrategy("emote"),
         }
 
     def get_strategy(self, channel_type: str) -> ChannelBroadcastingStrategy:

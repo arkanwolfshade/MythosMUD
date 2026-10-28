@@ -5,9 +5,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useGameConnection } from '../../../hooks/useGameConnectionRefactored';
 import { logger } from '../../../utils/logger';
 import type { GameEvent } from '../eventHandlers/types';
-import type { ChatMessage } from '../types';
-import { sanitizeChatMessageForState } from '../utils/messageUtils';
-import type { GameState } from '../utils/stateUpdateUtils';
+import { buildLocalMessageEvent } from '../eventLog/projectorMessageUtils';
 
 interface UseGameConnectionManagementParams {
   authToken: string;
@@ -15,7 +13,6 @@ interface UseGameConnectionManagementParams {
   characterId?: string; // MULTI-CHARACTER: Selected character ID for WebSocket connection
   onLogout?: () => void;
   onGameEvent: (event: GameEvent) => void;
-  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
   /** When set, socket close is treated as intentional exit: skip reconnection and go to login. */
   intentionalExitInProgressRef?: React.MutableRefObject<boolean>;
 }
@@ -26,31 +23,20 @@ export const useGameConnectionManagement = ({
   characterId,
   onLogout,
   onGameEvent,
-  setGameState,
   intentionalExitInProgressRef,
 }: UseGameConnectionManagementParams) => {
   const hasAttemptedConnection = useRef(false);
 
   const handleConnectionLoss = useCallback(() => {
     logger.info('GameClientV2Container', 'Connection lost, triggering logout flow');
-    const connectionLostMessage: ChatMessage = sanitizeChatMessageForState({
-      text: 'Connection to server lost. Returning to login screen...',
-      timestamp: new Date().toISOString(),
-      messageType: 'system',
-      isHtml: false,
-    });
-
-    setGameState(prev => ({
-      ...prev,
-      messages: [...prev.messages, connectionLostMessage],
-    }));
+    onGameEvent(buildLocalMessageEvent('Connection to server lost. Returning to login screen...'));
 
     setTimeout(() => {
       if (onLogout) {
         onLogout();
       }
     }, 1000);
-  }, [onLogout, setGameState]);
+  }, [onLogout, onGameEvent]);
 
   const handleConnect = useCallback(() => {
     logger.info('GameClientV2Container', 'Connected to game server');

@@ -9,6 +9,8 @@ This module contains helper functions used across player event handling.
 import uuid
 from typing import Any
 
+from ..constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcDisposition, NpcOccupant
+from .connection_utils import npc_disposition_from_row, npc_occupant
 from .disconnect_grace_period import is_player_in_grace_period
 from .player_name_utils import PlayerNameExtractor
 
@@ -41,7 +43,7 @@ class PlayerEventHandlerUtils:
         """
         try:
             return uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self._logger.warning("Invalid player_id format, cannot convert to UUID", player_id=player_id)
             return None
 
@@ -129,7 +131,13 @@ class PlayerEventHandlerUtils:
         return names
 
     def add_valid_name_to_lists(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Name list management requires many parameters for context and validation
-        self, name: str | None, players: list[str], npcs: list[str], all_occupants: list[str], is_player: bool = False
+        self,
+        name: str | None,
+        players: list[str],
+        npcs: list[NpcOccupant],
+        all_occupants: list[str],
+        is_player: bool = False,
+        disposition: NpcDisposition = DEFAULT_NPC_DISPOSITION,
     ) -> None:
         """
         Add a valid name to the appropriate lists.
@@ -137,9 +145,10 @@ class PlayerEventHandlerUtils:
         Args:
             name: The name to validate and add
             players: List of player names
-            npcs: List of NPC names
+            npcs: List of NPC occupants (name + disposition)
             all_occupants: Flat list of all occupants
             is_player: Whether this is a player name (True) or NPC name (False)
+            disposition: The NPC's disposition (ignored for players)
         """
         if not name or not self.name_extractor.is_valid_name_for_occupant(name):
             return
@@ -151,11 +160,11 @@ class PlayerEventHandlerUtils:
         if is_player:
             players.append(name)
         else:
-            npcs.append(name)
+            npcs.append(npc_occupant(name, disposition))
         all_occupants.append(name)
 
     def process_dict_occupant(
-        self, occ: dict[str, Any], players: list[str], npcs: list[str], all_occupants: list[str]
+        self, occ: dict[str, Any], players: list[str], npcs: list[NpcOccupant], all_occupants: list[str]
     ) -> None:
         """
         Process a dictionary occupant and add to appropriate lists.
@@ -163,7 +172,7 @@ class PlayerEventHandlerUtils:
         Args:
             occ: Dictionary containing occupant information
             players: List of player names
-            npcs: List of NPC names
+            npcs: List of NPC occupants (name + disposition)
             all_occupants: Flat list of all occupants
         """
         if "player_name" in occ:
@@ -171,7 +180,9 @@ class PlayerEventHandlerUtils:
             self.add_valid_name_to_lists(player_name, players, npcs, all_occupants, is_player=True)
         elif "npc_name" in occ:
             npc_name = occ.get("npc_name")
-            self.add_valid_name_to_lists(npc_name, players, npcs, all_occupants, is_player=False)
+            self.add_valid_name_to_lists(
+                npc_name, players, npcs, all_occupants, is_player=False, disposition=npc_disposition_from_row(occ)
+            )
         else:
             name = occ.get("name")
             if name and self.name_extractor.is_valid_name_for_occupant(name):
@@ -191,7 +202,7 @@ class PlayerEventHandlerUtils:
             Dictionary with players, npcs, occupants, and count
         """
         players: list[str] = []
-        npcs: list[str] = []
+        npcs: list[NpcOccupant] = []
         all_occupants: list[str] = []  # Flat list for backward compatibility
 
         for occ in occupants_snapshot or []:
@@ -240,7 +251,7 @@ class PlayerEventHandlerUtils:
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
             return player_id_uuid in self.connection_manager.disconnecting_players
-        except (ValueError, AttributeError):
+        except ValueError, AttributeError:
             return False
 
     def is_player_in_grace_period(self, player_id: uuid.UUID | str) -> bool:
@@ -259,5 +270,5 @@ class PlayerEventHandlerUtils:
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
             return is_player_in_grace_period(player_id_uuid, self.connection_manager)
-        except (ValueError, AttributeError, ImportError):
+        except ValueError, AttributeError, ImportError:
             return False

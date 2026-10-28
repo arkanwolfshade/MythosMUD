@@ -10,6 +10,7 @@ import { spawnSync } from 'child_process';
 import { join } from 'path';
 import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { ensurePlayableConnection, executeCommand, getMessages, loginPlayer, waitForMessage } from '../fixtures/auth';
+import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 import { EASTERN_HALLWAY_LOOK_CUE, TEST_TIMEOUTS } from '../fixtures/test-data';
 
@@ -50,7 +51,21 @@ async function assertMorganVisible(page: import('@playwright/test').Page): Promi
     .toBe(true);
 }
 
+/** True once the current room's occupants panel lists Morgan (the game log keeps older rooms' lines). */
+async function morganInRoom(page: import('@playwright/test').Page, timeoutMs: number): Promise<boolean> {
+  const occupants = page.getByTestId('occupants-other-players').first();
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if ((await occupants.innerText().catch(() => '')).includes(MORGAN_NAME)) return true;
+    await new Promise(r => setTimeout(r, 500));
+  }
+  return false;
+}
+
 async function spawnMorgan(page: import('@playwright/test').Page): Promise<void> {
+  // Tests start in Main Foyer (#956), whose own Dr. Morgan already lives there. Spawning a second one
+  // made `quest ask morgan` ambiguous ("Which one? Matches: Dr. Francis Morgan, Dr. Francis Morgan").
+  if (await morganInRoom(page, 8000)) return;
   for (let attempt = 0; attempt < 3; attempt++) {
     await executeCommand(page, 'npc spawn 54');
     try {
@@ -69,6 +84,11 @@ test.describe('collect_n daisy quest ask/turnin', () => {
 
   test.beforeAll(() => {
     resetDaisyQuestInstances();
+  });
+
+  test.beforeEach(() => {
+    // E2E baseline (#956): each test logs in fresh, landing in the saved room, so reset it to Main Foyer.
+    resetE2ePlayerRoomsInDatabase();
   });
 
   test('quest ask fails when Morgan is not in the room', async ({ page }) => {
@@ -130,7 +150,7 @@ test.describe('collect_n daisy quest ask/turnin', () => {
     const summonMsgs = await getMessages(page);
     expect(summonMsgs.some(m => /You summon\s+3x/i.test(m))).toBe(true);
 
-    // get <item> [from] <container> [quantity]; room floor uses container "room"
+    // get <item> [from <container>] [quantity]; room floor uses container "room"
     await executeCommand(page, 'get daisy from room 3');
     await waitForMessage(page, /You get\s+\d+x|daisy|Sanitarium Daisy/i, 25000);
 

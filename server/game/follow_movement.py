@@ -111,7 +111,7 @@ async def follower_already_in_room(host: _FollowMovementHost, follower_id: str, 
             return False
         current = follower.current_room_id
         return bool(current) and str(current) == room_id
-    except (ValueError, TypeError, AttributeError):
+    except ValueError, TypeError, AttributeError:
         return False
 
 

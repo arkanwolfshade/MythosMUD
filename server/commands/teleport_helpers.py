@@ -11,6 +11,7 @@ from .admin_teleport_utils import (
     get_online_player_by_display_name,
     notify_player_of_teleport,
 )
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -100,14 +101,14 @@ async def resolve_target_player(
     """Resolve target player for teleport command."""
     target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
     if not target_player_info:
-        return {"result": f"Player '{target_player_name}' is not online or not found."}
+        return command_error(f"Player '{target_player_name}' is not online or not found.")
 
     target_player = await player_service.get_player_by_name(target_player_name)
     if not target_player:
         logger.warning(
             "Teleport command failed - target player not found in database", target_player_name=target_player_name
         )
-        return {"result": f"Player '{target_player_name}' not found in database."}
+        return command_error(f"Player '{target_player_name}' not found in database.")
 
     if not direction_value and target_player.current_room_id == current_player.current_room_id:
         return {"result": f"{target_player_name} is already in your location."}
@@ -129,7 +130,7 @@ async def update_teleport_location(  # pylint: disable=too-many-arguments,too-ma
     success = await player_service.update_player_location(target_player_name, target_room_id)
     if not success:
         logger.error("Failed to update target player location", target_player_name=target_player_name)
-        return {"result": f"Failed to teleport {target_player_name}: database update failed."}
+        return command_error(f"Failed to teleport {target_player_name}: database update failed.")
 
     target_player.current_room_id = target_room_id
 
@@ -193,7 +194,7 @@ async def update_player_room_location(
         try:
             source_room = persistence.get_room_by_id(original_room_id)
             if source_room:
-                source_room.player_left(target_player_identifier)
+                source_room.player_left(target_player_identifier, to_room_id=target_room_id)
         except (ValueError, AttributeError, TypeError) as exc:
             logger.debug(
                 "Failed to mark teleport target as leaving source room",
@@ -307,13 +308,13 @@ async def validate_confirm_teleport_context(
     current_player = await player_service.get_player_by_name(player_name)
     if not current_player:
         logger.warning("Confirm teleport command failed - current player not found", player_name=player_name)
-        return None, {"result": "Player not found."}
+        return None, command_error("Player not found.")
 
     from .admin_permission_utils import validate_admin_permission
 
     is_admin = await validate_admin_permission(current_player, player_name)
     if not is_admin:
-        return None, {"result": "You do not have permission to use teleport commands."}
+        return None, command_error("You do not have permission to use teleport commands.")
 
     return current_player, None
 
@@ -324,7 +325,7 @@ async def resolve_target_player_for_teleport(
     """Resolve target player (online check and database lookup). Returns (target_player_info, target_player, error_result)."""
     target_player_info = await get_online_player_by_display_name(target_player_name, connection_manager)
     if not target_player_info:
-        return None, None, {"result": f"Player '{target_player_name}' is not online or not found."}
+        return None, None, command_error(f"Player '{target_player_name}' is not online or not found.")
 
     target_player = await player_service.get_player_by_name(target_player_name)
     if not target_player:
@@ -332,7 +333,7 @@ async def resolve_target_player_for_teleport(
             "Confirm teleport command failed - target player not found in database",
             target_player_name=target_player_name,
         )
-        return None, None, {"result": f"Player '{target_player_name}' not found in database."}
+        return None, None, command_error(f"Player '{target_player_name}' not found in database.")
 
     return target_player_info, target_player, None
 
@@ -354,7 +355,7 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
     success = await player_service.update_player_location(target_player_name, target_room_id)
     if not success:
         logger.error("Failed to update target player location", target_player_name=target_player_name)
-        return {"result": f"Failed to teleport {target_player_name}: database update failed."}
+        return command_error(f"Failed to teleport {target_player_name}: database update failed.")
 
     if target_player_info:
         target_player_info["room_id"] = target_room_id
@@ -367,6 +368,32 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
         persistence,
     )
 
+    await _announce_confirm_teleport(
+        connection_manager, target_player_info, target_player_name, player_name, original_room_id, target_room_id
+    )
+
+    return {"result": f"Successfully teleported {target_player_name} to your location."}
+
+
+# Reason: DYNAMIC_DISPATCH - connection_manager/room ids are Any per this module's established,
+# unsuppressed convention (matches execute_confirm_teleport's own identical parameter shape above).
+# Appropriate because: introducing Protocols for these objects is out of scope for this
+# complexity-only extraction.
+async def _announce_confirm_teleport(
+    connection_manager: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - matches execute_confirm_teleport's own identical parameter.
+    # Appropriate because: same unsuppressed convention as this module's teleport helpers.
+    target_player_info: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    target_player_name: str,
+    player_name: str,
+    # Reason: DYNAMIC_DISPATCH - room ids come from Any-typed player objects (.current_room_id).
+    # Appropriate because: same unsuppressed convention as execute_confirm_teleport above.
+    original_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same untyped room-id convention as above.
+    # Appropriate because: same unsuppressed convention as execute_confirm_teleport above.
+    target_room_id: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+) -> None:
+    """Broadcast teleport effects, notify the teleported player, and log the admin action."""
     await broadcast_teleport_effects(
         connection_manager,
         target_player_name,
@@ -403,5 +430,3 @@ async def execute_confirm_teleport(  # pylint: disable=too-many-arguments,too-ma
         from_room=original_room_id,
         to_room=target_room_id,
     )
-
-    return {"result": f"Successfully teleported {target_player_name} to your location."}

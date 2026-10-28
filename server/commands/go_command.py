@@ -16,12 +16,15 @@ import uuid
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..commands.ground_channel import cancel_ground_channel
 from ..commands.rest_command import cancel_rest_countdown, is_player_resting
 from ..exceptions import DatabaseError, ValidationError
 from ..game.dialogue import get_dialogue_service
+from ..game.movement_helpers import exit_refusal
 from ..game.movement_service import MovementService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -227,7 +230,7 @@ async def _execute_movement(  # pylint: disable=too-many-arguments,too-many-posi
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error during movement: {e!s}"}
+        return command_error(f"Error during movement: {e!s}")
 
 
 def _resolved_direction_for_go_command(command_data: dict[str, Any], player_name: str) -> str | None:
@@ -274,6 +277,8 @@ async def _cancel_rest_if_moving(
         return None
     raw_id = player.player_id
     player_id = uuid.UUID(raw_id) if isinstance(raw_id, str) else raw_id
+    # Moving also breaks a /ground ritual (#713); the interrupted event carries its own message.
+    await cancel_ground_channel(player_id, connection_manager)
     if not is_player_resting(player_id, connection_manager):
         return None
     await cancel_rest_countdown(player_id, connection_manager)
@@ -311,7 +316,7 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
 
     direction = _resolved_direction_for_go_command(command_data, player_name)
     if direction is None:
-        return {"result": "Go where? Usage: go <direction>"}
+        return command_error("Go where? Usage: go <direction>")
 
     setup_result = await _setup_go_command(request, current_user, player_name)
     if not setup_result:
@@ -319,16 +324,25 @@ async def handle_go_command(  # pylint: disable=too-many-arguments  # Reason: St
 
     app, persistence, player, room, room_id = setup_result
 
+    # Cancel /rest before posture check: /rest seats the player, and validating
+    # posture first returned "stand up" without ever cancelling — countdown then
+    # completed and intentional_disconnect sent clients to login (e2e rest flake).
+    rest_note = await _cancel_rest_if_moving(app, player, player_name, direction)
+
     valid_posture, posture_message = _validate_player_posture(player, player_name, room_id)
     if not valid_posture:
-        return {"result": posture_message}
-
-    # Cancel rest but continue into the move (early return left players stuck mid-rest).
-    rest_note = await _cancel_rest_if_moving(app, player, player_name, direction)
+        if rest_note is None:
+            return {"result": posture_message}
+        # cancel_rest stands in persistence; in-memory stats on this player may lag.
 
     target_room_id = _validate_exit(direction, room, persistence, player_name, room_id)
     if not target_room_id:
         return {"result": "You can't go that way"}
+
+    # The movement service enforces this too; checking here lets the room explain itself.
+    refusal = await exit_refusal(player, room, direction)
+    if refusal is not None:
+        return {"result": refusal}
 
     result = await _execute_movement(player, room_id, target_room_id, app, persistence, player_name, direction)
     if rest_note and isinstance(result.get("result"), str):

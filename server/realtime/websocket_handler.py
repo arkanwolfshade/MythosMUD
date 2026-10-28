@@ -8,9 +8,9 @@ process_websocket_command, or handle_chat_message.
 """
 
 # pyright: reportImportCycles=false
-# Reason: websocket_handler_connection.py and websocket_handler_message_loop.py were extracted
-# from this module for Lizard file-nloc limits, and both import back `websocket_handler`
-# (deferred to function scope, so no runtime circular-import) to reach coordinator entry points.
+# Reason: websocket_handler_message_loop.py was extracted from this module for Lizard file-nloc
+# limits, and imports back `websocket_handler` (deferred to function scope, so no runtime
+# circular-import) to reach coordinator entry points.
 # basedpyright still flags the structural cycle regardless of the deferred import.
 
 import uuid
@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 from fastapi import WebSocket, WebSocketDisconnect
 from structlog.stdlib import BoundLogger
 
+from ..constants.message_category import MessageCategory
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..structured_logging.logging_context import bind_request_context, clear_request_context
@@ -51,10 +52,10 @@ from .websocket_helpers import (
     check_shutdown_and_reject,
     is_client_disconnected_exception,
     is_websocket_disconnect_message,
-    load_player_mute_data,
 )
 from .websocket_initial_state import (
     check_and_send_death_notification,
+    check_and_send_delirium_notification,
     send_initial_game_state,
     send_initial_room_state,
 )
@@ -78,10 +79,18 @@ __all__ = [
     "broadcast_room_update",  # Re-exported from websocket_room_updates
     "send_initial_game_state",
     "check_and_send_death_notification",
+    "check_and_send_delirium_notification",
     "send_initial_room_state",
 ]
 
 logger: BoundLogger = get_logger(__name__)
+
+# send_system_message's message_type -> category; anything else is treated as info.
+_SYSTEM_MESSAGE_CATEGORIES = {
+    "info": MessageCategory.SYSTEM_INFO,
+    "warning": MessageCategory.SYSTEM_WARNING,
+    "error": MessageCategory.SYSTEM_ERROR,
+}
 
 # Test and legacy import names (basedpyright: public symbols from submodules, not private cross-imports).
 _resolve_and_setup_app_state_services = resolve_and_setup_app_state_services
@@ -113,10 +122,13 @@ _send_welcome_event = send_welcome_event
 
 
 async def _cleanup_connection_and_clear_context(
-    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
+    player_id: uuid.UUID,
+    player_id_str: str,
+    connection_manager: "ConnectionManager",
+    connection_id: str | None = None,
 ) -> None:
     """Run connection cleanup and clear the bound logging context together."""
-    await _cleanup_connection(player_id, player_id_str, connection_manager)
+    await _cleanup_connection(player_id, player_id_str, connection_manager, connection_id)
     clear_request_context()
 
 
@@ -152,7 +164,6 @@ async def handle_websocket_connection(
         return
 
     player_id_str = str(player_id)
-    await load_player_mute_data(player_id_str)
 
     connection_id = connection_manager.get_connection_id_from_websocket(websocket)
     bind_request_context(
@@ -164,17 +175,17 @@ async def handle_websocket_connection(
 
     _, should_exit = await _setup_initial_connection_state(websocket, player_id, player_id_str, connection_manager)
     if should_exit:
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
         return
 
     if not await _send_welcome_event(websocket, player_id, player_id_str):
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
         return
 
     try:
         await _handle_websocket_message_loop(websocket, player_id, player_id_str, connection_manager)
     finally:
-        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager)
+        await _cleanup_connection_and_clear_context(player_id, player_id_str, connection_manager, connection_id)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: "WebSocketInboundMessage") -> None:
@@ -271,6 +282,7 @@ async def send_system_message(websocket: WebSocket, message: str, message_type: 
             {
                 "message": message,
                 "message_type": message_type,
+                "category": _SYSTEM_MESSAGE_CATEGORIES.get(message_type, MessageCategory.SYSTEM_INFO),
             },
         )
         await websocket.send_json(system_event)

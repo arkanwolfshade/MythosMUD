@@ -13,6 +13,7 @@ from uuid import UUID
 
 from ..models.container import ContainerComponent
 from ..services.container_websocket_events import (
+    emit_container_closed,
     emit_container_opened,
     emit_container_opened_to_room,
     emit_container_updated,
@@ -65,13 +66,13 @@ async def emit_container_opened_events(
             )
 
             if container.room_id:
+                # No mutation_token/expires_at here: those are the opener's own
+                # session credentials and must not reach other room occupants.
                 _ = await emit_container_opened_to_room(
                     connection_manager=connection_manager,
                     container=container,
                     room_id=container.room_id,
                     actor_id=player_id,
-                    mutation_token=mutation_token,
-                    expires_at=expires_at,
                 )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
         logger.warning(
@@ -103,21 +104,11 @@ async def emit_transfer_event(
     try:
         if connection_manager and result.get("container"):
             container = ContainerComponent.model_validate(result["container"])
-            if container.room_id:
-                diff: dict[str, object] = {
-                    "items": {
-                        "direction": request_data.direction,
-                        "stack": request_data.stack,
-                        "quantity": request_data.quantity,
-                    },
-                }
-                _ = await emit_container_updated(
-                    connection_manager=connection_manager,
-                    container_id=request_data.container_id,
-                    room_id=container.room_id,
-                    diff=diff,
-                    actor_id=player_id,
-                )
+            _ = await emit_container_updated(
+                connection_manager=connection_manager,
+                container=container,
+                actor_id=player_id,
+            )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
         logger.warning(
             "Failed to emit container.updated event",
@@ -146,19 +137,16 @@ async def emit_close_container_event(
     """
     try:
         if connection_manager:
-            # Get container to find room_id
+            # Get container to find room_id (None for wearables; still emitted personally)
             container_data = await persistence.get_container(container_id)
             if container_data:
-                from ..services.container_websocket_events import emit_container_closed
-
                 container = ContainerComponent.model_validate(container_data)
-                if container.room_id:
-                    _ = await emit_container_closed(
-                        connection_manager=connection_manager,
-                        container_id=container_id,
-                        room_id=container.room_id,
-                        player_id=player_id,
-                    )
+                _ = await emit_container_closed(
+                    connection_manager=connection_manager,
+                    container_id=container_id,
+                    room_id=container.room_id,
+                    player_id=player_id,
+                )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request
         logger.warning(
             "Failed to emit container.closed event",
@@ -189,18 +177,15 @@ async def emit_loot_all_event(
         This enables proper dependency injection and testability.
     """
     try:
-        if connection_manager and final_container.room_id:
-            diff: dict[str, object] = {
-                "items": {
-                    "loot_all": True,
-                    "items_removed": len(container.items) - len(final_container.items),
-                },
-            }
+        if connection_manager:
+            logger.info(
+                "Loot-all removed items",
+                container_id=str(request_data.container_id),
+                items_removed=len(container.items) - len(final_container.items),
+            )
             _ = await emit_container_updated(
                 connection_manager=connection_manager,
-                container_id=request_data.container_id,
-                room_id=final_container.room_id,
-                diff=diff,
+                container=final_container,
                 actor_id=player_id,
             )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Event emission errors unpredictable, must not fail request

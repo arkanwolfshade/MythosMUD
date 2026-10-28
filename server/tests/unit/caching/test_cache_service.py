@@ -306,7 +306,7 @@ class TestCacheService:
     @pytest.fixture
     def persistence(self) -> MagicMock:
         mock = MagicMock()
-        mock.get_room_by_id = MagicMock(return_value={"id": "earth_arkhamcity_northside_intersection_derby_high"})
+        mock.get_room_by_id = MagicMock(return_value={"id": "earth_arkhamcity_sanitarium_room_foyer_001"})
         mock.get_all_professions = MagicMock(return_value=[_Profession(1, "Investigator")])
         return mock
 
@@ -332,7 +332,7 @@ class TestCacheService:
     def test_preload_frequently_accessed_data(self, persistence: MagicMock) -> None:
         service = CacheService(persistence)
         service.preload_frequently_accessed_data()
-        assert service.room_cache.rooms_cache.get("earth_arkhamcity_northside_intersection_derby_high") is not None
+        assert service.room_cache.rooms_cache.get("earth_arkhamcity_sanitarium_room_foyer_001") is not None
         assert service.profession_cache.professions_cache.get("all_professions") is not None
 
     def test_preload_handles_room_failure(self, persistence: MagicMock) -> None:

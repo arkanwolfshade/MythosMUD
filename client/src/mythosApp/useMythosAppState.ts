@@ -8,7 +8,7 @@ import type { CreationStep } from './creationTypes.js';
 import { useAuthSessionRestore } from './useAuthSessionRestore.js';
 import { useMythosAuthForm } from './useMythosAuthForm.js';
 
-export interface PendingSkillsPayload {
+interface PendingSkillsPayload {
   occupation_slots: { skill_id: number; value: number }[];
   personal_interest: { skill_id: number }[];
 }

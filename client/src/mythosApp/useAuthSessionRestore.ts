@@ -31,8 +31,10 @@ function applyRestoredCharacters(
   }
 
   setCharacters(charactersList);
-  const inCharacterCreation = false;
-  if (charactersList.length === 1 && !inCharacterCreation) {
+  // Reload resumes the session: the MOTD is shown once per login, and the login grace period is
+  // started server-side on WebSocket connect (server/realtime/player_connection_setup.py), so a
+  // single-character reload goes straight to the game instead of replaying the login path.
+  if (charactersList.length === 1) {
     const singleChar = charactersList[0];
     setSelectedCharacterId(singleChar.player_id);
     setSelectedCharacterName(singleChar.name);
@@ -41,10 +43,7 @@ function applyRestoredCharacters(
     return 'handled';
   }
 
-  if (charactersList.length > 1 && !inCharacterCreation) {
-    setShowCharacterSelection(true);
-  }
-
+  setShowCharacterSelection(true);
   return 'handled';
 }
 

@@ -48,18 +48,3 @@ export const getNodeTypes = (): NodeTypes => {
 export const getEdgeTypes = (): EdgeTypes => {
   return edgeTypes;
 };
-
-/**
- * Default React Flow options.
- */
-export const defaultReactFlowOptions = {
-  nodesDraggable: false,
-  nodesConnectable: false,
-  elementsSelectable: true,
-  panOnDrag: true,
-  zoomOnScroll: true,
-  zoomOnPinch: true,
-  fitView: true,
-  minZoom: 0.1,
-  maxZoom: 2,
-};

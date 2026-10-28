@@ -16,6 +16,7 @@ import {
   loginPlayer,
   waitForMessage,
 } from '../fixtures/auth';
+import { resetE2ePlayerRoomsInDatabase } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
@@ -166,7 +167,7 @@ async function summonAndPickupCollectItems(page: Page): Promise<void> {
   const summonMsgs = await getMessages(page);
   expect(summonMsgs.some(m => new RegExp(`You summon\\s+${COLLECT_N.count}x`, 'i').test(m))).toBe(true);
 
-  // get <item> [from] <container> [quantity]; room floor uses container "room"
+  // get <item> [from <container>] [quantity]; room floor uses container "room"
   await executeCommand(page, `get ${COLLECT_N.itemGetAlias} from room ${COLLECT_N.count}`);
   const itemNameEsc = escapeRegExp(COLLECT_N.itemDisplayName);
   await waitForMessage(page, new RegExp(`You get\\s+\\d+x|${COLLECT_N.itemGetAlias}|${itemNameEsc}`, 'i'), 25000);
@@ -200,6 +201,11 @@ test.describe('collect_n quest ask/turnin', () => {
 
   test.beforeAll(() => {
     resetCollectNQuestInstances();
+  });
+
+  test.beforeEach(() => {
+    // E2E baseline (#956): each test logs in fresh, landing in the saved room, so reset it to Main Foyer.
+    resetE2ePlayerRoomsInDatabase();
   });
 
   test('quest ask fails when the target NPC is not in the room', async ({ page }) => {

@@ -18,9 +18,13 @@ POWERSHELL := cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Fil
 # When Make's SHELL is Git Bash or WSL bash, `npm` may resolve to a Windows path that bash
 # cannot execute (/bin/bash: C:/Program Files/nodejs/npm: No such file or directory). Run via
 # PowerShell on Windows so the Windows Node/npm install is used. Non-Windows keeps plain npm.
+# No trailing `exit $$LASTEXITCODE`: Make's recipe shell (Git sh) expanded $LASTEXITCODE inside the
+# double quotes to nothing, so pwsh ran a bare `exit` and returned 0 even when npm failed -- a
+# failing client test never failed `make test` on Windows (#950). pwsh -Command already exits 1
+# when its last command fails.
 ifeq ($(OS),Windows_NT)
 define run_npm_client
-	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1); exit $$LASTEXITCODE"
+	cd $(PROJECT_ROOT) && pwsh -NoProfile -ExecutionPolicy Bypass -Command "Set-Location -LiteralPath (Join-Path '$(PROJECT_ROOT)' 'client'); npm run $(1)"
 endef
 else
 define run_npm_client
@@ -37,7 +41,7 @@ PYTEST_OPTS := --maxfail=10 --tb=short
 PYTEST_COV_OPTS := --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml
 
 # PHONY targets
-.PHONY: help clean install build run run-production apply-procedures
+.PHONY: help clean install build run apply-procedures migrate-dev
 .PHONY: lint lint-sqlalchemy lint-imports format mypy basedpyright typecheck any-report
 .PHONY: bandit pylint ruff sqlfluff sqlint vulture
 .PHONY: hadolint shellcheck psscriptanalyzer
@@ -64,7 +68,7 @@ help:
 	@echo "  basedpyright    - Run the no-Any gate against .basedpyright/baseline.json (#784)"
 	@echo "  typecheck       - Run both type checkers (mypy + basedpyright)"
 	@echo "  any-report      - Show remaining Any debt by directory and suppressions by category"
-	@echo "  vulture         - Dead code check (server + vulture_allowlist; same as CI)"
+	@echo "  vulture         - Dead code check (server; same as CI)"
 	@echo ""
 	@echo "Codacy Tools (Python):"
 	@echo "  bandit          - Python security linter"
@@ -91,7 +95,8 @@ help:
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database (mythos_unit via .env.unit_test)"
 	@echo "  bootstrap-e2e-database   - Force-recreate mythos_e2e (DDL + DML + E2E users)"
 	@echo "  ensure-e2e-database      - Bootstrap mythos_e2e if missing or professions empty"
-	@echo "  verify-schema          - Verify db/mythos_<env>_ddl.sql matches database"
+	@echo "  verify-schema          - Verify db/schema.sql matches database"
+	@echo "  migrate-dev            - Apply dbmate migrations to mythos_dev (additive; up only)"
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
@@ -117,7 +122,6 @@ help:
 	@echo "  build             - Apply procedures, then build the client (Node)"
 	@echo "  apply-procedures  - Apply db/procedures/*.sql to target databases"
 	@echo "  run               - Start the development server (Uvicorn)"
-	@echo "  run-production    - Start the server for production (Gunicorn + Uvicorn workers)"
 	@echo ""
 	@echo "Note: Server integration tests run under test-playwright (with running server). Unit only: make test-server."
 	@echo "  uv run pytest -m unit server/tests   # unit only"
@@ -230,7 +234,7 @@ quality-fragmentation-guard:
 	$(PYTHON) scripts/run_quality_fragmentation_guard.py
 
 # CRITICAL: CI runs the same command (.github/workflows/ci.yml "Dead code check (vulture)")
-# Config: pyproject.toml [tool.vulture], allowlist: vulture_allowlist.py
+# Config: pyproject.toml [tool.vulture]
 vulture:
 	$(UV) vulture
 
@@ -268,8 +272,8 @@ bootstrap-e2e-database:
 	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1
 
 ensure-e2e-database:
-	@echo "Ensuring mythos_e2e has reference seed (professions)..."
-	$(POWERSHELL) scripts/ensure_e2e_database.ps1
+	@echo "Ensuring mythos_e2e is fully reconverged (schema/seed/procedures/migrations)..."
+	$(POWERSHELL) scripts/bootstrap_e2e_database.ps1 -SkipForce
 
 verify-schema:
 	@echo "Verifying environment DDL matches database (from .env.local or .env)..."
@@ -309,13 +313,14 @@ test-client-e2e:
 
 # Integration tests (server pytest -m integration) run here: they muck with runtime data
 # and belong in the same flow as Playwright (running server context). They are NOT run by make test-server.
-test-playwright: setup-test-env ensure-e2e-database
-	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_e2e
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_e2e
+#
+# Does NOT bootstrap mythos_e2e. e2e.bat (bootstrap_e2e_database.ps1 + start_e2e_test.ps1) owns
+# the database and the running server; re-reconverging schema/procedures/migrations here would
+# race the already-running server's live connections (db/schema.sql DROPs tables it depends on
+# mid-tick). Run e2e.bat first and leave it running, then run this target against it.
+test-playwright: setup-test-env
 	@echo "Running Playwright E2E then integration tests (fails fast on Playwright/bootstrap errors)..."
+	@echo "Requires: e2e.bat already run and its server/client still running on 54768/5173."
 	$(POWERSHELL) scripts/run_test_playwright.ps1 $(PYTEST_OPTS)
 
 test-client-coverage:
@@ -325,19 +330,13 @@ test-client-coverage:
 test-server: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests (no coverage)..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/migrate.ps1 -Environment unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS)
 
 test-server-coverage: setup-test-env setup-postgresql-test-db
 	@echo "Running server tests with coverage..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_coc_spells_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_arena_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_aggression_level_migration.ps1 -TargetDbs mythos_unit
-	$(POWERSHELL) scripts/apply_dialogue_migration.ps1 -TargetDbs mythos_unit
+	$(POWERSHELL) scripts/migrate.ps1 -Environment unit
 	$(UV) pytest server/tests/ -m "not integration" $(PYTEST_OPTS) $(PYTEST_COV_OPTS)
 
 # Fail-fast multi-stage runners (loud banner + skip remaining stages on first failure).
@@ -371,20 +370,19 @@ clean:
 install:
 	$(PYTHON) scripts/install.py
 
-build: apply-procedures
+build: apply-procedures migrate-dev
 	$(PYTHON) scripts/build.py
 
 apply-procedures:
 	@echo "Applying PostgreSQL procedures to mythos_dev..."
 	$(POWERSHELL) scripts/apply_procedures.ps1 -TargetDbs mythos_dev
 
+migrate-dev:
+	@echo "Running dbmate migrations against mythos_dev..."
+	$(POWERSHELL) scripts/migrate.ps1 -Environment dev
+
 run:
 	$(PYTHON) scripts/run.py
-
-# Production: Gunicorn with Uvicorn workers (see docs/deployment.md)
-# Default port 8000; for another port run the gunicorn command with -b 0.0.0.0:PORT
-run-production:
-	$(UV) gunicorn server.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
 
 # ============================================================================
 # COMPOSITE TARGETS

@@ -66,6 +66,26 @@ def test_can_spawn_population_limit() -> None:
     assert "population limit" in reason
 
 
+def test_can_spawn_instance_spawn_bypasses_zone_population_limit() -> None:
+    """An instance's NPCs belong to one player's private copy, so other copies filling the zone must not block them."""
+    stats: MagicMock = MagicMock()
+    stats.npcs_by_definition = {5: 3}
+    controller: MagicMock = MagicMock()
+    controller.get_zone_key_from_room_id = MagicMock(return_value="zone/a")
+    controller.get_population_stats = MagicMock(return_value=stats)
+    definition: MagicMock = MagicMock()
+    definition.id = 5
+    definition.max_population = 2
+    definition.can_spawn = MagicMock(return_value=False)
+    manager = _make_manager(population_controller=controller)
+
+    assert manager.can_spawn_npc(definition, "room-1")[0] is False  # the same zone refuses an ordinary spawn
+    can_spawn, reason = manager.can_spawn_npc(definition, "room-1", reason="instance_spawn")
+
+    assert can_spawn is True
+    assert reason == ""
+
+
 def test_get_lifecycle_statistics_empty() -> None:
     manager = _make_manager()
     stats = manager.get_lifecycle_statistics()

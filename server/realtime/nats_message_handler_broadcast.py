@@ -6,11 +6,13 @@ Extracted to keep nats_message_handler.py under the Lizard file-nloc limit.
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
+from ..constants.message_segments import MessageSegment
 from ..services.nats_exceptions import NATSError
 from ..structured_logging.enhanced_logging_config import get_logger
-from .message_formatters import format_message_content
+from .message_filtering import BroadcastFilterContext
+from .message_formatters import disposition_or_none, format_message_content, format_message_segments
 from .nats_message_handler_base import NATSMessageHandlerMixinBase
 
 if TYPE_CHECKING:
@@ -30,10 +32,6 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
     def _collect_room_targets(self, room_id: str) -> set[str]:
         """Collect all players subscribed to a room (canonical and original IDs)."""
         return self._filtering_helper.collect_room_targets(room_id)
-
-    async def _preload_receiver_mute_data(self, user_manager: UserManager, targets: set[str], sender_id: str) -> None:
-        """Pre-load mute data for all potential receivers."""
-        await self._filtering_helper.preload_receiver_mute_data(user_manager, targets, sender_id)
 
     def _extract_chat_event_info(
         self, chat_event: dict[str, Any]
@@ -64,9 +62,16 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
         chat_event_data: dict[str, Any],
     ) -> list[str]:
         """Filter target players based on room location and mute status."""
-        return await self._filtering_helper.filter_target_players(
-            targets, sender_id, room_id, channel, message_id, user_manager, chat_event_data, self
+        ctx = BroadcastFilterContext(
+            sender_id=sender_id,
+            room_id=room_id,
+            channel=channel,
+            message_id=message_id,
+            user_manager=user_manager,
+            chat_event_data=chat_event_data,
+            handler_instance=self,
         )
+        return await self._filtering_helper.filter_target_players(targets, ctx)
 
     async def _send_messages_to_players(
         self, filtered_targets: list[str], chat_event: dict[str, Any], room_id: str, sender_id: str, channel: str
@@ -131,6 +136,14 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
                 receiver_event = chat_event.copy()
                 receiver_event["data"] = event_data.copy()
                 receiver_event["data"]["message"] = receiver_formatted
+                self._apply_receiver_segments(
+                    cast("dict[str, object]", receiver_event["data"]),
+                    cast("dict[str, object]", event_data),
+                    channel,
+                    cast("str", sender_name),
+                    cast("str", original_content),
+                    receiver_content,
+                )
 
                 # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
                 if dampening_result.get("tags"):
@@ -254,8 +267,6 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
                 channel=channel,
             )
 
-            await self._preload_receiver_mute_data(user_manager, targets, sender_id)
-
             event_type, chat_event_data, message_id, sender_already_notified = self._extract_chat_event_info(chat_event)
 
             filtered_targets = await self._filter_target_players(
@@ -299,6 +310,35 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
         from ..services.user_manager import UserManager as _UserManagerClass
 
         return _UserManagerClass()
+
+    @staticmethod
+    def _apply_receiver_segments(
+        data: dict[str, object],
+        event_data: dict[str, object],
+        channel: str,
+        sender_name: str,
+        original: str,
+        content: str,
+    ) -> None:
+        """
+        Give one receiver's copy of a chat event the styled spans for its line (#1036), or drop stale ones.
+
+        An NPC speaker's name is always styled; spans inside the content survive only while dampening left the content
+        untouched, since dampening rewrites words and would leave them pointing at text that is no longer there.
+        """
+        kept = event_data.get("original_segments") if content == original else None
+        segments = format_message_segments(
+            channel,
+            sender_name,
+            content,
+            speaker_disposition=disposition_or_none(event_data.get("speaker_disposition")),
+            content_segments=cast(list[MessageSegment] | None, kept),
+            for_recipient=channel == "whisper",
+        )
+        if segments:
+            data["segments"] = cast("object", segments)
+        else:
+            _ = data.pop("segments", None)
 
     def _format_message_for_receiver(self, channel: str, sender_name: str, content: str) -> str:
         """
@@ -375,6 +415,14 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
             receiver_event = chat_event.copy()
             receiver_event["data"] = event_data.copy()
             receiver_event["data"]["message"] = receiver_formatted
+            self._apply_receiver_segments(
+                cast("dict[str, object]", receiver_event["data"]),
+                cast("dict[str, object]", event_data),
+                channel,
+                cast("str", sender_name),
+                cast("str", original_content),
+                receiver_content,
+            )
 
             # Add tags if any (e.g., 'strained', 'muffled', 'scrambled')
             if dampening_result.get("tags"):

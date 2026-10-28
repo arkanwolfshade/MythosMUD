@@ -5,17 +5,35 @@ Extracted from combat.py to reduce file nloc (Lizard limit 500).
 """
 
 import uuid
+from collections.abc import Mapping
 from typing import Any, cast
 
 from server.app.game_tick_counter import get_current_tick
 from server.config import get_config
+from server.constants.message_segments import message_with_segments, npc_name_segment
+from server.constants.npc_disposition import NpcDisposition
 from server.game.weapons import resolve_weapon_attack_from_equipped
 from server.models.combat import CombatParticipantType
 from server.npc.combat_integration import NPCCombatIntegration
 from server.schemas.shared import TargetType
+from server.services.combat_types import AlreadyEngagedError
 from server.structured_logging.enhanced_logging_config import get_logger
+from server.utils.npc_disposition_lookup import get_npc_disposition_from_instance
+
+from .command_results import command_error
 
 logger = get_logger(__name__)
+
+
+def _attack_acknowledgement(command: str, name: str, disposition: NpcDisposition) -> dict[str, object]:
+    """
+    "You attack Ghoul!" with the foe's name styled by its disposition (#1039).
+
+    ``segments`` join back to ``result``; a phantom passes ``AGGRESSIVE_MOB`` so it reads exactly like a real hostile
+    (ADR-024).
+    """
+    line = message_with_segments([f"You {command} ", npc_name_segment(name, disposition), "!"])
+    return {"result": line["message"], "segments": line["segments"]}
 
 
 async def _validate_attack_player_and_room(
@@ -134,7 +152,7 @@ async def _execute_combat_action(
     command: str,
     room_id: str,
     npc_instance: Any | None = None,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Execute combat action using the proper combat service."""
     try:
         player, npc_instance, npc_name, ctx_error = await _get_combat_action_context(
@@ -170,10 +188,12 @@ async def _execute_combat_action(
                 npc_name=npc_name,
             )
             return {"result": f"You cannot attack {npc_name} right now."}
-        return {"result": f"You {command} {npc_name}!"}
+        return _attack_acknowledgement(command, npc_name, get_npc_disposition_from_instance(npc_id))
+    except AlreadyEngagedError as engaged:
+        return {"result": f"You're already fighting {engaged.foe_name}."}
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
         logger.error("Error executing combat action", error=str(e), exc_info=True)
-        return {"result": f"Error executing {command} command"}
+        return command_error(f"Error executing {command} command")
 
 
 async def _execute_phantom_combat_action(
@@ -182,7 +202,7 @@ async def _execute_phantom_combat_action(
     phantom_id: str,
     command: str,
     room_id: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """
     Execute an attack against a phantom hostile (#625).
 
@@ -232,10 +252,25 @@ async def _execute_phantom_combat_action(
         )
         if not result.success:
             return {"result": f"You cannot attack {phantom_data['name']} right now."}
-        return {"result": f"You {command} {phantom_data['name']}!"}
+        return _attack_acknowledgement(command, phantom_data["name"], NpcDisposition.AGGRESSIVE_MOB)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
         logger.error("Error executing phantom combat action", error=str(e), exc_info=True)
-        return {"result": f"Error executing {command} command"}
+        return command_error(f"Error executing {command} command")
+
+
+async def execute_attack_on_npc(
+    handler: object,
+    player_name: str,
+    npc_id: str,
+    room_id: str,
+    npc_instance: object | None = None,
+) -> Mapping[str, object]:
+    """
+    Attack an already-resolved NPC through the normal attack path (used by assist, #833).
+
+    That path starts a fight, joins one the NPC is already in, or refuses with "You're already fighting X".
+    """
+    return await _execute_combat_action(handler, player_name, npc_id, "attack", room_id, npc_instance=npc_instance)
 
 
 async def run_handle_attack_command(
@@ -245,13 +280,13 @@ async def run_handle_attack_command(
     request: Any,
     alias_storage: Any,
     player_name: str,
-) -> dict[str, str]:
+) -> Mapping[str, object]:
     """Handle attack commands (attack, punch, kick, etc.)."""
     _ = alias_storage
     request_app = request.app if request else None
     rest_check_result = await handler.check_and_interrupt_rest(request_app, player_name, current_user)
     if rest_check_result:
-        return cast(dict[str, str], rest_check_result)
+        return cast(Mapping[str, object], rest_check_result)
     command, target_name = handler.extract_combat_command_data(command_data)
     logger.debug(
         "Processing attack command",
@@ -273,4 +308,4 @@ async def run_handle_attack_command(
         return combat_result
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat errors unpredictable
         logger.error("ERROR: Exception in combat handler", error=str(e), exc_info=True)
-        return {"result": f"An error occurred during combat: {str(e)}"}
+        return command_error(f"An error occurred during combat: {str(e)}")

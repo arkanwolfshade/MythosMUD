@@ -4,7 +4,7 @@ Unit tests for room occupant manager.
 Tests the RoomOccupantManager class for querying and processing room occupants.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -19,6 +19,7 @@ def mock_connection_manager():
     """Create mock connection manager."""
     manager = MagicMock()
     manager.async_persistence = MagicMock()
+    manager.get_room_occupants = AsyncMock(return_value=[])
     return manager
 
 
@@ -141,3 +142,33 @@ def test_separate_occupants_by_type_empty_list(occupant_manager):
     assert players == []
     assert npcs == []
     assert strings == []
+
+
+@pytest.mark.asyncio
+async def test_get_room_occupants_includes_online_subscribers_missing_from_room_players() -> None:
+    """#776: a broadcast is one payload for every subscriber, so it cannot add each recipient itself.
+
+    A player subscribed to the room and online, but not (yet) in Room._players -- after respawn,
+    reconnect, or mid-move -- must still be listed, or a player alone with NPCs gets players: [].
+    """
+    room = MagicMock(get_players=MagicMock(return_value=["p2"]))
+    connection_manager = MagicMock(
+        async_persistence=MagicMock(get_room_by_id=MagicMock(return_value=room)),
+        get_room_occupants=AsyncMock(
+            return_value=[
+                {"player_id": "p1", "player_name": "ArkanWolfshade"},
+                {"player_id": "p2", "player_name": "Ithaqua"},
+                {"npc_id": "n1", "npc_name": "Dr. Armitage", "is_npc": True},
+            ]
+        ),
+    )
+    manager = RoomOccupantManager(connection_manager)
+    process_players = AsyncMock(return_value=[])
+    with (
+        patch.object(manager.player_processor, "process_players_for_occupants", process_players),
+        patch.object(manager.npc_processor, "query_npcs_for_room", AsyncMock(return_value=[])),
+        patch.object(manager.npc_processor, "process_npcs_for_occupants", MagicMock(return_value=[])),
+    ):
+        _ = await manager.get_room_occupants("room_001")
+
+    process_players.assert_awaited_once_with("room_001", ["p2", "p1"], None)

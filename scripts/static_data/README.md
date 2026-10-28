@@ -27,7 +27,7 @@ The script generates a single SQL file:
 **Structure**: Transaction-wrapped with proper dependency ordering
 
 **Canonical seed**: This file is **not** loaded directly. Maintainers merge its content into the
-authoritative DML files (`data/db/mythos_dev_dml.sql`, etc.) when updating world/calendar/emotes data.
+authoritative seed (`data/db/seed.sql`, #811) when updating world/calendar/emotes data.
 
 ## Usage
 
@@ -111,9 +111,9 @@ All IDs are generated using UUID v5 with a deterministic namespace:
 
 The generated file (`data/static/generated_sql/world_and_emotes_generated.sql`) is:
 
-- **Merged** into authoritative DML (`data/db/mythos_*_dml.sql`) when world/emotes/calendar data changes
+- **Merged** into the authoritative seed (`data/db/seed.sql`, #811) when world/emotes/calendar data changes
 - Documented in `data/static/generated_sql/README.md` and `data/db/README.md`
-- Not loaded directly; canonical seed is the `mythos_*_dml.sql` files
+- Not loaded directly; the canonical seed is `data/db/seed.sql`
 
 ## Notes
 

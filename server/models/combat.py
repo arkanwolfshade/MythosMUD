@@ -73,6 +73,15 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
     # up in PhantomHostileService on death. participant_id is a synthetic UUID for combat bookkeeping
     # only -- phantom_id is the one PhantomHostileService actually tracks.
     phantom_id: str | None = None
+    # #815: NPCs carry a static corruption trait (base_stats); players carry their live value.
+    # None means "no data" -- aggro_threat.py treats that as 0 (pure), same fail-safe default as
+    # corruption_tier_cache.
+    corruption: int | None = None
+    # ADR-027: catalog armor; subtracted in apply_damage when > 0.
+    armor_points: int = 0
+    # ADR-027: snapshots for resolve_npc_attack_damage on auto-turns.
+    npc_base_stats: dict[str, object] | None = None
+    npc_behavior_config: dict[str, object] | None = None
 
     def is_alive(self) -> bool:
         """
@@ -109,6 +118,15 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
             return False
         return 0 >= self.current_dp > -10
 
+    def is_incapacitated(self) -> bool:
+        """
+        Check if participant is out of the fight: dead, or a player at 0 to -9 DP (#1058).
+
+        Such a participant has no threat and is never chosen as an NPC target; unlike ``is_dead`` this
+        includes mortally wounded players, who are still bleeding out but are no longer fighting.
+        """
+        return self.is_dead() or self.is_mortally_wounded()
+
     def can_act_in_combat(self) -> bool:
         """
         Check if participant can perform voluntary combat actions.
@@ -130,18 +148,32 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
 
         Returns:
             Tuple of (old_dp, target_died, target_mortally_wounded)
-            - target_mortally_wounded: True if this hit crossed from positive DP to 0 (players only)
+            - target_died: True on the hit that kills a player (crossing to -10 from above), not on
+              later hits against a player already dead at the -10 floor (players only)
+            - target_mortally_wounded: True if this hit took a player from positive DP into the mortally
+              wounded band (0 to -9), whether it landed on 0 or past it (#1058); a hit straight to -10 is a death
         """
         old_dp = self.current_dp
+        effective = max(0, damage - self.armor_points)
         if self.participant_type == CombatParticipantType.PLAYER:
-            self.current_dp = max(-10, self.current_dp - damage)
-            target_died = self.is_dead()
-            target_mortally_wounded = old_dp > 0 and not self.current_dp
+            self.current_dp = max(-10, self.current_dp - effective)
+            # Death is the transition into -10, not a state: a player stays at the floor until respawn,
+            # and every further hit reporting "died" re-fired death handling (#917).
+            target_died = old_dp > -10 and self.is_dead()
+            target_mortally_wounded = old_dp > 0 and self.is_mortally_wounded()
         else:
-            self.current_dp = max(0, self.current_dp - damage)
+            self.current_dp = max(0, self.current_dp - effective)
             target_died = self.is_dead()
             target_mortally_wounded = False
         return old_dp, target_died, target_mortally_wounded
+
+
+@dataclass
+class Guard:
+    """Cover one participant (the protector) gives another (#991): hits aimed at the ally land on the protector."""
+
+    protector_id: UUID
+    expires_round: int  # last combat round the cover holds; later rounds find it inactive
 
 
 @dataclass
@@ -168,6 +200,43 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
     # Aggro/threat (ADR-016): per-NPC hate list and current target; keyed by NPC participant_id
     npc_hate_lists: dict[UUID, dict[UUID, float]] = field(default_factory=dict)  # npc_id -> {entity_id -> threat}
     npc_current_target: dict[UUID, UUID] = field(default_factory=dict)  # npc_id -> current target participant_id
+    # Player-side mirror (#833): player participant_id -> the foe they are attacking; read by auto-attack and assist
+    player_current_target: dict[UUID, UUID] = field(default_factory=dict)
+    # Protect (#991): ally participant_id -> the cover a protector gives them; read through active_guard
+    guards: dict[UUID, Guard] = field(default_factory=dict)
+
+    def set_guard(self, ally_id: UUID, protector_id: UUID, expires_round: int) -> None:
+        """Record cover over an ally. A protector covers one ally and an ally has one protector; the latest wins."""
+        self.guards = {a: g for a, g in self.guards.items() if a != ally_id and g.protector_id != protector_id}
+        self.guards[ally_id] = Guard(protector_id=protector_id, expires_round=expires_round)
+
+    def active_guard(self, ally_id: UUID) -> Guard | None:
+        """
+        The cover currently protecting the ally, or None.
+
+        Checked on read, so nothing needs cleaning up: cover lapses when its rounds run out, the protector is gone
+        or down (0 DP or less), or the ally has left the fight.
+        """
+        guard = self.guards.get(ally_id)
+        if guard is None or guard.expires_round < self.combat_round or ally_id not in self.participants:
+            return None
+        protector = self.participants.get(guard.protector_id)
+        if protector is None or not protector.can_act_in_combat():
+            return None
+        return guard
+
+    def living_tracked_target(self, player_id: UUID) -> CombatParticipant | None:
+        """The player's tracked target while it is still alive, else None (#833). Read by auto-attack and assist."""
+        tracked_id = self.player_current_target.get(player_id)
+        tracked = self.participants.get(tracked_id) if tracked_id is not None else None
+        return tracked if tracked is not None and not tracked.is_dead() else None
+
+    def is_guarding(self, protector_id: UUID) -> bool:
+        """True while this participant is giving someone active cover."""
+        return any(
+            guard.protector_id == protector_id and self.active_guard(ally_id) is not None
+            for ally_id, guard in self.guards.items()
+        )
 
     def get_current_turn_participant(self) -> CombatParticipant | None:
         """Get the participant whose turn it is."""
@@ -212,18 +281,18 @@ class CombatInstance:  # pylint: disable=too-many-instance-attributes  # Reason:
         CRITICAL: Combat should NOT end when a player is mortally wounded (0 DP) but not dead (-10 DP).
         Players at 0 DP are still attackable and should remain in combat until -10 DP.
         """
-        # Count participants that are actually dead (not just incapacitated)
-        # For players: dead if DP <= -10
-        # For NPCs: dead if DP <= 0
-        dead_participants = [
-            p
-            for p in self.participants.values()
-            if p.is_dead()  # Use is_dead() instead of is_alive() to check actual death, not incapacitation
-        ]
-        alive_count = len(self.participants) - len(dead_participants)
-        # Combat ends only when <= 1 participant is not dead
-        # This allows NPCs to continue attacking mortally wounded players (0 DP) until -10 DP
-        return alive_count <= 1
+        # Use is_dead() instead of is_alive() to check actual death, not incapacitation
+        # (players: dead at DP <= -10; NPCs: dead at DP <= 0). Mortally wounded players stay in the fight.
+        alive = self.get_alive_participants()
+        if len(alive) <= 1:
+            return True
+        # #833: with several players in one fight the count alone is wrong (two players left after the NPC
+        # dies would never end it), so when a non-player side exists, both sides must still have someone alive.
+        if all(p.participant_type == CombatParticipantType.PLAYER for p in self.participants.values()):
+            return False
+        players_alive = any(p.participant_type == CombatParticipantType.PLAYER for p in alive)
+        foes_alive = any(p.participant_type != CombatParticipantType.PLAYER for p in alive)
+        return not (players_alive and foes_alive)
 
     def get_alive_participants(self) -> list[CombatParticipant]:
         """

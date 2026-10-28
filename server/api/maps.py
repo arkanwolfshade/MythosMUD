@@ -8,7 +8,7 @@ This module handles ASCII map rendering and coordinate management endpoints.
 
 import uuid
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 from fastapi import APIRouter, Depends, Query, Request
 from pydantic import Field
@@ -17,6 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
+from ..constants.instance_rooms import template_room_id_of
 from ..database import get_async_session
 from ..dependencies import AsyncPersistenceDep, ExplorationServiceDep, RoomServiceDep
 from ..exceptions import DatabaseError, LoggedHTTPException
@@ -77,7 +78,7 @@ async def _get_current_room_id(
                 current_room_id = player.current_room_id
         except (DatabaseError, SQLAlchemyError) as e:
             logger.warning("Error getting player room for map", error=str(e))
-    return current_room_id
+    return template_room_id_of(current_room_id) if current_room_id else current_room_id
 
 
 async def _get_player_and_exploration_service(
@@ -223,7 +224,8 @@ async def _get_minimap_player_and_room_id(
     if not player:
         raise LoggedHTTPException(status_code=404, detail="Player not found")
     current_room_id = request.query_params.get("current_room_id") or player.current_room_id
-    return player, current_room_id
+    # A player in an instance stands in a clone of a template room; the map is drawn from the template rooms.
+    return player, (template_room_id_of(current_room_id) if current_room_id else current_room_id)
 
 
 @dataclass(frozen=True)
@@ -457,7 +459,7 @@ async def _persist_map_origin(session: AsyncSession, room_id: str, origin_data: 
     await session.execute(text("SELECT clear_room_map_origins(:pattern)"), {"pattern": zone_pattern})
     result = await session.execute(text("SELECT set_room_map_origin(:room_id)"), {"room_id": room_id})
     await session.commit()
-    if not bool(result.scalar()):
+    if not bool(cast(object, result.scalar())):
         raise LoggedHTTPException(status_code=404, detail="Room not found", requested_room_id=room_id)
 
 

@@ -14,6 +14,7 @@ from server.events.event_types import NPCDied, RoomOccupantsRefreshRequested
 from server.npc.npc_base import NPCBase
 from server.npc.population_control import NPCPopulationController
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..structured_logging.enhanced_logging_config import get_logger
 from .lifecycle_types import NPCLifecycleEvent, NPCLifecycleRecord, NPCLifecycleState
 
@@ -63,6 +64,10 @@ def _mark_despawned_and_queue_respawn(
     """Transition record to despawned and queue respawn; log outcome."""
     record.change_state(NPCLifecycleState.DESPAWNED, f"death: {event.cause}")
     record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": f"death: {event.cause}"})
+
+    if is_instance_room_id(event.room_id):
+        # Instance NPCs die for good: a queued respawn would resolve against the shared world, not the instance.
+        return
 
     respawn_queued = manager.respawn_npc(
         npc_id=event.npc_id,

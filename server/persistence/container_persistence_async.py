@@ -9,6 +9,7 @@ psycopg2-based container_persistence for use by ContainerRepository.
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from typing import Any, cast
 from uuid import UUID
 
@@ -16,6 +17,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -49,19 +51,19 @@ def _prepare_container_create_params(**params: Any) -> dict[str, Any]:
 
 def _validate_container_create_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
     """Validate create_container params. Raises ValidationError on invalid input."""
-    if source_type not in ("environment", "equipment", "corpse"):
+    if source_type not in CONTAINER_SOURCE_TYPES:
         log_and_raise(
             ValidationError,
-            f"Invalid source_type: {source_type}. Must be 'environment', 'equipment', or 'corpse'",
+            f"Invalid source_type: {source_type}. Must be one of {', '.join(CONTAINER_SOURCE_TYPES)}",
             operation="create_container_async",
             source_type=source_type,
             details={"source_type": source_type},
             user_friendly="Invalid container type",
         )
-    if capacity_slots < 1 or capacity_slots > 20:
+    if capacity_slots < 1 or capacity_slots > MAX_CONTAINER_CAPACITY_SLOTS:
         log_and_raise(
             ValidationError,
-            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and 20",
+            f"Invalid capacity_slots: {capacity_slots}. Must be between 1 and {MAX_CONTAINER_CAPACITY_SLOTS}",
             operation="create_container_async",
             capacity_slots=capacity_slots,
             details={"capacity_slots": capacity_slots},
@@ -76,6 +78,22 @@ def _validate_container_create_params(source_type: str, capacity_slots: int, loc
             details={"lock_state": lock_state},
             user_friendly="Invalid lock state",
         )
+
+
+# A worn/carried container item keeps its contents in `inner_container`, which has no column in
+# item_instances or container_contents. Carry it through storage inside the item's metadata instead
+# (#917): stashed on write by _metadata_with_inner_container, lifted back out by _build_item_dict.
+INNER_CONTAINER_METADATA_KEY = "inner_container"
+
+
+def _metadata_with_inner_container(item: Mapping[str, object]) -> dict[str, object]:
+    """Item metadata with the stack's `inner_container` (if any) stashed under the reserved key."""
+    raw_metadata = item.get("metadata")
+    metadata: dict[str, object] = dict(cast("Mapping[str, object]", raw_metadata)) if raw_metadata else {}
+    inner_container = item.get("inner_container")
+    if inner_container:
+        metadata[INNER_CONTAINER_METADATA_KEY] = inner_container
+    return metadata
 
 
 async def _populate_container_items_async(
@@ -99,7 +117,7 @@ async def _populate_container_items_async(
                     "owner_type": "container",
                     "owner_id": str(container_id),
                     "quantity": item.get("quantity", 1),
-                    "metadata_payload": item.get("metadata", {}),
+                    "metadata_payload": _metadata_with_inner_container(item),
                 },
             )
         except (DatabaseError, ValidationError) as e:
@@ -135,7 +153,7 @@ def _parse_item_metadata(raw: Any) -> dict[str, Any]:
             return {}
         try:
             return cast(dict[str, Any], json.loads(raw))
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             return {}
     return {}
 
@@ -145,13 +163,14 @@ def _build_item_dict(mapping: dict[str, Any]) -> dict[str, Any] | None:
     item_instance_id = mapping.get("item_instance_id")
     if not item_instance_id:
         return None
-    metadata_val = _parse_item_metadata(mapping.get("metadata"))
+    metadata_val = dict(_parse_item_metadata(mapping.get("metadata")))
+    inner_container = cast("object", metadata_val.pop(INNER_CONTAINER_METADATA_KEY, None))
     quantity = mapping.get("quantity")
     position = mapping.get("position")
     condition = mapping.get("condition")
     item_id = mapping.get("item_id")
     item_name = mapping.get("item_name")
-    return {
+    item: dict[str, object] = {
         "item_instance_id": str(item_instance_id),
         "item_id": str(item_id) if item_id else None,
         "item_name": str(item_name) if item_name else "Unknown Item",
@@ -161,6 +180,9 @@ def _build_item_dict(mapping: dict[str, Any]) -> dict[str, Any] | None:
         "metadata": metadata_val,
         "slot_type": "backpack",
     }
+    if inner_container:
+        item["inner_container"] = inner_container
+    return item
 
 
 async def fetch_container_items_async(session: AsyncSession, container_id: UUID) -> list[dict[str, Any]]:
@@ -378,8 +400,9 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
     items_json: list[dict[str, Any]] | None = None,
     lock_state: str | None = None,
     metadata_json: dict[str, Any] | None = None,
+    capacity_slots: int | None = None,
 ) -> ContainerData | None:
-    """Update a container's items, lock_state, or metadata (async)."""
+    """Update a container's items, lock_state, metadata, or capacity (async)."""
     from .container_helpers import validate_lock_state
 
     validate_lock_state(lock_state)
@@ -398,6 +421,11 @@ async def update_container_async(  # pylint: disable=too-many-locals  # Reason: 
                 "metadata_json": json.dumps(metadata_json) if metadata_json is not None else None,
             },
         )
+    if capacity_slots is not None:
+        _ = await session.execute(
+            text("SELECT set_container_capacity(:cid, :capacity_slots)"),
+            {"cid": container_id_str, "capacity_slots": capacity_slots},
+        )
     await session.commit()
     logger.info("Container updated", container_id=str(container_id))
     return await get_container_async(session, container_id)
@@ -411,7 +439,7 @@ async def delete_container_async(session: AsyncSession, container_id: UUID) -> b
             text("SELECT delete_container(:cid)"),
             {"cid": container_id_str},
         )
-        deleted = result.scalar()
+        deleted = cast(object, result.scalar())
         await session.commit()
         return bool(deleted)
     except SQLAlchemyError as e:

@@ -1,122 +1,71 @@
 # EventBus
 
-> God node · 192 connections · `server/events/event_bus.py`
+> 256 nodes · cohesion 0.02
 
-**Community:** [Test Event Bus](Test_Event_Bus.md)
+## Key Concepts
 
-## Connections by Relation
+- **ErrorType** (52 connections) — `server/error_types.py`
+- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
+- **error_types.py** (36 connections) — `server/error_types.py`
+- **test_websocket_handler_helpers_extended.py** (34 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- **ErrorMessages** (33 connections) — `server/error_types.py`
+- **standardized_responses.py** (32 connections) — `server/error_handlers/standardized_responses.py`
+- **create_websocket_error_response()** (30 connections) — `server/error_types.py`
+- **test_standardized_responses.py** (29 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
+- **pydantic_error_handler.py** (24 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **create_standard_error_response()** (22 connections) — `server/error_types.py`
+- **asyncio** (21 connections)
+- **test_error_types.py** (18 connections) — `server/tests/unit/test_error_types.py`
+- **JSONResponse** (15 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.handle_validation_error()** (12 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_logged_http_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **._handle_mythos_error()** (10 connections) — `server/error_handlers/standardized_responses.py`
+- **ErrorSeverity** (10 connections) — `server/error_types.py`
+- **test_standardized_responses_security.py** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
+- **handle_api_error()** (9 connections) — `server/error_handlers/standardized_responses.py`
+- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- *... and 231 more nodes in this community*
 
-### calls
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- ._publish_player_dp_correction_event() `EXTRACTED`
-- ._init_persistence_and_event_bus() `EXTRACTED`
-- integration() `EXTRACTED`
-- test_spawning_service_npc_room_event_handlers() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- event_bus() `EXTRACTED`
-- event_bus() `EXTRACTED`
-- event_bus() `EXTRACTED`
-- integration() `EXTRACTED`
-- test_spawning_service_handle_player_entered_room() `EXTRACTED`
-- test_spawning_service_maybe_add_required_npc_request() `EXTRACTED`
-- test_spawning_service_process_spawn_queue_with_request() `EXTRACTED`
-- test_spawning_service_queue_and_stats() `EXTRACTED`
-- test_create_npc_instance_passive() `EXTRACTED`
-- test_create_npc_instance_unknown_type() `EXTRACTED`
-- test_spawning_service_calculate_priority_required() `EXTRACTED`
-- test_spawning_service_check_spawn_requirements_queues() `EXTRACTED`
-- test_spawning_service_cleanup_inactive_npcs() `EXTRACTED`
+## Relationships
 
-### contains
-- event_bus.py `EXTRACTED`
+- [AttributeError](AttributeError.md) (26 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (10 shared connections)
+- [NATSService](NATSService.md) (10 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (9 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (9 shared connections)
+- [Alias](Alias.md) (8 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (5 shared connections)
+- [test_look_player.py](test_look_player.py.md) (5 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (5 shared connections)
+- [look_container.py](look_container.py.md) (5 shared connections)
 
-### imports
-- connection_manager.py `EXTRACTED`
-- combat_service.py `EXTRACTED`
-- test_population_control.py `EXTRACTED`
-- test_event_bus.py `EXTRACTED`
-- test_npc_instance_service.py `EXTRACTED`
-- npc_combat_integration_service.py `EXTRACTED`
-- combat_handler.py `EXTRACTED`
-- test_npc_combat_integration_class.py `EXTRACTED`
-- npc_base.py `EXTRACTED`
-- population_control.py `EXTRACTED`
-- test_spawning_modules.py `EXTRACTED`
-- spawning_service.py `EXTRACTED`
-- movement_service.py `EXTRACTED`
-- models/room.py `EXTRACTED`
-- chat_npc_system.py `EXTRACTED`
-- npc_instance_service.py `EXTRACTED`
-- lifespan_protocols.py `EXTRACTED`
-- event_reaction_system.py `EXTRACTED`
-- player_repository.py `EXTRACTED`
-- combat_loader.py `EXTRACTED`
+## Source Files
 
-### inherits
-- DistributedEventBus `EXTRACTED`
-- EventBusLifecycleMixin `EXTRACTED`
-- EventBusProcessingMixin `EXTRACTED`
+- `docs/examples/logging/fastapi_integration.py`
+- `monitoring/webhook-receiver.py`
+- `server/error_handlers/__init__.py`
+- `server/error_handlers/pydantic_error_handler.py`
+- `server/error_handlers/standardized_responses.py`
+- `server/error_types.py`
+- `server/exceptions.py`
+- `server/tests/unit/error_handlers/test_standardized_responses.py`
+- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
+- `server/tests/unit/test_error_types.py`
 
-### method
-- .unsubscribe() `EXTRACTED`
-- .get_subscriber_stats() `EXTRACTED`
-- .set_main_loop() `EXTRACTED`
-- .subscribe() `EXTRACTED`
-- .get_subscriber_count() `EXTRACTED`
-- .get_all_subscriber_counts() `EXTRACTED`
-- .get_subscriber_lifecycle_metrics() `EXTRACTED`
-- .unsubscribe_all_for_service() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- ._ensure_processing_started() `EXTRACTED`
-- .get_active_task_count() `EXTRACTED`
-- .get_queue_depth() `EXTRACTED`
-- .get_active_task_details() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- Pure asyncio event bus for MythosMUD. This class provides a purely async… `EXTRACTED`
-
-### references
-- .event_bus() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- subscribe_npc_spoke_to_chat() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- lifespan_event_bus() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .set_event_bus() `EXTRACTED`
-- ._get_event_bus() `EXTRACTED`
-
-### uses
-- CombatService `INFERRED`
-- BaseEvent `INFERRED`
-- NPCSpawningService `INFERRED`
-- NPCPopulationController `INFERRED`
-- CombatCommandHandler `INFERRED`
-- PartyService `INFERRED`
-- MythosTickScheduler `INFERRED`
-- MythosTimeEventConsumer `INFERRED`
-- NPCInstanceService `INFERRED`
-- create_npc_instance() `INFERRED`
-- initialize_npc_instance_service() `INFERRED`
-- _LifecycleManagerForDeath `INFERRED`
-- _instantiate_by_type() `INFERRED`
-- _build_aggressive() `INFERRED`
-- _build_passive() `INFERRED`
-- _build_shopkeeper() `INFERRED`
-- test_handle_event_async_async_subscriber_error() `INFERRED`
-- test_handle_event_async_sync_subscriber_error() `INFERRED`
-- test_handle_task_result_async_no_error() `INFERRED`
-- test_handle_task_result_async_with_error() `INFERRED`
+- EXTRACTED: 573 (91%)
+- INFERRED: 55 (9%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

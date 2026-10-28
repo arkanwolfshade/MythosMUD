@@ -1,43 +1,37 @@
-# Migration 019 Ready For Deployment
+# Migration 019 Ready for Deployment
 
-> 18 nodes
+> 16 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Migration 019 Ready for Deployment** (10 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Files Ready** (4 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **MIGRATION_019_VERIFICATION.md** (4 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Migration 019 Complete Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Quick Start** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **What Changed** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **019_postgresql_anti_patterns_fixes.sql** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Application Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Database Schema** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Documentation** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Implementation Complete** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Migration Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Next Action** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Python Code** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Risk Level: **MEDIUM** ⚠️** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Test the Migration** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Testing Checklist** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Verify Python Models** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Mansions of Madness_ Vol 1 - Behind Closed Doors  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Communities (5 total, 1 thin omitted)** (5 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 1 - "Bernard Corbitt; Randolph Tomaszewski"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 2 - "Ramasekva; Yog-Sothoth"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 3 - "Arthur Cornthwaite; Fitzgerald Manse"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [Postgresql Audit Report 2026](Postgresql_Audit_Report_2026.md) (2 shared connections)
-- [Migration 019 Verification](Migration_019_Verification.md) (1 shared connections)
-- [Migration 019 Complete Summary](Migration_019_Complete_Summary.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- `docs/archive/MIGRATION_019_VERIFICATION.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

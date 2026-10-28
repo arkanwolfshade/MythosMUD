@@ -5,6 +5,8 @@ skill use logging and improvement rolls (plan 4.5).
 
 import random
 import uuid
+from collections.abc import Sequence
+from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 from server.models.skill import Skill
@@ -24,6 +26,39 @@ PERSONAL_INTEREST_BONUS = 20
 MAX_SKILL_VALUE = 99
 OWN_LANGUAGE_KEY = "own_language"
 CTHULHU_MYTHOS_KEY = "cthulhu_mythos"
+
+
+class SuccessLevel(Enum):
+    """Graded result of a d100 skill roll (Call of Cthulhu 7e)."""
+
+    FUMBLE = "fumble"
+    FAILURE = "failure"
+    REGULAR = "regular"
+    HARD = "hard"
+    EXTREME = "extreme"
+
+    @property
+    def is_success(self) -> bool:
+        """True for Regular, Hard and Extreme."""
+        return self in (SuccessLevel.REGULAR, SuccessLevel.HARD, SuccessLevel.EXTREME)
+
+
+def grade_d100(roll: int, skill_value: int) -> SuccessLevel:
+    """
+    Grade a d100 roll against a skill value.
+
+    Extreme is at most a fifth of the skill, Hard at most half, Regular at most the skill itself. A roll of 01 is
+    always an Extreme success. A failure is a Fumble on 100, or on 96-100 when the skill is under 50.
+    """
+    if roll == 1 or roll <= skill_value // 5:
+        return SuccessLevel.EXTREME
+    if roll <= skill_value // 2:
+        return SuccessLevel.HARD
+    if roll <= skill_value:
+        return SuccessLevel.REGULAR
+    if roll == 100 or (roll >= 96 and skill_value < 50):
+        return SuccessLevel.FUMBLE
+    return SuccessLevel.FAILURE
 
 
 class SkillService:
@@ -357,7 +392,7 @@ class SkillService:
         if skill_value is None:
             return False
         roll = random.randint(1, 100)  # nosec B311  # game skill check, not crypto
-        success = roll <= skill_value
+        success = grade_d100(roll, skill_value).is_success
         if success:
             await self.record_successful_skill_use(
                 player_id=player_id,
@@ -365,3 +400,35 @@ class SkillService:
                 character_level_at_use=character_level,
             )
         return success
+
+    async def roll_best_skill_check(
+        self,
+        player_id: uuid.UUID,
+        skill_keys: Sequence[str],
+        character_level: int | None = None,
+    ) -> SuccessLevel:
+        """
+        Roll d100 once against the player's best skill among ``skill_keys``; return the graded result (#833).
+
+        "Best" is the highest value the player holds for any of the keys, so a brawler and a talker can both
+        carry the same check. A player with none of the skills simply fails. A success of any grade records one
+        use of the skill that was rolled for the level-up improvement rolls; ``character_level`` defaults to the
+        player's current level.
+        """
+        player_skills = await self._player_skill_repo.get_by_player_id(player_id)
+        wanted = set(skill_keys)
+        candidates = [ps for ps in player_skills if ps.skill.key in wanted]
+        if not candidates:
+            return SuccessLevel.FAILURE
+        best = max(candidates, key=lambda ps: ps.value)
+        result = grade_d100(random.randint(1, 100), best.value)  # nosec B311  # game skill check, not crypto
+        if result.is_success:
+            if character_level is None:
+                player = await self._persistence.get_player_by_id(player_id)
+                character_level = player.level if player else 1
+            await self.record_successful_skill_use(
+                player_id=player_id,
+                skill_id=best.skill_id,
+                character_level_at_use=character_level,
+            )
+        return result

@@ -11,12 +11,12 @@ from pydantic import ValidationError
 from ..exceptions import DatabaseError
 from ..game.items.prototype_registry import PrototypeRegistryError
 from ..models import Stats
-from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem and StatusEffect are used for type conversion
+from ..models.game import (  # pylint: disable=unused-import  # Reason: InventoryItem is used for type conversion
     InventoryItem,
     PositionState,
-    StatusEffect,
 )
-from ..schemas.game.weapon import WeaponStats
+from ..models.player import Player
+from ..schemas.game.weapon import WeaponStats, weapon_stats_from_metadata
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -43,8 +43,8 @@ def _weapon_from_prototype_registry(registry: Any, prototype_id: str) -> WeaponS
     weapon = prototype.metadata.get("weapon")
     if isinstance(weapon, dict):
         try:
-            return WeaponStats(**weapon)
-        except (ValidationError, TypeError):
+            return weapon_stats_from_metadata(cast(dict[str, object], weapon))
+        except ValidationError, TypeError:
             # If weapon dict doesn't match WeaponStats schema, return None
             # ValidationError: Pydantic validation failed
             # TypeError: Invalid argument types for model construction
@@ -117,24 +117,6 @@ class PlayerSchemaConverter:
 
         return player_profession_id, profession_name, profession_description, profession_flavor_text
 
-    async def get_player_data_methods(
-        self, player: Any
-    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
-        """Get stats, inventory, and status_effects from player, handling async methods."""
-        stats = player.get_stats()
-        inventory = player.get_inventory()
-        status_effects = player.get_status_effects()
-
-        # If these are coroutines (from AsyncMock), await them
-        if hasattr(stats, "__await__"):
-            stats = await stats
-        if hasattr(inventory, "__await__"):
-            inventory = await inventory
-        if hasattr(status_effects, "__await__"):
-            status_effects = await status_effects
-
-        return stats, inventory, status_effects
-
     def compute_derived_stats_fields(self, stats: dict[str, Any]) -> dict[str, Any]:
         """Compute derived stats fields (max_dp, max_magic_points, max_lucidity).
 
@@ -162,10 +144,6 @@ class PlayerSchemaConverter:
             # Initialize magic_points to max if it's 0 (full MP at character creation)
             if not out.get("magic_points", 0) and out.get("max_magic_points", 0) > 0:
                 out["magic_points"] = out["max_magic_points"]
-            # Cap lucidity to max_lucidity if it exceeds max
-            max_lucidity_val = out.get("max_lucidity", edu)
-            if out.get("lucidity", 100) > max_lucidity_val:
-                out["lucidity"] = max_lucidity_val
             return out
         except (DatabaseError, AttributeError) as e:
             logger.error(
@@ -184,7 +162,7 @@ class PlayerSchemaConverter:
                 # Try to find enum by value index (not recommended but handles legacy data)
                 position_value = PositionState.STANDING.value
             return PositionState(str(position_value))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logger.warning(
                 "Invalid position value on player stats, defaulting to standing",
                 player_id=player_id,
@@ -198,12 +176,14 @@ class PlayerSchemaConverter:
         """Create PlayerRead schema from player object."""
         player_profession_id, profession_name, profession_description, profession_flavor_text = profession_data
 
-        stats, inventory, status_effects = await self.get_player_data_methods(player)
+        # convert_player_to_schema sends dicts to create_player_read_from_dict, so this is a Player row.
+        player_row = cast(Player, player)
+        # The derived fields only add max_* and magic_points, so position reads the same from the copy.
+        stats = self.compute_derived_stats_fields(player_row.get_stats())
+        inventory = player_row.get_inventory()
 
         position_value = stats.get("position", PositionState.STANDING.value)
         position_state = self.get_position_state(position_value, getattr(player, "player_id", None))
-
-        stats = self.compute_derived_stats_fields(stats)
 
         # Convert dicts to typed models; enrich inventory items with weapon stats from prototype registry
         stats_model = Stats(**stats) if isinstance(stats, dict) else stats
@@ -212,11 +192,6 @@ class PlayerSchemaConverter:
             [_inventory_item_with_weapon(item, registry) if isinstance(item, dict) else item for item in inventory]
             if isinstance(inventory, list)
             else inventory
-        )
-        status_effects_models = (
-            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in status_effects]
-            if isinstance(status_effects, list)
-            else status_effects
         )
 
         return PlayerRead(
@@ -232,7 +207,6 @@ class PlayerSchemaConverter:
             level=player.level,
             stats=stats_model,
             inventory=inventory_models,
-            status_effects=status_effects_models,
             created_at=player.created_at,
             last_active=player.last_active,
             is_admin=bool(player.is_admin),  # Convert integer to boolean
@@ -268,11 +242,6 @@ class PlayerSchemaConverter:
             if isinstance(player["inventory"], list)
             else player["inventory"]
         )
-        status_effects_models = (
-            [StatusEffect(**effect) if isinstance(effect, dict) else effect for effect in player["status_effects"]]
-            if isinstance(player["status_effects"], list)
-            else player["status_effects"]
-        )
 
         return PlayerRead(
             id=player["player_id"],
@@ -287,7 +256,6 @@ class PlayerSchemaConverter:
             level=player["level"],
             stats=stats_model,
             inventory=inventory_models,
-            status_effects=status_effects_models,
             created_at=player["created_at"],
             last_active=player["last_active"],
             is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default

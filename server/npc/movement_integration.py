@@ -28,6 +28,18 @@ if TYPE_CHECKING:
 logger: BoundLogger = get_logger(__name__)
 
 
+def is_npc_in_combat(npc_id: str) -> bool:
+    """True if the NPC is in combat. Fails closed: a lookup error counts as in combat (#918)."""
+    try:
+        from ..services.combat_service import get_combat_service
+
+        combat_service = get_combat_service()
+        return combat_service is not None and combat_service.is_npc_in_combat_sync(npc_id)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: fail closed - unknown combat state must not let a fighting NPC wander
+        logger.warning("NPC combat check failed; treating NPC as in combat", npc_id=npc_id, error=str(e))
+        return True
+
+
 class NPCMovementIntegration:
     """
     Integration layer for NPC movement with existing game systems.
@@ -88,15 +100,7 @@ class NPCMovementIntegration:
 
     def _is_npc_in_combat(self, npc_id: str) -> bool:
         """Return True if the NPC is currently in combat (blocks normal movement)."""
-        try:
-            from ..services.combat_service import get_combat_service
-
-            combat_service = get_combat_service()
-            if combat_service and combat_service.is_npc_in_combat_sync(npc_id):
-                return True
-        except (ImportError, AttributeError, RuntimeError):
-            pass
-        return False
+        return is_npc_in_combat(npc_id)
 
     def _get_room_objects(self, npc_id: str, from_room_id: str, to_room_id: str) -> tuple[Room, Room] | None:
         """

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -14,6 +15,8 @@ from server.commands.equipment_helpers import (
     resolve_equip_item_index,
     resolve_unequip_slot,
 )
+from server.constants.message_category import MessageCategory
+from server.models.player import Player
 
 
 def _player() -> MagicMock:
@@ -50,7 +53,10 @@ def test_resolve_equip_search_no_match() -> None:
 
 def test_resolve_equip_usage() -> None:
     _, err = resolve_equip_item_index({}, [], _player(), "room_001")
-    assert err == {"result": "Usage: equip <inventory-number|item-name> [slot]"}
+    assert err == {
+        "result": "Usage: equip <inventory-number|item-name> [slot]",
+        "category": MessageCategory.SYSTEM_ERROR,
+    }
 
 
 def test_normalize_inventory_slots() -> None:
@@ -89,7 +95,7 @@ def test_resolve_unequip_by_slot() -> None:
 def test_resolve_unequip_usage() -> None:
     slot, err = resolve_unequip_slot({}, {})
     assert slot is None
-    assert err == {"result": "Usage: unequip <slot|item-name>"}
+    assert err == {"result": "Usage: unequip <slot|item-name>", "category": MessageCategory.SYSTEM_ERROR}
 
 
 def test_resolve_unequip_by_search() -> None:
@@ -130,3 +136,36 @@ async def test_handle_wearable_container_on_equip_creates() -> None:
         await handle_wearable_container_on_equip(MagicMock(), player, {"item_id": "x", "inner_container": True})
 
     svc.handle_equip_wearable_container.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_wearable_container_on_unequip_links_the_container_through_the_registry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The inner_container link lands on the live carried stack, committed by the registry (ADR-029 4a)."""
+    from server.commands.equipment_helpers import handle_wearable_container_on_unequip
+    from server.tests.fixtures.shared.player_registry import install_player_registry
+
+    from .test_change_inventory import StubPlayer
+
+    backpack: dict[str, object] = {
+        "item_instance_id": str(uuid.uuid4()),
+        "prototype_id": "backpack_proto",
+        "item_id": "backpack",
+        "item_name": "Backpack",
+        "slot_type": "inventory",
+        "quantity": 1,
+    }
+    stub = StubPlayer([backpack])
+    harness = install_player_registry(monkeypatch, stub)
+    inner: dict[str, object] = {"capacity_slots": 10, "items": []}  # the shape the wearable service returns
+    svc = AsyncMock()
+    svc.handle_unequip_wearable_container = AsyncMock(return_value={"inner_container": inner})
+
+    with patch("server.commands.equipment_helpers.get_shared_services", return_value=(None, svc, None)):
+        await handle_wearable_container_on_unequip(
+            MagicMock(), cast(Player, cast(object, stub)), {**backpack, "inner_container": inner}
+        )
+
+    saved = harness.saved_carried()
+    assert saved is not None and saved[0]["inner_container"] == inner

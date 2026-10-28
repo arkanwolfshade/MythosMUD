@@ -8,7 +8,7 @@ import type { PanelPosition, PanelSize, PanelState } from '../types';
 export const MINIMIZED_BAR_WIDTH = 200;
 export const MINIMIZED_BAR_HEIGHT = 40;
 export const MINIMIZED_DOCK_PADDING = 8;
-export const MINIMIZED_DOCK_GAP = 8;
+const MINIMIZED_DOCK_GAP = 8;
 
 export function getDefaultViewport(): { width: number; height: number } {
   if (typeof window !== 'undefined') {

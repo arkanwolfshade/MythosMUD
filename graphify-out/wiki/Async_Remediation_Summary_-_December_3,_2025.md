@@ -1,0 +1,51 @@
+# Async Remediation Summary - December 3, 2025
+
+> 72 nodes · cohesion 0.04
+
+## Key Concepts
+
+- **test_player_event_handlers_room.py** (38 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **asyncio** (34 connections)
+- **test_handle_player_entered_error_handling()** (5 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_handle_player_entered_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_room_id()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_occupants_snapshot_to_player_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_updates_to_entering_player_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_subscribe_player_to_room_error()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_broadcast_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_broadcast_player_entered_message_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_build_room_occupants_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_joined()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_left()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_log_player_movement_no_room()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_prepare_room_data_with_to_dict()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_prepare_room_data_without_to_dict()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_query_room_occupants_snapshot()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_occupants_snapshot_to_player_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_occupants_snapshot_to_player_string_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- *... and 47 more nodes in this community*
+
+## Relationships
+
+- [BaseEvent](BaseEvent.md) (9 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
+
+## Source Files
+
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+
+## Audit Trail
+
+- EXTRACTED: 107 (91%)
+- INFERRED: 11 (9%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

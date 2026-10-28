@@ -10,13 +10,19 @@ Phase 1: Bundles own initialization; container delegates and flattens attributes
 # pylint: disable=too-many-instance-attributes,too-many-statements  # Reason: DI container requires many service instances; __init__ declares all attributes for backward compatibility
 import threading
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from anyio import Lock
 
 from server.container.utils import decode_json_column, normalize_path_from_url_or_path
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import get_project_root
+
+if TYPE_CHECKING:
+    from server.game.instance_manager import InstanceContentLifecycle
+    from server.game.player_registry import PlayerRegistry
+    from server.game.skill_service import SkillService
+    from server.services.instance_flush_service import InstanceFlushService
 
 logger = get_logger(__name__)
 
@@ -54,9 +60,13 @@ class ApplicationContainer:
     nats_service: Any
     nats_message_handler: Any
     event_publisher: Any
+    player_registry: "PlayerRegistry | None"
     player_service: Any
     room_service: Any
     movement_service: Any
+    instance_flush_service: "InstanceFlushService | None"
+    # Built at startup (lifespan_instance.wire_instance_content) once the item and NPC services exist.
+    instance_content_service: "InstanceContentLifecycle | None"
     player_position_service: Any
     follow_service: Any
     party_service: Any
@@ -64,7 +74,8 @@ class ApplicationContainer:
     user_manager: Any
     container_service: Any
     level_service: Any
-    skill_service: Any
+    skill_service: "SkillService | None"
+    item_catalog_service: Any
     room_cache_service: Any
     profession_cache_service: Any
     performance_monitor: Any
@@ -100,6 +111,7 @@ class ApplicationContainer:
     npc_event_reaction_system: Any
     catatonia_registry: Any
     passive_lucidity_flux_service: Any
+    passive_corruption_flux_service: Any
     mythos_time_consumer: Any
     chat_service: Any
     server_shutdown_pending: bool
@@ -123,9 +135,12 @@ class ApplicationContainer:
         self.event_publisher = None
 
     def _init_game_attributes(self) -> None:
+        self.player_registry = None
         self.player_service = None
         self.room_service = None
         self.movement_service = None
+        self.instance_flush_service = None
+        self.instance_content_service = None
         self.player_position_service = None
         self.follow_service = None
         self.party_service = None
@@ -134,6 +149,7 @@ class ApplicationContainer:
         self.container_service = None
         self.level_service = None
         self.skill_service = None
+        self.item_catalog_service = None
         self.room_cache_service = None
         self.profession_cache_service = None
 
@@ -171,6 +187,7 @@ class ApplicationContainer:
         self.npc_event_reaction_system = None
         self.catatonia_registry = None
         self.passive_lucidity_flux_service = None
+        self.passive_corruption_flux_service = None
         self.mythos_time_consumer = None
         self.chat_service = None
         self.server_shutdown_pending = False

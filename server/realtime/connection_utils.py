@@ -8,6 +8,20 @@ for various utility operations.
 from typing import cast
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.npc_disposition_lookup import (
+    get_npc_disposition_from_instance,
+    npc_disposition_from_row,
+    npc_disposition_from_type,
+    npc_occupant,
+)
+
+__all__ = [
+    "get_npc_disposition_from_instance",
+    "get_npc_name_from_instance",
+    "npc_disposition_from_row",
+    "npc_disposition_from_type",
+    "npc_occupant",
+]
 
 logger = get_logger(__name__)
 

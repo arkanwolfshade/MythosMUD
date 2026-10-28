@@ -48,6 +48,14 @@ class RollStatsResponse(BaseModel):
     )
 
 
+class TutorialSkipEligibilityResponse(BaseModel):
+    """Whether a new character on this account may skip the First Exposure tutorial."""
+
+    eligible: bool = Field(
+        ..., description="True once some character on the account (deleted ones included) has finished First Exposure"
+    )
+
+
 class CreateCharacterResponse(BaseModel):
     """Response model for character creation."""
 

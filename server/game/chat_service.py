@@ -245,7 +245,6 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         player = await self.player_service.get_player_by_id(uuid.UUID(str(player_id)))
         if not player:
             return {"success": False, "error": "Player not found"}
-        self.user_manager.load_player_mutes(player_id)
         if not self.rate_limiter.check_rate_limit(player_id, "say", player.name):
             return _rate_limit_result()
         room_id = player.current_room_id
@@ -280,17 +279,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         Returns:
             Dictionary with success status and message details
         """
-        return await send_local_message_helper(
-            player_id,
-            message,
-            cast(ChatPlayerService, cast(object, self.player_service)),
-            self.user_manager,
-            cast(ChatRateLimiter, cast(object, self.rate_limiter)),
-            self._room_messages,
-            self._max_messages_per_room,
-            self.nats_service,
-            self.subject_manager,
-        )
+        return await send_local_message_helper(player_id, message, self._chat_send_services())
 
     async def send_global_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, object]:
         """
@@ -405,7 +394,6 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         player = await self.player_service.get_player_by_id(uuid.UUID(str(player_id)))
         if not player:
             return {"success": False, "error": "Player not found"}
-        self.user_manager.load_player_mutes(player_id)
         if not self.rate_limiter.check_rate_limit(player_id, "emote", player.name):
             return {
                 "success": False,
@@ -503,12 +491,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         return await send_predefined_emote_helper(
             player_id,
             emote_command,
-            cast(ChatPlayerService, cast(object, self.player_service)),
-            self.user_manager,
-            cast(ChatRateLimiter, cast(object, self.rate_limiter)),
-            cast(ChatLogger, cast(object, self.chat_logger)),
-            self.nats_service,
-            self.subject_manager,
+            self._chat_send_services(),
             cast(ChatEmoteService | None, self.emote_service),
         )
 

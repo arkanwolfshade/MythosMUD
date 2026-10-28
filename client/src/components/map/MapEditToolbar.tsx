@@ -40,17 +40,8 @@ export interface MapEditToolbarProps {
 /**
  * Map Edit Toolbar component.
  */
-export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
-  hasUnsavedChanges,
-  canUndo,
-  canRedo,
-  onUndo,
-  onRedo,
-  onSave,
-  onReset,
-  onSaveFailed,
-  onRecalculate,
-}) => {
+export const MapEditToolbar: React.FC<MapEditToolbarProps> = props => {
+  const { hasUnsavedChanges, canUndo, canRedo, onUndo, onRedo, onSave, onReset, onSaveFailed, onRecalculate } = props;
   const [isSaving, setIsSaving] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
 

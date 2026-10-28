@@ -2,7 +2,7 @@
  * Scenario 35: Respawn Occupants Panel (#776)
  *
  * A death respawn used to write `player`/`room` straight into client state, bypassing the
- * event-sourced projector's `ensureSelfListedInRoomPlayers` self-heal -- the respawn API's room
+ * event-sourced projector (whose self-heal was later removed; the server lists self, #752/#776) -- the respawn API's room
  * payload carries no occupant lists, so for ~10ms (until the deferred `player_respawned` event
  * caught up) the Occupants panel genuinely had an empty players list while the current player
  * existed, and the client reported `occupants_panel_empty_players` to the server. Verifies the

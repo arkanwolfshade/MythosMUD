@@ -7,20 +7,6 @@ describe('clientMetricsCollector', () => {
     vi.clearAllMocks();
   });
 
-  it('tracks store subscription and unsubscription timestamps', () => {
-    const collector = getClientMetricsCollector();
-    collector.trackStoreSubscription('connectionStore');
-    collector.trackStoreUnsubscription('connectionStore');
-
-    const metrics = collector.getMetrics();
-    const entry = metrics.storeSubscriptions.find(s => s.storeName === 'connectionStore');
-
-    expect(entry).toBeDefined();
-    expect(entry?.subscriptionCount).toBeGreaterThan(0);
-    expect(entry?.lastSubscriptionTime).toBeGreaterThan(0);
-    expect(entry?.lastUnsubscriptionTime).toBeGreaterThan(0);
-  });
-
   it('tracks component mount/unmount and missing cleanup counts', () => {
     const collector = getClientMetricsCollector();
     collector.trackComponentMount('GameClientV2');

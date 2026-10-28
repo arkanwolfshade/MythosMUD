@@ -15,6 +15,7 @@ from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..realtime.envelope import build_event
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -37,7 +38,7 @@ def _validate_summon_prerequisites(
             error_message="Item services unavailable",
             additional_data={"source": "admin_summon", "summoned_by": player_name_value},
         )
-        return {"result": "The summoning matrix is offline. Try again once prototype services are restored."}
+        return command_error("The summoning matrix is offline. Try again once prototype services are restored.")
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager or not hasattr(room_manager, "add_room_drop"):
         logger.warning("Summon command unavailable - room manager missing", player=player_name_value)
@@ -48,7 +49,7 @@ def _validate_summon_prerequisites(
             error_message="Room inventory unavailable",
             additional_data={"source": "admin_summon", "summoned_by": player_name_value},
         )
-        return {"result": "Room inventory is unavailable; the ritual cannot anchor the summoned item."}
+        return command_error("Room inventory is unavailable; the ritual cannot anchor the summoned item.")
     return None
 
 
@@ -122,7 +123,7 @@ def _create_summon_item_instance(
                 "room_id": room_id,
             },
         )
-        return None, {"result": f"Summoning failed: {exc}"}
+        return None, command_error(f"Summoning failed: {exc}")
 
 
 async def _persist_summoned_item(
@@ -174,7 +175,7 @@ async def _resolve_summon_context(
     persistence, connection_manager = resolve_state(request)
     player, error = await resolve_player(persistence, current_user, player_name)
     if error or not player:
-        return None, error or {"result": "Player information not found."}
+        return None, error or command_error("Player information not found.")
     if not await validate_admin_permission(player, player_name):
         return None, {
             "result": (
@@ -222,7 +223,7 @@ def _parse_summon_command_data(
             player=context["player_name_value"],
             prototype_id=prototype_id_raw,
         )
-        return None, {"result": "You must specify a valid prototype_id to perform this summoning ritual."}
+        return None, command_error("You must specify a valid prototype_id to perform this summoning ritual.")
     prototype_id = prototype_id_raw
     quantity = int(command_data.get("quantity", 1))
     target_type = command_data.get("target_type", "item")
@@ -233,7 +234,7 @@ def _parse_summon_command_data(
             "Summon command unavailable - room manager missing at execution",
             player=context["player_name_value"],
         )
-        return None, {"result": "Room inventory is unavailable; the ritual cannot anchor the summoned item."}
+        return None, command_error("Room inventory is unavailable; the ritual cannot anchor the summoned item.")
     dashboard = context["dashboard"]
     if quantity >= int(dashboard.alert_thresholds.get("summon_quantity_warning", 5)):
         dashboard.record_summon_quantity_spike(
@@ -339,7 +340,7 @@ async def _complete_summon(context: dict[str, Any], parsed: dict[str, Any]) -> d
             quantity=quantity,
             room_id=room_id,
         )
-        return {"result": "Summoning failed due to an internal error while shaping the item."}
+        return command_error("Summoning failed due to an internal error while shaping the item.")
 
     stack = item_instance.to_inventory_stack()
     stack.setdefault("origin", {}).update({"source": "admin_summon", "summoned_by": player_name_value})
@@ -363,11 +364,11 @@ async def handle_summon_command(
     if err:
         return err
     if context is None:
-        return {"result": "Summoning failed due to an internal error while resolving context."}
+        return command_error("Summoning failed due to an internal error while resolving context.")
 
     parsed, err = _parse_summon_command_data(command_data, context)
     if err:
         return err
     if parsed is None:
-        return {"result": "Summoning failed due to an internal error while parsing command data."}
+        return command_error("Summoning failed due to an internal error while parsing command data.")
     return await _complete_summon(context, parsed)

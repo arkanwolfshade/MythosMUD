@@ -35,21 +35,45 @@ def test_validate_and_fix_player_room_delegates(async_persistence_layer: AsyncPe
 
 
 @pytest.mark.asyncio
-async def test_apply_lucidity_loss_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test apply_lucidity_loss delegates to ExperienceRepository."""
+async def test_apply_lucidity_loss_and_gain_use_the_wired_adjuster(async_persistence_layer: AsyncPersistenceLayer):
+    """Lucidity lives in player_lucidity: loss and gain are adjustments through the injected LucidityService path."""
     mock_player = MagicMock(spec=Player)
     player_id = uuid.uuid4()
     mock_player.player_id = player_id
-    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+    adjuster = AsyncMock()
+    async_persistence_layer.set_lucidity_adjuster(adjuster)
 
     await async_persistence_layer.apply_lucidity_loss(mock_player, 10, "test_source")
+    await async_persistence_layer.apply_lucidity_gain(mock_player, 4, "test_source")
+    await async_persistence_layer.apply_lucidity_gain(mock_player, 0, "test_source")  # no-op
 
-    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        player_id,
-        "lucidity",
-        -10,
-        "test_source: lucidity loss",
-    )
+    assert [call.args for call in adjuster.await_args_list] == [
+        (player_id, -10, "test_source"),
+        (player_id, 4, "test_source"),
+    ]
+
+
+@pytest.mark.asyncio
+async def test_lucidity_change_without_a_wired_adjuster_fails_loudly(async_persistence_layer: AsyncPersistenceLayer):
+    mock_player = MagicMock(spec=Player)
+    mock_player.player_id = uuid.uuid4()
+    async_persistence_layer.set_lucidity_adjuster(None)
+
+    with pytest.raises(RuntimeError, match="not wired"):
+        await async_persistence_layer.apply_lucidity_loss(mock_player, 1, "test_source")
+
+
+@pytest.mark.asyncio
+async def test_get_current_lcd_reads_player_lucidity_or_defaults(async_persistence_layer: AsyncPersistenceLayer):
+    session = MagicMock()
+    session.get = AsyncMock(side_effect=[MagicMock(current_lcd=37), None])
+
+    async def sessions():
+        yield session
+
+    with patch("server.async_persistence.get_async_session", sessions):
+        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 37
+        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 100  # no record yet
 
 
 @pytest.mark.asyncio
@@ -220,6 +244,20 @@ async def test_get_containers_by_room_id_delegates(async_persistence_layer: Asyn
 
 
 @pytest.mark.asyncio
+async def test_get_bank_container_delegates(async_persistence_layer: AsyncPersistenceLayer):
+    """Test get_bank_container delegates to ContainerRepository."""
+    owner_id = uuid.uuid4()
+    mock_box: dict[str, object] = {"container_id": str(uuid.uuid4()), "source_type": "bank"}
+    async_persistence_layer._container_repo.get_bank_container = AsyncMock(return_value=mock_box)
+
+    assert await async_persistence_layer.get_bank_container(owner_id) == mock_box
+    async_persistence_layer._container_repo.get_bank_container.assert_awaited_once_with(owner_id)
+
+    async_persistence_layer._container_repo.get_bank_container = AsyncMock(return_value=None)
+    assert await async_persistence_layer.get_bank_container(owner_id) is None
+
+
+@pytest.mark.asyncio
 async def test_get_containers_by_entity_id_delegates(async_persistence_layer: AsyncPersistenceLayer):
     """Test get_containers_by_entity_id delegates to ContainerRepository."""
     entity_id = uuid.uuid4()
@@ -244,8 +282,20 @@ async def test_update_container_delegates(async_persistence_layer: AsyncPersiste
 
     assert result == mock_container
     async_persistence_layer._container_repo.update_container.assert_awaited_once_with(
-        container_id, items_json, "locked", None
+        container_id, items_json, "locked", None, None
     )
+
+
+@pytest.mark.asyncio
+async def test_update_container_delegates_capacity(async_persistence_layer: AsyncPersistenceLayer):
+    """capacity_slots (room furniture refresh) is passed through to ContainerRepository."""
+    container_id = uuid.uuid4()
+    repo_update = AsyncMock(return_value={"container_id": str(container_id)})
+    async_persistence_layer._container_repo.update_container = repo_update
+
+    _ = await async_persistence_layer.update_container(container_id, capacity_slots=200)
+
+    repo_update.assert_awaited_once_with(container_id, None, None, None, 200)
 
 
 @pytest.mark.asyncio

@@ -37,6 +37,9 @@ Implementation notes throughout call out tracking requirements, cooldown expecta
 
 ### 2.3 Catatonic Rescue Window
 
+> **Superseded (#1148):** catatonia now has a clock. LCD decays from 0 to −10 (delirium) on a configurable
+> interval, so the window is no longer open-ended. See `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`.
+
 Characters between −99 and 0 LCD are considered **catatonic** rather than dead.
 
 - Allies may use `ground <target>` (working name) to stabilize the victim:

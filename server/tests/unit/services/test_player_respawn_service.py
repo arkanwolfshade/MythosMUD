@@ -6,25 +6,46 @@ Tests the PlayerRespawnService for managing player resurrection and limbo state.
 
 import uuid
 from datetime import datetime
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.exceptions import DatabaseError
 from server.models.game import PositionState
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
+from server.models.room import Room
+from server.services.lucidity_service import resolve_tier
 from server.services.player_respawn_service import (
     DEFAULT_RESPAWN_ROOM,
     LIMBO_ROOM_ID,
     PlayerRespawnService,
     _utc_now,
 )
+from server.services.player_respawn_state import normalize_current_dp
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+
+
+class _StubLucidityService:
+    """Stands in for LucidityService in respawn paths that only need to leave a DEBRIEF_PENDING flag."""
+
+    def __init__(self, session: object) -> None:
+        _ = session
+
+    async def set_cooldown(self, player_id: object, action_code: str, expires_at: object) -> None:
+        _ = player_id, action_code, expires_at
+
+
+@pytest.fixture(autouse=True)
+def _stub_lucidity_service(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("server.services.player_respawn_service.LucidityService", _StubLucidityService)
 
 
 @pytest.fixture
@@ -339,8 +360,9 @@ async def test_respawn_player_from_delirium_success(respawn_service, mock_sessio
 
     assert result is True
     assert lucidity_record.current_lcd == 10
-    assert lucidity_record.current_tier == "lucid"
-    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
+    # Tier is derived from the restored value (10 is "deranged"), not hardcoded.
+    assert lucidity_record.current_tier == resolve_tier(10) == "deranged"
+    assert sample_player.current_room_id == RECOVERY_WARD_ROOM_ID
     # Health and posture restored via Player domain method (ADR-001 / anemic model remediation)
     sample_player.restore_to_full_health.assert_called_once()
     mock_session.commit.assert_awaited_once()
@@ -442,9 +464,9 @@ async def test_respawn_player_from_delirium_combat_clear_error(
     mock_session.commit.assert_awaited_once()
 
 
-def test_normalize_current_dp_non_numeric(respawn_service):
+def test_normalize_current_dp_non_numeric():
     """Non-numeric current_dp defaults to zero."""
-    assert respawn_service._normalize_current_dp({"current_dp": "bad"}) == 0
+    assert normalize_current_dp({"current_dp": "bad"}) == 0
 
 
 def test_can_move_to_limbo_catatonia_failover(respawn_service, sample_player):
@@ -489,7 +511,7 @@ async def test_respawn_player_from_sanitarium_success(respawn_service, mock_sess
     assert result is True
     assert lucidity_record.current_lcd == 1
     assert stats["position"] == PositionState.STANDING
-    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
+    assert sample_player.current_room_id == RECOVERY_WARD_ROOM_ID
     mock_session.commit.assert_awaited_once()
     mock_event_bus.publish.assert_called_once()
     published_event = mock_event_bus.publish.call_args[0][0]
@@ -528,3 +550,48 @@ async def test_respawn_player_from_sanitarium_lucidity_not_found(respawn_service
 
     assert result is False
     mock_session.commit.assert_not_awaited()
+
+
+BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def _template_bedroom() -> Room:
+    return Room(
+        {
+            "id": BEDROOM_ID,
+            "attributes": {"instance_template_id": "tutorial_sanitarium", "instance_exit_room_id": FOYER_ID},
+        }
+    )
+
+
+def _foyer() -> Room:
+    return Room({"id": FOYER_ID, "attributes": {}})
+
+
+def _session_returning(player: Player) -> AsyncSession:
+    session = MagicMock()
+    session.configure_mock(get=AsyncMock(return_value=player))
+    return cast(AsyncSession, session)
+
+
+@pytest.mark.asyncio
+async def test_get_respawn_room_redirects_template_to_exit_room() -> None:
+    """A respawn room that is an instance template sends the player to its exit room."""
+    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
+    player_id = uuid.uuid4()
+    session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=BEDROOM_ID))
+
+    assert await PlayerRespawnService(room_lookup=rooms.get).get_respawn_room(player_id, session) == FOYER_ID
+
+
+@pytest.mark.asyncio
+async def test_get_respawn_room_keeps_normal_custom_room() -> None:
+    """Ordinary custom respawn rooms (and services without a room lookup) are unchanged."""
+    rooms = {FOYER_ID: _foyer()}
+    player_id = uuid.uuid4()
+    foyer_session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=FOYER_ID))
+    bedroom_session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=BEDROOM_ID))
+
+    assert await PlayerRespawnService(room_lookup=rooms.get).get_respawn_room(player_id, foyer_session) == FOYER_ID
+    assert await PlayerRespawnService().get_respawn_room(player_id, bedroom_session) == BEDROOM_ID

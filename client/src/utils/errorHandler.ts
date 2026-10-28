@@ -29,7 +29,7 @@ export interface WebSocketErrorResponse {
  * SSE connections have been removed in favor of WebSocket-only architecture.
  * This type is maintained to handle legacy error responses.
  */
-export interface SSEErrorResponse {
+interface SSEErrorResponse {
   type: 'error';
   error_type: string;
   message: string;

@@ -31,21 +31,41 @@ critical handoffs use request/response (to avoid ordering bugs) and which remain
 - **Rationale:** No separate client “request” for login state; connection establishment
   triggers a defined sequence. No ordering bug reported; leave as push-only.
 
-## Resawn
+## Respawn
 
-- **Mechanism:** Push-only (for now).
-- **Server:** Respawn flow sends game/room updates (e.g. `game_state`, room updates) via
-  existing push paths.
-- **Client:** State is derived from the event log; respawn-related events update player and
-  room as they arrive.
-- **Rationale:** If ordering issues appear (e.g. room empty after respawn), consider adding
-  a `room_state` payload to the respawn response (similar to enter-room). Until then,
-  leave as push-only.
+- **Mechanism:** Push-only, dedicated event (`player_respawned` / `player_delirium_respawned`).
+- **Server:** After `POST /api/players/respawn` (or `/respawn-delirium`) succeeds, the server
+  pushes `player_respawned` / `player_delirium_respawned` over the websocket, carrying `player`,
+  `room` and `message` directly -- no separate `game_state`/room-update round trip needed.
+- **Client:** `useRespawnHandlers` only resets its local in-flight flag on HTTP success; it does
+  not fabricate the respawn event itself (see #752's client server-authority register). The
+  projector's `player_respawned` handler clears `isDead`/`deathLocation`/`isDelirious`/
+  `deliriumLocation` and applies the server's `player`/`room`.
+- **Rationale:** A client-fabricated event with `sequence_number: 0` and client-written message
+  text was a server-authority violation and produced a duplicate message alongside the real
+  server push. Trusting the server push alone fixes both.
+
+## Container open/transfer/close/loot-all (#711)
+
+- **Mechanism:** HTTP request + push confirmation (not request/response -- the HTTP response
+  body is not used for state).
+- **Server:** `POST /api/containers/{open,transfer,close,loot-all}` report success/failure only
+  (`ContainerOpenResponse`, etc.). The actual state -- the full container snapshot, or the
+  session closing -- arrives separately over the websocket as `container.opened` /
+  `container.updated` / `container.closed`, sent personally to the actor.
+- **Client:** `api/containers.ts` calls do nothing on success and only report the error on
+  failure (e.g. the 409 from `ContainerOpenByAnotherPlayerError`, surfaced verbatim). The
+  projector (`projectorHandlersContainers.ts`) applies the resulting event to `openContainers`;
+  the UI (`ContainerTransferModal`) is driven entirely by that state, not by the HTTP response.
+- **Rationale:** The HTTP response and the websocket event can race (the event may arrive before
+  the fetch promise resolves); trusting only the event avoids a client-side "double open" or a
+  stale response body overwriting a newer push.
 
 ## Summary
 
-| Handoff          | Mechanism        | Notes                                    |
-| ---------------- | ---------------- | ---------------------------------------- |
-| Enter-room       | Request/response | `command_response` includes `room_state` |
-| Login/game_state | Push-only        | Deterministic on connect                 |
-| Respawn          | Push-only        | May add request/response if needed later |
+| Handoff                       | Mechanism           | Notes                                                                                 |
+| ----------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
+| Enter-room                    | Request/response    | `command_response` includes `room_state`                                              |
+| Login/game_state              | Push-only           | Deterministic on connect                                                              |
+| Respawn                       | Push-only           | Dedicated `player_respawned`/`player_delirium_respawned` event; no client fabrication |
+| Container open/transfer/close | HTTP request + push | HTTP reports success/failure only; state comes from `container.*` events              |

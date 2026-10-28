@@ -11,7 +11,7 @@ Other admin commands have been extracted to separate modules for better organiza
 
 # pylint: disable=too-many-locals  # Reason: Command handlers require many intermediate variables for complex game logic
 
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,19 +20,19 @@ from ..exceptions import DatabaseError
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
+from .admin_global_mute_commands import handle_mute_global_command, handle_unmute_global_command
 from .admin_hallucinate_command import _handle_admin_hallucinate_command
 from .admin_mute_commands import (
     handle_add_admin_command,
     handle_mute_command,
-    handle_mute_global_command,
     handle_mutes_command,
     handle_unmute_command,
-    handle_unmute_global_command,
 )
 from .admin_setlucidity_command import _handle_admin_set_lucidity_command
 from .admin_setstat_command import _handle_admin_set_stat_command
 from .admin_teleport_commands import DIRECTION_OPPOSITES, handle_goto_command, handle_teleport_command
 from .admin_teleport_utils import create_teleport_effect_message
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -79,51 +79,19 @@ async def handle_admin_command(
         return await _handle_admin_hallucinate_command(command_data, current_user, request, alias_storage, player_name)
 
     logger.warning("Unknown admin subcommand requested", player_name=player_name, subcommand=subcommand)
-    return {"result": f"Unknown admin subcommand '{subcommand}'."}
+    return command_error(f"Unknown admin subcommand '{subcommand}'.")
 
 
-async def _handle_admin_status_command(
-    command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
-    alias_storage: AliasStorage | None,
+def _compute_admin_status(
+    player_record: object,
+    # Reason: SERIALIZATION_BOUNDARY - user_manager is resolved dynamically off app.state,
+    # matching this whole module's request/app/service Any convention.
+    # Appropriate because: it's a real method call (.is_admin), not just attribute access, so
+    # a plain `object` param would need a cast right back to Any at the call site anyway.
+    user_manager: Any,  # pyright: ignore[reportAny, reportExplicitAny]
     player_name: str,
-) -> dict[str, str]:
-    """
-    Provide contextual status information about the caller's administrative privileges.
-    """
-    _ = alias_storage  # Intentionally unused - part of standard command handler interface
-    _ = command_data  # Intentionally unused - status command takes no arguments
-    _ = current_user  # Intentionally unused - status command doesn't need user object
-
-    app = request.app if request else None
-    if not app:
-        logger.warning("Admin status command failed - no application context", player_name=player_name)
-        return {"result": "Admin status information is not available."}
-
-    player_service = getattr(app.state, "player_service", None)
-    user_manager = getattr(app.state, "user_manager", None)
-
-    if not player_service:
-        logger.warning("Admin status command failed - no player service", player_name=player_name)
-        return {"result": "Admin status information is not available."}
-
-    try:
-        player_record = await player_service.resolve_player_name(player_name)
-    except (DatabaseError, SQLAlchemyError) as exc:
-        logger.error(
-            "Admin status command failed while resolving player name",
-            player_name=player_name,
-            error=str(exc),
-            error_type=type(exc).__name__,
-        )
-        return {"result": f"Unable to resolve player '{player_name}': {str(exc)}"}
-
-    if not player_record:
-        logger.warning("Admin status command failed - player record not found", player_name=player_name)
-        return {"result": f"Player '{player_name}' not found."}
-
-    # Determine identifiers for downstream checks
+) -> tuple[bool, bool | None, bool]:
+    """Determine (is_admin_database, is_admin_runtime, is_admin_effective) for a player record."""
     player_identifier = getattr(player_record, "id", None)
     if player_identifier is None:
         player_identifier = getattr(player_record, "player_id", None)
@@ -133,7 +101,11 @@ async def _handle_admin_status_command(
 
     if user_manager and player_identifier is not None:
         try:
-            is_admin_runtime = user_manager.is_admin(player_identifier)
+            # Reason: SERIALIZATION_BOUNDARY - user_manager is Any per its own param above
+            # (resolved dynamically off app.state); cast() only narrows the return value,
+            # not the attribute lookup that produces it.
+            # Appropriate because: same module-wide app.state-service convention as above.
+            is_admin_runtime = cast(bool, user_manager.is_admin(player_identifier))  # pyright: ignore[reportAny]
         except (ValueError, TypeError, AttributeError, OSError) as exc:
             logger.error(
                 "Admin status cache lookup failed",
@@ -146,8 +118,17 @@ async def _handle_admin_status_command(
             is_admin_runtime = None
 
     is_admin_effective = bool(is_admin_database or (is_admin_runtime is True))
+    return is_admin_database, is_admin_runtime, is_admin_effective
 
-    header = f"ADMIN STATUS FOR {player_record.name.upper()}"
+
+def _build_admin_status_message(
+    player_record: object, is_admin_database: bool, is_admin_runtime: bool | None, is_admin_effective: bool
+) -> str:
+    """Render the multi-line 'admin status' response text."""
+    # 2-arg getattr (no default) preserves the original AttributeError-if-missing behavior;
+    # player_record is object-typed here, so direct attribute access isn't statically valid.
+    player_name_display = cast(str, getattr(player_record, "name")).upper()  # noqa: B009
+    header = f"ADMIN STATUS FOR {player_name_display}"
     privilege_line = f"Admin privileges: {'Active' if is_admin_effective else 'Inactive'}"
     database_line = f"- Database record: {'Active' if is_admin_database else 'Inactive'}"
     runtime_line = (
@@ -169,8 +150,13 @@ async def _handle_admin_status_command(
 
     message_lines = [header, "", privilege_line, database_line, runtime_line, ""]
     message_lines.extend(guidance_lines)
-    result_text = "\n".join(message_lines)
+    return "\n".join(message_lines)
 
+
+def _log_admin_status_action(
+    player_name: str, is_admin_database: bool, is_admin_runtime: bool | None, is_admin_effective: bool
+) -> None:
+    """Best-effort audit log for the 'admin status' command; never raises."""
     try:
         admin_logger = get_admin_actions_logger()
         admin_logger.log_admin_command(
@@ -191,13 +177,85 @@ async def _handle_admin_status_command(
             error_type=type(exc).__name__,
         )
 
+
+async def _resolve_admin_status_player(
+    # Reason: SERIALIZATION_BOUNDARY - request matches handle_admin_command's/
+    # _handle_admin_status_command's own request: Any param (the FastAPI request object).
+    # Appropriate because: this whole module's command handlers share that convention.
+    request: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    player_name: str,
+) -> tuple[object, object] | dict[str, str]:
+    """Resolve (player_record, user_manager) for 'admin status', or an error result."""
+    app = request.app if request else None
+    if not app:
+        logger.warning("Admin status command failed - no application context", player_name=player_name)
+        return command_error("Admin status information is not available.")
+
+    player_service = getattr(app.state, "player_service", None)
+    user_manager = getattr(app.state, "user_manager", None)
+
+    if not player_service:
+        logger.warning("Admin status command failed - no player service", player_name=player_name)
+        return command_error("Admin status information is not available.")
+
+    try:
+        player_record = await player_service.resolve_player_name(player_name)
+    except (DatabaseError, SQLAlchemyError) as exc:
+        logger.error(
+            "Admin status command failed while resolving player name",
+            player_name=player_name,
+            error=str(exc),
+            error_type=type(exc).__name__,
+        )
+        return command_error(f"Unable to resolve player '{player_name}': {str(exc)}")
+
+    if not player_record:
+        logger.warning("Admin status command failed - player record not found", player_name=player_name)
+        return command_error(f"Player '{player_name}' not found.")
+
+    return player_record, user_manager
+
+
+async def _handle_admin_status_command(
+    command_data: dict[str, Any],
+    current_user: dict[str, Any],
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """
+    Provide contextual status information about the caller's administrative privileges.
+    """
+    _ = alias_storage  # Intentionally unused - part of standard command handler interface
+    _ = command_data  # Intentionally unused - status command takes no arguments
+    _ = current_user  # Intentionally unused - status command doesn't need user object
+
+    resolved = await _resolve_admin_status_player(request, player_name)
+    if isinstance(resolved, dict):
+        return resolved
+    player_record, user_manager = resolved
+
+    is_admin_database, is_admin_runtime, is_admin_effective = _compute_admin_status(
+        player_record, user_manager, player_name
+    )
+    result_text = _build_admin_status_message(player_record, is_admin_database, is_admin_runtime, is_admin_effective)
+    _log_admin_status_action(player_name, is_admin_database, is_admin_runtime, is_admin_effective)
+
     return {"result": result_text}
 
 
 async def _handle_admin_time_command(
-    command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    # Reason: SERIALIZATION_BOUNDARY - command_data matches handle_admin_command's own
+    # command_data: dict[str, Any] param (the parsed slash-command payload).
+    # Appropriate because: consistent with this module's shared handler-signature convention.
+    command_data: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - current_user matches every handler in this module.
+    # Appropriate because: consistent with this module's shared handler-signature convention.
+    current_user: dict[str, Any],  # pyright: ignore[reportExplicitAny]
+    # Reason: SERIALIZATION_BOUNDARY - request matches every handler in this module (the
+    # FastAPI request object).
+    # Appropriate because: consistent with this module's shared handler-signature convention.
+    request: Any,  # pyright: ignore[reportAny, reportExplicitAny]
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:

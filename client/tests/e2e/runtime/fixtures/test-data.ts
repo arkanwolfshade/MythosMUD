@@ -6,6 +6,8 @@
  * Canonical accounts (run e2e.bat, make ensure-e2e-database, or scripts/bootstrap_e2e_database.ps1):
  * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade (admin)
  * - Ithaqua / Cthulhu1 / character name Ithaqua (regular)
+ * - E2ETutorial / Cthulhu1 / character name E2ETutorial (regular; tutorial specs reset it into
+ *   the tutorial with `scripts/e2e_reset_players.py --tutorial`, see fixtures/tutorial.ts)
  *
  * Playwright global-setup runs scripts/seed_e2e_users.py as an idempotent safety net.
  * Seeded players use DEFAULT_RESPAWN_ROOM (matches server.constants.spawn_defaults).
@@ -25,6 +27,9 @@ export const DEFAULT_SPAWN_LOOK_CUE =
 
 /** Foyer east exit lands in Eastern Hallway Section 1 — use for room-split asserts (not bare Exits:). */
 export const EASTERN_HALLWAY_LOOK_CUE = /Eastern Hallway|hallway, branching|first section of the eastern hallway/i;
+
+/** #824: the consecrated room off Eastern Hallway Section 5 (hallway_009), east exit. */
+export const CHAPEL_LOOK_CUE = /Sanitarium Chapel|stained-glass|disused chapel/i;
 
 export interface TestPlayer {
   username: string;
@@ -59,13 +64,17 @@ export const TEST_PLAYERS: TestPlayer[] = [
     isSuperuser: false,
     startingRoom: DEFAULT_RESPAWN_ROOM,
   },
+  {
+    username: 'E2ETutorial',
+    password: 'Cthulhu1',
+    userId: 'test-user-e2etutorial-001',
+    playerId: 'test-player-e2etutorial-001',
+    email: 'e2etutorial@test.local',
+    isAdmin: false,
+    isSuperuser: false,
+    startingRoom: DEFAULT_RESPAWN_ROOM,
+  },
 ];
-
-export const TEST_ROOMS = {
-  /** Sanitarium hub used by movement specs after navigation from spawn */
-  MAIN_FOYER: 'earth_arkhamcity_sanitarium_room_foyer_001',
-  DEFAULT_RESPAWN_ROOM,
-} as const;
 
 export const TEST_TIMEOUTS = {
   DEFAULT: 30000, // 30 seconds

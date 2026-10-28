@@ -52,7 +52,7 @@ vi.mock('../components/StatsRollingScreen', () => ({
 }));
 
 // Mock the EldritchEffectsDemo component
-vi.mock('../components/EldritchEffectsDemo', () => ({
+vi.mock('../components/ui-v2/demos/EldritchEffectsDemo', () => ({
   EldritchEffectsDemo: () => <div data-testid="eldritch-effects-demo">Eldritch Effects Demo</div>,
 }));
 

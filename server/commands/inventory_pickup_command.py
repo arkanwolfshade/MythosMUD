@@ -11,16 +11,17 @@ from structlog.stdlib import BoundLogger
 from ..alias_storage import AliasStorage
 from ..models.player import Player
 from ..services.inventory_service import InventoryService
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .inventory_command_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse, RoomDropManager
 from .inventory_command_helpers import (
     add_pickup_to_inventory,
     build_and_broadcast_inventory_event,
-    clone_inventory,
+    change_inventory,
     ensure_item_instance_for_pickup,
     get_room_manager,
-    persist_player,
     prepare_extracted_stack,
     resolve_pickup_item_index,
     resolve_state_and_player,
@@ -88,7 +89,7 @@ def _pickup_quantity_or_error(
         return qty_raw, None
     try:
         qty = coerce_int(qty_raw, default=0)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None, {"result": "Quantity must be a positive number."}
     return qty, None
 
@@ -163,34 +164,37 @@ async def _pickup_commit_inventory_after_floor_extract(
     extracted_stack: dict[str, object],
     player_id_uuid: UUID,
 ) -> tuple[CommandResponse | None, dict[str, object] | None]:
-    """Apply stack to player inventory and persist. Returns (error, None) or (None, prepared_stack)."""
+    """Add the stack to the live inventory and commit it. Returns (error, None) or (None, prepared_stack)."""
     prepared_stack = prepare_extracted_stack(extracted_stack, player.name, player_id_uuid)
 
     await ensure_item_instance_for_pickup(persistence, prepared_stack, player, room_id)
 
-    previous_inventory = clone_inventory(player)
+    added: list[bool] = []  # set by add_to_inventory once the stack is in
 
-    inventory_service = InventoryService()
-    updated_inventory, inventory_error = await add_pickup_to_inventory(
-        inventory_service, player, prepared_stack, room_manager, room_id
-    )
-    if inventory_error:
-        return inventory_error, None
+    async def add_to_inventory() -> CommandResponse | None:
+        # A rejected stack (inventory full, invalid) goes straight back to the room drops.
+        updated_inventory, inventory_error = await add_pickup_to_inventory(
+            InventoryService(), player, prepared_stack, room_manager, room_id
+        )
+        if inventory_error:
+            return inventory_error
+        if updated_inventory is None:
+            return command_error("Failed to update inventory.")
+        player.set_inventory(updated_inventory)
+        logger.info(
+            "Pickup: inventory after set_inventory",
+            player=player.name,
+            player_id=str(player.player_id),
+            inventory_length=len(updated_inventory),
+        )
+        added.append(True)
+        return None
 
-    if updated_inventory is None:
-        return {"result": "Failed to update inventory."}, None
-    player.set_inventory(updated_inventory)
-    logger.info(
-        "Pickup: inventory after set_inventory",
-        player=player.name,
-        player_id=str(player.player_id),
-        inventory_length=len(updated_inventory),
-    )
-    persist_error = await persist_player(persistence, player)
-    if persist_error:
-        room_manager.add_room_drop(room_id, prepared_stack)
-        player.set_inventory(previous_inventory)
-        return persist_error, None
+    error = await change_inventory(player, add_to_inventory)
+    if error:
+        if added:  # the save failed after the stack left the room: put it back
+            room_manager.add_room_drop(room_id, prepared_stack)
+        return error, None
     return None, prepared_stack
 
 
@@ -245,6 +249,7 @@ async def complete_pickup_after_floor_extract(ctx: FloorPickupAfterExtract) -> C
         return commit_err
     # commit_err is None only when prepared_stack is present by contract.
     prepared_stack = cast(dict[str, object], prepared_stack)
+    await emit_inventory_updated(ctx.connection_manager, ctx.player_id_uuid, ctx.player)
     return await _pickup_broadcast_success(
         ctx.connection_manager,
         ctx.player,
@@ -266,7 +271,7 @@ async def handle_pickup_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     resolved = _pickup_resolve_floor_stack_or_error(command_data, connection_manager, player)
     if not isinstance(resolved, tuple):

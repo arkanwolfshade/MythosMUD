@@ -10,27 +10,27 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from server.game.chat_npc_system import schedule_npc_room_speech, schedule_personal_system
+from server.game.chat_npc_system import schedule_npc_room_speech, schedule_personal_quest
 
 
 def notify_quest_started(player_id: uuid.UUID | str, title: str) -> None:
-    """Personal system chat when a quest becomes active."""
-    schedule_personal_system(player_id, f"Quest started: {title}")
+    """Quest-channel line when a quest becomes active."""
+    schedule_personal_quest(player_id, f"Quest started: {title}")
 
 
 def notify_quest_progress(player_id: uuid.UUID | str, title: str) -> None:
-    """Personal system chat for milestone progress (first tick or goal newly met)."""
-    schedule_personal_system(player_id, f"Quest progress: {title}")
+    """Quest-channel line for milestone progress (first tick or goal newly met)."""
+    schedule_personal_quest(player_id, f"Quest progress: {title}")
 
 
 def notify_quest_completed(player_id: uuid.UUID | str, title: str) -> None:
-    """Personal system chat when a quest completes."""
-    schedule_personal_system(player_id, f"Quest completed: {title}")
+    """Quest-channel line when a quest completes."""
+    schedule_personal_quest(player_id, f"Quest completed: {title}")
 
 
 def notify_quest_abandoned(player_id: uuid.UUID | str, title: str) -> None:
-    """Personal system chat when a quest is abandoned."""
-    schedule_personal_system(player_id, f"Quest abandoned: {title}")
+    """Quest-channel line when a quest is abandoned."""
+    schedule_personal_quest(player_id, f"Quest abandoned: {title}")
 
 
 def _as_int(value: object, default: int = 0) -> int:

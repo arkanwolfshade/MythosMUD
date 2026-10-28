@@ -8,7 +8,7 @@ replacing raw SQL/ORM for use by ItemRepository.
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -114,7 +114,7 @@ async def item_instance_exists_async(session: AsyncSession, item_instance_id: st
         text("SELECT item_instance_exists(:item_instance_id)"),
         {"item_instance_id": item_instance_id},
     )
-    return bool(result.scalar())
+    return bool(cast(object, result.scalar()))
 
 
 async def ensure_item_instance_async(

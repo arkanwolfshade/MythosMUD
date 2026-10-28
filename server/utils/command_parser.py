@@ -17,13 +17,15 @@ from ..models.command import (
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_factories import CommandFactory
 from .command_helpers import (  # noqa: F401  # pylint: disable=unused-import  # Reason: Imported for backwards compatibility, may be used in tests or external code, unused in this module
-    get_command_help,
     get_username_from_user,
     validate_command_safety,
 )
 from .enhanced_error_logging import log_and_raise_enhanced
 
 logger = get_logger(__name__)
+
+# Verbs that resolve to ``use`` before the factory lookup (no CommandType/handler of their own).
+USE_ALIASES = ("drink", "quaff")
 
 
 def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
@@ -33,6 +35,7 @@ def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
         CommandType.GO.value: factory.create_go_command,
         CommandType.SAY.value: factory.create_say_command,
         CommandType.LOCAL.value: factory.create_local_command,
+        CommandType.GLOBAL.value: factory.create_global_command,
         CommandType.SYSTEM.value: factory.create_system_command,
         CommandType.EMOTE.value: factory.create_emote_command,
         CommandType.ME.value: factory.create_me_command,
@@ -62,8 +65,13 @@ def _build_command_factory_part1(factory: CommandFactory) -> dict[str, object]:
         CommandType.DROP.value: factory.create_drop_command,
         CommandType.PUT.value: factory.create_put_command,
         CommandType.GET.value: factory.create_get_command,
+        CommandType.BANK.value: factory.create_bank_command,
+        CommandType.DEPOSIT.value: factory.create_deposit_command,
+        CommandType.WITHDRAW.value: factory.create_withdraw_command,
         CommandType.EQUIP.value: factory.create_equip_command,
         CommandType.UNEQUIP.value: factory.create_unequip_command,
+        CommandType.USE.value: factory.create_use_command,
+        CommandType.READ.value: factory.create_read_command,
         CommandType.QUIT.value: factory.create_quit_command,
         CommandType.LOGOUT.value: factory.create_logout_command,
     }
@@ -78,6 +86,7 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.REST.value: factory.create_rest_command,
         CommandType.CLEANSE.value: factory.create_cleanse_command,
         CommandType.SKILLS.value: factory.create_skills_command,
+        CommandType.CATALOG.value: factory.create_catalog_command,
         CommandType.JOURNAL.value: factory.create_journal_command,
         CommandType.QUESTS.value: factory.create_quests_command,
         CommandType.QUEST.value: factory.create_quest_command,
@@ -97,10 +106,14 @@ def _build_command_factory_part2(factory: CommandFactory) -> dict[str, object]:
         CommandType.STRIKE.value: factory.create_strike_command,
         CommandType.FLEE.value: factory.create_flee_command,
         CommandType.TAUNT.value: factory.create_taunt_command,
+        CommandType.ASSIST.value: factory.create_assist_command,
+        CommandType.PROTECT.value: factory.create_protect_command,
         CommandType.CAST.value: factory.create_cast_command,
         CommandType.SPELL.value: factory.create_spell_command,
         CommandType.SPELLS.value: factory.create_spells_command,
         CommandType.LEARN.value: factory.create_learn_command,
+        CommandType.STOP.value: factory.create_stop_command,
+        CommandType.TEACH.value: factory.create_teach_command,
     }
 
 
@@ -163,7 +176,7 @@ class CommandParser:
         command, args = self._parse_command_parts(normalized)
 
         # Validate command type (including aliases)
-        valid_commands_with_aliases = self.valid_commands | {"l", "g"}  # Add aliases (no w for whisper)
+        valid_commands_with_aliases = self.valid_commands | {"l", "g", *USE_ALIASES}  # Add aliases (no w for whisper)
         if command not in valid_commands_with_aliases:
             log_and_raise_enhanced(
                 MythosValidationError,
@@ -232,8 +245,8 @@ class CommandParser:
         return command, args
 
     def _resolve_command_alias(self, command: str) -> str:
-        """Resolve single-letter aliases to full command names."""
-        alias_map = {"w": "whisper", "l": "local", "g": "global"}
+        """Resolve aliases (single-letter, and drink/quaff for use) to full command names."""
+        alias_map = {"w": "whisper", "l": "local", "g": "global", **dict.fromkeys(USE_ALIASES, "use")}
         return alias_map.get(command, command)
 
     def _invoke_create_method(
@@ -306,49 +319,6 @@ class CommandParser:
                 logger_name=__name__,
             )
 
-    def get_command_help(self, command_name: str | None = None) -> str:
-        """
-        Get help information for commands.
-
-        Args:
-            command_name: Specific command to get help for, or None for general help
-
-        Returns:
-            Help text for the command(s)
-        """
-        # Define basic command help
-        command_help = {  # pylint: disable=invalid-name  # Reason: Local variable, not a constant
-            "look": "Examine your surroundings or look in a specific direction",
-            "go": "Move in a specific direction (north, south, east, west)",
-            "say": "Speak to other players in your current room",
-            "emote": "Perform an action or emote",
-            "me": "Perform an action or emote (alias for emote)",
-            "pose": "Set or clear your pose description",
-            "alias": "Create a command alias",
-            "aliases": "List your command aliases",
-            "unalias": "Remove a command alias",
-            "help": "Show this help information",
-            "spawn": "Admin: /spawn <definition_id|name> [quantity] [room_id] (alias for npc spawn; room_id defaults to current room)",
-            "summon": "Admin command: /summon <prototype_id> [quantity] [item|npc]",
-            "sit": "Sit down and adopt a seated posture",
-            "stand": "Return to a standing posture",
-            "lie": "Lie down (optionally use 'lie down')",
-            "ground": "Stabilise a catatonic ally back to lucidity",
-            "time": "Show the current Mythos time",
-            "learn": "Learn a spell by name (temporary command until quests/vendors are implemented)",
-        }
-
-        if command_name:
-            # Return specific command help
-            if command_name.lower() in command_help:
-                return command_help[command_name.lower()]
-            return f"No help available for command '{command_name}'"
-        # Return general help
-        help_text = "Available commands:\n"
-        for cmd, info in command_help.items():
-            help_text += f"  {cmd}: {info}\n"
-        return help_text
-
 
 # Global command parser instance
 command_parser = CommandParser()
@@ -378,6 +348,5 @@ __all__ = [
     "command_parser",
     "parse_command",
     "validate_command_safety",
-    "get_command_help",
     "get_username_from_user",
 ]

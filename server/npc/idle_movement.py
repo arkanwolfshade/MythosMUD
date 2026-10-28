@@ -15,14 +15,13 @@ from __future__ import annotations
 
 import random
 import time
-import uuid
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, cast
 
 from structlog.stdlib import BoundLogger
 
 from ..structured_logging.enhanced_logging_config import get_logger
-from .movement_integration import NPCMovementIntegration
+from .movement_integration import NPCMovementIntegration, is_npc_in_combat
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -166,64 +165,9 @@ class IdleMovementHandler:
             logger.error("Error checking if NPC should idle move", npc_id=_npc_id_str(npc_instance), error=str(e))
             return False
 
-    def _check_npc_combat_via_uuid(self, npc_id: str, combat_service: object) -> bool:
-        """
-        Check if NPC is in combat via UUID lookup.
-
-        Args:
-            npc_id: NPC ID (string or UUID)
-            combat_service: Combat service instance
-
-        Returns:
-            True if NPC is in combat
-        """
-        combats_raw = getattr(combat_service, "_npc_combats", None)
-        if not isinstance(combats_raw, Mapping):
-            return False
-        combats: Mapping[object, object] = cast(Mapping[object, object], combats_raw)
-        try:
-            npc_uuid = uuid.UUID(npc_id)
-        except ValueError:
-            return False
-        return npc_uuid in combats
-
-    def _check_npc_combat_via_string_mapping(self, npc_id: str, combat_service: object) -> bool:
-        """
-        Check if NPC is in combat via string ID mapping.
-
-        Args:
-            npc_id: NPC ID as string
-            combat_service: Combat service instance
-
-        Returns:
-            True if NPC is in combat
-        """
-        integration: object | None = cast(
-            object | None, getattr(combat_service, "_npc_combat_integration_service", None)
-        )
-        if integration is None:
-            return False
-        mapping_raw = getattr(integration, "_uuid_to_string_id_mapping", None)
-        if not isinstance(mapping_raw, Mapping):
-            return False
-        mapping: Mapping[object, object] = cast(Mapping[object, object], mapping_raw)
-        combats = getattr(combat_service, "_npc_combats", None)
-        if not isinstance(combats, Mapping):
-            return False
-        combats_map: Mapping[object, object] = cast(Mapping[object, object], combats)
-        for uuid_key, string_id_obj in mapping.items():
-            if isinstance(string_id_obj, str) and string_id_obj == npc_id and uuid_key in combats_map:
-                return True
-        return False
-
-    def _npc_registered_in_combat(self, npc_id: str, combat_service: object) -> bool:
-        return self._check_npc_combat_via_uuid(npc_id, combat_service) or self._check_npc_combat_via_string_mapping(
-            npc_id, combat_service
-        )
-
     def _is_npc_in_combat(self, npc_instance: object) -> bool:
         """
-        Check if an NPC is currently in combat.
+        Check if an NPC is currently in combat (fails closed on lookup errors, #918).
 
         Args:
             npc_instance: The NPC instance to check
@@ -231,32 +175,8 @@ class IdleMovementHandler:
         Returns:
             bool: True if NPC is in combat, False otherwise
         """
-        try:
-            npc_id_raw: object | None = cast(object | None, getattr(npc_instance, "npc_id", None))
-            if npc_id_raw is None:
-                return False
-            if isinstance(npc_id_raw, str):
-                npc_id = npc_id_raw
-            else:
-                coerced: object = npc_id_raw
-                npc_id = str(coerced)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
-            logger.debug("Error reading NPC id for combat check", error=str(e))
-            return False
-
-        try:
-            from ..services.combat_service import get_combat_service
-
-            combat_service = get_combat_service()
-            if not combat_service:
-                return False
-            return self._npc_registered_in_combat(npc_id, combat_service)
-        except (ImportError, AttributeError, RuntimeError):
-            logger.debug("Combat service not available for combat check")
-            return False
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
-            logger.debug("Error checking NPC combat state", error=str(e))
-            return False
+        npc_id_raw: object | None = cast(object | None, getattr(npc_instance, "npc_id", None))
+        return npc_id_raw is not None and is_npc_in_combat(str(npc_id_raw))
 
     def get_valid_exits(
         self,

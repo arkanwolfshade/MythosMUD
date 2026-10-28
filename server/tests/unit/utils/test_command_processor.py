@@ -264,62 +264,6 @@ def test_validate_command_safety_unsafe(command_processor):
         assert error == "Command contains dangerous patterns"
 
 
-def test_get_command_help_success(command_processor):
-    """Test get_command_help returns help text."""
-    with patch.object(command_processor.parser, "get_command_help", return_value="Help text"):
-        result = command_processor.get_command_help("look")
-
-        assert result == "Help text"
-
-
-def test_get_command_help_none(command_processor):
-    """Test get_command_help returns general help when command_name is None."""
-    with patch.object(command_processor.parser, "get_command_help", return_value="General help"):
-        result = command_processor.get_command_help(None)
-
-        assert result == "General help"
-
-
-def test_get_command_help_value_error(command_processor):
-    """Test get_command_help handles ValueError."""
-    with patch.object(command_processor.parser, "get_command_help", side_effect=ValueError("Invalid command")):
-        result = command_processor.get_command_help("invalid")
-
-        assert result == "Help system temporarily unavailable."
-
-
-def test_get_command_help_type_error(command_processor):
-    """Test get_command_help handles TypeError."""
-    with patch.object(command_processor.parser, "get_command_help", side_effect=TypeError("Type error")):
-        result = command_processor.get_command_help("command")
-
-        assert result == "Help system temporarily unavailable."
-
-
-def test_get_command_help_attribute_error(command_processor):
-    """Test get_command_help handles AttributeError."""
-    with patch.object(command_processor.parser, "get_command_help", side_effect=AttributeError("Missing attr")):
-        result = command_processor.get_command_help("command")
-
-        assert result == "Help system temporarily unavailable."
-
-
-def test_get_command_help_key_error(command_processor):
-    """Test get_command_help handles KeyError."""
-    with patch.object(command_processor.parser, "get_command_help", side_effect=KeyError("Missing key")):
-        result = command_processor.get_command_help("command")
-
-        assert result == "Help system temporarily unavailable."
-
-
-def test_get_command_help_runtime_error(command_processor):
-    """Test get_command_help handles RuntimeError."""
-    with patch.object(command_processor.parser, "get_command_help", side_effect=RuntimeError("Runtime error")):
-        result = command_processor.get_command_help("command")
-
-        assert result == "Help system temporarily unavailable."
-
-
 def test_get_command_processor():
     """Test get_command_processor returns global instance."""
     processor = get_command_processor()

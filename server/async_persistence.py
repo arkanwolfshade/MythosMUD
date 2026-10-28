@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from datetime import datetime
 from typing import TYPE_CHECKING, Unpack, cast
 
@@ -36,7 +37,10 @@ from .async_persistence_types import (
     InstanceRoomLookup,
     PlayerEffectOptions,
 )
+from .constants.lucidity import STARTING_LCD
+from .database import get_async_session
 from .events import EventBus
+from .models.lucidity import PlayerLucidity
 from .models.player import Player
 from .models.player_effect import PlayerEffect
 from .models.profession import Profession
@@ -58,6 +62,9 @@ from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from .models.room import Room
+
+# (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
+LucidityAdjuster = Callable[[uuid.UUID, int, str], Awaitable[None]]
 
 logger = get_logger(__name__)
 
@@ -90,6 +97,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _item_repo: ItemRepository
     _player_effect_repo: PlayerEffectRepository
     _instance_manager: InstanceRoomLookup | None
+    _lucidity_adjuster: LucidityAdjuster | None
     _room_loader: RoomCacheLoader
 
     def __init__(
@@ -134,11 +142,20 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._item_repo = ItemRepository()
         self._player_effect_repo = PlayerEffectRepository()
         self._instance_manager = None
+        self._lucidity_adjuster = None
         self._room_loader = RoomCacheLoader(self._room_cache, self._room_mappings, self._logger, event_bus)
 
     def set_instance_manager(self, instance_manager: InstanceRoomLookup) -> None:
         """Set the instance manager for instanced room lookup (instance-first)."""
         self._instance_manager = instance_manager
+
+    def set_lucidity_adjuster(self, adjuster: LucidityAdjuster | None) -> None:
+        """Set how lucidity changes made through this layer are applied: LucidityService with the catatonia registry.
+
+        Injected (by the combat bundle, which builds both) rather than imported: the lucidity services reach the
+        realtime and container layers, which import this module.
+        """
+        self._lucidity_adjuster = adjuster
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -193,6 +210,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     async def save_player(self, player: Player) -> None:
         """Save a player. Delegates to PlayerRepository."""
         return await self._player_repo.save_player(player)
+
+    async def clear_player_inventory(self, player_id: uuid.UUID) -> bool:
+        """Empty a player's carried and equipped items only. Delegates to PlayerRepository."""
+        return await self._player_repo.clear_player_inventory(player_id)
 
     async def list_players(self) -> list[Player]:
         """List all players. Delegates to PlayerRepository."""
@@ -299,10 +320,28 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Validate and fix player room if needed. Delegates to PlayerRepository."""
         return self._player_repo.validate_and_fix_player_room(player)
 
+    async def get_current_lcd(self, player_id: uuid.UUID) -> int:
+        """The player's lucidity (player_lucidity.current_lcd), or the starting 100 if they have no record yet."""
+        async for session in get_async_session():
+            record = await session.get(PlayerLucidity, player_id)
+            return record.current_lcd if record is not None else STARTING_LCD
+        return STARTING_LCD
+
     async def apply_lucidity_loss(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Apply lucidity loss to a player. Delegates to ExperienceRepository."""
-        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
-        await self._experience_repo.update_player_stat_field(player_id, "lucidity", -amount, f"{source}: lucidity loss")
+        """Lower a player's lucidity through LucidityService (tiers, catatonia, delirium, the adjustment log)."""
+        await self._adjust_lucidity(uuid.UUID(str(player.player_id)), -amount, source)
+
+    async def apply_lucidity_gain(self, player: Player, amount: int, source: str = "unknown") -> None:
+        """Raise a player's lucidity through LucidityService."""
+        await self._adjust_lucidity(uuid.UUID(str(player.player_id)), amount, source)
+
+    async def _adjust_lucidity(self, player_id: uuid.UUID, delta: int, source: str) -> None:
+        if not delta:
+            return
+        if self._lucidity_adjuster is None:
+            # Wiring is missing (the combat bundle sets it at startup): never fall back to a second store.
+            raise RuntimeError("Lucidity adjuster not wired; cannot change lucidity")
+        await self._lucidity_adjuster(player_id, delta, source)
 
     async def apply_fear(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Apply fear to a player. Delegates to ExperienceRepository."""
@@ -323,9 +362,9 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
             player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
         )
 
-    async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Award experience to a player atomically. Delegates to ExperienceRepository."""
-        await self._experience_repo.gain_experience(player, amount, source)
+    async def award_player_xp(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> tuple[int, int, int]:
+        """Award XP and recompute level atomically. Delegates to ExperienceRepository. Returns (new_xp, old_level, new_level)."""
+        return await self._experience_repo.award_player_xp(player_id, amount, source)
 
     async def heal_player(self, player: Player, amount: int) -> None:
         """Heal a player. Delegates to HealthRepository."""
@@ -343,50 +382,48 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Async alias for damage_player. Delegates to HealthRepository."""
         await self._health_repo.damage_player(player, amount, damage_type)
 
-    # Player effects (ADR-019)
+    # Player effects (ADR-019, ADR-029 step 3b-i)
     async def add_player_effect(
         self,
         player_id: uuid.UUID | str,
         effect_type: str,
         category: str,
-        duration: int,
-        applied_at_tick: int,
+        remaining_seconds: int | None,
         options: PlayerEffectOptions | None = None,
     ) -> str:
-        """Add a player effect. Returns effect id."""
+        """Add a player effect lasting ``remaining_seconds`` online game seconds (None = until removed). Returns its id."""
         effect_options = options or {}
-        payload: AddEffectInput = {
+        data: AddEffectInput = {
             "effect_type": effect_type,
             "category": category,
-            "duration": duration,
-            "applied_at_tick": applied_at_tick,
+            "remaining_seconds": remaining_seconds,
+            "payload": effect_options.get("payload", {}),
+            "instance_scoped": effect_options.get("instance_scoped", False),
             "intensity": effect_options.get("intensity", 1),
             "source": effect_options.get("source"),
             "visibility_level": effect_options.get("visibility_level", "visible"),
         }
-        return await self._player_effect_repo.add_effect(player_id, payload)
+        return await self._player_effect_repo.add_effect(player_id, data)
 
     async def remove_player_effect_by_id(self, effect_id: uuid.UUID | str) -> None:
         """Remove a player effect by id."""
         await self._player_effect_repo.delete_effect(effect_id)
 
-    async def get_active_player_effects(self, player_id: uuid.UUID | str, current_tick: int) -> list[PlayerEffect]:
-        """Get active effects for a player (remaining_ticks > 0). Returns list of PlayerEffect."""
-        return await self._player_effect_repo.get_active_effects_for_player(player_id, current_tick)
+    async def remove_player_effects_by_type(self, player_id: uuid.UUID | str, effect_type: str) -> int:
+        """Remove every effect of one type on a player; returns how many."""
+        return await self._player_effect_repo.delete_effects_by_type(player_id, effect_type)
 
-    async def has_player_effect(self, player_id: uuid.UUID | str, effect_type: str, current_tick: int) -> bool:
-        """Return True if player has an active effect of the given type."""
-        return await self._player_effect_repo.has_effect(player_id, effect_type, current_tick)
+    async def get_active_player_effects(self, player_id: uuid.UUID | str) -> list[PlayerEffect]:
+        """A player's effects with time left (or no limit), oldest first."""
+        return await self._player_effect_repo.get_active_effects_for_player(player_id)
 
-    async def get_player_effect_remaining_ticks(
-        self, player_id: uuid.UUID | str, effect_type: str, current_tick: int
-    ) -> int | None:
-        """Return remaining ticks for the effect, or None."""
-        return await self._player_effect_repo.get_effect_remaining_ticks(player_id, effect_type, current_tick)
+    async def update_player_effect_payload(self, effect_id: uuid.UUID | str, payload: Mapping[str, object]) -> None:
+        """Replace an effect's payload (its mutable state, e.g. the drain's elapsed)."""
+        await self._player_effect_repo.update_effect_payload(effect_id, payload)
 
-    async def expire_player_effects_for_tick(self, current_tick: int) -> list[tuple[str, str]]:
-        """Expire effects for current tick; return list of (player_id, effect_type) expired."""
-        return await self._player_effect_repo.expire_effects_for_tick(current_tick)
+    async def advance_player_effects(self, player_ids: Sequence[uuid.UUID]) -> list[tuple[str, str]]:
+        """One game second passes for these online players; returns the (player_id, effect_type) that ran out."""
+        return await self._player_effect_repo.advance_effects(player_ids)
 
     # Container methods
     async def create_container(
@@ -431,6 +468,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Get all containers in a room."""
         return cast(list[dict[str, object]], await self._container_repo.get_containers_by_room_id(room_id))
 
+    async def get_bank_container(self, owner_id: uuid.UUID) -> dict[str, object] | None:
+        """Get a player's bank deposit box, or None if they have never opened one."""
+        return await self._container_repo.get_bank_container(owner_id)
+
     async def get_containers_by_entity_id(self, entity_id: uuid.UUID) -> list[dict[str, object]]:
         """Get all containers owned by an entity."""
         return cast(list[dict[str, object]], await self._container_repo.get_containers_by_entity_id(entity_id))
@@ -441,11 +482,14 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         items_json: list[dict[str, object]] | None = None,
         lock_state: str | None = None,
         metadata_json: dict[str, object] | None = None,
+        capacity_slots: int | None = None,
     ) -> dict[str, object] | None:
         """Update a container."""
         return cast(
             dict[str, object] | None,
-            await self._container_repo.update_container(container_id, items_json, lock_state, metadata_json),
+            await self._container_repo.update_container(
+                container_id, items_json, lock_state, metadata_json, capacity_slots
+            ),
         )
 
     async def get_decayed_containers(self, current_time: datetime | None = None) -> list[dict[str, object]]:

@@ -35,3 +35,24 @@ BEGIN
     ORDER BY zone_stable_id, subzone_stable_id;
 END;
 $$;
+
+-- get_catatonic_player_ids: players inside the catatonia countdown, 0 >= LCD > -10 (#1148).
+-- Per-tick source for server/app/game_tick_catatonia.py; mirrors get_players_not_clearly_alive for the DP
+-- bleed-out clock, so it covers offline players too. LCD <= -10 is delirium's, not the clock's. Soft-deleted
+-- players are skipped. In the normal case nobody is catatonic and this returns no rows.
+CREATE OR REPLACE FUNCTION :schema_name.get_catatonic_player_ids()
+RETURNS TABLE (
+    player_id uuid
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT pl.player_id
+    FROM player_lucidity pl
+    JOIN players p ON p.player_id = pl.player_id
+    WHERE pl.current_lcd <= 0
+      AND pl.current_lcd > -10
+      AND p.is_deleted IS NOT TRUE;
+END;
+$$;

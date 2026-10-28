@@ -1,5 +1,6 @@
 // Assembles the public return object for useGameClientV2Container (pure, for Lizard NLOC).
 
+import type { LucidityStatus } from '../../../types/lucidity';
 import type { ActiveEffectDisplay, GameState } from '../utils/stateUpdateUtils';
 import {
   buildHandlerPublicFields,
@@ -16,7 +17,7 @@ export interface GameClientV2ContainerPublicApi {
   gameState: GameState;
   mythosTime: GameClientV2MergedSlice['mythosTime'];
   healthStatus: GameClientV2MergedSlice['healthStatus'];
-  lucidityStatus: GameClientV2MergedSlice['lucidityStatus'];
+  lucidityStatus: LucidityStatus | null;
   isDead: boolean;
   deathLocation: string;
   isRespawning: boolean;
@@ -37,7 +38,6 @@ export interface GameClientV2ContainerPublicApi {
   clearedPartyInviteId: GameClientV2MergedSlice['clearedPartyInviteId'];
   setClearedPartyInviteId: GameClientV2MergedSlice['setClearedPartyInviteId'];
   setGameState: GameClientV2MergedSlice['setGameState'];
-  clearPendingFollowRequest: GameClientV2NetworkPhase['clearPendingFollowRequest'];
   sendMessage: GameClientV2NetworkPhase['sendMessage'];
   isConnected: boolean;
   isConnecting: boolean;

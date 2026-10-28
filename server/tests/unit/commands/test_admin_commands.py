@@ -4,12 +4,19 @@ Unit tests for admin command handlers.
 Tests the admin command handler functions.
 """
 
+# pyright: reportPrivateUsage=false
+
 import uuid
+from dataclasses import dataclass
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
 from server.commands.admin_commands import (
+    _build_admin_status_message,
+    _compute_admin_status,
+    _resolve_admin_status_player,
     handle_add_admin_command,
     handle_admin_command,
     handle_mute_command,
@@ -19,6 +26,7 @@ from server.commands.admin_commands import (
     handle_unmute_global_command,
 )
 from server.commands.admin_teleport_commands import handle_goto_command, handle_teleport_command
+from server.constants.message_category import MessageCategory
 
 
 @pytest.mark.asyncio
@@ -143,7 +151,7 @@ async def test_handle_mute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mute_player_mock: MagicMock = MagicMock(return_value=True)
+    mute_player_mock = AsyncMock(return_value=True)
     mock_user_manager.mute_player = mute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
@@ -206,7 +214,7 @@ async def test_handle_unmute_command_success():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    unmute_player_mock: MagicMock = MagicMock(return_value=True)
+    unmute_player_mock = AsyncMock(return_value=True)
     mock_user_manager.unmute_player = unmute_player_mock
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
@@ -235,7 +243,7 @@ async def test_handle_unmute_command_idempotent_when_not_muted():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.unmute_player = MagicMock(return_value=False)
+    mock_user_manager.unmute_player = AsyncMock(return_value=False)
     is_player_muted_mock: MagicMock = MagicMock(return_value=False)
     mock_user_manager.is_player_muted = is_player_muted_mock
     mock_player_service = AsyncMock()
@@ -269,24 +277,72 @@ async def test_handle_mute_global_command_no_user_manager():
     assert "not available" in result["result"]
 
 
+@dataclass(frozen=True)
+class _ResolvedPlayer:
+    """What resolve_player_name returns, as far as the global-mute flow reads it."""
+
+    id: uuid.UUID
+    is_admin: bool
+
+
+_GlobalMuteRig = tuple[SimpleNamespace, AsyncMock, AsyncMock, uuid.UUID, uuid.UUID]
+
+
+def _global_mute_request(*, admin: bool = True) -> _GlobalMuteRig:
+    """(request, mute_global, unmute_global, admin_id, target_id).
+
+    app.state carries an async user_manager and a player_service resolving the admin, then the target.
+    """
+    mute_global = AsyncMock(return_value=True)
+    unmute_global = AsyncMock(return_value=True)
+    admin_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    resolve = AsyncMock(side_effect=[_ResolvedPlayer(admin_id, admin), _ResolvedPlayer(target_id, False)])
+    state = SimpleNamespace(
+        user_manager=SimpleNamespace(mute_global=mute_global, unmute_global=unmute_global),
+        player_service=SimpleNamespace(resolve_player_name=resolve),
+    )
+    return SimpleNamespace(app=SimpleNamespace(state=state)), mute_global, unmute_global, admin_id, target_id
+
+
 @pytest.mark.asyncio
 async def test_handle_mute_global_command_success():
-    """Test handle_mute_global_command() successful execution."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_user_manager = MagicMock()
-    mute_global_mock: MagicMock = MagicMock(return_value=True)
-    mock_user_manager.mute_global = mute_global_mock
-    mock_state.user_manager = mock_user_manager
-    mock_app.state = mock_state
-    mock_request.app = mock_app
+    """mute_global passes muter, target, duration and reason through (it used to pass only a name)."""
+    request, mute_global, _unmute_global, admin_id, target_id = _global_mute_request()
 
-    result = await handle_mute_global_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_mute_global_command(
+        {"target_player": "OtherPlayer", "duration_minutes": 30, "reason": "spam"},
+        {"name": "TestPlayer"},
+        request,
+        None,
+        "TestPlayer",
+    )
 
-    assert "result" in result
-    assert "activated" in result["result"].lower()
-    mute_global_mock.assert_called_once()
+    assert result["result"] == "You have globally muted OtherPlayer for 30 minutes."
+    mute_global.assert_awaited_once_with(str(admin_id), "TestPlayer", str(target_id), "OtherPlayer", 30, "spam")
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_global_command_requires_admin():
+    """A non-admin cannot globally mute anyone."""
+    request, mute_global, _unmute_global, _admin_id, _target_id = _global_mute_request(admin=False)
+
+    result = await handle_mute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
+
+    assert "permission" in result["result"]
+    mute_global.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_mute_global_command_no_target():
+    """mute_global without a target shows usage."""
+    request, _mute_global, _unmute_global, _admin_id, _target_id = _global_mute_request()
+
+    result = await handle_mute_global_command({}, {"name": "TestPlayer"}, request, None, "TestPlayer")
+
+    assert result["result"].startswith("Usage: mute_global")
 
 
 @pytest.mark.asyncio
@@ -303,22 +359,28 @@ async def test_handle_unmute_global_command_no_user_manager():
 
 @pytest.mark.asyncio
 async def test_handle_unmute_global_command_success():
-    """Test handle_unmute_global_command() successful execution."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_state = MagicMock()
-    mock_user_manager = MagicMock()
-    unmute_global_mock: MagicMock = MagicMock(return_value=True)
-    mock_user_manager.unmute_global = unmute_global_mock
-    mock_state.user_manager = mock_user_manager
-    mock_app.state = mock_state
-    mock_request.app = mock_app
+    """unmute_global resolves both players and removes the mute."""
+    request, _mute_global, unmute_global, admin_id, target_id = _global_mute_request()
 
-    result = await handle_unmute_global_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+    result = await handle_unmute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
 
-    assert "result" in result
-    assert "deactivated" in result["result"].lower()
-    unmute_global_mock.assert_called_once()
+    assert result["result"] == "You have globally unmuted OtherPlayer."
+    unmute_global.assert_awaited_once_with(str(admin_id), "TestPlayer", str(target_id), "OtherPlayer")
+
+
+@pytest.mark.asyncio
+async def test_handle_unmute_global_command_not_muted():
+    """unmute_global on someone without a global mute says so."""
+    request, _mute_global, unmute_global, _admin_id, _target_id = _global_mute_request()
+    unmute_global.return_value = False
+
+    result = await handle_unmute_global_command(
+        {"target_player": "OtherPlayer"}, {"name": "TestPlayer"}, request, None, "TestPlayer"
+    )
+
+    assert result["result"] == "OtherPlayer is not globally muted."
 
 
 @pytest.mark.asyncio
@@ -556,7 +618,7 @@ async def test_handle_mute_command_mute_failure():
     mock_app = MagicMock()
     mock_state = MagicMock()
     mock_user_manager = MagicMock()
-    mock_user_manager.mute_player = MagicMock(return_value=False)
+    mock_user_manager.mute_player = AsyncMock(return_value=False)
     mock_player_service = AsyncMock()
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
@@ -646,3 +708,118 @@ async def test_handle_mutes_command_with_mutes():
     result = await handle_mutes_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
     assert "result" in result
     assert "Player1" in result["result"] or "Player2" in result["result"] or "mute" in result["result"].lower()
+
+
+class TestComputeAdminStatus:
+    """_compute_admin_status: extracted from _handle_admin_status_command in issue #787.
+
+    The single end-to-end test_handle_admin_command_status above only exercises the
+    both-true path; these cover the branches that leaves untested.
+    """
+
+    def test_database_admin_with_no_user_manager(self):
+        """No user_manager means runtime status can't be checked; effective follows database."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=True)
+        is_db, is_runtime, is_effective = _compute_admin_status(player, None, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (True, None, True)
+
+    def test_not_admin_in_either_source(self):
+        player = MagicMock(id=uuid.uuid4(), is_admin=False)
+        user_manager = MagicMock(is_admin=MagicMock(return_value=False))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (False, False, False)
+
+    def test_runtime_admin_overrides_database_false(self):
+        """Effective status is true if EITHER source says so (session cache can grant it)."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=False)
+        user_manager = MagicMock(is_admin=MagicMock(return_value=True))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (False, True, True)
+
+    def test_user_manager_lookup_error_falls_back_to_database_only(self):
+        """A cache lookup failure must not crash the status command."""
+        player = MagicMock(id=uuid.uuid4(), is_admin=True)
+        user_manager = MagicMock(is_admin=MagicMock(side_effect=AttributeError("cache miss")))
+        is_db, is_runtime, is_effective = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert (is_db, is_runtime, is_effective) == (True, None, True)
+
+    def test_falls_back_to_player_id_when_id_is_missing(self):
+        """Some player records expose player_id instead of id (see the getattr fallback)."""
+        player_id = uuid.uuid4()
+        player = MagicMock(spec=["player_id", "is_admin"], player_id=player_id, is_admin=False)
+        is_admin_mock: MagicMock = MagicMock(return_value=True)
+        user_manager = MagicMock(is_admin=is_admin_mock)
+        _, is_runtime, _ = _compute_admin_status(player, user_manager, "TestPlayer")
+        assert is_runtime is True
+        is_admin_mock.assert_called_once_with(player_id)
+
+
+class TestBuildAdminStatusMessage:
+    """_build_admin_status_message: extracted from _handle_admin_status_command in issue #787."""
+
+    def test_effective_admin_message_includes_privileged_guidance(self):
+        # Mock's `name` constructor kwarg sets the mock's repr, not a `.name` attribute --
+        # must assign it post-construction.
+        player = MagicMock()
+        player.name = "Armitage"
+        text = _build_admin_status_message(player, True, True, True)
+        assert "ADMIN STATUS FOR ARMITAGE" in text
+        assert "Admin privileges: Active" in text
+        assert "administrative utilities" in text
+
+    def test_non_admin_message_includes_non_privileged_guidance(self):
+        player = MagicMock()
+        player.name = "Wilbur"
+        text = _build_admin_status_message(player, False, None, False)
+        assert "Admin privileges: Inactive" in text
+        assert "- Session cache: Unavailable" in text
+        assert "do not currently have administrative privileges" in text
+
+
+class TestResolveAdminStatusPlayer:
+    """_resolve_admin_status_player: extracted from _handle_admin_status_command in issue #787."""
+
+    @pytest.mark.asyncio
+    async def test_no_app_context_returns_error(self):
+        result = await _resolve_admin_status_player(None, "TestPlayer")
+        assert result == {
+            "result": "Admin status information is not available.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
+
+    @pytest.mark.asyncio
+    async def test_no_player_service_returns_error(self):
+        request = MagicMock(app=MagicMock(state=MagicMock(spec=[])))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {
+            "result": "Admin status information is not available.",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
+
+    @pytest.mark.asyncio
+    async def test_database_error_resolving_player_returns_error(self):
+        from sqlalchemy.exc import SQLAlchemyError
+
+        player_service = MagicMock(resolve_player_name=AsyncMock(side_effect=SQLAlchemyError("db down")))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {
+            "result": "Unable to resolve player 'TestPlayer': db down",
+            "category": MessageCategory.SYSTEM_ERROR,
+        }
+
+    @pytest.mark.asyncio
+    async def test_player_not_found_returns_error(self):
+        player_service = MagicMock(resolve_player_name=AsyncMock(return_value=None))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == {"result": "Player 'TestPlayer' not found.", "category": MessageCategory.SYSTEM_ERROR}
+
+    @pytest.mark.asyncio
+    async def test_success_returns_player_record_and_user_manager(self):
+        player = MagicMock()
+        user_manager = MagicMock()
+        player_service = MagicMock(resolve_player_name=AsyncMock(return_value=player))
+        request = MagicMock(app=MagicMock(state=MagicMock(player_service=player_service, user_manager=user_manager)))
+        result = await _resolve_admin_status_player(request, "TestPlayer")
+        assert result == (player, user_manager)

@@ -58,6 +58,10 @@ class CommandFactory:
             args, raw_command=raw_command, original_command=original_command
         )
 
+    def create_global_command(self, args: list[str]) -> BaseCommand:
+        """Create GlobalCommand from arguments."""
+        return self._communication.create_global_command(args)
+
     def create_system_command(self, args: list[str]) -> BaseCommand:
         """Create SystemCommand from arguments."""
         return self._communication.create_system_command(args)
@@ -148,6 +152,18 @@ class CommandFactory:
         """Create GetCommand from arguments."""
         return self._inventory.create_get_command(args)
 
+    def create_bank_command(self, args: list[str]) -> BaseCommand:
+        """Create BankCommand from arguments."""
+        return self._inventory.create_bank_command(args)
+
+    def create_deposit_command(self, args: list[str]) -> BaseCommand:
+        """Create DepositCommand from arguments."""
+        return self._inventory.create_deposit_command(args)
+
+    def create_withdraw_command(self, args: list[str]) -> BaseCommand:
+        """Create WithdrawCommand from arguments."""
+        return self._inventory.create_withdraw_command(args)
+
     def create_equip_command(self, args: list[str]) -> BaseCommand:
         """Create EquipCommand from arguments."""
         return self._inventory.create_equip_command(args)
@@ -155,6 +171,14 @@ class CommandFactory:
     def create_unequip_command(self, args: list[str]) -> BaseCommand:
         """Create UnequipCommand from arguments."""
         return self._inventory.create_unequip_command(args)
+
+    def create_use_command(self, args: list[str]) -> BaseCommand:
+        """Create UseCommand from arguments."""
+        return self._inventory.create_use_command(args)
+
+    def create_read_command(self, args: list[str]) -> BaseCommand:
+        """Create ReadCommand from arguments."""
+        return self._inventory.create_read_command(args)
 
     # Moderation commands
     def create_mute_command(self, args: list[str]) -> BaseCommand:
@@ -222,6 +246,10 @@ class CommandFactory:
         """Create SkillsCommand from arguments (plan 10.7 V4)."""
         return self._player_state.create_skills_command(args)
 
+    def create_catalog_command(self, args: list[str]) -> BaseCommand:
+        """Create CatalogCommand from arguments (item prototype list)."""
+        return self._player_state.create_catalog_command(args)
+
     def create_journal_command(self, args: list[str]) -> BaseCommand:
         """Create JournalCommand from arguments (quest log view)."""
         return self._player_state.create_journal_command(args)
@@ -262,6 +290,14 @@ class CommandFactory:
     def create_taunt_command(self, args: list[str]) -> BaseCommand:
         """Create TauntCommand from arguments (target NPC name)."""
         return self._combat.create_taunt_command(args)
+
+    def create_assist_command(self, args: list[str]) -> BaseCommand:
+        """Create AssistCommand from arguments (player name, or none for the party leader)."""
+        return self._combat.create_assist_command(args)
+
+    def create_protect_command(self, args: list[str]) -> BaseCommand:
+        """Create ProtectCommand from arguments (the player to cover)."""
+        return self._combat.create_protect_command(args)
 
     # Utility commands
     def create_alias_command(self, args: list[str]) -> BaseCommand:
@@ -319,3 +355,11 @@ class CommandFactory:
     def create_learn_command(self, args: list[str]) -> BaseCommand:
         """Create LearnCommand from arguments."""
         return self._utility.create_learn_command(args)
+
+    def create_stop_command(self, args: list[str]) -> BaseCommand:
+        """Create StopCommand from arguments (no args needed)."""
+        return self._utility.create_stop_command(args)
+
+    def create_teach_command(self, args: list[str]) -> BaseCommand:
+        """Create TeachCommand from arguments."""
+        return self._utility.create_teach_command(args)

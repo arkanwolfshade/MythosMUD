@@ -9,6 +9,7 @@ keeping persistence and live state aligned.
 
 from __future__ import annotations
 
+import uuid
 from typing import cast
 
 from fastapi import Request
@@ -17,11 +18,13 @@ from ..alias_storage import AliasStorage
 from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import (
     PlayerPositionService,
+    PositionChangeResponse,
     SupportsConnectionManager,
     SupportsPlayerPersistence,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .rest_command import cancel_rest_countdown, is_player_resting
 
 logger = get_logger(__name__)
 
@@ -51,6 +54,27 @@ def _get_position_command_services(
         cast(SupportsPlayerPersistence | None, persistence),
         cast(SupportsConnectionManager | None, connection_manager),
     )
+
+
+async def _interrupt_rest_for_posture(
+    result: PositionChangeResponse,
+    desired_position: str,
+    connection_manager: SupportsConnectionManager | None,
+) -> bool:
+    """Breaking out of the /rest sit (stand, lie) cancels the countdown; True when a countdown was cancelled."""
+    raw_id = result.get("player_id")
+    if desired_position == "sitting" or connection_manager is None or not raw_id:
+        return False
+    try:
+        player_id = uuid.UUID(str(raw_id))
+    except ValueError:
+        return False  # not a UUID, so it cannot key resting_players
+    if not is_player_resting(player_id, connection_manager):
+        return False
+    # The command applies its own posture, so cancelling must not also stand the player.
+    await cancel_rest_countdown(player_id, connection_manager, restore_standing=False)
+    logger.info("Rest interrupted by posture change", player_id=player_id, new_position=desired_position)
+    return True
 
 
 async def _handle_position_change(
@@ -90,6 +114,10 @@ async def _handle_position_change(
             include_self_message=False,
         )
 
+    message = result["message"]
+    if await _interrupt_rest_for_posture(result, desired_position, connection_manager):
+        message = f"{message} Your rest is interrupted."
+
     logger.info(
         "Processed position command",
         player_name=target_player_name,
@@ -99,11 +127,11 @@ async def _handle_position_change(
     )
 
     return {
-        "result": result["message"],
+        "result": message,
         "position": result["position"],
         "changed": result["success"],
         "player_update": player_update,
-        "game_log_message": result["message"],
+        "game_log_message": message,
         "game_log_channel": "game-log",
         "suppress_chat": True,
     }

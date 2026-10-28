@@ -27,6 +27,22 @@ def test_metadata_and_npc_metadata_are_different():
     assert metadata is not npc_metadata
 
 
+def test_shared_metadata_resolves_every_foreign_key():
+    """No shared-metadata ForeignKey may point at a table that only exists in npc_metadata (#949).
+
+    dialogue_definitions once declared ForeignKey("npc_definitions.id"); because npc_definitions
+    lives in npc_metadata, sorted_tables raised NoReferencedTableError and the integration-test
+    cleanup (which iterates sorted_tables) silently deleted nothing.
+    """
+    import server.models  # Registers every shared-metadata model, as the integration fixtures do.
+
+    _ = server.models
+    table_names = {table.name for table in metadata.sorted_tables}
+
+    assert "dialogue_definitions" in table_names
+    assert "npc_definitions" not in table_names  # stays on npc_metadata (the NPC database)
+
+
 def test_base_is_declarative_base():
     """Test that Base is a DeclarativeBase subclass."""
     assert issubclass(Base, DeclarativeBase)

@@ -20,7 +20,6 @@ class GameConfig(BaseSettings):
     max_alias_depth: int = Field(default=10, description="Maximum alias expansion depth")
     max_alias_length: int = Field(default=500, description="Maximum alias command length")
     max_aliases_per_player: int = Field(default=50, description="Maximum aliases per player")
-    aliases_dir: str = Field(..., description="Directory for alias storage (required)")
     motd_file: str = Field(default="data/motd.html", description="Message of the day file")
 
     # Game mechanics
@@ -30,7 +29,22 @@ class GameConfig(BaseSettings):
     )
     server_tick_rate: float = Field(default=0.1, gt=0, description="Server tick rate in seconds (100ms default)")
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
-    save_interval: int = Field(default=60, description="Player save interval in seconds")
+    save_interval: int = Field(
+        default=2, ge=1, description="Seconds between lazy player-registry flushes (DP, MP, XP, ...; ADR-029)"
+    )
+    player_registry_flush_concurrency: int = Field(
+        default=4, ge=1, description="Player transactions a lazy registry flush may run at once (ADR-029)"
+    )
+    # 0 until every writer of a part goes through the registry (ADR-029 step 4c; e2e resets in step 8): a part kept
+    # between units would miss what the other writers change, and the next unit would write that stale copy back.
+    player_registry_idle_ttl_seconds: float = Field(
+        default=0.0,
+        ge=0,
+        description="Seconds an unpinned, clean player stays in the registry after use; 0 drops it as each unit ends",
+    )
+    player_registry_failure_alert_after: int = Field(
+        default=5, ge=1, description="Consecutive failed flushes of one player before it is reported (ADR-029)"
+    )
 
     # Disconnect/login/rest grace periods (#297)
     disconnect_grace_period_seconds: float = Field(
@@ -39,6 +53,14 @@ class GameConfig(BaseSettings):
     login_grace_period_seconds: float = Field(default=10.0, description="Post-login damage immunity window, in seconds")
     rest_countdown_seconds: float = Field(
         default=10.0, description="/rest command countdown before disconnect outside a rest location, in seconds"
+    )
+    ground_channel_seconds: float = Field(
+        default=10.0,
+        description="/ground ritual channel time before a catatonic target is stabilised, in seconds (#713)",
+    )
+    catatonia_decay_interval_seconds: float = Field(
+        default=2.0,
+        description="Seconds per LCD a catatonic player loses on the way from 0 to -10 (delirium), ~20 s by default (#1148)",
     )
 
     # Combat system configuration
@@ -64,6 +86,26 @@ class GameConfig(BaseSettings):
     aggro_damage_threat_multiplier: float = Field(
         default=1.0, description="Damage threat multiplier (tanks may use >1.0 later)"
     )
+    aggro_utility_threat: float = Field(
+        default=5.0,
+        description="Flat threat a buff or debuff adds (#833); about one heal's worth, so support can pull without damage",
+    )
+    aggro_guarding_threat_multiplier: float = Field(
+        default=1.5,
+        ge=1.0,
+        description="Damage-threat multiplier while a player is covering an ally with Protect (#991); the tank multiplier",
+    )
+    aggro_protect_threat_share: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Fraction of the ally's threat on each NPC a successful Protect hands to the protector (#991)",
+    )
+    protect_cover_rounds: int = Field(
+        default=1,
+        ge=1,
+        description="Rounds a Regular Protect covers the ally after the round it resolves in; Hard/Extreme add one (#991)",
+    )
 
     # Hallucination system (#714)
     hallucination_rng_seed: int | None = Field(
@@ -79,15 +121,13 @@ class GameConfig(BaseSettings):
             raise ValueError("Max connections per player must be between 1 and 10")
         return v
 
-    @field_validator("aliases_dir")
-    @classmethod
-    def validate_aliases_dir(cls, v: str) -> str:
-        """Validate aliases directory path."""
-        if not v:
-            raise ValueError("Aliases directory must be specified")
-        return v
-
-    @field_validator("disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds")
+    @field_validator(
+        "disconnect_grace_period_seconds",
+        "login_grace_period_seconds",
+        "rest_countdown_seconds",
+        "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
+    )
     @classmethod
     def validate_grace_period_seconds(cls, v: float) -> float:
         """Validate grace/countdown periods are positive and sane (a zero or negative value

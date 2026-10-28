@@ -8,8 +8,10 @@
  */
 
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { isVisibleWithin } from '../fixtures/auth';
 import { cleanupE2ECharacters } from '../fixtures/character-cleanup';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
+import { TUTORIAL_SQUARE_LOOK_CUE } from '../fixtures/tutorial';
 import { LoginPage } from '../pages';
 
 /** Unique name under ADR-021 max length 20 (E2ERevised_${Date.now()} is ~25 chars). */
@@ -68,7 +70,7 @@ async function acceptStatsAndSelectFirstProfession(page: Page): Promise<void> {
 
 async function deleteRevisedTestCharacterToMakeRoom(page: Page, createButton: Locator): Promise<void> {
   // beforeEach cleanup should leave a free slot; this is only a last-resort escape hatch at 3/3.
-  if (await createButton.isVisible({ timeout: 5000 }).catch(() => false)) {
+  if (await isVisibleWithin(createButton, 5000)) {
     return;
   }
 
@@ -138,14 +140,20 @@ async function assignAllSkillsAndProceedToName(page: Page): Promise<void> {
     ).not.toHaveCount(1, { timeout: 30_000 });
     await select.selectOption({ index: 1 });
   }
-  await page.getByRole('button', { name: 'Next: Name character' }).click();
+  const nextButton = page.getByRole('button', { name: 'Next: Name character' });
+  await expect(nextButton).toBeEnabled({ timeout: 10_000 });
+  await nextButton.evaluate((el: HTMLElement) => {
+    el.click();
+  });
 }
 
 async function submitCharacterName(page: Page, characterName: string): Promise<void> {
   await page.getByTestId('character-name-screen').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.DEFAULT });
   await page.getByPlaceholder('Enter name').fill(characterName);
   const [createResponse] = await Promise.all([
-    page.waitForResponse(r => r.url().includes('/create-character') && r.request().method() === 'POST' && r.ok(), {
+    // No r.ok() here: a non-2xx (e.g. 429 from character_creation_limiter) must resolve this
+    // promise immediately so the assertion below fails fast instead of the 90s timeout expiring.
+    page.waitForResponse(r => r.url().includes('/create-character') && r.request().method() === 'POST', {
       timeout: 90_000,
     }),
     page
@@ -162,7 +170,8 @@ async function submitCharacterName(page: Page, characterName: string): Promise<v
       el.click();
     }),
   ]);
-  expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()}`).toBeTruthy();
+  const createBody = createResponse.ok() ? '' : await createResponse.text().catch(() => '<unreadable body>');
+  expect(createResponse.ok(), `POST create-character failed: ${createResponse.status()} ${createBody}`).toBeTruthy();
 }
 
 async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void> {
@@ -172,7 +181,7 @@ async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void>
 
   const onLogin = await page
     .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
+    .isVisible()
     .catch(() => false);
   if (!onLogin) {
     await page.goto('/');
@@ -180,12 +189,7 @@ async function recoverCharacterSelectionAfterCreation(page: Page): Promise<void>
   }
 
   const loginPage = new LoginPage(page);
-  if (
-    await page
-      .getByTestId('username-input')
-      .isVisible({ timeout: 5000 })
-      .catch(() => false)
-  ) {
+  if (await isVisibleWithin(page.getByTestId('username-input'), 5000)) {
     await loginPage.login('Ithaqua', 'Cthulhu1');
   }
 
@@ -322,7 +326,7 @@ test.describe('Revised Character Creation', () => {
     await expect(page.getByRole('alert')).toContainText(/letter|hyphens/i);
   });
 
-  test('should complete stats → profession → skills → name → create, enter game, and go down', async ({ page }) => {
+  test('should complete stats → profession → skills → name → create, enter game, and go east', async ({ page }) => {
     const creationCharName = uniqueE2eCharName('E2ER_');
     // Already logged in by beforeEach's cleanupE2ECharacters -- see its comment.
     await openStatsRollingFromLogin(page);
@@ -332,9 +336,13 @@ test.describe('Revised Character Creation', () => {
     await assertCharacterVisibleOnList(page, creationCharName);
     await enterGameWithCharacter(page, creationCharName);
     const { executeCommand, waitForMessage, getMessages } = await import('../fixtures/auth');
-    await executeCommand(page, 'go down');
-    await waitForMessage(page, /You go down|You move down|You head down|down/i, TEST_TIMEOUTS.MESSAGE);
-    expect((await getMessages(page)).join('\n')).toMatch(/down/i);
+    // A new character starts in the First Exposure tutorial at Independence Square, whose only exit is east
+    // and opens only once the player has looked around (#1111).
+    await executeCommand(page, 'look');
+    await waitForMessage(page, TUTORIAL_SQUARE_LOOK_CUE, TEST_TIMEOUTS.MESSAGE);
+    await executeCommand(page, 'go east');
+    await waitForMessage(page, /You go east/i, TEST_TIMEOUTS.MESSAGE);
+    expect((await getMessages(page)).join('\n')).toMatch(/You go east/i);
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {

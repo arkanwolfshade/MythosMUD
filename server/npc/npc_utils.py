@@ -6,6 +6,8 @@ This module provides utility functions for extracting metadata from NPC instance
 
 from typing import Any, cast
 
+from ..constants.instance_rooms import is_instance_room_id
+
 
 def extract_room_id_from_npc(npc_instance: Any) -> str:
     """
@@ -100,7 +102,7 @@ def extract_definition_id_from_npc(npc_instance: Any, npc_id: str, lifecycle_man
 
 def _stable_room_id_for_zone(room_id: str) -> str:
     """Return stable room id for zone parsing; strip instance_<uuid>_ prefix if present."""
-    if room_id.startswith("instance_") and room_id.count("_") >= 2:
+    if is_instance_room_id(room_id):
         parts = room_id.split("_", 2)
         if len(parts) > 2:
             return parts[2]

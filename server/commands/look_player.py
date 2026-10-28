@@ -8,8 +8,12 @@ formatting player display, and handling player look requests.
 # pylint: disable=too-many-arguments  # Reason: Player look requires many parameters for context and target resolution
 
 import uuid
-from typing import Any
+from collections.abc import Mapping
+from typing import Any, cast
 
+from ..constants.lucidity import STARTING_LCD
+from ..models.player import Player
+from ..persistence.protocols import CurrentLcdReader
 from ..realtime.disconnect_grace_period import is_player_in_grace_period
 from ..realtime.login_grace_period import is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -24,6 +28,63 @@ from .look_helpers import (
 logger = get_logger(__name__)
 
 
+# Reason: DYNAMIC_DISPATCH - room/player_ids are duck-typed (hasattr-checked, Mock-like-in-tests)
+# values; matches _get_players_in_room's own established, unsuppressed Any signature below.
+# Appropriate because: this module intentionally accepts loosely-shaped room/persistence objects
+# rather than a strict Protocol, since callers (including tests) pass partial/mock implementations.
+def _normalize_room_player_ids(
+    room: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same duck-typed convention as room above.
+    # Appropriate because: same unsuppressed convention as this function's own room parameter.
+    player_ids: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same duck-typed convention as the parameters above.
+    # Appropriate because: same unsuppressed convention as this function's own parameters.
+) -> list[Any] | None:  # pyright: ignore[reportExplicitAny]
+    """Coerce room.get_players()'s result to a list; return None if it isn't iterable."""
+    if isinstance(player_ids, list | tuple):
+        return list(player_ids)  # pyright: ignore[reportUnknownArgumentType]
+    # Mock objects can be iterable but might not behave as expected; validate by converting.
+    try:
+        # Reason: DYNAMIC_DISPATCH - player_ids is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return list(player_ids) if player_ids is not None else []  # pyright: ignore[reportAny]
+    except (TypeError, ValueError) as e:
+        logger.debug(
+            "room.get_players() returned non-iterable value",
+            # Reason: DYNAMIC_DISPATCH - room is Any per this function's own parameter above.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            room_id=getattr(room, "id", None),  # pyright: ignore[reportAny]
+            error=str(e),
+        )
+        return None
+
+
+# Reason: DYNAMIC_DISPATCH - persistence/player_id_str are duck-typed values; player_id_str comes
+# from the room's own duck-typed player-id list.
+# Appropriate because: same unsuppressed convention as _get_players_in_room below.
+async def _resolve_room_player(
+    persistence: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same duck-typed convention as persistence above.
+    # Appropriate because: same unsuppressed convention as this function's own persistence parameter.
+    player_id_str: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+    # Reason: DYNAMIC_DISPATCH - same duck-typed convention as the parameters above.
+    # Appropriate because: same unsuppressed convention as this function's own parameters.
+) -> Any | None:  # pyright: ignore[reportExplicitAny]
+    """Resolve one room-membership entry to a Player object, or None if unresolvable."""
+    try:
+        player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+        # Reason: DYNAMIC_DISPATCH - persistence is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        if not hasattr(persistence, "get_player_by_id"):  # pyright: ignore[reportAny]
+            return None
+        # Reason: DYNAMIC_DISPATCH - persistence is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return await persistence.get_player_by_id(player_id)  # pyright: ignore[reportAny]
+    except ValueError, AttributeError:
+        logger.debug("Failed to get player", player_id=player_id_str, error="Invalid UUID or missing method")
+        return None
+
+
 async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
     """
     Get all Player objects currently in the room.
@@ -35,41 +96,24 @@ async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
     Returns:
         List of Player objects in the room (None players filtered out)
     """
-    player_ids = room.get_players() if hasattr(room, "get_players") else []
-    # Ensure player_ids is iterable (handle Mock objects in tests)
-    # Check if it's a list/tuple first, then try to iterate safely
-    if not isinstance(player_ids, list | tuple):
-        # If it's not a list/tuple, try to convert it safely
-        # Mock objects can be iterable but might not behave as expected
-        try:
-            # Try to convert to list to validate it's truly iterable
-            if player_ids is not None:
-                player_ids = list(player_ids)
-            else:
-                player_ids = []
-        except (TypeError, ValueError) as e:
-            logger.debug(
-                "room.get_players() returned non-iterable value",
-                room_id=getattr(room, "id", None),
-                error=str(e),
-            )
-            return []
+    # Reason: DYNAMIC_DISPATCH - room is a duck-typed object; get_players() is only called after
+    # a hasattr check.
+    # Appropriate because: same unsuppressed convention as this function's own signature above.
+    raw_player_ids = room.get_players() if hasattr(room, "get_players") else []  # pyright: ignore[reportAny, reportUnknownVariableType]
+    player_ids = _normalize_room_player_ids(room, raw_player_ids)
+    if player_ids is None:
+        return []
+
     players = []
     try:
-        for player_id_str in player_ids:
-            try:
-                # Convert string to UUID if needed
-                player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-                # Use get_player_by_id (async method)
-                player = (
-                    await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
-                )
-                if player:
-                    players.append(player)
-            except (ValueError, AttributeError):
-                # Invalid UUID format or persistence doesn't have get_player
-                logger.debug("Failed to get player", player_id=player_id_str, error="Invalid UUID or missing method")
-                continue
+        # Reason: DYNAMIC_DISPATCH - player_ids items are Any from the duck-typed room object.
+        # Appropriate because: same unsuppressed convention as _normalize_room_player_ids above.
+        for player_id_str in player_ids:  # pyright: ignore[reportAny]
+            player = await _resolve_room_player(persistence, player_id_str)
+            if player:
+                # Reason: DYNAMIC_DISPATCH - player is Any per _resolve_room_player's own return type.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                players.append(player)  # pyright: ignore[reportUnknownMemberType, reportAny]
     except TypeError as e:
         # Handle case where player_ids is not iterable (e.g., Mock object)
         logger.debug("Cannot iterate over player_ids", room_id=getattr(room, "id", None), error=str(e))
@@ -121,8 +165,16 @@ def _player_id_uuid(target_player: Any) -> uuid.UUID | None:
     try:
         player_id = target_player.player_id
         return uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-    except (ValueError, AttributeError, TypeError):
+    except ValueError, AttributeError, TypeError:
         return None
+
+
+async def _target_lcd(target_player: Player, persistence: CurrentLcdReader | None) -> int:
+    """The looked-at player's lucidity from player_lucidity, or the starting value if it cannot be read."""
+    player_id = _player_id_uuid(target_player)
+    if player_id is None or persistence is None:
+        return STARTING_LCD
+    return await persistence.get_current_lcd(player_id)
 
 
 def _apply_grace_period_labels(player_name_display: str, target_player: Any, connection_manager: Any | None) -> str:
@@ -138,12 +190,17 @@ def _apply_grace_period_labels(player_name_display: str, target_player: Any, con
             player_name_display = f"{player_name_display} (linkdead)"
         if is_player_in_login_grace_period(player_id, connection_manager):
             player_name_display = f"{player_name_display} (warded)"
-    except (ValueError, AttributeError, ImportError, TypeError):
+    except ValueError, AttributeError, ImportError, TypeError:
         pass
     return player_name_display
 
 
-def _format_player_look_display(target_player: Any, connection_manager: Any | None = None) -> str:
+def _format_player_look_display(
+    target_player: Any,  # pyright: ignore[reportAny, reportExplicitAny]  # Reason: DYNAMIC_DISPATCH - look targets are duck-typed (hasattr checks on players from room lookups)  # Appropriate because: this keeps the function's existing untyped parameter; only the current_lcd keyword is new
+    connection_manager: Any | None = None,  # pyright: ignore[reportExplicitAny]  # Reason: DYNAMIC_DISPATCH - the connection manager is passed through untouched to the grace-period helpers  # Appropriate because: this keeps the function's existing untyped parameter; only the current_lcd keyword is new
+    *,
+    current_lcd: int = STARTING_LCD,
+) -> str:
     """
     Format the display text for looking at a player.
     Adds "(linkdead)" indicator if player is in grace period.
@@ -162,7 +219,9 @@ def _format_player_look_display(target_player: Any, connection_manager: Any | No
     position = stats.get("position", "standing") if stats else "standing"
 
     health_label = _get_health_label(stats)
-    lucidity_label = _get_lucidity_label(stats)
+    # Lucidity lives in player_lucidity, not stats (ADR-029 step 3a); the caller looks it up.
+    max_lucidity = cast(Mapping[str, object], stats).get("max_lucidity", 100)
+    lucidity_label = _get_lucidity_label({"lucidity": current_lcd, "max_lucidity": max_lucidity})
     corruption_label = _get_corruption_label(stats)  # pyright: ignore[reportUnknownArgumentType] -- stats is Any here, same as the health/lucidity calls above (target_player: Any)
     visible_equipment = _get_visible_equipment(target_player)
 
@@ -212,7 +271,9 @@ async def _handle_player_look(  # pylint: disable=too-many-arguments,too-many-po
             logger.debug("No players match target", player=player_name, target=target)
         return error_result
 
-    result_text = _format_player_look_display(target_player, connection_manager)
+    player = cast(Player, target_player)
+    current_lcd = await _target_lcd(player, cast("CurrentLcdReader | None", persistence))
+    result_text = _format_player_look_display(player, connection_manager, current_lcd=current_lcd)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}
@@ -236,7 +297,9 @@ async def _try_lookup_player_implicit(  # pylint: disable=too-many-arguments,too
     if error_result:
         return error_result
 
-    result_text = _format_player_look_display(target_player, connection_manager)
+    player = cast(Player, target_player)
+    current_lcd = await _target_lcd(player, cast("CurrentLcdReader | None", persistence))
+    result_text = _format_player_look_display(player, connection_manager, current_lcd=current_lcd)
     player_name_display = target_player.name if hasattr(target_player, "name") else "Unknown"
     logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
     return {"result": result_text}

@@ -113,7 +113,7 @@ class MessageBroadcaster:
             try:
                 pid_uuid = uuid.UUID(pid_str)
                 target_mapping.append((pid_str, pid_uuid))
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 logger.warning("Invalid player ID format in room subscribers", player_id=pid_str, room_id=room_id)
                 delivery_details = cast(dict[str, object], broadcast_stats["delivery_details"])
                 delivery_details[pid_str] = {

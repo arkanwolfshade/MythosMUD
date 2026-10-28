@@ -8,6 +8,10 @@ from collections.abc import Mapping
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+
+from server.tests.fixtures.shared.player_registry import RegistryHarness, install_player_registry
+
 
 def command_result_text(payload: Mapping[str, object]) -> str:
     """Normalize handler result message for assertions."""
@@ -54,12 +58,16 @@ class PickupTestWiring:
         self.room_manager.take_room_drop = self.take_room_drop
         self.room_manager.add_room_drop = self.add_room_drop
 
-        self.set_inventory: MagicMock = MagicMock()
+        # set_inventory / set_equipped_items change what the getters return, as the real Player does.
+        self.set_inventory: MagicMock = MagicMock(side_effect=self._store_inventory)
         self.player.name = "TestPlayer"
-        self.player.player_id = uuid.uuid4()
+        self.player_id: uuid.UUID = uuid.uuid4()
+        self.player.player_id = self.player_id
         self.player.current_room_id = "room_001"
         self.player.get_inventory = MagicMock(return_value=[])
         self.player.set_inventory = self.set_inventory
+        self.player.get_equipped_items = MagicMock(return_value={})
+        self.player.set_equipped_items = MagicMock(side_effect=self._store_equipped)
 
         self.persistence.get_player_by_name = AsyncMock(return_value=self.player)
         self.persistence.ensure_item_instance = MagicMock()
@@ -80,3 +88,15 @@ class PickupTestWiring:
 
     def set_player_inventory(self, rows: list[dict[str, object]]) -> None:
         self.player.get_inventory = MagicMock(return_value=rows)
+
+    def install_registry(self, monkeypatch: pytest.MonkeyPatch) -> RegistryHarness:
+        """A real player registry for this player, starting from its current inventory."""
+        return install_player_registry(monkeypatch, self.player)
+
+    def _store_inventory(self, inventory: object) -> None:
+        getter = cast(MagicMock, self.player.get_inventory)
+        getter.return_value = [dict(stack) for stack in cast(list[Mapping[str, object]], inventory)]
+
+    def _store_equipped(self, equipped: object) -> None:
+        getter = cast(MagicMock, self.player.get_equipped_items)
+        getter.return_value = dict(cast(Mapping[str, object], equipped))

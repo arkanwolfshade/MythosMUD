@@ -8,7 +8,13 @@ import uuid
 
 import pytest
 
-from server.game.instance_manager import InstanceManager
+from server.game.instance_manager import (
+    InstanceManager,
+    TemplateRoomEntryError,
+    is_template_room,
+    template_exit_room_id,
+    template_id_of,
+)
 from server.models.room import Room
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -125,6 +131,22 @@ def test_get_first_room_id(instance_manager: InstanceManager):
     assert first_room_id in instance.rooms
 
 
+def test_get_first_room_id_prefers_instance_start_room():
+    """A template names its entry room with instance_start; cache order must not decide where players land."""
+    walk_id = "earth_demo_zone_room_walk_001"
+    square_id = "earth_demo_zone_room_square_001"
+    walk = Room({"id": walk_id, "attributes": {"instance_template_id": "demo"}}, event_bus=None)
+    square = Room(
+        {"id": square_id, "attributes": {"instance_template_id": "demo", "instance_start": True}},
+        event_bus=None,
+    )
+    # The start room is deliberately second in cache order.
+    manager = InstanceManager(room_cache={walk_id: walk, square_id: square}, event_bus=None)
+    instance = manager.create_instance(template_id="demo", owner_player_id=uuid.uuid4())
+
+    assert manager.get_first_room_id(instance.instance_id) == f"{instance.instance_id}_{square_id}"
+
+
 def test_get_exit_room_id(instance_manager: InstanceManager):
     """Test get_exit_room_id returns fixed exit room."""
     instance = instance_manager.create_instance(
@@ -153,3 +175,41 @@ def test_get_room_by_id_returns_room_when_in_instance(instance_manager: Instance
     result = instance_manager.get_room_by_id(room_id)
     assert result is not None
     assert result.id == room_id
+
+
+def test_is_template_room_true_for_template(tutorial_room: Room):
+    """The tutorial bedroom template must never be entered directly."""
+    assert is_template_room(tutorial_room) is True
+
+
+def test_is_template_room_false_for_instance_clone(instance_manager: InstanceManager):
+    """Clones copy instance_template_id from the template but are the rooms players enter."""
+    instance = instance_manager.create_instance(template_id="tutorial_sanitarium", owner_player_id=uuid.uuid4())
+    clone = next(iter(instance.rooms.values()))
+    assert clone.attributes.get("instance_template_id") == "tutorial_sanitarium"
+    assert is_template_room(clone) is False
+
+
+def test_is_template_room_false_for_ordinary_room_and_none():
+    """Rooms without instance_template_id (and a missing room) are not templates."""
+    foyer = Room({"id": "earth_arkhamcity_sanitarium_room_foyer_001", "attributes": {"rest_location": True}})
+    assert is_template_room(foyer) is False
+    assert is_template_room(None) is False
+
+
+def test_template_id_of_and_exit_room(tutorial_room: Room, instance_manager: InstanceManager):
+    """Only the template itself reports a template id; its exit room comes from attributes."""
+    assert template_id_of(tutorial_room) == "tutorial_sanitarium"
+    clone = next(iter(instance_manager.create_instance("tutorial_sanitarium", uuid.uuid4()).rooms.values()))
+    assert template_id_of(clone) is None
+    assert template_id_of(None) is None
+    assert template_exit_room_id(tutorial_room) == "earth_arkhamcity_sanitarium_room_foyer_001"
+    assert template_exit_room_id(Room({"id": "x", "attributes": {}})) == "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def test_template_room_entry_error_message():
+    """The refusal message is what admins see from teleport/goto."""
+    error = TemplateRoomEntryError("room_x")
+    assert isinstance(error, ValueError)
+    assert error.room_id == "room_x"
+    assert "instance template" in str(error)

@@ -168,7 +168,6 @@ async def test_negative_status_effect_blocked_during_grace_period(mock_connectio
     mock_player_service = MagicMock()
     mock_persistence = MagicMock()
     mock_player = MagicMock()
-    mock_player.get_status_effects.return_value = []
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_player_service.persistence = mock_persistence
 
@@ -212,9 +211,9 @@ async def test_positive_status_effect_allowed_during_grace_period(mock_connectio
     mock_player_service = MagicMock()
     mock_persistence = MagicMock()
     mock_player = MagicMock()
-    mock_player.get_status_effects.return_value = []
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
+    add_effect = AsyncMock(return_value="effect-id")  # a player_effects row (ADR-029 3b-i)
+    mock_persistence.add_player_effect = add_effect
     mock_player_service.persistence = mock_persistence
 
     processor = SpellEffects(mock_player_service, SpellEffectsDeps(connection_manager=mock_connection_manager))
@@ -242,3 +241,4 @@ async def test_positive_status_effect_allowed_during_grace_period(mock_connectio
     # Effect should be allowed (positive effects pass through)
     assert result["success"] is True
     assert result["effect_applied"] is True
+    add_effect.assert_awaited_once()

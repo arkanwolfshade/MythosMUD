@@ -6,8 +6,11 @@ from typing import TYPE_CHECKING, Protocol, cast
 
 from structlog.stdlib import BoundLogger
 
+from ..constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcOccupant
 from ..models.room import Room
+from .connection_utils import get_npc_disposition_from_instance, npc_disposition_from_row
 from .player_event_handlers_respawn_types import (
+    append_unique_npc_occupant,
     append_unique_valid_occupant,
     ensure_respawned_player_in_lists,
     is_npc_occupant_row,
@@ -29,11 +32,11 @@ async def prepare_room_data_for_respawn(
     room_id: str,
     respawned_player_name: str,
     logger: BoundLogger,
-) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
-    """Prepare room data with NPC and player names for a respawn event."""
+) -> tuple[dict[str, object] | None, list[NpcOccupant], list[str], list[str]]:
+    """Prepare room data with NPC occupants and player names for a respawn event."""
     room_data = None
     occupant_names: list[str] = []
-    npc_names: list[str] = []
+    npc_names: list[NpcOccupant] = []
     player_names: list[str] = []
 
     try:
@@ -68,7 +71,7 @@ async def prepare_room_data_for_respawn(
 
 def room_data_from_persistence_room(
     _host: _RespawnRoomHost, room: Room, respawned_player_name: str
-) -> tuple[dict[str, object], list[str], list[str], list[str]]:
+) -> tuple[dict[str, object], list[NpcOccupant], list[str], list[str]]:
     """Build room payload from persistence when no live connection manager is available."""
     room_data = cast(dict[str, object], room.to_dict())
     npc_names, player_names, occupant_names = extract_occupant_names(None, respawned_player_name)
@@ -80,11 +83,11 @@ async def enrich_room_data_with_occupant_names(
     room_data: dict[str, object],
     room_occupants: list[dict[str, object]] | None,
     respawned_player_name: str,
-) -> tuple[list[str], list[str], list[str]]:
-    """Merge live occupants into room_data and return name lists for the respawn payload."""
+) -> tuple[list[NpcOccupant], list[str], list[str]]:
+    """Merge live occupants into room_data and return the NPC and name lists for the respawn payload."""
     npc_names, player_names, occupant_names = extract_occupant_names(room_occupants, respawned_player_name)
     npc_names = await convert_npc_ids_to_names(
-        host, cast(list[str], room_data.get("npcs", [])), npc_names, occupant_names
+        host, cast(list[object], room_data.get("npcs", [])), npc_names, occupant_names
     )
     player_names = merge_player_lists(cast(list[str], room_data.get("players", [])), player_names, occupant_names)
     room_data["npcs"] = npc_names
@@ -96,22 +99,19 @@ async def enrich_room_data_with_occupant_names(
 
 def extract_occupant_names(
     room_occupants: list[dict[str, object]] | None, respawned_player_name: str
-) -> tuple[list[str], list[str], list[str]]:
-    """Extract NPC and player names from room occupants."""
+) -> tuple[list[NpcOccupant], list[str], list[str]]:
+    """Extract NPC occupants and player names from room occupants."""
     from .websocket_helpers import validate_occupant_name
 
-    npc_names: list[str] = []
+    npc_names: list[NpcOccupant] = []
     player_names: list[str] = []
     occupant_names: list[str] = []
 
     for occ in room_occupants or []:
         if is_npc_occupant_row(occ):
             npc_name = occupant_str_field(occ, ("npc_name", "name", "player_name"))
-            append_unique_valid_occupant(
-                npc_name,
-                primary=npc_names,
-                occupant_names=occupant_names,
-                validate_name=validate_occupant_name,
+            append_unique_npc_occupant(
+                npc_name, npc_disposition_from_row(occ), npcs=npc_names, occupant_names=occupant_names
             )
         else:
             player_name = occupant_str_field(occ, ("player_name", "name"))
@@ -133,23 +133,31 @@ def extract_occupant_names(
 
 
 async def convert_npc_ids_to_names(
-    host: _RespawnRoomHost, existing_npcs: list[str], npc_names: list[str], occupant_names: list[str]
-) -> list[str]:
-    """Convert NPC IDs to names if they're still UUIDs."""
-    result = list(npc_names)
+    host: _RespawnRoomHost, existing_npcs: list[object], npcs: list[NpcOccupant], occupant_names: list[str]
+) -> list[NpcOccupant]:
+    """
+    Merge room_data's NPCs into the extracted ones.
 
-    for npc_id in existing_npcs:
-        if npc_id not in result:
-            if "_" in npc_id or len(npc_id) > 20:
-                npc_name = get_npc_name_from_lifecycle_manager(host, npc_id)
-                if npc_name:
-                    result.append(npc_name)
-                    if npc_name not in occupant_names:
-                        occupant_names.append(npc_name)
+    An entry is normally an ``NpcOccupant`` already (disposition included); a bare string is a legacy NPC id or
+    name and is resolved through the lifecycle manager.
+    """
+    result = list(npcs)
+
+    for entry in existing_npcs:
+        if isinstance(entry, dict):
+            fields = cast(dict[str, object], entry)
+            name = fields.get("name")
+            if isinstance(name, str):
+                append_unique_npc_occupant(
+                    name, npc_disposition_from_row(fields), npcs=result, occupant_names=occupant_names
+                )
+        elif isinstance(entry, str):
+            if "_" in entry or len(entry) > 20:
+                npc_name = get_npc_name_from_lifecycle_manager(host, entry)
+                disposition = get_npc_disposition_from_instance(entry)
             else:
-                result.append(npc_id)
-                if npc_id not in occupant_names:
-                    occupant_names.append(npc_id)
+                npc_name, disposition = entry, DEFAULT_NPC_DISPOSITION
+            append_unique_npc_occupant(npc_name, disposition, npcs=result, occupant_names=occupant_names)
 
     return result
 

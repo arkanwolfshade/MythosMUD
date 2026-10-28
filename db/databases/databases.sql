@@ -30,7 +30,11 @@ WHERE
 
 \connect mythos_dev
 SET client_min_messages = WARNING;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- The app schema (same name as the database, #811) and pgcrypto live together so that
+-- connections whose search_path is set to only this schema (see server/database.py) can still
+-- resolve gen_random_uuid() etc. unqualified. db/schema.sql assumes both already exist.
+CREATE SCHEMA IF NOT EXISTS mythos_dev;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA mythos_dev;
 -- Secure schema defaults
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON DATABASE mythos_dev FROM PUBLIC;
@@ -48,7 +52,8 @@ ALTER DATABASE mythos_dev SET timezone TO 'UTC';
 
 \connect mythos_unit
 SET client_min_messages = WARNING;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE SCHEMA IF NOT EXISTS mythos_unit;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA mythos_unit;
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON DATABASE mythos_unit FROM PUBLIC;
 GRANT CONNECT ON DATABASE mythos_unit TO mythos_app_unit;
@@ -63,7 +68,8 @@ ALTER DATABASE mythos_unit SET timezone TO 'UTC';
 
 \connect mythos_e2e
 SET client_min_messages = WARNING;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE SCHEMA IF NOT EXISTS mythos_e2e;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA mythos_e2e;
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON DATABASE mythos_e2e FROM PUBLIC;
 GRANT CONNECT ON DATABASE mythos_e2e TO mythos_app_e2e;

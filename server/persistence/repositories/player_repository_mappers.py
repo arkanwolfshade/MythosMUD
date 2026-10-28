@@ -30,17 +30,16 @@ def _parse_equipped_safely(equipped_json: str) -> dict[str, Any]:
     try:
         parsed = json.loads(equipped_json)
         return parsed if isinstance(parsed, dict) else {}
-    except (json.JSONDecodeError, TypeError):
+    except json.JSONDecodeError, TypeError:
         return {}
 
 
-def _defaulted_strings(row: Any) -> tuple[str, str, str, str, str]:
-    """Extract string fields with defaults: inventory_json, equipped_json, current_room_id, status_effects, inventory."""
+def _defaulted_strings(row: Any) -> tuple[str, str, str, str]:
+    """Extract string fields with defaults: inventory_json, equipped_json, current_room_id, inventory."""
     return (
         row.inventory_json or "[]",
         row.equipped_json or "{}",
         row.current_room_id or "earth_arkhamcity_sanitarium_room_foyer_001",
-        row.status_effects or "[]",
         row.inventory or "[]",
     )
 
@@ -61,7 +60,7 @@ def row_to_player(row: Any) -> Player:
     player_id = row.player_id
     user_id = row.user_id
     stats = _coerce_row_stats(row)
-    inv_json, equipped_json, current_room_id, status_effects, inventory = _defaulted_strings(row)
+    inv_json, equipped_json, current_room_id, inventory = _defaulted_strings(row)
     exp, level, is_admin, profession_id, is_deleted = _defaulted_numerics(row)
 
     player = Player(
@@ -69,7 +68,6 @@ def row_to_player(row: Any) -> Player:
         user_id=str(user_id),
         name=row.name,
         inventory=inventory,
-        status_effects=status_effects,
         current_room_id=current_room_id,
         respawn_room_id=row.respawn_room_id,
         experience_points=exp,

@@ -6,7 +6,7 @@ receive the full room list when filter_explored is requested.
 """
 
 # pyright: reportPrivateUsage=false
-# Reason: Unit tests intentionally call rooms._apply_exploration_filter_if_needed.
+# Reason: Unit tests intentionally call rooms.apply_exploration_filter_if_needed.
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.api.rooms import _apply_exploration_filter_if_needed
+from server.api.rooms import apply_exploration_filter_if_needed
 from server.game.room_service import RoomService
 from server.services.exploration_service import ExplorationService
 
@@ -50,7 +50,7 @@ async def test_apply_exploration_filter_superuser_bypasses_filter(sample_rooms: 
     mock_session = AsyncMock(spec=AsyncSession)
     mock_exploration = MagicMock(spec=ExplorationService)
 
-    out = await _apply_exploration_filter_if_needed(
+    out = await apply_exploration_filter_if_needed(
         rooms=list(sample_rooms),
         filter_explored=True,
         current_user=user,
@@ -84,7 +84,7 @@ async def test_apply_exploration_filter_admin_sees_all_rooms_when_filter_request
     mock_session = AsyncMock(spec=AsyncSession)
     mock_exploration = MagicMock(spec=ExplorationService)
 
-    out = await _apply_exploration_filter_if_needed(
+    out = await apply_exploration_filter_if_needed(
         rooms=list(sample_rooms),
         filter_explored=True,
         current_user=user,
@@ -124,7 +124,7 @@ async def test_apply_exploration_filter_non_admin_uses_room_service_intersection
     mock_session = AsyncMock(spec=AsyncSession)
     mock_exploration = MagicMock(spec=ExplorationService)
 
-    out = await _apply_exploration_filter_if_needed(
+    out = await apply_exploration_filter_if_needed(
         rooms=list(sample_rooms),
         filter_explored=True,
         current_user=user,
@@ -162,7 +162,7 @@ async def test_apply_exploration_filter_no_player_returns_unfiltered(
     mock_session = AsyncMock(spec=AsyncSession)
     mock_exploration = MagicMock(spec=ExplorationService)
 
-    out = await _apply_exploration_filter_if_needed(
+    out = await apply_exploration_filter_if_needed(
         rooms=list(sample_rooms),
         filter_explored=True,
         current_user=user,

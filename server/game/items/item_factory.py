@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import uuid
 from copy import deepcopy
-from typing import Any
+from typing import Any, cast
 
 from server.game.items.component_hooks import initialize_components
 from server.game.items.item_instance import ItemInstance
+from server.game.items.metadata_models import ContainerMetadata
 from server.game.items.prototype_registry import PrototypeRegistry, PrototypeRegistryError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -50,6 +51,22 @@ class ItemFactory:  # pylint: disable=too-few-public-methods  # Reason: Factory 
                 metadata["component_overrides"] = overrides_details
         return metadata
 
+    @staticmethod
+    def build_inner_container(prototype_metadata: object) -> dict[str, object] | None:
+        """Empty nested container defined by a prototype's ``metadata.container``, or None."""
+        if not isinstance(prototype_metadata, dict):
+            return None
+        raw = cast(dict[str, object], prototype_metadata).get("container")
+        if raw is None:
+            return None
+        spec = ContainerMetadata.model_validate(raw)
+        return {
+            "capacity_slots": spec.capacity_slots,
+            "lock_state": spec.lock_state,
+            "allowed_roles": list(spec.allowed_roles),
+            "items": [],
+        }
+
     def create_instance(
         self,
         prototype_id: str,
@@ -82,6 +99,7 @@ class ItemFactory:  # pylint: disable=too-few-public-methods  # Reason: Factory 
             flags=flags,
             metadata=metadata,
             origin=origin,
+            inner_container=self.build_inner_container(getattr(prototype, "metadata", None)),
         )
         logger.info(
             "Item instance created",

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from enum import Enum
-from typing import cast
+from typing import ClassVar, Literal, cast
 
 from ..exceptions import MythosMUDError
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -100,17 +100,38 @@ class ContainerServiceError(MythosMUDError):
     """Base exception for container service operations."""
 
 
+# The subclasses below are expected, player-caused rejections (the API maps them to 4xx), so they log at
+# warning and stay out of errors.log (#965). The base stays at error: it also covers genuine failures.
+
+
 class ContainerNotFoundError(ContainerServiceError):
     """Raised when a container is not found."""
+
+    log_level: ClassVar[Literal["error", "warning"]] = "warning"
 
 
 class ContainerLockedError(ContainerServiceError):
     """Raised when attempting to access a locked container."""
 
+    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+
 
 class ContainerCapacityError(ContainerServiceError):
     """Raised when container capacity is exceeded."""
 
+    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+
 
 class ContainerAccessDeniedError(ContainerServiceError):
-    """Raised when access to container is denied."""
+    """Raised when access to container is denied (also covers ContainerOpenByAnotherPlayerError)."""
+
+    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+
+
+class ContainerOpenByAnotherPlayerError(ContainerAccessDeniedError):
+    """Raised when a container's mutation session is already held by another player.
+
+    Any number of players may 'look' into a container (read-only), but opening it
+    for interaction (get/put/transfer/loot-all) is exclusive to one player at a
+    time; a second player's open attempt is rejected naming the current holder.
+    """

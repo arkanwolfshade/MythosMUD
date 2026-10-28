@@ -2,20 +2,25 @@
 Integration-tier fixtures with real database connections.
 """
 
+import inspect
 import os
-from collections.abc import AsyncGenerator, Generator
-from typing import Any
+from collections.abc import AsyncGenerator, Callable, Generator
+from typing import Any, cast
 from urllib.parse import urlparse
 
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import InterfaceError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 # Ensure all table metadata is registered so create_all creates every table
 # (e.g. quest_definitions, quest_offers) regardless of which test runs first.
 import server.models  # noqa: F401  # Reason: Import for side effect so create_all registers all table metadata (e.g. quest_*)
+from server.database import close_db, reset_database
 from server.database_config_helpers import get_postgres_connect_args
 from server.models.base import Base
+
+# The only database errors the setup/cleanup fixtures may tolerate: the server going away.
+_CONNECTION_ERRORS = (OperationalError, InterfaceError, OSError)
 
 # Databases that integration tests MAY truncate (reset at will).
 # ONLY these names are allowed when db_cleanup runs.
@@ -24,8 +29,11 @@ _ALLOWED_INTEGRATION_DB_NAMES = ("mythos_unit", "mythos_e2e")
 # mythos_dev must NEVER be truncated or deleted by tests. Do not add it to allowed names.
 _PROTECTED_DB_NAMES = ("mythos_dev", "mythos_stage", "mythos_prod")
 
-# Reference/world seed loaded from DML + migrations (arena zone, professions, etc.).
+# Every ORM table data/db/seed.sql populates (world topology plus content catalogs).
 # db_cleanup must not wipe these between integration tests; flow tests create their own rows.
+# make test-playwright runs integration tests against mythos_e2e, so wiping the content tables broke
+# later Playwright runs on the same E2E stack (#963). A unit test fails if seed.sql gains a table
+# this set misses.
 _REFERENCE_SEED_TABLES = frozenset(
     {
         "zones",
@@ -34,6 +42,16 @@ _REFERENCE_SEED_TABLES = frozenset(
         "room_links",
         "zone_configurations",
         "professions",
+        "item_prototypes",
+        "skills",
+        "spells",
+        "emotes",
+        "emote_aliases",
+        "quest_definitions",
+        "quest_offers",
+        "dialogue_definitions",
+        "calendar_holidays",
+        "calendar_npc_schedules",
     }
 )
 
@@ -44,7 +62,7 @@ def _get_db_name_from_url(url: str) -> str:
         parsed = urlparse(url)
         path = (parsed.path or "").strip("/")
         return path.split("/")[0] if path else ""
-    except (ValueError, AttributeError, IndexError, TypeError):
+    except ValueError, AttributeError, IndexError, TypeError:
         return ""
 
 
@@ -132,6 +150,21 @@ class _IntegrationState:
 
 
 @pytest.fixture(scope="function")
+async def fresh_database_manager() -> AsyncGenerator[None, None]:
+    """
+    Give a test its own process-wide DatabaseManager (the engine AsyncPersistenceLayer uses).
+
+    Each async test runs on its own event loop; a DatabaseManager left over from an earlier test
+    keeps an asyncpg pool bound to that test's closed loop, so the next AsyncPersistenceLayer test
+    fails with "attached to a different loop".
+    """
+    reset_database()
+    yield
+    await close_db()
+    reset_database()
+
+
+@pytest.fixture(scope="function")
 async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[async_sessionmaker[AsyncSession], None]:
     """
     Provide an async session factory for integration tests.
@@ -150,8 +183,9 @@ async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[asyn
             async with engine.begin() as conn:
                 await conn.run_sync(Base.metadata.create_all)
             _IntegrationState.tables_created = True
-        except SQLAlchemyError:
-            # Tables might already exist or DB error; mark created so we do not retry
+        except _CONNECTION_ERRORS:
+            # DB unreachable; mark created so we do not retry. Metadata/schema errors are NOT
+            # caught: a NoReferencedTableError here once skipped create_all silently (#949).
             _IntegrationState.tables_created = True
 
     factory = async_sessionmaker(
@@ -168,8 +202,15 @@ async def session_factory(request: pytest.FixtureRequest) -> AsyncGenerator[asyn
 
 
 def _should_preserve_table_on_cleanup(table_name: str) -> bool:
-    """Return True for alembic_version and reference/world seed tables."""
-    return table_name == "alembic_version" or table_name in _REFERENCE_SEED_TABLES
+    """Return True for the migration ledger and reference/world seed tables.
+
+    `schema_migrations` (dbmate, #811 -- alembic was never wired up and had no ledger table)
+    is never actually reached by this check in practice: `Base.metadata.sorted_tables`, the
+    only thing `_delete_mutable_integration_test_rows` iterates, contains SQLAlchemy-mapped
+    tables only, and migration-ledger tables are created directly by tooling, never ORM-mapped.
+    Named here anyway so the intent survives if that ever changes.
+    """
+    return table_name == "schema_migrations" or table_name in _REFERENCE_SEED_TABLES
 
 
 async def _delete_mutable_integration_test_rows(session: AsyncSession) -> None:
@@ -182,9 +223,23 @@ async def _delete_mutable_integration_test_rows(session: AsyncSession) -> None:
 
 
 # autouse: required for test isolation - truncates tables after every integration test
+def _test_touches_database(request: pytest.FixtureRequest) -> bool:
+    """True for integration-tier tests and any test that asks for session_factory itself.
+
+    This plugin is loaded for every test, so without this gate the cleanup ran ~33 DELETEs after each
+    of ~11.5k unit tests. That only went unnoticed while #949's metadata error made it fail at once.
+    request.fixturenames can't be used: it includes session_factory for every test via this fixture.
+    """
+    # db_cleanup is function-scoped, so the node is the test item.
+    if cast(pytest.Item, request.node).get_closest_marker("integration") is not None:
+        return True
+    test_function = cast("Callable[..., object] | None", getattr(request, "function", None))
+    return test_function is not None and "session_factory" in inspect.signature(test_function).parameters
+
+
 @pytest.fixture(scope="function", autouse=True)
 async def db_cleanup(
-    request: pytest.FixtureRequest,  # pylint: disable=unused-argument  # Required by fixture signature; we use session_factory param only
+    request: pytest.FixtureRequest,
     session_factory: async_sessionmaker[AsyncSession],  # pylint: disable=redefined-outer-name  # Intentional: receive fixture by name
 ) -> AsyncGenerator[None, None]:
     """
@@ -192,6 +247,7 @@ async def db_cleanup(
 
     Deletes test-created rows from mutable tables. Skips reference/world seed tables
     (zones, rooms, professions, etc.) so procedure tests and E2E seed data persist.
+    Only runs for tests that touch the database (see _test_touches_database).
 
     CRITICAL: This fixture is autouse=True to ensure cleanup happens after every test.
     It runs AFTER the test completes to clean up data.
@@ -202,6 +258,9 @@ async def db_cleanup(
     (e.g. under pytest-xdist), causing RuntimeError.
     """
     yield
+
+    if not _test_touches_database(request):
+        return
 
     # Cleanup happens after test completion
     # Use try/except to handle event loop closure gracefully on Windows
@@ -226,13 +285,15 @@ async def db_cleanup(
         # Use session_factory from parameter (do not call getfixturevalue in teardown)
         async with session_factory() as session:
             await _delete_mutable_integration_test_rows(session)
-    except (RuntimeError, AttributeError):
+    except RuntimeError, AttributeError:
         # Event loop is closed or connection issues - this is expected on Windows
         # when the event loop closes before asyncpg connections are fully cleaned up
         # The data will be cleaned up by the next test's setup or manual cleanup
         pass
-    except (SQLAlchemyError, OSError) as e:
-        # DB or connection errors during cleanup - log but do not fail the test
+    except _CONNECTION_ERRORS as e:
+        # Connection errors during cleanup - log but do not fail the test. Anything else (a
+        # metadata/schema error, a constraint violation) means cleanup is broken and must fail
+        # the run: a swallowed NoReferencedTableError left cleanup a silent no-op (#949).
         from server.structured_logging.enhanced_logging_config import get_logger
 
         logger = get_logger(__name__)

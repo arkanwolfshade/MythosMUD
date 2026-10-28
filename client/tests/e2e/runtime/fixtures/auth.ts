@@ -6,7 +6,7 @@
 
 import './multiplayer-browser-window.d.ts';
 
-import { expect, type BrowserContext, type Page } from '@playwright/test';
+import { expect, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { CharacterSelectionPage, LoginPage, MotdPage } from '../pages';
 import { createInstrumentedContext } from './e2e-browser-helpers';
 import { TEST_TIMEOUTS } from './test-data';
@@ -135,7 +135,7 @@ export async function loginPlayer(page: Page, username: string, password: string
   await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
 
   const loginNetworkFailure = page.getByText(/NetworkError when attempting to fetch/i);
-  if (await loginNetworkFailure.isVisible({ timeout: 8000 }).catch(() => false)) {
+  if (await loginNetworkFailure.isVisible().catch(() => false)) {
     throw new Error(
       'E2E login: NetworkError on login fetch — backend unreachable or wrong API URL. ' +
         'Run the FastAPI server on http://127.0.0.1:54768 and ensure Vite proxies /v1 (or env) for E2E.'
@@ -211,7 +211,7 @@ export async function assertNoRestDisconnectPollution(page: Page): Promise<void>
   }
 
   const input = page.getByTestId('command-input');
-  if (await input.isVisible({ timeout: 2000 }).catch(() => false)) {
+  if (await isVisibleWithin(input, 2000)) {
     await input.fill('stand');
     await input.press('Enter');
     await new Promise(r => setTimeout(r, 800));
@@ -224,6 +224,11 @@ export async function assertNoRestDisconnectPollution(page: Page): Promise<void>
     );
   }
 }
+
+// Mirrors REST_LOGOUT_FALLBACK_MS in src/components/ui-v2/hooks/gameClientLogout.ts (not imported: that
+// module pulls the app logger into the Playwright runner) and logoutHandler's default request timeout.
+const REST_LOGOUT_FALLBACK_MS = 15000;
+const LOGOUT_REQUEST_TIMEOUT_MS = 5000;
 
 export interface LogoutPlayerOptions {
   /**
@@ -244,7 +249,7 @@ export async function logoutPlayer(
 ): Promise<void> {
   await page.bringToFront().catch(() => {});
 
-  if (await isUsernameLoginVisible(page, 2000)) {
+  if (await isUsernameLoginVisible(page)) {
     return;
   }
 
@@ -252,7 +257,7 @@ export async function logoutPlayer(
 
   // Prefer intentional Exit-the-Realm / logout so the server emits left_game (not linkdead grace).
   const logoutButton = page.getByTestId('logout-button');
-  const inGame = await logoutButton.isVisible({ timeout: 3000 }).catch(() => false);
+  const inGame = await isVisibleWithin(logoutButton, 3000);
   if (inGame) {
     const logoutEnabled = await logoutButton.isEnabled({ timeout: 3000 }).catch(() => false);
     if (logoutEnabled) {
@@ -272,8 +277,13 @@ export async function logoutPlayer(
 
   const loginInput = page.getByTestId('username-input');
   if (spaFallback) {
-    const softMs = Math.min(timeoutMs, 15000);
-    const reachedLogin = await loginInput.isVisible({ timeout: softMs }).catch(() => false);
+    // Must outlast the client's own /rest-exit fallback (REST_LOGOUT_FALLBACK_MS in
+    // src/components/ui-v2/hooks/gameClientLogout.ts), which logs out ~15s after the click when the
+    // server's intentional disconnect never reaches the handler, plus the 5s that logout request is
+    // allowed (logoutHandler's default timeout). Giving up at exactly 15s made page.goto('/') below
+    // race that fallback, leaving the page in the game when loginPlayer then looked for the form.
+    const softMs = Math.min(timeoutMs, REST_LOGOUT_FALLBACK_MS + LOGOUT_REQUEST_TIMEOUT_MS);
+    const reachedLogin = await isVisibleWithin(loginInput, softMs);
     if (!reachedLogin) {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
     }
@@ -313,7 +323,7 @@ export interface EnsurePlayableConnectionOptions {
   timeoutMs?: number;
 }
 
-export async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
+async function assertCommandChannelReady(page: Page, budgetMs: number): Promise<boolean> {
   try {
     await waitForPlayableSession(page, Math.min(budgetMs, 30000));
     const commandInput = page.getByTestId('command-input');
@@ -380,11 +390,10 @@ export async function ensurePlayableConnection(page: Page, options?: EnsurePlaya
 
 const RECOVER_COMMAND_READY_MS = 8000;
 
-async function isUsernameLoginVisible(page: Page, visibilityTimeoutMs = 2000): Promise<boolean> {
-  return page
-    .getByTestId('username-input')
-    .isVisible({ timeout: visibilityTimeoutMs })
-    .catch(() => false);
+/** Instant check unless `waitMs` is given -- most callers probe a page that is usually NOT on login. */
+async function isUsernameLoginVisible(page: Page, waitMs?: number): Promise<boolean> {
+  const input = page.getByTestId('username-input');
+  return waitMs === undefined ? input.isVisible() : isVisibleWithin(input, waitMs);
 }
 
 async function restorePlayableAfterLogin(
@@ -471,7 +480,7 @@ export async function recoverPlayableSession(
  * Reload the game tab when Send Command is disabled but the game UI is still mounted.
  * Prefer this over full relogin in multiplayer tests to avoid kicking the other browser session.
  */
-export async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
+async function refreshPlayableSession(page: Page, timeoutMs: number = 45000): Promise<void> {
   if (!isPageUsable(page)) {
     return;
   }
@@ -482,7 +491,7 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
 
   const onLogin = await page
     .getByTestId('username-input')
-    .isVisible({ timeout: 2000 })
+    .isVisible()
     .catch(() => false);
   if (onLogin) {
     return;
@@ -494,10 +503,7 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
 
   await page.reload({ waitUntil: 'domcontentloaded' });
 
-  const onLoginAfterReload = await page
-    .getByTestId('username-input')
-    .isVisible({ timeout: 5000 })
-    .catch(() => false);
+  const onLoginAfterReload = await isVisibleWithin(page.getByTestId('username-input'), 5000);
   if (onLoginAfterReload) {
     return;
   }
@@ -507,14 +513,18 @@ export async function refreshPlayableSession(page: Page, timeoutMs: number = 450
 }
 
 /**
- * Focus the command input without Playwright click stability (Firefox eldritch-border animation).
+ * True if `locator` becomes visible within `ms`, else false.
+ *
+ * Use this instead of `locator.isVisible({ timeout })`: Playwright ignores that timeout and
+ * returns immediately, so it cannot wait for anything. That silently turned "wait up to N ms"
+ * into "check once right now" -- e.g. logoutPlayer reloaded the page ~0ms after clicking Exit,
+ * aborting a ~250ms logout and landing back in the still-valid session.
  */
-export async function focusCommandInput(page: Page): Promise<void> {
-  const commandInput = page.getByTestId('command-input');
-  await expect(commandInput).toBeVisible({ timeout: TEST_TIMEOUTS.COMMAND });
-  await commandInput.evaluate((el: HTMLElement) => {
-    el.focus();
-  });
+export async function isVisibleWithin(locator: Locator, ms: number): Promise<boolean> {
+  return locator
+    .waitFor({ state: 'visible', timeout: ms })
+    .then(() => true)
+    .catch(() => false);
 }
 
 /**

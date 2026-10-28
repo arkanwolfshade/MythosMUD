@@ -177,3 +177,27 @@ def test_npc_attacked_retaliation_template():
     assert reaction.should_trigger(matching, ctx) is True
     assert reaction.should_trigger(other, ctx) is False
     assert reaction.execute(matching, ctx) is True
+
+
+def test_gesture_reactions_go_out_as_emotes_not_speech():
+    """as_emote routes the greeting, farewell and response through the emote sender (#1103)."""
+    context = {"npc_id": "npc-1", "current_room": "room-a", "name": "Morgan"}
+    entered = PlayerEnteredRoom(player_id="p1", room_id="room-a")
+    left = PlayerLeftRoom(player_id="p1", room_id="room-a")
+    listened = NPCListened(npc_id="npc-1", room_id="room-a", message="hi", speaker_id="p1", channel="say")
+    cases = [
+        (NPCEventReactionTemplates.player_entered_room_greeting("npc-1", "nods.", as_emote=True), entered),
+        (NPCEventReactionTemplates.player_left_room_farewell("npc-1", "nods.", as_emote=True), left),
+        (NPCEventReactionTemplates.player_spoke_response("npc-1", "nods.", as_emote=True), listened),
+    ]
+
+    for reaction, event in cases:
+        with (
+            patch("server.game.chat_npc_system.schedule_npc_room_message") as emote,
+            patch("server.game.chat_npc_system.schedule_npc_room_speech") as speech,
+        ):
+            assert reaction.execute(event, context) is True
+        speech.assert_not_called()
+        emote.assert_called_once_with(
+            channel="emote", npc_id="npc-1", room_id="room-a", message="nods.", npc_name="Morgan"
+        )

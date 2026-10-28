@@ -1,7 +1,7 @@
 import React from 'react';
 import { vi } from 'vitest';
 
-vi.mock('../components/EldritchEffectsDemo', () => ({
+vi.mock('../components/ui-v2/demos/EldritchEffectsDemo', () => ({
   EldritchEffectsDemo: ({ onExit }: { onExit?: () => void }) => (
     <div data-testid="eldritch-effects-demo">
       Eldritch Effects Demo

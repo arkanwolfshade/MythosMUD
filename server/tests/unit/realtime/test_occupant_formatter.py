@@ -6,6 +6,7 @@ Tests the occupant_formatter module classes and functions.
 
 from unittest.mock import patch
 
+from server.constants.npc_disposition import NpcDisposition, NpcOccupant
 from server.realtime.occupant_formatter import OccupantFormatter
 
 
@@ -148,28 +149,28 @@ def test_occupant_formatter_process_player_name_for_update_uuid():
 def test_occupant_formatter_process_npc_name_for_update_valid():
     """Test OccupantFormatter._process_npc_name_for_update() adds valid NPC name."""
     formatter = OccupantFormatter()
-    npcs: list[str] = []
+    npcs: list[NpcOccupant] = []
     all_occupants: list[str] = []
     room_id = "room_123"
 
-    formatter._process_npc_name_for_update("TestNPC", npcs, all_occupants, room_id)
+    formatter._process_npc_name_for_update("TestNPC", NpcDisposition.SHOPKEEPER, npcs, all_occupants, room_id)
 
-    assert "TestNPC" in npcs
+    assert npcs == [{"name": "TestNPC", "disposition": NpcDisposition.SHOPKEEPER}]
     assert "TestNPC" in all_occupants
 
 
 def test_occupant_formatter_process_npc_name_for_update_uuid():
     """Test OccupantFormatter._process_npc_name_for_update() skips UUID NPC name."""
     formatter = OccupantFormatter()
-    npcs: list[str] = []
+    npcs: list[NpcOccupant] = []
     all_occupants: list[str] = []
     room_id = "room_123"
     uuid_string = "123e4567-e89b-12d3-a456-426614174000"
 
     with patch.object(formatter._logger, "warning") as mock_warning:
-        formatter._process_npc_name_for_update(uuid_string, npcs, all_occupants, room_id)
+        formatter._process_npc_name_for_update(uuid_string, NpcDisposition.PASSIVE_MOB, npcs, all_occupants, room_id)
 
-        assert uuid_string not in npcs
+        assert npcs == []
         assert uuid_string not in all_occupants
         mock_warning.assert_called_once()
 
@@ -178,10 +179,10 @@ def test_occupant_formatter_process_dict_occupant_for_update_player():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes player dict."""
     formatter = OccupantFormatter()
     players: list[str] = []
-    npcs: list[str] = []
+    npcs: list[NpcOccupant] = []
     all_occupants: list[str] = []
     room_id = "room_123"
-    occ = {"player_name": "TestPlayer"}
+    occ: dict[str, object] = {"player_name": "TestPlayer"}
 
     formatter._process_dict_occupant_for_update(occ, players, npcs, all_occupants, room_id)
 
@@ -194,26 +195,43 @@ def test_occupant_formatter_process_dict_occupant_for_update_npc():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes NPC dict."""
     formatter = OccupantFormatter()
     players: list[str] = []
-    npcs: list[str] = []
+    npcs: list[NpcOccupant] = []
     all_occupants: list[str] = []
     room_id = "room_123"
-    occ = {"npc_name": "TestNPC"}
+    occ: dict[str, object] = {"npc_name": "TestNPC", "disposition": "aggressive_mob"}
 
     formatter._process_dict_occupant_for_update(occ, players, npcs, all_occupants, room_id)
 
-    assert "TestNPC" in npcs
+    assert npcs == [{"name": "TestNPC", "disposition": NpcDisposition.AGGRESSIVE_MOB}]
     assert "TestNPC" in all_occupants
     assert len(players) == 0
+
+
+def test_occupant_formatter_unknown_disposition_falls_back_to_passive():
+    """A row with a missing or unrecognised disposition still lists the NPC, as a passive mob."""
+    formatter = OccupantFormatter()
+    rows: list[dict[str, str] | str] = [
+        {"npc_name": "Odd", "disposition": "friendly"},
+        {"npc_name": "Bare"},
+    ]
+
+    # Reason: list is invariant; list[dict[str, str] | str] is compatible with list[dict[str, Any] | str] at runtime
+    _, npcs, _ = formatter.separate_occupants_by_type(rows, "room_123")  # type: ignore[arg-type]
+
+    assert npcs == [
+        {"name": "Odd", "disposition": NpcDisposition.PASSIVE_MOB},
+        {"name": "Bare", "disposition": NpcDisposition.PASSIVE_MOB},
+    ]
 
 
 def test_occupant_formatter_process_dict_occupant_for_update_fallback_name():
     """Test OccupantFormatter._process_dict_occupant_for_update() processes fallback name."""
     formatter = OccupantFormatter()
     players: list[str] = []
-    npcs: list[str] = []
+    npcs: list[NpcOccupant] = []
     all_occupants: list[str] = []
     room_id = "room_123"
-    occ = {"name": "TestOccupant"}
+    occ: dict[str, object] = {"name": "TestOccupant"}
 
     formatter._process_dict_occupant_for_update(occ, players, npcs, all_occupants, room_id)
 
@@ -270,9 +288,7 @@ def test_occupant_formatter_separate_occupants_by_type_dict_npcs():
     # Reason: dict[str, str] is compatible with dict[str, Any] | str at runtime
     players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
-    assert len(npcs) == 2
-    assert "NPC1" in npcs
-    assert "NPC2" in npcs
+    assert [npc["name"] for npc in npcs] == ["NPC1", "NPC2"]
     assert len(players) == 0
     assert len(all_occupants) == 2
 
@@ -305,7 +321,7 @@ def test_occupant_formatter_separate_occupants_by_type_mixed():
     players, npcs, all_occupants = formatter.separate_occupants_by_type(occupants_info, "room_123")  # type: ignore[arg-type]  # type: tuple[list[str], list[str], list[str]]
 
     assert "Player1" in players
-    assert "NPC1" in npcs
+    assert [npc["name"] for npc in npcs] == ["NPC1"]
     assert "Occupant1" in all_occupants
     assert len(all_occupants) == 3
 

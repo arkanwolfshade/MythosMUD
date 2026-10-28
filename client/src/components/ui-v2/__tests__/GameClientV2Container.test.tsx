@@ -2,7 +2,7 @@
  * Tests for GameClientV2Container component.
  */
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameClientV2Container } from '../GameClientV2Container';
 
@@ -33,9 +33,21 @@ const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
 } as Response);
 
 // Mock all dependencies
-vi.mock('../GameClientV2', () => ({
-  GameClientV2: ({ playerName }: { playerName: string }) => <div data-testid="game-client-v2">{playerName}</div>,
-}));
+vi.mock('../GameClientV2', async () => {
+  const { useState } = await import('react');
+  let mounts = 0;
+  return {
+    // data-mount-id changes only when the component remounts (e.g. the container bumps its key).
+    GameClientV2: ({ playerName }: { playerName: string }) => {
+      const [mountId] = useState(() => ++mounts);
+      return (
+        <div data-testid="game-client-v2" data-mount-id={mountId}>
+          {playerName}
+        </div>
+      );
+    },
+  };
+});
 
 vi.mock('../DeathInterstitial', () => ({
   DeathInterstitial: ({ isVisible }: { isVisible: boolean }) =>
@@ -47,9 +59,13 @@ vi.mock('../DeliriumInterstitial', () => ({
     isVisible ? <div data-testid="delirium-interstitial">Delirium</div> : null,
 }));
 
-vi.mock('../MainMenuModal', () => ({
-  MainMenuModal: ({ isOpen }: { isOpen: boolean }) =>
-    isOpen ? <div data-testid="main-menu-modal">Main Menu</div> : null,
+vi.mock('../../MainMenuModal', () => ({
+  MainMenuModal: ({ isOpen, onResetLayoutClick }: { isOpen: boolean; onResetLayoutClick?: () => void }) => (
+    <>
+      {isOpen ? <div data-testid="main-menu-modal">Main Menu</div> : null}
+      <button type="button" data-testid="mock-reset-ui-layout" onClick={onResetLayoutClick} />
+    </>
+  ),
 }));
 
 vi.mock('../MapView', () => ({
@@ -100,14 +116,6 @@ vi.mock('./hooks/useGameConnectionManagement', () => ({
 
 vi.mock('./hooks/useMythosTimeBootstrap', () => ({
   useMythosTimeBootstrap: () => {},
-}));
-
-vi.mock('./hooks/usePlayerStatusEffects', () => ({
-  usePlayerStatusEffects: () => {},
-}));
-
-vi.mock('./hooks/useRefSynchronization', () => ({
-  useRefSynchronization: () => {},
 }));
 
 vi.mock('./hooks/useRespawnHandlers', () => ({
@@ -200,6 +208,37 @@ describe('GameClientV2Container', () => {
   it('should handle isLoggingOut prop', () => {
     render(<GameClientV2Container {...defaultProps} isLoggingOut={true} />);
     expect(screen.getByTestId('game-client-v2')).toBeInTheDocument();
+  });
+
+  describe('Reset UI Layout', () => {
+    const PANEL_LAYOUT_KEY = 'mythosmud-ui-v2-panel-layout';
+    const HEADER_COLLAPSED_KEY = 'mythosmud-ui-v2-header-collapsed';
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('should forget the saved panel layout and header state, then remount GameClientV2', () => {
+      localStorage.setItem(PANEL_LAYOUT_KEY, '{"chatHistory":{}}');
+      localStorage.setItem(HEADER_COLLAPSED_KEY, 'true');
+      render(<GameClientV2Container {...defaultProps} />);
+      const mountBefore = screen.getByTestId('game-client-v2').getAttribute('data-mount-id');
+
+      fireEvent.click(screen.getByTestId('mock-reset-ui-layout'));
+
+      expect(localStorage.getItem(PANEL_LAYOUT_KEY)).toBeNull();
+      expect(localStorage.getItem(HEADER_COLLAPSED_KEY)).toBeNull();
+      expect(screen.getByTestId('game-client-v2').getAttribute('data-mount-id')).not.toBe(mountBefore);
+    });
+
+    it('should leave other saved preferences alone', () => {
+      localStorage.setItem('mythosmud-ui-preferences', '{"textLabels":true}');
+      render(<GameClientV2Container {...defaultProps} />);
+
+      fireEvent.click(screen.getByTestId('mock-reset-ui-layout'));
+
+      expect(localStorage.getItem('mythosmud-ui-preferences')).toBe('{"textLabels":true}');
+    });
   });
 
   it('should have correct container data attribute', () => {

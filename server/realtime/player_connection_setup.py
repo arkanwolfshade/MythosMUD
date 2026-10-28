@@ -59,7 +59,7 @@ async def _trigger_quests_for_room_on_spawn(player_id: uuid.UUID, room_id: str, 
         app = getattr(manager, "app", None)
         if app and getattr(app, "state", None) and getattr(app.state, "container", None):
             quest_service = getattr(app.state.container, "quest_service", None)
-    except (AttributeError, TypeError):
+    except AttributeError, TypeError:
         pass
     if not quest_service:
         return
@@ -222,7 +222,9 @@ async def handle_new_connection_setup(
             combat = await combat_service.get_combat_by_participant(player_id)
             if combat:
                 try:
-                    await combat_service.end_combat(combat.combat_id, "Player logged in - removing from combat")
+                    _ = await combat_service.remove_participant(
+                        combat.combat_id, player_id, "Player logged in - removing from combat"
+                    )
                     logger.info(
                         "Ended combat for player on login",
                         player_id=player_id,

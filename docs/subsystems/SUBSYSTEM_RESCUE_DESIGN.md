@@ -1,6 +1,6 @@
 # Rescue Subsystem Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-29
 
 ---
 
@@ -17,8 +17,10 @@ Read `[NOTE]` only if additional context is needed.
 **[NOTE]**
 The rescue subsystem allows one player to help a catatonic (lucidity-tier) ally recover lucidity.
 The user-facing command is **ground**: the rescuer and target must be in the same room; the target
-must have a lucidity record in catatonic tier. Ground applies a lucidity adjustment (to 1 LCD),
-sends rescue_update events to both players, and notifies the catatonia registry. A separate
+must have a lucidity record in catatonic tier. Ground is a **timed ritual** (#713): it channels for
+`GameConfig.ground_channel_seconds` (default 10s), then applies a lucidity adjustment (to 1 LCD),
+sends rescue_update events to both players, and notifies the catatonia registry. Either participant
+being interrupted (see section 3) cancels the channel for both. A separate
 **rescue** flow is implemented in RescueService and handle_rescue_command (same-room, catatonic
 target, lucidity adjustment); only **ground** is registered in the command map.
 
@@ -35,7 +37,8 @@ flowchart LR
   subgraph ground_flow [Ground flow]
     ValidateContext[_validate_ground_context]
     ValidateTarget[_validate_ground_target]
-    ChannelingEvents[_send_grounding_channeling_events]
+    Channel[start_ground_channel]
+    Finish[_finish_ground]
     Apply[_apply_grounding_adjustment]
     SuccessEvents[_send_grounding_success_events]
   end
@@ -49,10 +52,11 @@ flowchart LR
   end
   Ground --> ValidateContext
   Ground --> ValidateTarget
-  Ground --> ChannelingEvents
-  Ground --> Apply
+  Ground --> Channel
+  Channel -->|after eta| Finish
+  Finish --> Apply
   Apply --> LucidityService
-  Ground --> SuccessEvents
+  Finish --> SuccessEvents
   SuccessEvents --> send_rescue_update_event
   Rescue --> RescueOp
   RescueOp --> LucidityService
@@ -84,8 +88,28 @@ flowchart LR
   rescue/ground.
 - **Adjustment to 1 LCD**: Delta computed as 1 - current_lcd (or 1 if already at or above 1);
   apply_lucidity_adjustment restores lucidity; tier will change when crossing thresholds.
-- **Channeling/success events**: Ground sends channeling (progress 10) then success/failure;
-  RescueService sends "rescued" status. Events keep client and rescuer/target in sync.
+- **Timed channel (#713)**: `server/commands/ground_channel.py` owns the channel lifecycle. Ground
+  validates up front (so the rescuer gets immediate feedback if the target is not catatonic), then
+  `start_ground_channel` registers the channel and sends one `channeling` event to each participant
+  carrying `eta_seconds`; the client animates the bar, the server decides when it ends. When the
+  sleep elapses `_finish_ground` re-checks that both players still share a room and the target is
+  still catatonic, then applies the adjustment and sends `success` (or `failed` on a DB error).
+  If the re-check fails, both participants get `interrupted`.
+- **Interrupts mirror /rest**: movement (`go`), spellcasting, starting or receiving combat, and a
+  websocket disconnect all call `cancel_ground_channel` from the same sites that cancel a rest
+  countdown. It works from either side: an interruption of the rescuer **or** the target cancels
+  the channel and sends `interrupted` to both. Once the sleep has elapsed and the DB commit is
+  running, the channel is no longer cancellable.
+- **One channel per target and per rescuer**: a second rescuer on the same target, or one rescuer
+  starting a second ritual, is rejected. `ground` and `/rest` block each other (a resting rescuer
+  cannot ground; a grounding rescuer cannot `/rest`). Registries: `connection_manager.grounding_channels`
+  (by target id) and `grounding_by_rescuer`.
+- **Events carry `role`**: every `rescue_update` has `role` = `rescuer` or `target`, set by the
+  server per recipient. Statuses: `channeling`, `success`, `failed`, `interrupted`, `rescued`
+  (RescueService), `catatonic` (via the separate `catatonia` event), `sanitarium`, `delirium`.
+- **Commands own the target's success event**: when the exit from catatonia was caused by `ground`
+  or `rescue` (`reason_code` `ground_rescue` / `rescue_command`), the lucidity trigger stays silent,
+  so the target sees one named success rather than two terminal events.
 - **Database session**: Ground uses get_async_session() and session.get(PlayerLucidity);
   RescueService uses session_factory. Commit on success; rollback on exception and send failure
   events.
@@ -106,9 +130,11 @@ flowchart LR
 **[NOTE]**
 
 1. **ground &lt;target&gt;** – Validate rescuer and target, same room. Open session, get
-   PlayerLucidity for target; if not catatonic, return. Send channeling events to both. Apply
-   lucidity adjustment (ground_rescue), commit. On exception, rollback and send failure events. Send
-   success events with new_lcd; return narrative.
+   PlayerLucidity for target; if not catatonic, return. Reject if the rescuer is in combat, resting
+   or already channeling, or the target is already being grounded. Start the channel (channeling
+   events with `eta_seconds` to both) and return a narrative immediately. After the channel time,
+   re-check, apply the lucidity adjustment (ground_rescue), commit. On exception, rollback and send
+   failure events. Send success events with new_lcd. An interrupt in between sends `interrupted`.
 2. **rescue (RescueService)** – Used by handle_rescue_command (if exposed via API or alternate
    command). Same flow: same room, catatonic, apply_lucidity_adjustment (rescue_command), commit,
    dispatch rescued events.
@@ -124,8 +150,9 @@ flowchart LR
   checks.
 - **Tests**: Unit tests for RescueService.rescue (same room, catatonic, success/failure, event
   dispatch); integration tests for handle_ground_command with DB and mock send_rescue_update_event.
-- **Event schema**: rescue_update event payload (status, rescuer_name, target_name, message,
-  progress, current_lcd) – ensure client and dispatcher stay in sync.
+- **Event schema**: rescue_update event payload (status, role, rescuer_name, target_name, message,
+  progress, eta_seconds, current_lcd) – ensure client and dispatcher stay in sync. The client side is
+  `client/src/components/ui-v2/eventLog/rescueStatus.ts` and `RescueBanner`.
 
 ## 7. Troubleshooting
 
@@ -137,6 +164,12 @@ flowchart LR
   and that both are in the same room instance.
 - **"The target's aura cannot be located"**: No PlayerLucidity row for target. Ensure lucidity
   records are created for players (e.g. on login or first use).
+- **"You cannot channel a grounding ritual while resting" / "already being grounded"**: the
+  channel registries (`grounding_channels`, `grounding_by_rescuer`) or `resting_players` still hold
+  an entry. Disconnect and combat paths clear them; check `cancel_ground_channel` was reached.
+- **Banner never clears**: the client expires a phase locally (5s, or ETA + 5s for `channeling`), so
+  a stuck banner means new `rescue_update` events keep arriving; check for a channel that never
+  finishes on the server.
 - **Ground succeeds but client doesn't update**: Check send_rescue_update_event is called and
   client subscribes to rescue_update; check connection_manager.send_personal_message or equivalent.
 
@@ -158,3 +191,4 @@ See also [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md) and
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |
+| 1.2.0 | 2026-09-29 | Ground is a timed, interruptible ritual; rescue_update carries `role`/`eta_seconds`; rescue banner (#713) |

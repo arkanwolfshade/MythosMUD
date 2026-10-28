@@ -1,10 +1,10 @@
 # Structured Concurrency Patterns
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Structured Concurrency Patterns** (0 connections) — `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- **create_e2e_test_players.sql** (0 connections) — `scripts/create_e2e_test_players.sql`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- `scripts/create_e2e_test_players.sql`
 
 ## Audit Trail
 

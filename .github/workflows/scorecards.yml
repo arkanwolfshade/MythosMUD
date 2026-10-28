@@ -38,10 +38,20 @@ jobs:
       checks: read
 
     steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+      # Block mode: only the hosts below may be reached (built from Harden-Runner's per-connection log over 12 runs,
+      # plus hosts the actions' code calls). See ci.yml's backend job for how the list works and what is implicit.
+      - name: Harden the runner (block all but allowed outbound calls)
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints: >
+            github.com:443
+            api.github.com:443
+            codeload.github.com:443
+            api.deps.dev:443
+            api.osv.dev:443
+            oss-fuzz-build-logs.storage.googleapis.com:443
+            www.bestpractices.dev:443
       # Standard bootstrap: harden + checkout
       # github.token for parent repo; GITHUB_TOKEN cannot read other private repos.
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -112,7 +122,7 @@ jobs:
           cd ..
 
       - name: "Run analysis"
-        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        uses: ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e # v2.5.0
         with:
           results_file: results.sarif
           results_format: sarif
@@ -138,7 +148,7 @@ jobs:
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
       - name: "Upload artifact"
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: SARIF file
           path: results.sarif

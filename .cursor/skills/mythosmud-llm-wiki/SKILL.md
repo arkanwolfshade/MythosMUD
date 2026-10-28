@@ -30,7 +30,7 @@ Pattern reference:
 - User asks to **lint** / health-check the wiki
 - After code-graph updates: **sync graphify** into the vault
 - User mentions Obsidian vault, permanent memory, or LLM wiki
-- User asks to **ingest Chaosium**, promote a CoC pack, or refresh catalog memory
+- User asks to **ingest a CoC source pack**, promote a pack, or refresh catalog memory
 
 ## Non-goals
 
@@ -39,9 +39,9 @@ Pattern reference:
 - Do not run `graphify export obsidian` into the curated vault (too many nodes).
   Use `graphify export wiki` + sync script instead.
 - Never edit `raw/` sources (except regenerating `raw/graphify/` via the sync
-  script, or writing `raw/chaosium/` via the Chaosium snapshot script).
+  script, or writing `raw/source_packs/` via the source-pack snapshot script).
 - Do not put durable lore outside the `data/` submodule (`data/MythosMUD-Obsidian/`).
-- Do not commit Chaosium PDFs, OCR dumps, or verbatim book prose.
+- Do not commit third-party PDFs, OCR dumps, or verbatim book prose.
 
 ## Workflows
 
@@ -76,30 +76,31 @@ From repo root (PowerShell):
 
 Then optionally promote high-signal findings into `wiki/code/` pages.
 
-### Chaosium ingest
+### Source pack ingest
 
-Trigger phrases: "ingest Chaosium", "promote Field Guide", "snapshot Chaosium
-graphs", catalog durable memory.
+Trigger phrases: "ingest source pack", "promote Field Guide", "snapshot source
+pack graphs", catalog durable memory.
 
-1. Snapshot into `data/MythosMUD-Obsidian/raw/chaosium/` (parent-repo script;
-   content lands only in the `data/` submodule):
+1. Snapshot into `data/MythosMUD-Obsidian/raw/source_packs/` (parent-repo script;
+   content lands only in the `data/` submodule). Set `MYTHOS_SOURCE_PACK_ROOT`
+   or pass `-PackPath`:
 
 ```powershell
-./scripts/snapshot_chaosium_graphify.ps1
+./scripts/snapshot_source_pack_graphify.ps1
 # or one pack:
-./scripts/snapshot_chaosium_graphify.ps1 -PackPath "<Chaosium pack folder>"
+./scripts/snapshot_source_pack_graphify.ps1 -PackPath "<source pack folder>"
 ```
 
 2. Read `GRAPH_REPORT.md` God Nodes / Surprising Connections / Suggested Questions
    and `MANIFEST.md` honesty notes.
-3. Follow vault `AGENTS.md` → Operations → Chaosium pack ingest.
-4. Write/update `wiki/sources/`, entities/concepts/world, [[Chaosium CoC Catalog]],
+3. Follow vault `AGENTS.md` → Operations → Source pack ingest.
+4. Write/update `wiki/sources/`, entities/concepts/world, the CoC catalog hub,
    `index.md`, `log.md`.
 5. Cap ~5–10 pages per pack; Tier B = source + honesty only.
 6. Commit in the data submodule; bump parent submodule pointer when publishing.
 
-Live pack graphs on Proton Drive remain optional `/graphify query` tools. Durable
-lore is wiki synthesis only—not PDFs or OCR dumps.
+Live pack graphs on the local library remain optional `/graphify query` tools.
+Durable lore is wiki synthesis only—not PDFs or OCR dumps.
 
 ## Division of labor
 
@@ -107,6 +108,6 @@ lore is wiki synthesis only—not PDFs or OCR dumps.
 | ------------------------ | ----------------------------------------------------- |
 | Permanent memory         | This vault (`data/MythosMUD-Obsidian/`)               |
 | Live code graph          | `graphify` CLI + `graphify-out/`                      |
-| Live Chaosium pack graph | Proton Drive pack `graphify-out/` + `/graphify query` |
+| Live source-pack graph   | Local pack `graphify-out/` + `/graphify query`        |
 | Symbol edit navigation   | jCodemunch                                            |
 | Formal ADRs              | `docs/architecture/decisions/` (+ wiki summary)       |

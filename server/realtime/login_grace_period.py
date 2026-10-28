@@ -16,15 +16,18 @@ player_effects table; tick processing expires it and clears in-memory state.
 from __future__ import annotations
 
 import asyncio
+import math
 import time
 import uuid
-from collections.abc import Callable
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from anyio import sleep
 
 from ..config import get_config
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..async_persistence_types import PlayerEffectOptions
 
 logger = get_logger(__name__)
 
@@ -75,9 +78,8 @@ class _EffectPersistence(Protocol):
         player_id: uuid.UUID | str,
         effect_type: str,
         category: str,
-        duration: int,
-        applied_at_tick: int,
-        options: dict[str, object] | None = None,
+        remaining_seconds: int | None,
+        options: PlayerEffectOptions | None = None,
     ) -> str: ...
 
 
@@ -169,24 +171,17 @@ async def _grace_period_task(player_id: uuid.UUID, manager: object) -> None:
         _remove_from_grace_period_tracking(player_id, manager)
 
 
-async def _try_start_effect_based_grace(
-    player_id: uuid.UUID,
-    mgr: _GraceManager,
-    async_persistence: object,
-    get_current_tick: Callable[[], int],
-    get_tick_interval: Callable[[], float],
-) -> bool:
+async def _try_start_effect_based_grace(player_id: uuid.UUID, mgr: _GraceManager, async_persistence: object) -> bool:
     """Add LOGIN_WARDED via persistence. True if in-memory sentinel was set."""
     try:
-        tick_interval = get_tick_interval()
-        duration_ticks = max(1, int(_login_grace_period_seconds() / tick_interval))
+        # Online game seconds (ADR-029 step 3b-i): the ward counts down only while the player is connected.
+        remaining_seconds = max(1, math.ceil(_login_grace_period_seconds()))
         persistence = cast(_EffectPersistence, async_persistence)
         _ = await persistence.add_player_effect(
             player_id,
             effect_type="login_warded",
             category="entry_ward",
-            duration=duration_ticks,
-            applied_at_tick=get_current_tick(),
+            remaining_seconds=remaining_seconds,
             options={"intensity": 1, "source": "game_entry", "visibility_level": "visible"},
         )
         mgr.login_grace_period_players[player_id] = True
@@ -204,8 +199,6 @@ async def start_login_grace_period(
     player_id: uuid.UUID,
     manager: object,
     async_persistence: object | None = None,
-    get_current_tick: Callable[[], int] | None = None,
-    get_tick_interval: Callable[[], float] | None = None,
 ) -> None:
     """Start LOGIN_WARDED via effects (ADR-019) or a legacy asyncio timeout task."""
     mgr = _as_grace(manager)
@@ -216,9 +209,8 @@ async def start_login_grace_period(
     logger.info("Starting login grace period for player", player_id=player_id, duration=_login_grace_period_seconds())
     mgr.login_grace_period_start_times[player_id] = time.time()
 
-    if async_persistence and get_current_tick and get_tick_interval:
-        if await _try_start_effect_based_grace(player_id, mgr, async_persistence, get_current_tick, get_tick_interval):
-            return
+    if async_persistence and await _try_start_effect_based_grace(player_id, mgr, async_persistence):
+        return
 
     task = asyncio.create_task(_grace_period_task(player_id, manager))
     mgr.login_grace_period_players[player_id] = task

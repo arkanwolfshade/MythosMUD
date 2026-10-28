@@ -76,7 +76,7 @@ class PlayerOccupantProcessor:
                 player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
                 player_id_uuids.append(player_id_uuid)
                 player_id_mapping[player_id_uuid] = player_id_str
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 self._logger.debug("Invalid player ID format", player_id=player_id_str)
                 continue
 
@@ -109,7 +109,7 @@ class PlayerOccupantProcessor:
             # Check login grace period (can have both indicators)
             if is_player_in_login_grace_period(player_id_uuid, self.connection_manager):
                 player_name = f"{player_name} (warded)"
-        except (AttributeError, ImportError, TypeError):
+        except AttributeError, ImportError, TypeError:
             # If we can't check grace period, use name as-is
             pass
 

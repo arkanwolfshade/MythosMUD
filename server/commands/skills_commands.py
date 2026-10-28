@@ -11,6 +11,7 @@ from ..alias_storage import AliasStorage
 from ..game.skill_service import SkillService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -35,7 +36,7 @@ def _resolve_player_id(player: Any) -> uuid.UUID | None:
         return None
     try:
         return uuid.UUID(player_id_raw) if isinstance(player_id_raw, str) else player_id_raw
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 
@@ -83,15 +84,15 @@ async def handle_skills_command(
     try:
         player = await persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            return {"result": "Character not found."}
+            return command_error("Character not found.")
 
         player_id = _resolve_player_id(player)
         if not player_id:
-            return {"result": "Character id is invalid."}
+            return command_error("Character id is invalid.")
 
         user_id = _resolve_user_id(current_user, player)
         if not user_id:
-            return {"result": "Authentication error."}
+            return command_error("Authentication error.")
 
         skills = await skill_service.get_player_skills(player_id, user_id)
         if skills is None:
@@ -103,4 +104,4 @@ async def handle_skills_command(
         return {"result": _format_skills_output(skills)}
     except Exception as e:  # pylint: disable=broad-except
         logger.exception("Skills command failed", player=player_name, error=str(e))
-        return {"result": "Failed to load skills."}
+        return command_error("Failed to load skills.")

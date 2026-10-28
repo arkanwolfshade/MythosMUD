@@ -12,7 +12,7 @@ from uuid import UUID
 from ..models.container import ContainerComponent
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import audit_logger
+from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from ..utils.error_logging import log_and_raise
 from .container_service_helpers import (
     UNKNOWN_STACK,
@@ -151,16 +151,18 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
 
         try:
             audit_logger.log_container_interaction(
-                player_id=str(player.player_id),
-                player_name=str(player.name),
-                container_id=str(container_id),
-                event_type="container_transfer",
-                source_type=get_enum_value(container.source_type),
-                room_id=container.room_id,
-                direction="from_container",
-                item_id=item.get("item_id"),
-                item_name=item.get("item_name"),
-                success=True,
+                ContainerInteractionEvent(
+                    player_id=str(player.player_id),
+                    player_name=str(player.name),
+                    container_id=str(container_id),
+                    event_type="container_transfer",
+                    source_type=get_enum_value(container.source_type),
+                    room_id=container.room_id,
+                    direction="from_container",
+                    item_id=item.get("item_id"),
+                    item_name=item.get("item_name"),
+                    success=True,
+                )
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit logging errors unpredictable, must not fail container operation
             logger.warning("Failed to log container transfer to audit log", error=str(e))
@@ -215,6 +217,33 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
                 )
                 raise
 
+    @staticmethod
+    def _resolve_container_stack(container: ContainerComponent, item: InventoryStack) -> InventoryStack:
+        """
+        Replace a caller-supplied stack with the container's own copy of it.
+
+        The GUI identifies the stack by ``{item_id, item_instance_id}`` only, which is what
+        .cursor/rules/server-authority.mdc asks for -- the client must not be the source of truth
+        for item_name or quantity. Downstream inventory validation needs the full stack, though,
+        and used to reject the partial one outright ("Missing required inventory field: item_name",
+        surfacing as a 500 on every GUI loot). Resolving against the container we just loaded gives
+        the authoritative stack without trusting the caller for anything but the identity.
+
+        Args:
+            container: Container component already loaded from persistence.
+            item: Caller-supplied stack, possibly only an identifier.
+
+        Returns:
+            InventoryStack: The container's own stack when the instance id matches, else ``item``.
+        """
+        instance_id = item.get("item_instance_id")
+        if not instance_id:
+            return item
+        for stored in container.items:
+            if stored.get("item_instance_id") == instance_id:
+                return stored
+        return item
+
     async def transfer_from_container(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Container transfer requires many parameters for context and transfer operations
         self,
         container_id: UUID,
@@ -233,6 +262,7 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
         )
         self._verify_container_open(container_id, player_id, mutation_token)
         container = await self._require_container_component(container_id, player_id, item, "transfer_from_container")
+        item = self._resolve_container_stack(container, item)
         player = await self._require_player_for_transfer(player_id, container_id, item, "transfer_from_container")
         return await self._execute_transfer_from_container(
             container, player, container_id, player_id, mutation_token, item, quantity
@@ -299,13 +329,15 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
             else container
         )
         audit_logger.log_container_interaction(
-            player_id=str(player_id),
-            player_name=str(player.name),
-            container_id=str(container_id),
-            event_type="container_loot_all",
-            source_type=get_enum_value(final_container.source_type),
-            room_id=final_container.room_id,
-            items_count=initial_items_count,
+            ContainerInteractionEvent(
+                player_id=str(player_id),
+                player_name=str(player.name),
+                container_id=str(container_id),
+                event_type="container_loot_all",
+                source_type=get_enum_value(final_container.source_type),
+                room_id=final_container.room_id,
+                items_count=initial_items_count,
+            )
         )
         return {
             "container": final_container.to_dict(),

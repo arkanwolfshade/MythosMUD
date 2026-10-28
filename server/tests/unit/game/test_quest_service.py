@@ -12,12 +12,13 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
 from server.game.quest.quest_service import QuestService
+from server.models.player import Player
 
 # pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
 # pylint: disable=protected-access  # Reason: Tests need to access protected members to verify internal state and behavior
@@ -140,6 +141,163 @@ def quest_service(mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstance
         quest_definition_repository=mock_def_repo,
         quest_instance_repository=mock_instance_repo,
     )
+
+
+class _RecordingBus:
+    """Collects published events (EventBus.publish is synchronous fire-and-forget)."""
+
+    def __init__(self) -> None:
+        self.events: list[object] = []
+
+    def publish(self, event: object) -> None:
+        self.events.append(event)
+
+    def names(self) -> list[str]:
+        return [type(e).__name__ for e in self.events]
+
+
+@pytest.fixture
+def bus() -> _RecordingBus:
+    return _RecordingBus()
+
+
+@pytest.fixture
+def quest_service_with_bus(
+    mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo, bus: _RecordingBus
+) -> QuestService:
+    return QuestService(
+        quest_definition_repository=mock_def_repo, quest_instance_repository=mock_instance_repo, event_bus=bus
+    )
+
+
+# ---- the Journal is told about every change to the quest log ----
+@pytest.mark.asyncio
+async def test_starting_a_quest_announces_a_quest_log_change(
+    quest_service_with_bus: QuestService, mock_def_repo: _MockDefRepo, bus: _RecordingBus
+):
+    mock_def_repo.get_by_id = AsyncMock(return_value=_make_definition_row())
+
+    with patch("server.game.quest.quest_service.notify_quest_started"):
+        _ = await quest_service_with_bus.start_quest(uuid.uuid4(), "leave_the_tutorial")
+
+    assert bus.names() == ["QuestLogChanged"]
+
+
+@pytest.mark.asyncio
+async def test_progress_that_does_not_complete_announces_a_quest_log_change(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    """Regression: only completion refreshed the Journal, so cmd_look stayed 0/1 after `look`."""
+    row = _make_definition_row()
+    row.definition["auto_complete"] = False
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[_InstanceStub(quest_id="leave_the_tutorial")])
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
+
+    with patch("server.game.quest.quest_service.notify_quest_progress"):
+        await quest_service_with_bus.record_complete_activity(uuid.uuid4(), "exit_tutorial_room")
+
+    assert bus.names() == ["QuestLogChanged"]
+
+
+@pytest.mark.asyncio
+async def test_completing_a_quest_announces_the_log_exactly_once(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[_InstanceStub(quest_id="leave_the_tutorial")])
+    mock_def_repo.get_by_id = AsyncMock(return_value=_make_definition_row())  # auto_complete
+
+    with (
+        patch("server.game.quest.quest_service.notify_quest_completed"),
+        patch.object(QuestService, "_apply_rewards", new=AsyncMock()),
+    ):
+        await quest_service_with_bus.record_complete_activity(uuid.uuid4(), "exit_tutorial_room")
+
+    assert bus.names() == ["QuestCompleted", "QuestLogChanged"]
+
+
+@pytest.mark.asyncio
+async def test_abandoning_a_quest_announces_a_quest_log_change(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    row = _make_definition_row()
+    mock_def_repo.get_by_name = AsyncMock(return_value=row)
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=_InstanceStub(state="active"))
+
+    with patch("server.game.quest.quest_service.notify_quest_abandoned"):
+        _ = await quest_service_with_bus.abandon(uuid.uuid4(), "leave_the_tutorial")
+
+    assert bus.names() == ["QuestLogChanged"]
+
+
+# ---- reset_offered_quests (a fresh instance restarts the run) ----
+def _offers(by_entity: dict[tuple[str, str], list[str]]) -> AsyncMock:
+    """list_quest_ids_offered_by answering from a (entity_type, entity_id) table."""
+
+    async def lookup(entity_type: str, entity_id: str) -> list[str]:
+        return by_entity.get((entity_type, entity_id), [])
+
+    return AsyncMock(side_effect=lookup)
+
+
+@pytest.mark.asyncio
+async def test_reset_offered_quests_resets_the_room_chain_but_not_unoffered_quests(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    mock_def_repo.list_quest_ids_offered_by = _offers(
+        {("room", "square"): ["act1"], ("quest", "act1"): ["act2"], ("quest", "act2"): ["act3"]}
+    )
+    act1 = _InstanceStub(state="completed", quest_id="act1", progress={"0": 1})
+    act2 = _InstanceStub(state="active", quest_id="act2", progress={"0": 1})
+    rows: dict[str, _InstanceStub | None] = {
+        "act1": act1,
+        "act2": act2,
+        "act3": None,  # never started
+        "epilogue": _InstanceStub(state="completed", quest_id="epilogue"),  # offered by no room or quest
+    }
+
+    async def instance_of(_player_id: uuid.UUID, quest_id: str) -> _InstanceStub | None:
+        return rows[quest_id]
+
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(side_effect=instance_of)
+    player_id = uuid.uuid4()
+
+    reset = await quest_service_with_bus.reset_offered_quests(player_id, ["square", "elsewhere"])
+
+    assert sorted(reset) == ["act1", "act2"]
+    updated = {call.args[0] for call in mock_instance_repo.update_state_and_progress.await_args_list}
+    assert updated == {act1.id, act2.id}
+    for call in mock_instance_repo.update_state_and_progress.await_args_list:
+        assert call.kwargs == {"state": "abandoned", "progress": {}}
+    assert bus.names() == ["QuestLogChanged"]  # announced once for the whole reset
+
+
+@pytest.mark.asyncio
+async def test_reset_offered_quests_leaves_already_abandoned_quests_and_stays_quiet(
+    quest_service_with_bus: QuestService,
+    mock_def_repo: _MockDefRepo,
+    mock_instance_repo: _MockInstanceRepo,
+    bus: _RecordingBus,
+):
+    mock_def_repo.list_quest_ids_offered_by = _offers({("room", "square"): ["act1"]})
+    mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=_InstanceStub(state="abandoned"))
+
+    assert await quest_service_with_bus.reset_offered_quests(uuid.uuid4(), ["square"]) == []
+
+    mock_instance_repo.update_state_and_progress.assert_not_awaited()
+    assert not bus.events
 
 
 # ---- resolve_name_to_quest_id ----
@@ -647,3 +805,144 @@ async def test_turn_in_inventory_full_blocks_item_reward(
     assert result["success"] is False
     message = _message(result)
     assert "inventory" in message.lower() or "full" in message.lower()
+
+
+class _RespawnPersistence:
+    """Typed async_persistence stand-in for reward application."""
+
+    def __init__(self, player: Player) -> None:
+        self.player: Player = player
+        self.saved: list[Player] = []
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player:
+        _ = player_id
+        return self.player
+
+    async def save_player(self, player: Player) -> None:
+        self.saved.append(player)
+
+
+async def _complete_tutorial_with_rewards(rewards: list[dict[str, object]], persistence: _RespawnPersistence) -> None:
+    def_repo = _MockDefRepo()
+    instance_repo = _MockInstanceRepo()
+    row = _make_definition_row()
+    row.definition["rewards"] = rewards
+    instance_repo.list_active_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="leave_the_tutorial", progress={})]
+    )
+    def_repo.get_by_id = AsyncMock(return_value=row)
+    instance_repo.update_state_and_progress = AsyncMock()
+    service = QuestService(
+        quest_definition_repository=def_repo,
+        quest_instance_repository=instance_repo,
+        async_persistence=persistence,
+    )
+    with (
+        patch("server.game.quest.quest_service.notify_quest_progress"),
+        patch("server.game.quest.quest_service.notify_quest_completed"),
+    ):
+        await service.record_complete_activity(uuid.uuid4(), "exit_tutorial_room")
+
+
+async def test_respawn_room_reward_moves_the_players_respawn():
+    """Completing leave_the_tutorial points respawn at the Sanitarium Main Foyer."""
+    foyer = "earth_arkhamcity_sanitarium_room_foyer_001"
+    player = Player(name="Newbie", respawn_room_id="earth_arkhamcity_sanitarium_room_tutorial_bedroom_001")
+    persistence = _RespawnPersistence(player)
+
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {"room_id": foyer}}], persistence)
+
+    assert player.respawn_room_id == foyer
+    assert persistence.saved == [player]
+
+
+async def test_respawn_room_reward_without_room_id_changes_nothing():
+    bedroom = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+    player = Player(name="Newbie", respawn_room_id=bedroom)
+    persistence = _RespawnPersistence(player)
+
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {}}], persistence)
+
+    assert player.respawn_room_id == bedroom
+    assert persistence.saved == []
+
+
+@pytest.mark.asyncio
+async def test_get_quest_log_carries_the_goals_authored_description(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    """#1102: the journal shows the authored text instead of the raw target; a goal without one reports None."""
+    row = _make_definition_row()
+    row.definition["goals"] = [
+        {"type": "complete_activity", "target": "cmd_look", "description": "Look around (`look`)"},
+        {"type": "complete_activity", "target": "cmd_talk"},
+    ]
+    instance = _InstanceStub(quest_id="leave_the_tutorial", state="active", progress={"0": 1})
+    mock_def_repo.get_by_id = AsyncMock(return_value=row)
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[instance])
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    result = await quest_service.get_quest_log(uuid.uuid4(), include_completed=False)
+
+    goals = cast(list[dict[str, object]], result[0]["goals_with_progress"])
+    assert [g["description"] for g in goals] == ["Look around (`look`)", None]
+    assert [g["target"] for g in goals] == ["cmd_look", "cmd_talk"]
+
+
+# ---- has_completed_activity (exits a quest unlocks, #1111) ----
+def _activity_row(*goals: dict[str, object], quest_id: str = "walk") -> _DefinitionRow:
+    row = _make_definition_row(quest_id=quest_id, name=quest_id)
+    row.definition["goals"] = list(goals)
+    return row
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_is_true_when_a_goal_with_that_target_is_done(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    mock_def_repo.get_by_id = AsyncMock(
+        return_value=_activity_row(
+            {"type": "complete_activity", "target": "cmd_look"},
+            {"type": "complete_activity", "target": "cmd_read"},
+        )
+    )
+    mock_instance_repo.list_active_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="walk", state="active", progress={"0": 1})]
+    )
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is True
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_read") is False  # that goal is not done yet
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_elsewhere") is False  # no such goal
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_counts_a_completed_quest(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    """The path stays open behind the player: finishing Act I must not re-lock the lane they already walked."""
+    mock_def_repo.get_by_id = AsyncMock(return_value=_activity_row({"type": "complete_activity", "target": "cmd_look"}))
+    mock_instance_repo.list_active_by_player = AsyncMock(return_value=[])
+    mock_instance_repo.list_completed_by_player = AsyncMock(
+        return_value=[_InstanceStub(quest_id="walk", state="completed", progress={"0": 1})]
+    )
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is True
+
+
+@pytest.mark.asyncio
+async def test_has_completed_activity_ignores_other_goal_types_and_missing_definitions(
+    quest_service: QuestService, mock_def_repo: _MockDefRepo, mock_instance_repo: _MockInstanceRepo
+):
+    mock_def_repo.get_by_id = AsyncMock(
+        side_effect=[None, _activity_row({"type": "kill_n", "target": "cmd_look", "config": {"count": 1}})]
+    )
+    mock_instance_repo.list_active_by_player = AsyncMock(
+        return_value=[
+            _InstanceStub(quest_id="gone", state="active", progress={"0": 1}),
+            _InstanceStub(quest_id="walk", state="active", progress={"0": 1}),
+        ]
+    )
+    mock_instance_repo.list_completed_by_player = AsyncMock(return_value=[])
+
+    assert await quest_service.has_completed_activity(uuid.uuid4(), "cmd_look") is False

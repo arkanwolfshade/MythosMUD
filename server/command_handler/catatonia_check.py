@@ -4,8 +4,8 @@ Catatonia Checking Logic for MythosMUD.
 This module handles checking whether a player is in a catatonic state
 and should have their commands blocked. When a player's lucidity drops
 to zero, they enter catatonia and can only execute limited commands
-until another player helps them recover.
-"""
+until another player helps them recover (or they restore their own
+mind with an item: ``use`` is allowed, and the use command refuses the rest)."""
 
 # pylint: disable=too-many-return-statements  # Reason: Catatonia checking requires multiple return statements for different command validation states and permission checks
 
@@ -19,14 +19,17 @@ from structlog.stdlib import BoundLogger
 
 from ..database import get_async_session
 from ..models.lucidity import PlayerLucidity
+from ..services.catatonia_state import CATATONIA_BLOCK_MESSAGE, is_catatonic_record
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..utils.command_parser import USE_ALIASES
 from ..utils.player_cache import cache_player, get_cached_player
 from .command_execution_request import CommandExecutionRequest, command_request_app_state
 
 logger: BoundLogger = get_logger(__name__)
 
 # Commands that are allowed even during catatonia
-CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
+# ``use`` and its verbs pass: the use command itself refuses anything that does not restore LCD (#1148).
+CATATONIA_ALLOWED_COMMANDS = frozenset({"help", "who", "status", "time", "use", *USE_ALIASES})
 
 
 class _PersistenceGetPlayerByName(Protocol):  # pylint: disable=too-few-public-methods
@@ -81,20 +84,10 @@ def _check_catatonia_registry(state: object, player_id: uuid.UUID | str, player_
                 "Catatonic player command blocked via registry",
                 player=player_name,
             )
-            return (
-                True,
-                "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-            )
-    except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
+            return True, CATATONIA_BLOCK_MESSAGE
+    except ImportError, AttributeError, TypeError, RuntimeError:  # pragma: no cover - defensive
         logger.exception("Catatonia registry lookup failed", player=player_name)
     return False, None
-
-
-def _is_catatonic(lucidity_record: PlayerLucidity | None) -> bool:
-    """Check if player is catatonic based on lucidity record."""
-    if not lucidity_record:
-        return False
-    return lucidity_record.current_tier == "catatonic" or lucidity_record.current_lcd <= 0
 
 
 async def _fetch_lucidity_record(
@@ -140,17 +133,14 @@ async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str) ->
 async def _check_catatonia_database(player_id_uuid: uuid.UUID, player_name: str) -> tuple[bool, str | None]:
     """Check catatonia status via database."""
     lucidity_record = await _query_lucidity_record(player_id_uuid, player_name)
-    if lucidity_record and _is_catatonic(lucidity_record):
+    if lucidity_record and is_catatonic_record(lucidity_record):
         logger.info(
             "Catatonic player command blocked",
             player=player_name,
             lucidity=lucidity_record.current_lcd,
             tier=lucidity_record.current_tier,
         )
-        return (
-            True,
-            "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-        )
+        return True, CATATONIA_BLOCK_MESSAGE
     return False, None
 
 

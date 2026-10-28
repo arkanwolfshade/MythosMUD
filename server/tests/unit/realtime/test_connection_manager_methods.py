@@ -113,7 +113,10 @@ def test_has_websocket_connection_impl(mock_manager: MagicMock) -> None:
 
 def test_get_next_sequence_impl(mock_manager: MagicMock) -> None:
     mock_manager.sequence_counter = 41
-    assert cm_methods.get_next_sequence_impl(mock_manager) == 42
+    first = cm_methods.get_next_sequence_impl(mock_manager)
+    second = cm_methods.get_next_sequence_impl(mock_manager)
+    assert second > first
+    assert mock_manager.sequence_counter == second  # mirrored as "last issued"
 
 
 def test_get_pending_messages_impl(mock_manager: MagicMock) -> None:

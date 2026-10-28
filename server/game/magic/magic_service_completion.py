@@ -139,7 +139,7 @@ class MagicServiceCompletionMixin:
         try:
             raw = casting_state.target_id
             return uuid.UUID(raw) if isinstance(raw, str) else raw
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logger.warning("Invalid target_id in casting state", target_id=casting_state.target_id)
             return None
 

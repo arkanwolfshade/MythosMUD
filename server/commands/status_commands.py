@@ -6,11 +6,16 @@ This module contains handlers for status and whoami commands.
 
 # pylint: disable=too-many-locals  # Reason: Status commands require many intermediate variables for complex status display logic
 
-from typing import Any
+import uuid
+from collections.abc import Mapping
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..models.player import Player
+from ..persistence.protocols import CurrentLcdReader
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -81,7 +86,9 @@ async def _get_combat_status(app: Any, player: Any) -> bool:
     return in_combat
 
 
-def _build_base_status_lines(player: Any, room_name: str, stats: dict[str, Any], in_combat: bool) -> list[str]:
+def _build_base_status_lines(
+    player: Player, room_name: str, stats: Mapping[str, object], in_combat: bool, *, current_lcd: int
+) -> list[str]:
     """
     Build base status lines for the status command.
 
@@ -90,6 +97,7 @@ def _build_base_status_lines(player: Any, room_name: str, stats: dict[str, Any],
         room_name: Room name string
         stats: Player stats dictionary
         in_combat: Whether player is in combat
+        current_lcd: Lucidity from player_lucidity (stats no longer carry it, ADR-029 step 3a)
 
     Returns:
         list: Base status lines
@@ -102,7 +110,7 @@ def _build_base_status_lines(player: Any, room_name: str, stats: dict[str, Any],
         f"Location: {room_name}",
         f"Position: {position_label}",
         f"Health: {stats.get('current_dp', 100)}/{stats.get('max_dp', 100)}",
-        f"lucidity: {stats.get('lucidity', 100)}/{stats.get('max_lucidity', 100)}",
+        f"lucidity: {current_lcd}/{stats.get('max_lucidity', 100)}",
         f"XP: {player.experience_points}",
         f"In Combat: {'Yes' if in_combat else 'No'}",
     ]
@@ -160,7 +168,7 @@ def _get_status_persistence(app: Any) -> Any | None:
 async def _build_status_result(app: Any, persistence: Any, current_user: dict[str, Any]) -> dict[str, str]:
     player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
-        return {"result": "Player information not found."}
+        return command_error("Player information not found.")
 
     room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
     room_name = room.name if room else "Unknown location"
@@ -169,7 +177,12 @@ async def _build_status_result(app: Any, persistence: Any, current_user: dict[st
     profession_info = await _get_profession_info(player, persistence)
     in_combat = await _get_combat_status(app, player)
 
-    status_lines = _build_base_status_lines(player, room_name, stats, in_combat)
+    typed_player = cast(Player, player)
+    lcd_reader = cast(CurrentLcdReader, persistence)
+    current_lcd = await lcd_reader.get_current_lcd(uuid.UUID(str(typed_player.player_id)))
+    status_lines = _build_base_status_lines(
+        typed_player, room_name, cast(Mapping[str, object], stats), in_combat, current_lcd=current_lcd
+    )
     _add_profession_lines(status_lines, profession_info)
     _add_additional_stats_lines(status_lines, stats)
     return {"result": "\n".join(status_lines)}
@@ -216,7 +229,7 @@ async def handle_status_command(
         return result
     except (AttributeError, TypeError) as e:
         logger.error("Status command error", player=player_name, error=str(e))
-        return {"result": f"Error retrieving status information: {str(e)}"}
+        return command_error(f"Error retrieving status information: {str(e)}")
 
 
 async def handle_whoami_command(

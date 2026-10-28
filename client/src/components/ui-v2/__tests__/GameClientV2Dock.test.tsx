@@ -117,10 +117,6 @@ vi.mock('../panels/ChatHistoryPanel', () => ({
   },
 }));
 
-vi.mock('../panels/SettingsPanel', () => ({
-  SettingsPanel: () => <div data-testid="settings-panel">Settings</div>,
-}));
-
 vi.mock('../panels/GameInfoPanel', () => ({
   GameInfoPanel: () => {
     dockTest.gameInfoBodyRenders += 1;

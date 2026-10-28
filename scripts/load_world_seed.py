@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """Load world seed data (rooms, zones, zone configs, holidays, schedules, emotes) into PostgreSQL database.
 
-WARNING: This script applies the environment-specific DDL (db/mythos_<dbname>_ddl.sql) FIRST,
-which DROPS ALL TABLES (rooms, zones, players, users, etc.) and recreates an empty schema,
-then loads the environment DML (world, professions, items, NPCs, etc.). Running it against a
-database that has data you care about will DESTROY that data. Use a separate DB for seeding,
-or run only the DML file: psql -d your_db -f data/db/mythos_<env>_dml.sql
+WARNING: This script applies the schema-agnostic DDL (db/schema.sql) FIRST, which DROPS ALL
+TABLES (rooms, zones, players, users, etc.) and recreates an empty schema, then loads the
+schema-agnostic seed (data/db/seed.sql: world, professions, items, NPCs, etc.). Running it
+against a database that has data you care about will DESTROY that data. Use a separate DB for
+seeding, or run only the seed file: psql -d your_db -c "SET search_path TO your_schema;" -f
+data/db/seed.sql
 
-DDL and DML run via psql -f: DDL first kicks other backends then applies drops/creates; DML is
-pg_dump format (COPY ... FROM stdin) and cannot be executed reliably with asyncpg.execute.
+DDL and seed run via psql -f: DDL first kicks other backends then applies drops/creates; the
+seed is pg_dump format (COPY ... FROM stdin) and cannot be executed reliably with asyncpg.execute.
 
-The DDL and DML files are chosen from DATABASE_URL: mythos_dev -> db/mythos_dev_ddl.sql +
-data/db/mythos_dev_dml.sql, mythos_unit -> mythos_unit_ddl + mythos_unit_dml, mythos_e2e ->
-mythos_e2e_ddl + mythos_e2e_dml.
+db/schema.sql and data/db/seed.sql are the single, schema-agnostic source for all three
+environments (#811) -- object names are unqualified, so both are loaded with `search_path` set
+to the target schema, which is derived from DATABASE_URL's database name (mythos_dev /
+mythos_unit / mythos_e2e).
 
 asyncpg table counts use POSTGRES_SEARCH_PATH if set, else the database name as schema (see .env.e2e_test).
 """
@@ -59,17 +61,15 @@ def _validate_environment_and_files() -> tuple[str, Path, Path]:
         print("=" * 60)
         sys.exit(1)
 
-    schema_file = Path(f"db/{db_name}_ddl.sql")
-    dml_file = Path(f"data/db/{db_name}_dml.sql")
+    schema_file = Path("db/schema.sql")
+    dml_file = Path("data/db/seed.sql")
 
     if not schema_file.exists():
         print(f"ERROR: DDL file not found: {schema_file}")
-        print("       Use db/mythos_dev_ddl.sql, db/mythos_unit_ddl.sql, or db/mythos_e2e_ddl.sql")
         sys.exit(1)
 
     if not dml_file.exists():
-        print(f"ERROR: DML file not found: {dml_file}")
-        print("       Use data/db/mythos_dev_dml.sql, mythos_unit_dml.sql, or mythos_e2e_dml.sql")
+        print(f"ERROR: seed file not found: {dml_file}")
         sys.exit(1)
 
     return database_url, schema_file, dml_file
@@ -184,9 +184,15 @@ def _run_psql_file(
     heartbeat_phase: str,
     failure_label: str,
 ) -> None:
-    """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap)."""
+    """Run a .sql file with psql (-q). Optionally kick competitors before -f (same session, no gap).
+
+    db/schema.sql and data/db/seed.sql (#811) are schema-agnostic -- object names are unqualified,
+    so search_path must be set to the target schema (POSTGRES_SEARCH_PATH, else the DB name) before
+    -f runs, in the same psql session.
+    """
     host, port, user, password, dbname = _parse_pg_url_for_psql(database_url)
     psql_exe = _resolve_psql_executable()
+    search_path = os.getenv("POSTGRES_SEARCH_PATH", dbname)
     env = os.environ.copy()
     if password:
         env["PGPASSWORD"] = password
@@ -210,6 +216,7 @@ def _run_psql_file(
     ]
     if kick_other_backends:
         cmd.extend(["-c", _PSQL_KICK_OTHER_BACKENDS])
+    cmd.extend(["-c", f"SET search_path TO {search_path};"])
     cmd.extend(["-f", sql_path])
     print(preamble, flush=True)
     proc: subprocess.Popen[str] = subprocess.Popen(
@@ -257,6 +264,62 @@ def _apply_schema(database_url: str, schema_file: Path) -> None:
     print("  [OK] Schema applied successfully")
 
 
+async def _reset_migration_ledger(database_url: str, search_path: str) -> None:
+    """Truncate dbmate's schema_migrations so the next `up` replays every migration.
+
+    db/schema.sql's DROP/CREATE list deliberately excludes schema_migrations (it's dbmate's
+    ledger, not part of the baseline), so applying it above reset every migrated table back to
+    baseline shape while leaving the ledger claiming those migrations are still in effect. Without
+    this, the next `dbmate up` would see "everything already applied" and silently skip replaying
+    real post-baseline migrations (e.g. #663's rooms.environment column) -- same fix
+    scripts/setup_postgresql_test_db.ps1 applies for mythos_unit/mythos_e2e.
+    """
+    url = database_url.replace("postgresql+asyncpg://", "postgresql://")
+    conn = await asyncpg.connect(url, server_settings={"search_path": search_path})
+    try:
+        await conn.execute(f'TRUNCATE TABLE "{search_path}".schema_migrations')
+    except asyncpg.UndefinedTableError:
+        pass  # dbmate has never run against this database yet; nothing to reset
+    finally:
+        await conn.close()
+
+
+def _replay_migrations(database_url: str, search_path: str) -> None:
+    """Run `dbmate up` so db/migrations/*.sql (DDL) and data/db/migrations/*.sql (DML) reapply after the baseline.
+
+    Same `npx dbmate ... up` invocation scripts/migrate.ps1 uses, built directly from
+    DATABASE_URL instead of a fixed per-environment .env file -- this script already resolved
+    the target database from DATABASE_URL, so it needs no separate env-file lookup.
+    """
+    url = _database_url_for_cli(database_url)
+    dbmate_url = f"{url}{'&' if '?' in url else '?'}sslmode=disable&search_path={search_path}"
+    project_root = Path(__file__).resolve().parent.parent
+    # shutil.which (not a bare "npx"): Windows subprocess without shell=True needs the resolved
+    # .cmd path -- migrate.ps1 gets this for free from PowerShell's own command resolution.
+    npx_exe = shutil.which("npx")
+    if not npx_exe:
+        msg = "npx not found on PATH. Install Node.js (dbmate is a pinned root devDependency, #811)."
+        raise FileNotFoundError(msg)
+    cmd = [npx_exe, "dbmate"]
+    for migrations_dir in (project_root / "db" / "migrations", project_root / "data" / "db" / "migrations"):
+        cmd += ["--migrations-dir", str(migrations_dir)]
+    cmd += ["--no-dump-schema", "up"]
+    # DATABASE_URL via the environment, not a --url argv entry: Windows can only launch npx's
+    # .cmd wrapper through cmd.exe even with shell=False, which re-interprets '&' (present in
+    # dbmate_url's query string) as its own command separator. The env block bypasses cmd.exe's
+    # command-line parsing entirely.
+    env = os.environ.copy()
+    env["DATABASE_URL"] = dbmate_url
+    print("\nReplaying dbmate migrations (db/migrations/*.sql, data/db/migrations/*.sql)...")
+    result = subprocess.run(  # nosec B603 B607: argv list, no shell; npx/dbmate are pinned devDependencies (#811)
+        cmd, cwd=project_root, env=env, check=False
+    )
+    if result.returncode != 0:
+        msg = f"dbmate up failed (exit {result.returncode})."
+        raise RuntimeError(msg)
+    print("  [OK] Migrations replayed successfully")
+
+
 async def _print_final_table_counts(conn: asyncpg.Connection) -> None:
     """Print final table counts after loading."""
     print("\nFinal table counts:")
@@ -301,6 +364,9 @@ async def main():
     print(f"\nLoading DML from {dml_file}...")
     _load_dml_with_psql(database_url, dml_file)
     print("  [OK] DML loaded successfully")
+
+    await _reset_migration_ledger(database_url, server_settings["search_path"])
+    _replay_migrations(database_url, server_settings["search_path"])
 
     conn = await asyncpg.connect(url, server_settings=server_settings)
     try:

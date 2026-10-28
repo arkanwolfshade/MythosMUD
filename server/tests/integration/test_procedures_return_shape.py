@@ -7,12 +7,17 @@ the test database (mythos_unit or mythos_e2e) with procedures already applied.
 """
 
 import uuid
+from collections.abc import Mapping
+from typing import cast
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from server.models.player import Player
+from server.game.player_registry import PlayerInventoryPart, PlayerRowData
+from server.game.player_registry.player_inventory import UPDATE_PLAYER_INVENTORY_SQL
+from server.game.player_registry.player_row import LOAD_PLAYER_SQL, UPDATE_PLAYER_ROW_SQL
+from server.models.player import Player, PlayerInventory
 from server.models.user import User
 from server.services.npc_startup_service import ARENA_ROOM_IDS
 
@@ -28,6 +33,18 @@ GET_ROOMS_WITH_EXITS_COLUMNS = {
     "plane",
     "zone",
     "exits",
+    # #829: the map columns the editor and React Flow map need. They were declared on
+    # RoomData but never selected here, so GET /api/rooms/list returned null for both
+    # and every stored-coordinate branch in the client was unreachable.
+    "map_x",
+    "map_y",
+    # #663: room's own (possibly NULL) rooms.environment column, and the room -> subzone ->
+    # zone -> 'outdoors' cascade resolved in SQL.
+    "room_environment",
+    # #910: zones.name / subzones.name for the death screen.
+    "zone_display_name",
+    "subzone_display_name",
+    "resolved_environment",
 }
 
 GET_PLAYER_BY_ID_COLUMNS = {
@@ -51,8 +68,9 @@ GET_NPC_SYSTEM_STATISTICS_COLUMNS = {
 ADD_EFFECT_PARAMS = {
     "effect_type": "login_warded",
     "category": "entry_ward",
-    "duration": 100,
-    "applied_at_tick": 0,
+    "remaining_seconds": 10,
+    "payload": "{}",
+    "instance_scoped": False,
     "intensity": 1,
     "source": "game_entry",
     "visibility_level": "visible",
@@ -78,7 +96,13 @@ async def test_get_rooms_with_exits_return_shape(
                     zone_stable_id,
                     plane,
                     zone,
-                    exits
+                    exits,
+                    map_x,
+                    map_y,
+                    room_environment,
+                    resolved_environment,
+                    zone_display_name,
+                    subzone_display_name
                 FROM get_rooms_with_exits()
                 """
             )
@@ -121,7 +145,7 @@ async def test_get_rooms_with_exits_includes_arena_zone_rooms(
     assert not missing, (
         f"get_rooms_with_exits() must return all arena zone rooms (limbo/arena). "
         f"Missing {len(missing)} of {len(ARENA_ROOM_IDS)}: {missing[:5]!s}{'...' if len(missing) > 5 else ''}. "
-        "Ensure the test DB has arena migration applied (apply_arena_migration.ps1)."
+        "Ensure the test DB has the arena zone seeded (data/db/seed.sql, #811)."
     )
     assert "limbo_arena_arena_arena_5_5" in stable_ids, "Arena center room must be in room cache data source"
 
@@ -140,7 +164,6 @@ async def test_get_player_by_id_return_shape_and_not_found(
                     user_id,
                     name,
                     inventory,
-                    status_effects,
                     current_room_id,
                     respawn_room_id,
                     experience_points,
@@ -194,6 +217,153 @@ async def test_get_npc_system_statistics_return_shape(
 
 
 @pytest.mark.asyncio
+async def test_clear_player_inventory_empties_gear_and_leaves_stats_untouched(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """
+    clear_player_inventory() empties carried + equipped items and touches nothing else (#917).
+
+    Death moves gear onto a corpse; clearing it through upsert_player rewrote stats from a
+    stale Player and put a dead player back to their pre-death DP, looping death forever.
+    """
+    stats: dict[str, object] = {"current_dp": -10, "max_dp": 20}
+    sling = '[{"item_id": "sling", "item_name": "Sling", "slot_type": "inventory", "quantity": 1}]'
+    async with session_factory() as session:
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        user = User(
+            id=str(user_id),
+            email=f"clearinv_{user_id}@example.com",
+            username=f"clearinv_{str(user_id)[:8]}",
+            display_name=f"Clear Inv {str(user_id)[:8]}",
+            hashed_password="hashed",
+            is_active=True,
+            is_superuser=False,
+            is_verified=True,
+        )
+        player = Player(
+            player_id=str(player_id),
+            user_id=str(user_id),
+            name=f"clearinv_{str(player_id)[:8]}",
+            inventory=sling,
+            stats=stats,
+        )
+        gear = PlayerInventory(
+            player_id=str(player_id),
+            inventory_json=sling,
+            equipped_json='{"head": {"item_id": "hat", "item_name": "Hat", "slot_type": "head", "quantity": 1}}',
+        )
+        session.add_all([user, player])
+        await session.flush()
+        session.add(gear)
+        await session.flush()
+
+        cleared = cast(
+            object, (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": player_id})).scalar()
+        )
+        missing = cast(
+            object, (await session.execute(text("SELECT clear_player_inventory(:id)"), {"id": uuid.uuid4()})).scalar()
+        )
+        row = (
+            (
+                await session.execute(
+                    text(
+                        """
+                        SELECT p.inventory, p.stats, pi.inventory_json, pi.equipped_json
+                        FROM players p JOIN player_inventories pi ON pi.player_id = p.player_id
+                        WHERE p.player_id = :id
+                        """
+                    ),
+                    {"id": player_id},
+                )
+            )
+            .mappings()
+            .one()
+        )
+
+    assert cleared is True
+    assert missing is False
+    assert row["inventory"] == "[]"
+    assert row["inventory_json"] == "[]"
+    assert row["equipped_json"] == "{}"
+    assert row["stats"] == stats
+
+
+@pytest.mark.asyncio
+async def test_the_registry_part_writes_each_touch_only_their_own_columns(
+    session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    """
+    update_player_inventory and update_player_row (ADR-029 step 4a), called with the registry parts' own statements.
+
+    The inventory write must leave stats alone and the row write must leave the inventory alone: the registry relies
+    on that to never write back a stale copy of a part it did not change.
+    """
+    stats: dict[str, object] = {"current_dp": 7, "max_dp": 20}
+    sling = '[{"item_id": "sling", "item_name": "Sling", "slot_type": "inventory", "quantity": 1}]'
+    amulet = {"item_id": "jade_amulet", "item_name": "Jade Amulet", "slot_type": "backpack", "quantity": 1}
+    async with session_factory() as session:
+        user_id = uuid.uuid4()
+        player_id = uuid.uuid4()
+        session.add(
+            User(
+                id=str(user_id),
+                email=f"partwrites_{user_id}@example.com",
+                username=f"partwrites_{str(user_id)[:8]}",
+                display_name=f"Part Writes {str(user_id)[:8]}",
+                hashed_password="hashed",
+                is_active=True,
+                is_superuser=False,
+                is_verified=True,
+            )
+        )
+        await session.flush()
+        session.add(
+            Player(
+                player_id=str(player_id),
+                user_id=str(user_id),
+                name=f"partwrites_{str(player_id)[:8]}",
+                inventory=sling,
+                stats=stats,
+            )
+        )
+        await session.flush()
+        loaded = cast(
+            Mapping[str, object], (await session.execute(LOAD_PLAYER_SQL, {"id": player_id})).mappings().one()
+        )
+
+        inventory = PlayerInventoryPart.from_row(loaded)
+        inventory.set_carried([*inventory.carried, amulet])
+        _ = await session.execute(UPDATE_PLAYER_INVENTORY_SQL, inventory.write_params())
+        after_inventory = await _inventory_and_stats(session, player_id)
+
+        row = PlayerRowData.from_row(loaded)
+        row.stats["current_dp"] = 12
+        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params())
+        after_row = await _inventory_and_stats(session, player_id)
+
+    assert "Jade Amulet" in str(after_inventory["inventory"])
+    assert after_inventory["inventory"] == after_inventory["inventory_json"]
+    assert after_inventory["stats"] == stats  # the inventory write left stats alone
+    assert after_row["stats"] == {"current_dp": 12, "max_dp": 20}
+    assert after_row["inventory"] == after_inventory["inventory"]  # the row write left the inventory alone
+
+
+async def _inventory_and_stats(session: AsyncSession, player_id: uuid.UUID) -> dict[str, object]:
+    result = await session.execute(
+        text(
+            """
+            SELECT p.inventory, p.stats, pi.inventory_json
+            FROM players p JOIN player_inventories pi ON pi.player_id = p.player_id
+            WHERE p.player_id = :id
+            """
+        ),
+        {"id": player_id},
+    )
+    return dict(result.mappings().one())
+
+
+@pytest.mark.asyncio
 async def test_add_player_effect_generates_id(
     session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
@@ -226,12 +396,11 @@ async def test_add_player_effect_generates_id(
 
         result = await session.execute(
             text(
-                "SELECT add_player_effect("
-                ":player_id, :effect_type, :category, :duration, :applied_at_tick,"
-                " :intensity, :source, :visibility_level)"
+                "SELECT add_player_effect(:player_id, :effect_type, :category, :remaining_seconds,"
+                + " CAST(:payload AS jsonb), :instance_scoped, :intensity, :source, :visibility_level)"
             ),
             {"player_id": player_id, **ADD_EFFECT_PARAMS},
         )
-        effect_id = result.scalar()
+        effect_id = cast(object, result.scalar())
 
     assert effect_id is not None

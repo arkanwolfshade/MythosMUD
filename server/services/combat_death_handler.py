@@ -14,6 +14,7 @@ from structlog.stdlib import BoundLogger
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.realtime.connection_utils import get_npc_disposition_from_instance
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -58,6 +59,10 @@ class _CombatServiceDeps(Protocol):
         """Publish PlayerMortallyWoundedEvent to NATS (#634)."""
         raise NotImplementedError
 
+    async def remove_participant(self, combat_id: UUID, participant_id: UUID, reason: str = ...) -> bool:
+        """Drop a player from a combat; ends it only if no able player is left (#833, #1058)."""
+        raise NotImplementedError
+
 
 CombatServiceDeps = _CombatServiceDeps
 
@@ -93,6 +98,18 @@ class CombatDeathHandler:
             from ..events.event_types import PlayerDiedEvent
             from ..services.combat_messaging_integration import combat_messaging_integration
 
+            death_location_display = "Unknown Location"  # never the raw room ID (#910)
+            try:
+                from ..container.async_persistence_access import get_container_async_persistence
+                from ..utils.room_utils import format_room_location
+
+                persistence = get_container_async_persistence()
+                room = persistence.get_room_by_id(combat.room_id) if persistence else None
+                if room is not None and not hasattr(room, "__await__"):
+                    death_location_display = format_room_location(room) or death_location_display
+            except AttributeError, TypeError, RuntimeError, ValueError:
+                pass
+
             # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
             # Players can be at 0 DP (mortally wounded) but death events should only fire at -10 DP
             # The client gates the respawn modal on current_dp <= -10, so we must send -10
@@ -100,7 +117,7 @@ class CombatDeathHandler:
                 player_id=str(target.participant_id),
                 player_name=target.name,
                 room_id=combat.room_id,
-                death_location=combat.room_id,
+                death_location=death_location_display,
                 current_dp=-10,  # Always -10 for death events (client gates modal on current_dp <= -10)
             )
             # NATS-consumable in addition to the direct room broadcast above (#634)
@@ -110,7 +127,7 @@ class CombatDeathHandler:
                     player_name=target.name,
                     room_id=combat.room_id,
                     combat_id=str(combat.combat_id),
-                    death_location=combat.room_id,
+                    death_location=death_location_display,
                 )
             )
             logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
@@ -124,21 +141,35 @@ class CombatDeathHandler:
         """Create corpse container when player dies."""
         try:
             from ..container import ApplicationContainer
-            from ..services.corpse_lifecycle_service import CorpseLifecycleService
 
-            connection_manager = self._resolve_connection_manager_for_corpse_creation()
+            # Local import: also picks up CorpseConnectionManagerLike, that module's own
+            # typed connection_manager shape (distinct from this file's _ConnectionManagerLike,
+            # which only covers room subscriber diagnostics). Same module as
+            # CorpseLifecycleService, so this adds no new import edge.
+            from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike, CorpseLifecycleService
+
+            resolved_connection_manager = self._resolve_connection_manager_for_corpse_creation()
+            connection_manager: CorpseConnectionManagerLike | None = None
             persistence: AsyncPersistenceLayer | None = None
 
-            if connection_manager is None:
+            if resolved_connection_manager is None:
                 try:
                     container = ApplicationContainer.get_instance()
-                    connection_manager = getattr(container, "connection_manager", None)
+                    connection_manager = cast(
+                        "CorpseConnectionManagerLike | None",
+                        getattr(container, "connection_manager", None),
+                    )
                     persistence = cast(
                         AsyncPersistenceLayer | None,
                         getattr(container, "async_persistence", None) if container else None,
                     )
-                except (ImportError, AttributeError, RuntimeError, ValueError):
+                except ImportError, AttributeError, RuntimeError, ValueError:
                     pass
+            else:
+                # resolved_connection_manager is already a cast(_ConnectionManagerLike | None, ...)
+                # of the real ConnectionManager in _resolve_connection_manager_for_corpse_creation;
+                # go via object since the two Protocols don't structurally overlap.
+                connection_manager = cast("CorpseConnectionManagerLike", cast(object, resolved_connection_manager))
 
             if persistence is None:
                 logger.warning("Could not get persistence for corpse creation, skipping")
@@ -254,6 +285,7 @@ class CombatDeathHandler:
                 npc_name=target.name,
                 xp_reward=xp_reward,
                 killer_id=killer_id,
+                npc_disposition=get_npc_disposition_from_instance(original_npc_id).value,
             )
             _ = await self._combat_service.publish_npc_died_event_to_nats(death_event)
             logger.info("NPCDiedEvent published successfully", npc_id=original_npc_id, combat_id=combat.combat_id)
@@ -329,6 +361,10 @@ class CombatDeathHandler:
                 )
             except (NATSError, ValueError, RuntimeError, AttributeError, ConnectionError, TypeError, KeyError) as e:
                 logger.error("Error publishing player mortally wounded event", error=str(e), exc_info=True)
+            # #1058: a downed player leaves the fight so attackers disengage and the bleed-out clock can run.
+            _ = await self._combat_service.remove_participant(
+                combat.combat_id, target.participant_id, "Player incapacitated"
+            )
 
         if target_died and target.participant_type == CombatParticipantType.PLAYER:
             await self._handle_player_death_events(target, combat)

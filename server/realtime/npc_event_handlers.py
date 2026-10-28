@@ -12,8 +12,17 @@ import uuid
 from typing import Any, cast
 
 from ..app.tracked_task_manager import get_global_tracked_manager
+from ..constants.message_category import MessageCategory
+from ..constants.message_segments import (
+    MessageSegment,
+    SegmentPart,
+    default_name_line,
+    message_with_segments,
+    npc_name_segment,
+)
 from ..events.event_types import NPCEnteredRoom, NPCLeftRoom
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_utils import get_npc_disposition_from_instance
 from .message_builders import MessageBuilder
 
 
@@ -110,7 +119,7 @@ class NPCEventHandler:
         try:
             result: dict[str, Any] | None = cast(dict[str, Any] | None, json.loads(behavior_config))
             return result
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             return None
 
     def _extract_spawn_message_from_config(self, behavior_config: dict[str, Any]) -> str | None:
@@ -221,6 +230,61 @@ class NPCEventHandler:
             )
             return None
 
+    # Reason: DYNAMIC_DISPATCH - NPC instances are duck-typed objects looked up via hasattr/getattr
+    # elsewhere in this class; matches this module's established, unsuppressed convention.
+    # Appropriate because: a Protocol for NPC instances is out of scope for this complexity-only
+    # extraction.
+    def _resolve_active_npc_instance(self, npc_id: str) -> Any | None:  # pyright: ignore[reportExplicitAny]
+        """Look up the live NPC instance from the NPC lifecycle manager, or None if unavailable."""
+        from ..services.npc_instance_service import get_npc_instance_service
+
+        npc_instance_service = get_npc_instance_service()
+        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            return None
+
+        lifecycle_manager = npc_instance_service.lifecycle_manager
+        if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+            return None
+
+        return lifecycle_manager.active_npcs[npc_id]
+
+    # Reason: DYNAMIC_DISPATCH - npc_instance is a duck-typed object per this module's own
+    # established convention (see _resolve_active_npc_instance above).
+    # Appropriate because: same unsuppressed convention as this class's other NPC-instance access.
+    def _resolve_npc_behavior_config(
+        self,
+        # Reason: DYNAMIC_DISPATCH - npc_instance is a duck-typed object per this module's own
+        # established convention (see _resolve_active_npc_instance above).
+        # Appropriate because: same unsuppressed convention as this class's other NPC access.
+        npc_instance: Any,  # pyright: ignore[reportAny, reportExplicitAny]
+        # Reason: DYNAMIC_DISPATCH - same duck-typed-object convention as npc_instance above.
+        # Appropriate because: same unsuppressed convention as this function's own parameter.
+    ) -> Any | None:  # pyright: ignore[reportExplicitAny]
+        """Get the NPC's behavior_config, parsing it from JSON if it's stored as a string."""
+        # Reason: DYNAMIC_DISPATCH - npc_instance is Any per this function's own parameter above.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        behavior_config = getattr(npc_instance, "_behavior_config", None)  # pyright: ignore[reportAny]
+        if not behavior_config:
+            # Reason: DYNAMIC_DISPATCH - npc_instance is Any per this function's own parameter.
+            # Appropriate because: same unsuppressed convention as this function's own signature.
+            # Try alternative attribute name
+            behavior_config = getattr(npc_instance, "behavior_config", None)  # pyright: ignore[reportAny]
+        if not behavior_config:
+            return None
+
+        if isinstance(behavior_config, str):
+            import json
+
+            try:
+                # Reason: DYNAMIC_DISPATCH - json.loads() on an untyped string returns Any.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                return json.loads(behavior_config)  # pyright: ignore[reportAny]
+            except json.JSONDecodeError, ValueError:
+                return None
+        # Reason: DYNAMIC_DISPATCH - behavior_config is Any per this function's own return type.
+        # Appropriate because: same unsuppressed convention as this function's own signature.
+        return behavior_config  # pyright: ignore[reportAny]
+
     def _get_npc_departure_message(self, npc_id: str) -> str | None:
         """
         Get the departure message for an NPC from its behavior_config.
@@ -234,40 +298,16 @@ class NPCEventHandler:
             Departure message (custom or default), or None if NPC not found
         """
         try:
-            # Get the NPC instance from the lifecycle manager
-            from ..services.npc_instance_service import get_npc_instance_service
-
-            npc_instance_service = get_npc_instance_service()
-            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+            npc_instance = self._resolve_active_npc_instance(npc_id)
+            if npc_instance is None:
                 return None
 
-            lifecycle_manager = npc_instance_service.lifecycle_manager
-            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
-                return None
-
-            npc_instance = lifecycle_manager.active_npcs[npc_id]
-
-            # Get the NPC name for the default message
-            npc_name = getattr(npc_instance, "name", "An NPC")
-
-            # Get the behavior_config from the NPC instance
-            behavior_config = getattr(npc_instance, "_behavior_config", None)
-            if not behavior_config:
-                # Try alternative attribute name
-                behavior_config = getattr(npc_instance, "behavior_config", None)
+            # Reason: DYNAMIC_DISPATCH - npc_instance is Any per _resolve_active_npc_instance above.
+            # Appropriate because: same unsuppressed convention as this class's other NPC access.
+            npc_name = getattr(npc_instance, "name", "An NPC")  # pyright: ignore[reportAny]
+            behavior_config = self._resolve_npc_behavior_config(npc_instance)
 
             if behavior_config:
-                # Parse the behavior_config if it's a JSON string
-                import json
-
-                if isinstance(behavior_config, str):
-                    try:
-                        behavior_config = json.loads(behavior_config)
-                    except (json.JSONDecodeError, ValueError):
-                        # If parsing fails, use default message
-                        return f"{npc_name} leaves."
-
-                # Get the departure_message from the behavior_config
                 departure_message = behavior_config.get("departure_message")
                 if departure_message:
                     return cast(str, departure_message)
@@ -279,7 +319,17 @@ class NPCEventHandler:
             self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
             return None
 
-    async def _send_room_message(self, room_id: str, message: str, message_type: str = "npc_spawn") -> None:
+    async def _send_room_line(self, room_id: str, parts: list[SegmentPart], message_type: str = "npc_spawn") -> None:
+        """Send a line built from parts; ``segments`` go out only when something in it is actually styled."""
+        built = message_with_segments(parts)
+        styled = any("category" in segment for segment in built["segments"])
+        await self._send_room_message(
+            room_id, built["message"], message_type, segments=built["segments"] if styled else None
+        )
+
+    async def _send_room_message(
+        self, room_id: str, message: str, message_type: str = "npc_spawn", segments: list[MessageSegment] | None = None
+    ) -> None:
         """
         Send a message to all players in a room.
 
@@ -287,6 +337,7 @@ class NPCEventHandler:
             room_id: The room ID
             message: The message to send
             message_type: Type of message (default: "npc_spawn", use "system" for movement messages)
+            segments: Styled spans that join back to ``message`` (#1025), or None for a plain line
         """
         try:
             # Get all players in the room using room_manager (same as broadcast_to_room)
@@ -316,6 +367,8 @@ class NPCEventHandler:
                         "message": message,
                         "room_id": room_id,
                         "message_type": message_type,
+                        "category": MessageCategory.ROOM_MOVEMENT,
+                        **({"segments": segments} if segments else {}),
                     },
                     player_id=player_id,
                 )
@@ -394,15 +447,17 @@ class NPCEventHandler:
             if event.from_room_id:
                 # This is a movement - create directional message
                 direction = await self._determine_direction_from_rooms(event.from_room_id, event.room_id)
-                movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "entered")
-                # Send movement message to all players in the room as system message
-                await self._send_room_message(event.room_id, movement_message, message_type="system")
+                name = npc_name_segment(npc_name, get_npc_disposition_from_instance(event.npc_id))
+                parts = self.message_builder.create_npc_movement_parts(name, direction, "entered")
+                await self._send_room_line(event.room_id, parts, message_type="system")
             else:
                 # This is a spawn - use spawn message from behavior_config
                 spawn_message = self._get_npc_spawn_message(event.npc_id)
                 if spawn_message:
                     # Send the spawn message to all players in the room
-                    await self._send_room_message(event.room_id, spawn_message)
+                    disposition = get_npc_disposition_from_instance(event.npc_id)
+                    spawn_parts = default_name_line(spawn_message, npc_name, " appears.", disposition)
+                    await self._send_room_line(event.room_id, spawn_parts)
 
             self._schedule_room_occupants_update(event.room_id)
             self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
@@ -456,12 +511,15 @@ class NPCEventHandler:
         npc_name = self._get_npc_name(event.npc_id) or "An NPC"
         if event.to_room_id:
             direction = await self._determine_direction_from_rooms(event.room_id, event.to_room_id)
-            movement_message = self.message_builder.create_npc_movement_message(npc_name, direction, "left")
-            await self._send_room_message(event.room_id, movement_message, message_type="system")
+            name = npc_name_segment(npc_name, get_npc_disposition_from_instance(event.npc_id))
+            parts = self.message_builder.create_npc_movement_parts(name, direction, "left")
+            await self._send_room_line(event.room_id, parts, message_type="system")
         else:
             departure_message = self._get_npc_departure_message(event.npc_id)
             if departure_message:
-                await self._send_room_message(event.room_id, departure_message)
+                disposition = get_npc_disposition_from_instance(event.npc_id)
+                departure_parts = default_name_line(departure_message, npc_name, " leaves.", disposition)
+                await self._send_room_line(event.room_id, departure_parts)
 
     def _schedule_room_occupants_update(self, room_id: str) -> None:
         """Schedule room occupants update broadcast."""

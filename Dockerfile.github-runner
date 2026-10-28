@@ -24,13 +24,9 @@ RUN apt-get update && \
     gnupg \
     build-essential \
     pkg-config \
-    python3.12 \
-    python3.12-venv \
-    python3.12-dev \
-    python3-pip \
     lsb-release \
     && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-18 \
@@ -53,10 +49,6 @@ RUN apt-get update && \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure Python 3.12 as default interpreter.
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
-
 # Install uv package manager (placed in PATH for subsequent steps).
 # Human reader: download and verify uv installer script hash before execution.
 # AI reader: pinning script downloads prevents supply chain attacks.
@@ -65,6 +57,12 @@ RUN curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh && \
     rm /tmp/uv-install.sh && \
     ln -s /root/.local/bin/uv /usr/local/bin/uv
 ENV PATH="/root/.local/bin:${PATH}"
+
+# Human reader: Python comes from uv (exact patch pin), not apt; Ubuntu 24.04 only ships 3.12.
+# AI reader: keep PYTHON_VERSION in sync with .python-version; `uv venv` in install_ci_dependencies.sh
+# resolves this managed interpreter via .python-version.
+ARG PYTHON_VERSION=3.14.7
+RUN uv python install "${PYTHON_VERSION}"
 
 # Install Node.js 22 via NodeSource (matches frontend workflow requirement).
 # Human reader: download and verify NodeSource setup script before execution.
@@ -85,6 +83,12 @@ WORKDIR /workspace
 
 # Copy dependency manifests first to leverage layer caching for Python installs.
 COPY pyproject.toml uv.lock ./
+
+# Root npm manifest (#811): dbmate, the database migration runner, is a pinned devDependency
+# here -- separate from client/'s own npm tree, which is the React app's dependencies only.
+COPY package.json package-lock.json ./
+RUN set -x && echo "[npm] Starting root npm ci (dbmate)..." && \
+    npm ci --loglevel verbose
 
 # Copy Node manifests before installing client dependencies.
 # Also copy scripts directory needed for postinstall script.
@@ -138,8 +142,13 @@ RUN service postgresql start && \
     su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD}';\"" && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/db/mythos_unit_ddl.sql" && \
-    ( [ -f /workspace/data/db/mythos_unit_dml.sql ] && su postgres -c "psql -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/mythos_unit_dml.sql" || true ) && \
+    su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/db/schema.sql" && \
+    ( [ -f /workspace/data/db/seed.sql ] && su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SET search_path TO mythos_unit;\" -f /workspace/data/db/seed.sql" || true ) && \
+    for f in /workspace/db/procedures/*.sql; do \
+      su postgres -c "psql -v ON_ERROR_STOP=1 -v schema_name=mythos_unit -d mythos_unit" < "$f" || exit 1; \
+    done && \
+    mkdir -p /workspace/data/db/migrations && \
+    npx --prefix /workspace dbmate --url "postgres://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit?sslmode=disable&search_path=mythos_unit" --migrations-dir /workspace/db/migrations --migrations-dir /workspace/data/db/migrations --no-dump-schema up && \
     su postgres -c "psql -t -c \"SELECT datname FROM pg_database WHERE datname = 'mythos_unit';\"" | grep -q "mythos_unit" && \
     su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'users';\"" | grep -q 1 && \
     su postgres -c "psql -d mythos_unit -t -c \"SELECT 1 FROM information_schema.tables WHERE table_schema = 'mythos_unit' AND table_name = 'players';\"" | grep -q 1

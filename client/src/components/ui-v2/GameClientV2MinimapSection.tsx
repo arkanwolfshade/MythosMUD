@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Z_INDEX_OVERLAY_TOP } from '../../constants/layout';
-import { seedFrom } from '../../utils/directionHallucination';
 import { AsciiMinimap } from '../map/AsciiMinimap';
 import { MinimapPanelBackdrop } from './GameClientV2Minimap';
 import { PanelContainer } from './PanelSystem/PanelContainer';
@@ -13,27 +12,19 @@ export type MinimapPanelSectionProps = {
   room: Room | null;
   authToken: string;
   onMapClick?: () => void;
-  /** #626: when set, replace the minimap with churning ASCII noise. */
-  hallucinate?: boolean;
-  /** Player id used to seed the noise alongside the room id. */
-  playerId?: string;
 } & Pick<
   PanelManagerContextValue,
   'updatePosition' | 'updateSize' | 'toggleMinimize' | 'toggleMaximize' | 'focusPanel'
 >;
 
-function MinimapInlineBody({
+export function MinimapInlineBody({
   room,
   authToken,
   onMapClick,
-  hallucinate,
-  playerId,
 }: {
   room: Room | null;
   authToken: string;
   onMapClick?: () => void;
-  hallucinate?: boolean;
-  playerId?: string;
 }) {
   if (!room?.id) {
     return (
@@ -50,7 +41,7 @@ function MinimapInlineBody({
   return (
     <>
       <div className="text-xs text-mythos-terminal-text/70 shrink-0 truncate" title={room.id}>
-        {room.id}
+        {room.name || room.id}
       </div>
       <div className="flex-1 min-h-16 mt-1">
         <AsciiMinimap
@@ -62,8 +53,6 @@ function MinimapInlineBody({
           size={5}
           variant="inline"
           onClick={onMapClick}
-          hallucinate={Boolean(hallucinate && playerId)}
-          seed={playerId ? seedFrom(room.id, playerId) : 0}
         />
       </div>
     </>
@@ -71,14 +60,12 @@ function MinimapInlineBody({
 }
 
 /** Minimap backdrop + draggable panel (extracted to keep GameClientV2 under per-method line limits). */
-export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = props => {
+export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = (props /* lizard: allow nloc, see #787 */) => {
   const {
     minimapPanel,
     room,
     authToken,
     onMapClick,
-    hallucinate,
-    playerId,
     updatePosition,
     updateSize,
     toggleMinimize,
@@ -115,13 +102,7 @@ export const MinimapPanelSection: React.FC<MinimapPanelSectionProps> = props => 
         >
           <div className="text-mythos-terminal-text/80 text-xs shrink-0 px-1 pb-1">Click map to open full view</div>
           <div className="w-full text-left flex-1 min-h-20 flex flex-col overflow-auto border border-mythos-terminal-border/50 rounded p-1.5 text-mythos-terminal-text bg-mythos-terminal-background">
-            <MinimapInlineBody
-              room={room}
-              authToken={authToken}
-              onMapClick={onMapClick}
-              hallucinate={hallucinate}
-              playerId={playerId}
-            />
+            <MinimapInlineBody room={room} authToken={authToken} onMapClick={onMapClick} />
           </div>
         </div>
       </PanelContainer>

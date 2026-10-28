@@ -168,7 +168,7 @@ async def test_update_player_room_location_with_persistence():
 
     connection_manager.room_manager.remove_room_occupant.assert_called_once()
     connection_manager.room_manager.add_room_occupant.assert_called_once()
-    source_room.player_left.assert_called_once_with("p1")
+    source_room.player_left.assert_called_once_with("p1", to_room_id="b")
     dest_room.player_entered.assert_called_once_with("p1")
 
 

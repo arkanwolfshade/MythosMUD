@@ -1,46 +1,44 @@
 import { memo } from 'react';
-import type { LucidityStatus } from '../../types/lucidity';
+import type { LucidityStatus, LucidityTier } from '../../types/lucidity';
 
 interface LucidityMeterProps {
   status: LucidityStatus | null;
   className?: string;
 }
 
-const TIER_DESCRIPTIONS: Record<
-  LucidityStatus['tier'],
-  { label: string; tone: string; description: string; barClass: string }
-> = {
-  lucid: {
-    label: 'Lucid',
-    tone: 'text-emerald-300',
-    description: 'Mind is steady and grounded.',
-    barClass: 'bg-emerald-400',
-  },
-  uneasy: {
-    label: 'Uneasy',
-    tone: 'text-amber-300',
-    description: 'A chill brushes the edge of perception.',
-    barClass: 'bg-amber-300',
-  },
-  fractured: {
-    label: 'Fractured',
-    tone: 'text-orange-300',
-    description: 'Reality frays; focus slips between fingers.',
-    barClass: 'bg-orange-400',
-  },
-  deranged: {
-    label: 'Deranged',
-    tone: 'text-rose-300',
-    description: 'Thoughts spiral into non-euclidean tangles.',
-    barClass: 'bg-rose-500',
-  },
-  catatonic: {
-    label: 'Catatonic',
-    tone: 'text-fuchsia-300',
-    description: 'Willpower is absent; body moves without intent.',
-    barClass: 'bg-fuchsia-500',
-  },
-};
+const TIER_DESCRIPTIONS: Record<LucidityTier, { label: string; tone: string; description: string; barClass: string }> =
+  {
+    lucid: {
+      label: 'Lucid',
+      tone: 'text-emerald-300',
+      description: 'Mind is steady and grounded.',
+      barClass: 'bg-emerald-400',
+    },
+    uneasy: {
+      label: 'Uneasy',
+      tone: 'text-amber-300',
+      description: 'A chill brushes the edge of perception.',
+      barClass: 'bg-amber-300',
+    },
+    fractured: {
+      label: 'Fractured',
+      tone: 'text-orange-300',
+      description: 'Reality frays; focus slips between fingers.',
+      barClass: 'bg-orange-400',
+    },
+    deranged: {
+      label: 'Deranged',
+      tone: 'text-rose-300',
+      description: 'Thoughts spiral into non-euclidean tangles.',
+      barClass: 'bg-rose-500',
+    },
+    catatonic: {
+      label: 'Catatonic',
+      tone: 'text-fuchsia-300',
+      description: 'Willpower is absent; body moves without intent.',
+      barClass: 'bg-fuchsia-500',
+    },
+  };
 
 const formatChange = (delta: number | undefined) => {
   if (delta === undefined || Number.isNaN(delta)) {
@@ -104,7 +102,15 @@ function LucidityChangeFooter({ status }: { status: LucidityStatus }) {
 }
 
 function LucidityMeterBody({ status, className }: { status: LucidityStatus; className?: string }) {
-  const tierMetadata = TIER_DESCRIPTIONS[status.tier];
+  // No server tier yet (e.g. before the first game_state/lucidity_change of the session).
+  const tierMetadata = status.tier
+    ? TIER_DESCRIPTIONS[status.tier]
+    : {
+        label: '—',
+        tone: 'text-mythos-terminal-text-secondary',
+        description: 'Awaiting server data…',
+        barClass: 'bg-mythos-terminal-border',
+      };
   const { minValue, maxValue, percentage } = computeLucidityBar(status);
 
   return (

@@ -43,6 +43,19 @@ class LocalCommand(BaseCommand):
         return validate_message_content(v)
 
 
+class GlobalCommand(BaseCommand):
+    """Command for speaking in the global channel (server-wide)."""
+
+    command_type: Literal[CommandType.GLOBAL] = CommandType.GLOBAL
+    message: str = Field(..., min_length=1, max_length=500, description="Message to broadcast globally")
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls: type["GlobalCommand"], v: str) -> str:
+        """Validate message content for security using centralized validation."""
+        return validate_message_content(v)
+
+
 class SystemCommand(BaseCommand):
     """Command for sending system messages (admin only)."""
 

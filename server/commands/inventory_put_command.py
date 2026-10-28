@@ -10,7 +10,10 @@ from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..models.player import Player
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
+from .communication_commands_support import app_from_request
 from .container_helpers_inventory import (
     find_container_in_room,
     find_wearable_container_for_put,
@@ -20,6 +23,7 @@ from .container_helpers_inventory import (
 )
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import persist_player, remove_item_from_inventory, resolve_state_and_player
+from .scripted_action_support import run_on_put
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -29,6 +33,7 @@ class PutCommandRuntime:
     """Services and request scope for put-after-validation."""
 
     persistence: object
+    connection_manager: object
     request: object
     container_service: object
     room_manager: object
@@ -51,12 +56,11 @@ async def _put_resolve_container_id(
     persistence: object,
     request: object,
     player: Player,
-    room_manager: object,
     room_id: str,
     container_name: str,
 ) -> tuple[UUID | None, CommandResponse | None]:
     """Locate a room or wearable container id, or return an error response."""
-    container_found, cid = find_container_in_room(room_manager, room_id, container_name)
+    container_found, cid = await find_container_in_room(persistence, room_id, container_name)
 
     if not container_found:
         container_found, cid = await find_wearable_container_for_put(persistence, request, player, container_name)
@@ -72,19 +76,22 @@ async def _put_resolve_container_id(
             container_name=container_name,
             player=player.name,
         )
-        return None, {"result": f"Error: Container '{container_name}' has no valid ID."}
+        return None, command_error(f"Error: Container '{container_name}' has no valid ID.")
     return resolved, None
 
 
 async def _put_transfer_finish(
     container_service: object,
     persistence: object,
+    connection_manager: object,
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
     item_index: int,
     quantity: object,
     container_name: str,
+    *,
+    request: object | None = None,
 ) -> CommandResponse:
     transfer_result = await transfer_item_to_container(
         container_service, persistence, player, container_id, item_found, quantity
@@ -94,7 +101,7 @@ async def _put_transfer_finish(
         return {"result": transfer_result["error"]}
 
     if not transfer_result.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
     transfer_quantity = cast(int, transfer_result["transfer_quantity"])
     remove_item_from_inventory(player, item_index, transfer_quantity)
@@ -102,6 +109,16 @@ async def _put_transfer_finish(
     if persist_error:
         return persist_error
 
+    await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
+    if request is not None:
+        prototype_id = item_found.get("prototype_id")
+        await run_on_put(
+            app_from_request(request),
+            persistence,
+            player,
+            container_id,
+            prototype_id if isinstance(prototype_id, str) else None,
+        )
     item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
     return {
         "result": f"You put {transfer_quantity}x {item_display_name} into {container_name}.",
@@ -129,7 +146,7 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
 
     room_id = str(work.player.current_room_id)
     container_id, cid_error = await _put_resolve_container_id(
-        rt.persistence, rt.request, work.player, rt.room_manager, room_id, work.container_name
+        rt.persistence, rt.request, work.player, room_id, work.container_name
     )
     if cid_error:
         return cid_error
@@ -145,12 +162,14 @@ async def _put_run_validated(rt: PutCommandRuntime, work: PutValidatedWork) -> C
     return await _put_transfer_finish(
         rt.container_service,
         rt.persistence,
+        rt.connection_manager,
         work.player,
         container_id,
         work.item_found,
         work.item_index,
         work.quantity,
         work.container_name,
+        request=rt.request,
     )
 
 
@@ -165,9 +184,9 @@ async def handle_put_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
-    validation_result = await validate_put_command_inputs(command_data, request, connection_manager, player)
+    validation_result = await validate_put_command_inputs(command_data, connection_manager, player, persistence)
     if isinstance(validation_result, dict):
         return validation_result
 
@@ -177,6 +196,7 @@ async def handle_put_command(
 
     put_rt = PutCommandRuntime(
         persistence=persistence,
+        connection_manager=connection_manager,
         request=request,
         container_service=container_service,
         room_manager=room_manager,

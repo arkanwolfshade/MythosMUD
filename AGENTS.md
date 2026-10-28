@@ -21,7 +21,7 @@ bodies).
 - **Codacy after edits:** After any successful file edit, run Codacy CLI analysis for the edited file(s) per
   `codacy.mdc`; propose and apply fixes for any new issues.
 - **Server authority:** Treat server state as authoritative over client state; on conflicts, prefer server payloads
-  and fix client handling to align (see `server-authority.mdc`).
+  and fix client handling to align (see `.cursor/rules/server-authority.mdc`).
 - **Process termination:** Never stop processes by generic name alone; require this worktree's repo root in process
   metadata (`scripts/MythosMudProcessScope.ps1`, `process-kill-safety.mdc`). Never kill jcodemunch indexers, MCP servers,
   or Cursor plugin processes (see `Get-MythosMudProtectedDevToolPattern`).
@@ -34,7 +34,7 @@ bodies).
   **restart Cursor**. **Slack** and other marketplace MCPs stay separate unless you add them in user MCP settings. For
   jCodeMunch usage, see [QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 - **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
-  `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
+  `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and [`USER_RULES.md`](USER_RULES.md).
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
   Rule: `.cursor/rules/basedpyright-no-any.mdc` (Claude: `.claude/rules/basedpyright.md`). After
   Python edits, run `uv run basedpyright <edited files>`. Ponytail must not treat `Any` as a
@@ -817,9 +817,13 @@ jobs:
   payloads omit the CSRF field the production client sends
 - E2E database bootstrap (`e2e.bat`, target DB `mythos_e2e`) requires repo-root `.env.e2e_test`; copy from `env.e2e_test.example`
   if missing
-- DML/seed migrations are SQL under `data/db/migrations/` (see that README).
-  `scripts/apply_migrations_to_e2e.ps1` is a legacy e2e bootstrap with a hardcoded subset — do not wire every new
-  migration through it; newer seeds use dedicated apply scripts and/or Makefile/CI `psql -f`, or base `mythos_*_dml.sql`
+- Schema and seed are `db/schema.sql` and `data/db/seed.sql` — the single, schema-agnostic baseline for all three
+  environments (#811), loaded with `search_path` set to the target schema. Post-baseline migrations are tracked by
+  **dbmate** as one ledger over two directories, run via `scripts/migrate.ps1 -Environment <dev|unit|e2e>`:
+  **DDL only** in `db/migrations/`, **DML only** (world content) in `data/db/migrations/` (the data repo).
+  `scripts/lint_sql_guardrails.py` fails a migration in the wrong directory, so a change that needs both is two files,
+  the DDL one first (earlier version). Never edit a migration that's already been applied; add a new one instead
+  (`npx dbmate new <description> --migrations-dir db/migrations`, or `data/db/migrations` for data)
 
 ## Cursor Cloud specific instructions
 
@@ -871,7 +875,7 @@ jobs:
   [`data/MythosMUD-Obsidian/AGENTS.md`](data/MythosMUD-Obsidian/AGENTS.md); skill
   `mythosmud-llm-wiki`; Karpathy pattern
   [gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
-- **User-specific rules:** `USER_RULES.md`
+- **User-specific rules:** [`USER_RULES.md`](USER_RULES.md)
 - **Task tracking:** [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues)
 
 ## Code Exploration Policy

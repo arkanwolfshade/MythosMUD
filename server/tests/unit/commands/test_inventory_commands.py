@@ -4,6 +4,7 @@ Unit tests for inventory command handlers (except pickup; see test_inventory_com
 Tests drop, equip, unequip, put, get, and inventory listing.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -16,6 +17,7 @@ from server.commands.inventory_commands import (
     handle_put_command,
     handle_unequip_command,
 )
+from server.tests.fixtures.shared.player_registry import install_player_registry
 
 from .inventory_commands_test_support import PickupTestWiring, command_result_text
 
@@ -69,7 +71,7 @@ async def test_handle_inventory_command_no_persistence():
 
 
 @pytest.mark.asyncio
-async def test_handle_drop_command():
+async def test_handle_drop_command(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_drop_command() drops item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -78,7 +80,7 @@ async def test_handle_drop_command():
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
-    mock_player.player_id = "player_id_001"
+    mock_player.player_id = str(uuid.uuid4())
     mock_player.current_room_id = "room_001"
     mock_player.get_inventory = MagicMock(return_value=[{"item_name": "sword", "item_id": "sword_001"}])
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
@@ -89,6 +91,7 @@ async def test_handle_drop_command():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
@@ -103,7 +106,7 @@ async def test_handle_drop_command():
 
 
 @pytest.mark.asyncio
-async def test_handle_drop_command_no_target():
+async def test_handle_drop_command_no_target(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_drop_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -111,6 +114,7 @@ async def test_handle_drop_command_no_target():
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
+    mock_player.player_id = str(uuid.uuid4())
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_container: MagicMock = MagicMock()
@@ -118,6 +122,7 @@ async def test_handle_drop_command_no_target():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     result = await handle_drop_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
@@ -126,8 +131,8 @@ async def test_handle_drop_command_no_target():
 
 
 @pytest.mark.asyncio
-async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None:
-    """Drop success path emits inventory_drop broadcast with expected payload."""
+async def test_handle_drop_command_emits_inventory_updated(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A successful drop pushes inventory_updated so a GUI inventory panel stays in sync."""
     w = PickupTestWiring()
     w.player.get_inventory = MagicMock(
         return_value=[
@@ -141,21 +146,51 @@ async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None
             }
         ]
     )
-    mock_persist = AsyncMock(return_value=None)
+    _ = w.install_registry(monkeypatch)
 
-    with patch("server.commands.inventory_drop_command.persist_player", mock_persist):
-        with patch(
-            "server.commands.inventory_drop_command.build_and_broadcast_inventory_event",
-            new_callable=AsyncMock,
-        ) as mock_broadcast:
-            result = await handle_drop_command(
-                {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
-            )
+    with (
+        patch("server.commands.inventory_drop_command.build_and_broadcast_inventory_event", new_callable=AsyncMock),
+        patch("server.commands.inventory_drop_command.emit_inventory_updated", new_callable=AsyncMock) as mock_emit,
+    ):
+        result = await handle_drop_command(
+            {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
+        )
+
+    assert "result" in result
+    mock_emit.assert_awaited_once_with(w.connection_manager, w.player_id, w.player)
+
+
+@pytest.mark.asyncio
+async def test_handle_drop_command_broadcasts_room_event_after_persist(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Drop success path commits the smaller stack, then emits the inventory_drop broadcast."""
+    w = PickupTestWiring()
+    w.player.get_inventory = MagicMock(
+        return_value=[
+            {
+                "item_name": "sword",
+                "item_id": "sword_001",
+                "item_instance_id": "inst_001",
+                "prototype_id": "sword_proto",
+                "slot_type": "inventory",
+                "quantity": 2,
+            }
+        ]
+    )
+    harness = w.install_registry(monkeypatch)
+
+    with patch(
+        "server.commands.inventory_drop_command.build_and_broadcast_inventory_event",
+        new_callable=AsyncMock,
+    ) as mock_broadcast:
+        result = await handle_drop_command(
+            {"index": 1, "quantity": 1}, {"name": "TestPlayer"}, w.request, None, "TestPlayer"
+        )
 
     assert "result" in result
     assert "drop" in command_result_text(result).lower()
     w.add_room_drop.assert_called_once()
-    mock_persist.assert_awaited_once_with(w.persistence, w.player)
+    saved = harness.saved_carried()
+    assert saved is not None and [stack["quantity"] for stack in saved] == [1]  # one of the two swords left
     mock_broadcast.assert_awaited_once()
     args = mock_broadcast.await_args.args
     assert args[2] == "room_001"
@@ -168,7 +203,7 @@ async def test_handle_drop_command_broadcasts_room_event_after_persist() -> None
 
 
 @pytest.mark.asyncio
-async def test_handle_equip_command():
+async def test_handle_equip_command(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_equip_command() equips item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -177,7 +212,7 @@ async def test_handle_equip_command():
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
-    mock_player.player_id = "player_id_001"
+    mock_player.player_id = str(uuid.uuid4())
     mock_player.current_room_id = "room_001"
     mock_player.get_inventory = MagicMock(return_value=[{"item_name": "sword", "item_id": "sword_001"}])
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
@@ -188,6 +223,7 @@ async def test_handle_equip_command():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
@@ -203,7 +239,7 @@ async def test_handle_equip_command():
 
 
 @pytest.mark.asyncio
-async def test_handle_equip_command_no_target():
+async def test_handle_equip_command_no_target(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_equip_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -211,6 +247,7 @@ async def test_handle_equip_command_no_target():
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
+    mock_player.player_id = str(uuid.uuid4())
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_container: MagicMock = MagicMock()
@@ -218,6 +255,7 @@ async def test_handle_equip_command_no_target():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     result = await handle_equip_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 
@@ -226,7 +264,7 @@ async def test_handle_equip_command_no_target():
 
 
 @pytest.mark.asyncio
-async def test_handle_unequip_command():
+async def test_handle_unequip_command(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_unequip_command() unequips item."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -235,7 +273,7 @@ async def test_handle_unequip_command():
     mock_connection_manager = MagicMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
-    mock_player.player_id = "player_id_001"
+    mock_player.player_id = str(uuid.uuid4())
     mock_player.current_room_id = "room_001"
     mock_player.get_equipped_items = MagicMock(
         return_value={"main_hand": {"item_name": "sword", "item_id": "sword_001"}}
@@ -248,6 +286,7 @@ async def test_handle_unequip_command():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     with patch("server.commands.inventory_service_helpers.get_shared_services") as mock_get_services:
         mock_inventory_service = MagicMock()
@@ -263,7 +302,7 @@ async def test_handle_unequip_command():
 
 
 @pytest.mark.asyncio
-async def test_handle_unequip_command_no_target():
+async def test_handle_unequip_command_no_target(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test handle_unequip_command() handles missing target."""
     mock_request = MagicMock()
     mock_app = MagicMock()
@@ -271,6 +310,7 @@ async def test_handle_unequip_command_no_target():
     mock_persistence = AsyncMock()
     mock_player = MagicMock()
     mock_player.name = "TestPlayer"
+    mock_player.player_id = str(uuid.uuid4())
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_state.persistence = mock_persistence
     mock_container: MagicMock = MagicMock()
@@ -278,6 +318,7 @@ async def test_handle_unequip_command_no_target():
     mock_state.container = mock_container
     mock_app.state = mock_state
     mock_request.app = mock_app
+    _ = install_player_registry(monkeypatch, mock_player)
 
     result = await handle_unequip_command({}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
 

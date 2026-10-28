@@ -263,7 +263,7 @@ class TestGameTickService:
             # Wait for cancellation to complete
             try:
                 await asyncio.wait_for(task, timeout=0.5)
-            except (asyncio.CancelledError, TimeoutError):
+            except asyncio.CancelledError, TimeoutError:
                 # If it times out or is cancelled, ensure it's cleaned up
                 if not task.done():
                     task.cancel()

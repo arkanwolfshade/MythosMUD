@@ -7,7 +7,7 @@
 
 import { render } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { MapControls } from '../MapControls';
 import { RoomDetailsPanel } from '../RoomDetailsPanel';
 

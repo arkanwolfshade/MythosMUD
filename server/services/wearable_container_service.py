@@ -13,17 +13,58 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 from __future__ import annotations
 
-from typing import Any, cast
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Protocol, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
 from ..models.container import ContainerComponent, ContainerSourceType
+from ..persistence.container_create_params import ContainerCreateParams
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import log_and_raise
 
+if TYPE_CHECKING:
+    from ..models.player import Player
+
 logger = get_logger(__name__)
+
+
+class _WearablePersistence(Protocol):
+    """The async persistence calls this service makes (AsyncPersistenceLayer satisfies it).
+
+    Typed so that an unawaited call is a type error: with persistence typed Any, three unawaited
+    coroutines went unnoticed and wearable containers never worked (#951).
+    """
+
+    async def get_containers_by_entity_id(self, entity_id: UUID) -> list[dict[str, object]]:
+        """Containers owned by an entity."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def get_container(self, container_id: UUID) -> dict[str, object] | None:
+        """One container row."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def create_container(
+        self, source_type: str, params: ContainerCreateParams | None = None
+    ) -> dict[str, object]:
+        """Create a container row."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def update_container(
+        self, container_id: UUID, items_json: list[dict[str, object]] | None = None
+    ) -> dict[str, object] | None:
+        """Replace a container's items; None if the container is gone."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def get_player_by_id(self, player_id: UUID) -> Player | None:
+        """Load a player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
+
+    async def save_player(self, player: Player) -> None:
+        """Persist a player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
 def _get_enum_value(enum_or_str: Any) -> str:
@@ -44,25 +85,32 @@ def _get_enum_value(enum_or_str: Any) -> str:
     return str(enum_or_str)
 
 
-def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
+def _filter_container_data(container_data: Mapping[str, object]) -> dict[str, object]:
     """
-    Filter out database-only fields from container data before validation.
+    Turn a persistence container row into ContainerComponent fields.
 
-    The ContainerComponent model doesn't include created_at and updated_at fields,
-    so we need to filter them out before calling model_validate.
+    Drops the database-only created_at/updated_at, and maps the repository's items_json/metadata_json
+    back to items/metadata. ContainerComponent forbids extra fields, so without the rename every real
+    row failed validation (#951). Same mapping as corpse_lifecycle_service._filter_container_data.
 
     Args:
         container_data: Raw container data from database
 
     Returns:
-        Filtered container data without database-only fields
+        Filtered container data matching ContainerComponent's field names
     """
-    # Create a copy to avoid modifying the original
-    filtered = container_data.copy()
-    # Remove database-only fields that aren't part of the model
-    filtered.pop("created_at", None)
-    filtered.pop("updated_at", None)
+    filtered = {k: v for k, v in container_data.items() if k not in ("created_at", "updated_at")}
+    if "items_json" in filtered:
+        filtered["items"] = filtered.pop("items_json")
+    if "metadata_json" in filtered:
+        filtered["metadata"] = filtered.pop("metadata_json")
     return filtered
+
+
+def _row_metadata(container_data: Mapping[str, object]) -> Mapping[str, object]:
+    """A container row's metadata, whichever key it arrived under (metadata_json from persistence)."""
+    metadata = _filter_container_data(container_data).get("metadata")
+    return cast(Mapping[str, object], metadata) if isinstance(metadata, Mapping) else {}
 
 
 class WearableContainerServiceError(MythosMUDError):
@@ -77,7 +125,7 @@ class WearableContainerService:
     nested capacity enforcement, and inventory spill rules.
     """
 
-    def __init__(self, persistence: Any | None = None) -> None:
+    def __init__(self, persistence: object | None = None) -> None:
         """
         Initialize the wearable container service.
 
@@ -86,7 +134,9 @@ class WearableContainerService:
         """
         if persistence is None:
             raise ValueError("persistence (async_persistence) is required for WearableContainerService")
-        self.persistence = persistence
+        # Callers resolve async_persistence dynamically (typed object); narrow once here so every call
+        # below is checked against the real async signatures.
+        self.persistence: _WearablePersistence = cast(_WearablePersistence, persistence)
 
     def _validate_inner_container_capacity(
         self, player_id: UUID, item_stack: dict[str, Any], inner_container: dict[str, Any]
@@ -113,8 +163,8 @@ class WearableContainerService:
         for existing in existing_containers:
             if existing.get("source_type") != "equipment":
                 continue
-            existing_metadata = existing.get("metadata", {})
-            if existing_metadata.get("item_instance_id") != item_instance_id:
+            # Rows carry metadata_json; the filter maps it to metadata (#951).
+            if _row_metadata(existing).get("item_instance_id") != item_instance_id:
                 continue
             existing_id = existing.get("container_id")
             logger.debug(
@@ -126,7 +176,7 @@ class WearableContainerService:
             return {"container_id": UUID(existing_id) if isinstance(existing_id, str) else existing_id}
         return None
 
-    def _create_equipment_container_record(
+    async def _create_equipment_container_record(
         self,
         player_id: UUID,
         item_stack: dict[str, Any],
@@ -136,20 +186,23 @@ class WearableContainerService:
     ) -> dict[str, Any]:
         """Create wearable container in persistence and return container_id payload."""
         item_instance_id = item_stack.get("item_instance_id")
-        container_data = self.persistence.create_container(
-            source_type="equipment",
-            entity_id=player_id,
-            capacity_slots=capacity_slots,
-            lock_state=inner_container.get("lock_state", "unlocked"),
-            allowed_roles=inner_container.get("allowed_roles", []),
-            items_json=items,
-            metadata_json={
-                "item_instance_id": item_instance_id,
-                "item_id": item_stack.get("item_id"),
-                "item_name": item_stack.get("item_name"),
-            },
+        # create_container is async; unawaited it returned a coroutine and equip always failed (#951).
+        container_data = await self.persistence.create_container(
+            "equipment",
+            ContainerCreateParams(
+                entity_id=player_id,
+                capacity_slots=capacity_slots,
+                lock_state=str(cast(object, inner_container.get("lock_state", "unlocked"))),
+                allowed_roles=list(inner_container.get("allowed_roles") or []),
+                items_json=items,
+                metadata_json={
+                    "item_instance_id": item_instance_id,
+                    "item_id": item_stack.get("item_id"),
+                    "item_name": item_stack.get("item_name"),
+                },
+            ),
         )
-        container_id = UUID(container_data["container_id"])
+        container_id = UUID(str(container_data["container_id"]))
         logger.info(
             "Wearable container created on equip",
             player_id=str(player_id),
@@ -193,7 +246,7 @@ class WearableContainerService:
             return existing
 
         try:
-            return self._create_equipment_container_record(
+            return await self._create_equipment_container_record(
                 player_id, item_stack, inner_container, capacity_slots, items
             )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container creation errors unpredictable, must log and re-raise as specific error
@@ -237,8 +290,7 @@ class WearableContainerService:
         existing_containers = await self.persistence.get_containers_by_entity_id(player_id)
         for existing in existing_containers:
             if existing.get("source_type") == "equipment":
-                existing_metadata = existing.get("metadata", {})
-                if existing_metadata.get("item_instance_id") == item_instance_id:
+                if _row_metadata(existing).get("item_instance_id") == item_instance_id:
                     # Found the container, update inner_container in item stack
                     container = ContainerComponent.model_validate(_filter_container_data(existing))
                     inner_container = {
@@ -325,7 +377,7 @@ class WearableContainerService:
             )
         return container
 
-    def _update_container_items_or_raise(
+    async def _update_container_items_or_raise(
         self,
         player_id: UUID,
         container_id: UUID,
@@ -335,7 +387,11 @@ class WearableContainerService:
         **log_fields: Any,
     ) -> dict[str, Any]:
         """Update container items and raise when persistence returns None."""
-        updated_data = self.persistence.update_container(container_id=container_id, items_json=items_json)
+        # update_container is async; unawaited, the None check never fired and a coroutine was
+        # returned as the "updated container" (#951).
+        updated_data = await self.persistence.update_container(
+            container_id=container_id, items_json=cast(list[dict[str, object]], items_json)
+        )
         logger.info(log_event, player_id=str(player_id), container_id=str(container_id), **log_fields)
         if updated_data is None:
             log_and_raise(
@@ -390,7 +446,7 @@ class WearableContainerService:
             cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in current_items + items
         ]
 
-        return self._update_container_items_or_raise(
+        return await self._update_container_items_or_raise(
             player_id,
             container_id,
             new_items,
@@ -432,7 +488,7 @@ class WearableContainerService:
                 user_friendly="Container capacity exceeded",
             )
 
-        return self._update_container_items_or_raise(
+        return await self._update_container_items_or_raise(
             player_id,
             container_id,
             items,
@@ -455,11 +511,12 @@ class WearableContainerService:
                 ground_items.append(item)
         return spilled_items, ground_items
 
-    async def _save_overflow_inventory(self, player: Any, player_id: UUID, spilled_items: list[Any]) -> None:
+    async def _save_overflow_inventory(
+        self, player: Player, player_id: UUID, player_inventory: list[dict[str, object]], spilled_items: list[object]
+    ) -> None:
         """Persist inventory after absorbing overflow items."""
         if not spilled_items:
             return
-        player_inventory = getattr(player, "inventory", [])
         player.set_inventory(player_inventory)
         try:
             await self.persistence.save_player(player)
@@ -470,22 +527,25 @@ class WearableContainerService:
                 error=str(e),
             )
 
-    def _drop_overflow_to_ground(
-        self, player: Any, player_id: UUID, container_id: UUID, ground_items: list[Any]
+    async def _drop_overflow_to_ground(
+        self, player: Player, player_id: UUID, container_id: UUID, ground_items: list[object]
     ) -> None:
         """Create ground container for items that did not fit in inventory."""
         if not ground_items:
             return
-        room_id = getattr(player, "current_room_id", None)
+        room_id = cast(str | None, getattr(player, "current_room_id", None))
         if not room_id:
             return
         try:
-            self.persistence.create_container(
-                source_type="environment",
-                room_id=room_id,
-                capacity_slots=20,
-                items_json=ground_items,
-                metadata_json={"overflow_source": str(container_id), "player_id": str(player_id)},
+            # Awaited: unawaited, the ground container was never created and the items vanished (#951).
+            _ = await self.persistence.create_container(
+                "environment",
+                ContainerCreateParams(
+                    room_id=room_id,
+                    capacity_slots=20,
+                    items_json=cast(list[dict[str, object]], ground_items),
+                    metadata_json={"overflow_source": str(container_id), "player_id": str(player_id)},
+                ),
             )
             logger.info(
                 "Overflow items dropped to ground",
@@ -534,11 +594,12 @@ class WearableContainerService:
                 user_friendly="Player not found",
             )
 
-        player_inventory = getattr(player, "inventory", [])
+        # get_inventory(), not .inventory: the column holds a JSON string, so spilling appended to a str (#951).
+        player_inventory = list(player.get_inventory())
         spilled_items, ground_items = self._split_overflow_items(player_inventory, overflow_items, 20)
 
-        await self._save_overflow_inventory(player, player_id, spilled_items)
-        self._drop_overflow_to_ground(player, player_id, container_id, ground_items)
+        await self._save_overflow_inventory(player, player_id, player_inventory, spilled_items)
+        await self._drop_overflow_to_ground(player, player_id, container_id, ground_items)
 
         logger.info(
             "Container overflow handled",

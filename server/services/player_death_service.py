@@ -10,18 +10,48 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 """
 
 import uuid
-from typing import Any
+from collections.abc import Sequence
+from typing import Any, cast
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.constants.spawn_defaults import LIMBO_ROOM_ID
 from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
 from server.models.game import PositionState
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger, log_exception_once
+from server.utils.room_utils import format_room_location
 
 logger = get_logger(__name__)
+
+# Mirrored in player_respawn_service — room of death for interstitial / login UI.
+DEATH_ROOM_ID_STAT = "death_room_id"
+DEATH_LOCATION_STAT = "death_location"
+
+
+# Per-tick prefilter lives in Postgres (db/procedures/players.sql): it returns every player whose
+# stats.current_dp is NOT a JSON number > 0 -- normally no rows. It is a deliberate superset of
+# "dead or mortally wounded" (odd stored values come back too), so the Python predicates
+# (Player.is_dead / is_mortally_wounded, via coerce_int) keep the final say. from_statement() maps the
+# rows onto session-attached Player entities, which the tick code needs (session.refresh(player)).
+_DP_CHECK_CANDIDATES = select(Player).from_statement(
+    text(  # ADR-015: explicit column list -- the lint guard forbids `SELECT *`.
+        """
+        SELECT player_id, user_id, name, inventory, current_room_id,
+               respawn_room_id, experience_points, level, is_admin, profession_id,
+               created_at, last_active, stats, is_deleted, deleted_at, tutorial_instance_id
+        FROM get_players_not_clearly_alive()
+        """
+    )
+)
+
+
+async def _load_dp_check_candidates(session: AsyncSession) -> Sequence[Player]:
+    """Run the prefilter; the cast is the typed seam, since from_statement() yields an untyped Result."""
+    result = await session.execute(_DP_CHECK_CANDIDATES)
+    return cast("Sequence[Player]", result.scalars().all())
 
 
 class PlayerDeathService:
@@ -77,21 +107,28 @@ class PlayerDeathService:
             List of Player objects that are mortally wounded
         """
         try:
-            # Query all players from the database using async API
-            result = await session.execute(select(Player))
-            all_players = result.scalars().all()
+            # Runs every game-second: let Postgres drop the (normally all) healthy players.
+            all_players = await _load_dp_check_candidates(session)
 
             # Filter for mortally wounded players using Player domain logic
             mortally_wounded = [p for p in all_players if p.is_mortally_wounded()]
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player stats retrieval errors unpredictable, must return empty list
             logger.error("Error getting mortally wounded players", error=str(e), exc_info=True)
+            # This session is shared across the rest of this tick's DP-decay processing
+            # (get_dead_players, etc. all receive the same session). Without a rollback here,
+            # Postgres leaves the transaction aborted and every subsequent query on it fails
+            # with InFailedSQLTransactionError, cascading this one query's failure onto
+            # completely unrelated ones for the rest of the tick.
+            await session.rollback()
             return []
 
-        logger.debug(
-            "Found mortally wounded players",
-            count=len(mortally_wounded),
-            player_ids=[p.player_id for p in mortally_wounded],
-        )
+        # Called every game-second; only log when there is something to report (#912).
+        if mortally_wounded:
+            logger.debug(
+                "Found mortally wounded players",
+                count=len(mortally_wounded),
+                player_ids=[p.player_id for p in mortally_wounded],
+            )
 
         return mortally_wounded
 
@@ -106,18 +143,19 @@ class PlayerDeathService:
             List of Player objects that are dead
         """
         try:
-            # Query all players from the database using async API
-            result = await session.execute(select(Player))
-            all_players = result.scalars().all()
+            # Runs every tick while players are online: let Postgres drop the healthy players.
+            all_players = await _load_dp_check_candidates(session)
 
             # Filter for dead players using Player domain logic
             dead_players = [p for p in all_players if p.is_dead()]
 
-            logger.debug(
-                "Found dead players",
-                count=len(dead_players),
-                player_ids=[p.player_id for p in dead_players],
-            )
+            # Called every tick; only log when there is something to report (#912).
+            if dead_players:
+                logger.debug(
+                    "Found dead players",
+                    count=len(dead_players),
+                    player_ids=[p.player_id for p in dead_players],
+                )
 
             return dead_players
 
@@ -129,6 +167,10 @@ class PlayerDeathService:
                 exc=e,
                 exc_info=True,
             )
+            # See get_mortally_wounded_players: this session is shared for the rest of the
+            # tick, so a failed query here must be rolled back or every later query on it
+            # (this function included, on the next tick) inherits an aborted transaction.
+            await session.rollback()
             return []
 
     async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
@@ -255,24 +297,33 @@ class PlayerDeathService:
             death_location: Room ID where the player died
 
         Returns:
-            Room name if available, otherwise the room ID or "Unknown"
+            "Zone › Sub-zone › Room" display string, or "Unknown Location" (never the raw room ID, #910)
         """
-        if not death_location:
-            return "Unknown"
+        if not death_location or death_location == LIMBO_ROOM_ID:
+            return "Unknown Location"
 
         if self._async_persistence:
             try:
                 room = self._async_persistence.get_room_by_id(death_location)
                 # Handle case where get_room_by_id might return a coroutine (if mocked as async)
                 if hasattr(room, "__await__"):
-                    # It's a coroutine, can't await in sync context - just return location
-                    return death_location
-                return room.name if room and hasattr(room, "name") else death_location
-            except (AttributeError, TypeError):
-                # If room lookup fails, just return the location
-                return death_location
+                    # It's a coroutine, can't await in sync context - just return unknown
+                    return "Unknown Location"
+                return format_room_location(cast(object, room)) or "Unknown Location"
+            except AttributeError, TypeError:
+                # If room lookup fails, don't leak the room ID
+                return "Unknown Location"
 
-        return death_location
+        return "Unknown Location"
+
+    def _persist_death_location_stats(self, player: Player, death_location: str, room_name: str) -> None:
+        """Store death room id/name on player stats so login can show the place of death."""
+        if not death_location or death_location == LIMBO_ROOM_ID:
+            return
+        stats = player.get_stats()
+        stats[DEATH_ROOM_ID_STAT] = death_location
+        stats[DEATH_LOCATION_STAT] = room_name if room_name and room_name != LIMBO_ROOM_ID else death_location
+        player.set_stats(stats)
 
     def _publish_death_event(
         self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict[str, Any] | None
@@ -327,6 +378,9 @@ class PlayerDeathService:
 
             # Ensure player posture is set to lying when dead
             await self._ensure_player_posture_lying(player, player_id)
+
+            room_name = self._get_room_name_for_death(death_location)
+            self._persist_death_location_stats(player, death_location, room_name)
 
             # Log death event
             logger.info(

@@ -1,6 +1,8 @@
 """Item matching utilities for inventory commands."""
 
-from collections.abc import Mapping
+import re
+from collections.abc import Iterable, Mapping
+from typing import cast
 
 
 def extract_item_identifier(stack: dict[str, object], key: str) -> str | None:
@@ -10,6 +12,24 @@ def extract_item_identifier(stack: dict[str, object], key: str) -> str | None:
         stripped = value.strip()
         return stripped if stripped else None
     return None
+
+
+def stack_keywords(stack: Mapping[str, object]) -> list[str]:
+    """Lowercased ``metadata.keywords`` of a stack: the extra nouns a player may use for the item.
+
+    A prototype's metadata is copied onto every stack minted from it, so keywords are plain item data
+    (the Arkham Advertiser answers to "newspaper" and "paper" as well as its name).
+    """
+    metadata = stack.get("metadata")
+    raw = cast(dict[str, object], metadata).get("keywords") if isinstance(metadata, dict) else None
+    if not isinstance(raw, list):
+        return []
+    return [word.strip().lower() for word in cast(list[object], raw) if isinstance(word, str) and word.strip()]
+
+
+def _first_with_keyword[K](stacks: Iterable[tuple[K, Mapping[str, object]]], term: str) -> K | None:
+    """Key of the first stack that lists ``term`` as one of its keywords."""
+    return next((key for key, stack in stacks if term in stack_keywords(stack)), None)
 
 
 def build_drop_candidates(drop_list: list[dict[str, object]]) -> list[tuple[int, str | None, str | None, str | None]]:
@@ -30,6 +50,29 @@ def match_exact_drop(candidates: list[tuple[int, str | None, str | None, str | N
             if candidate and candidate.lower() == normalized:
                 return idx
     return None
+
+
+def _earliest_whole_word[K](named: Iterable[tuple[K, str | None]], term: str) -> K | None:
+    """Key of the name that contains ``term`` as whole word(s), preferring the earliest position in the name.
+
+    Boundaries are non-word characters, so a multi-word term matches as a phrase ("short sword" in
+    "Short Sword Mk2") and "tonic" never matches inside "miskatonic". Equal positions keep list order.
+    """
+    pattern = re.compile(rf"(?<!\w){re.escape(term)}(?!\w)")
+    best_key: K | None = None
+    best_position: int | None = None
+    for key, name in named:
+        found = pattern.search(name.lower()) if name else None
+        if found and (best_position is None or found.start() < best_position):
+            best_key, best_position = key, found.start()
+    return best_key
+
+
+def match_word_drop(candidates: list[tuple[int, str | None, str | None, str | None]], normalized: str) -> int | None:
+    """Match ``normalized`` as a whole word (or phrase) in the item name only; ids are not word-tokenized."""
+    return _earliest_whole_word(
+        ((idx, item_name) for idx, item_name, _item_id, _prototype_id in candidates), normalized
+    )
 
 
 def match_prefix_drop(candidates: list[tuple[int, str | None, str | None, str | None]], normalized: str) -> int | None:
@@ -60,8 +103,9 @@ def match_room_drop_by_name(drop_list: list[dict[str, object]], search_term: str
     """
     Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.
 
-    Human collaborators: we prefer exact identifiers, then courteous prefix matches, before falling back
-    to substring containment—echoing the cataloguing rites described in Dr. Wilmarth's Restricted Archives.
+    Human collaborators: we prefer exact identifiers, then whole-word matches in the item name, then authored
+    keywords, then courteous prefix matches, before falling back to substring containment—echoing the cataloguing rites described in
+    Dr. Wilmarth's Restricted Archives.
     Agentic aides: return a zero-based index for the best candidate or None if no alignment is found.
     """
     normalized = search_term.strip().lower()
@@ -72,6 +116,16 @@ def match_room_drop_by_name(drop_list: list[dict[str, object]], search_term: str
 
     # Try exact match first
     match = match_exact_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # Whole word in the name beats a longer word that merely starts with the term
+    match = match_word_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # An authored keyword ("newspaper") beats a prefix or substring guess
+    match = _first_with_keyword(enumerate(drop_list), normalized)
     if match is not None:
         return match
 
@@ -101,9 +155,9 @@ def match_inventory_item_by_name(inventory: list[dict[str, object]], search_term
     """
     Resolve an inventory index from a fuzzy name search.
 
-    Human scholars: this mirrors the ritual we employ for room drops, prioritising exact designations
-    before leaning on sympathetic naming. Agentic aides: return a zero-based index when the augury aligns,
-    otherwise yield None.
+    Human scholars: this mirrors the ritual we employ for room drops, prioritising exact designations,
+    then whole words in the name, before leaning on sympathetic naming. Agentic aides: return a zero-based
+    index when the augury aligns, otherwise yield None.
     """
     normalized = search_term.strip().lower()
     if not normalized:
@@ -113,6 +167,16 @@ def match_inventory_item_by_name(inventory: list[dict[str, object]], search_term
 
     # Try exact match first
     match = match_exact_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # Whole word in the name beats a longer word that merely starts with the term
+    match = match_word_drop(candidates, normalized)
+    if match is not None:
+        return match
+
+    # An authored keyword ("newspaper") beats a prefix or substring guess
+    match = _first_with_keyword(enumerate(inventory), normalized)
     if match is not None:
         return match
 
@@ -174,6 +238,15 @@ def search_exact_match(
     return None
 
 
+def search_word_match(
+    candidates: list[tuple[str, str | None, str | None, str | None]], normalized_term: str
+) -> str | None:
+    """Search for a whole-word (or phrase) match in the item name only. Returns slot_key if found, None otherwise."""
+    return _earliest_whole_word(
+        ((slot_key, item_name) for slot_key, item_name, _item_id, _prototype_id in candidates), normalized_term
+    )
+
+
 def search_prefix_match(
     candidates: list[tuple[str, str | None, str | None, str | None]], normalized_term: str
 ) -> str | None:
@@ -212,6 +285,14 @@ def match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, object]], se
     result = search_exact_match(candidates, normalized_term)
     if result:
         return result
+
+    result = search_word_match(candidates, normalized_term)
+    if result:
+        return result
+
+    keyword_slot = _first_with_keyword(equipped.items(), normalized_term)
+    if keyword_slot is not None:
+        return normalize_slot_name(keyword_slot) or keyword_slot
 
     result = search_prefix_match(candidates, normalized_term)
     if result:

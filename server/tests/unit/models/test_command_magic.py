@@ -7,7 +7,14 @@ Tests the CastCommand, SpellCommand, SpellsCommand, and LearnCommand models and 
 import pytest
 from pydantic import ValidationError
 
-from server.models.command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand
+from server.models.command_magic import (
+    CastCommand,
+    LearnCommand,
+    SpellCommand,
+    SpellsCommand,
+    StopCommand,
+    TeachCommand,
+)
 
 # --- Tests for CastCommand ---
 
@@ -187,3 +194,25 @@ def test_learn_command_spell_name_max_length():
     long_name = "a" * 101  # Exceeds max_length=100
     with pytest.raises(ValidationError):
         LearnCommand(spell_name=long_name)
+
+
+# --- Tests for StopCommand (#813) ---
+
+
+def test_stop_command_no_fields():
+    """Test StopCommand has no required fields (cancels the caster's own cast)."""
+    command = StopCommand()
+
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "stop"  # type: ignore[comparison-overlap]
+
+
+# --- Tests for TeachCommand (#813) ---
+
+
+def test_teach_command_no_fields():
+    """Test TeachCommand has no required fields; NPC/spell name parsing lives in the handler."""
+    command = TeachCommand()
+
+    # Reason: Testing str enum direct comparison - valid at runtime for str enums, but mypy sees as non-overlapping
+    assert command.command_type == "teach"  # type: ignore[comparison-overlap]

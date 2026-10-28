@@ -23,14 +23,14 @@ def player_service():
 @pytest.fixture
 def user_manager():
     manager = MagicMock()
-    manager.mute_channel.return_value = True
-    manager.unmute_channel.return_value = True
+    manager.mute_channel = AsyncMock(return_value=True)
+    manager.unmute_channel = AsyncMock(return_value=True)
     manager.is_channel_muted.return_value = False
-    manager.mute_player.return_value = True
-    manager.unmute_player.return_value = True
+    manager.mute_player = AsyncMock(return_value=True)
+    manager.unmute_player = AsyncMock(return_value=True)
     manager.is_player_muted.return_value = False
-    manager.mute_global.return_value = True
-    manager.unmute_global.return_value = True
+    manager.mute_global = AsyncMock(return_value=True)
+    manager.unmute_global = AsyncMock(return_value=True)
     manager.is_globally_muted.return_value = False
     manager.is_admin.return_value = False
     manager.can_send_message.return_value = True
@@ -182,11 +182,10 @@ async def test_get_mute_status_includes_player_name(moderation, user_manager):
     user_manager.is_admin.return_value = True
     result = await moderation.get_mute_status(player_id)
     assert "ARMITAGE" in result
-    user_manager.load_player_mutes.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_get_mute_status_handles_internal_error(moderation, user_manager):
-    user_manager.load_player_mutes.side_effect = RuntimeError("boom")
+    user_manager.get_player_mutes = MagicMock(side_effect=RuntimeError("boom"))
     result = await moderation.get_mute_status(uuid.uuid4())
     assert result == "Error retrieving mute status."

@@ -9,7 +9,6 @@ import { useGameConnectionManagement } from './useGameConnectionManagement';
 
 export interface GameClientV2NetworkPhase {
   handleGameEvent: ReturnType<typeof useEventProcessing>['handleGameEvent'];
-  clearPendingFollowRequest: ReturnType<typeof useEventProcessing>['clearPendingFollowRequest'];
   isConnected: boolean;
   isConnecting: boolean;
   error: string | null;
@@ -24,7 +23,9 @@ export function useGameClientV2ContainerNetworkPhase(
   slice: GameClientV2MergedSlice,
   refs: GameClientV2RefsBundle
 ): GameClientV2NetworkPhase {
-  const { handleGameEvent, clearPendingFollowRequest } = useEventProcessing({ setGameState: slice.setGameState });
+  const { handleGameEvent } = useEventProcessing({
+    setGameState: slice.setGameState,
+  });
 
   const { isConnected, isConnecting, error, reconnectAttempts, sendCommand, sendMessage, disconnect } =
     useGameConnectionManagement({
@@ -33,7 +34,6 @@ export function useGameClientV2ContainerNetworkPhase(
       characterId: props.characterId,
       onLogout: props.onLogout,
       onGameEvent: handleGameEvent,
-      setGameState: slice.setGameState,
       intentionalExitInProgressRef: refs.intentionalExitInProgressRef,
     });
 
@@ -41,7 +41,6 @@ export function useGameClientV2ContainerNetworkPhase(
 
   return {
     handleGameEvent,
-    clearPendingFollowRequest,
     isConnected,
     isConnecting,
     error,

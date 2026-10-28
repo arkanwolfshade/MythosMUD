@@ -64,7 +64,7 @@ def _build_standardized_subject(chat_message: "ChatMessage", room_id: str | None
             return cast(str, subject_manager.build_subject("chat_local_subzone", subzone=subzone))
         if channel == "global":
             return cast(str, subject_manager.build_subject("chat_global"))
-        if channel == "system":
+        if channel in ("system", "quest"):
             return _subject_system_standardized(chat_message, subject_manager)
         if channel == "whisper":
             return _subject_whisper_standardized(chat_message, subject_manager)
@@ -93,7 +93,7 @@ def _build_legacy_subject(chat_message: "ChatMessage", room_id: str | None) -> s
             return f"chat.local.subzone.{subzone}"
         case "global":
             return "chat.global"
-        case "system":
+        case "system" | "quest":
             target_id = getattr(chat_message, "target_id", None)
             if target_id:
                 return f"chat.whisper.player.{target_id}"
@@ -187,6 +187,10 @@ def _build_nats_message_data(chat_message: "ChatMessage", room_id: str | None) -
     speaker_kind = getattr(chat_message, "speaker_kind", None)
     if speaker_kind:
         message_data["speaker_kind"] = speaker_kind
+    if getattr(chat_message, "speaker_disposition", None):
+        message_data["speaker_disposition"] = chat_message.speaker_disposition
+    if getattr(chat_message, "content_segments", None):
+        message_data["content_segments"] = chat_message.content_segments
     return message_data
 
 

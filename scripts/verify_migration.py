@@ -40,7 +40,6 @@ EXPECTED_COLUMNS = {
     "name": "varchar",
     "stats": "text",
     "inventory": "text",
-    "status_effects": "text",
     "current_room_id": "varchar",
     "respawn_room_id": "varchar",
     "experience_points": "integer",
@@ -59,7 +58,6 @@ EXPECTED_STATS_KEYS = {
     "intelligence",
     "wisdom",
     "charisma",
-    "lucidity",
     "occult_knowledge",
     "fear",
     "corruption",
@@ -148,7 +146,7 @@ async def _validate_json_data(conn: asyncpg.Connection) -> tuple[list[str], list
     stats_errors = []
 
     players = await conn.fetch("""
-        SELECT player_id, name, stats, inventory, status_effects
+        SELECT player_id, name, stats, inventory
         FROM players
         LIMIT 100
     """)
@@ -158,7 +156,6 @@ async def _validate_json_data(conn: asyncpg.Connection) -> tuple[list[str], list
         name = player["name"]
         stats = player["stats"]
         inventory = player["inventory"]
-        status_effects = player["status_effects"]
 
         # Check stats JSON
         try:
@@ -180,14 +177,6 @@ async def _validate_json_data(conn: asyncpg.Connection) -> tuple[list[str], list
         except json.JSONDecodeError as e:
             json_errors.append(f"{name} ({player_id}): invalid inventory JSON: {e}")
 
-        # Check status_effects JSON
-        try:
-            effects_json = json.loads(status_effects) if status_effects else []
-            if not isinstance(effects_json, list):
-                json_errors.append(f"{name} ({player_id}): status_effects is not a JSON array")
-        except json.JSONDecodeError as e:
-            json_errors.append(f"{name} ({player_id}): invalid status_effects JSON: {e}")
-
     return json_errors, stats_errors
 
 
@@ -200,7 +189,6 @@ async def _check_null_values(conn: asyncpg.Connection) -> list[str]:
             COUNT(*) FILTER (WHERE name IS NULL) as null_name,
             COUNT(*) FILTER (WHERE stats IS NULL) as null_stats,
             COUNT(*) FILTER (WHERE inventory IS NULL) as null_inventory,
-            COUNT(*) FILTER (WHERE status_effects IS NULL) as null_status_effects,
             COUNT(*) FILTER (WHERE current_room_id IS NULL) as null_current_room_id
         FROM players
     """)

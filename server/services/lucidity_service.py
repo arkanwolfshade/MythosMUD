@@ -270,6 +270,7 @@ class LucidityService:
             previous_tier=previous_tier,
             new_lcd=new_lcd,
             catatonia_observer=self._catatonia_observer,
+            reason_code=reason_code,
         )
         await handle_delirium_and_sanitarium_triggers(player_id, new_lcd, previous_lcd, self._catatonia_observer)
         return await self._finalize_lucidity_adjustment(
@@ -355,6 +356,10 @@ class LucidityService:
     async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> LucidityCooldown:
         """Set or update an action cooldown."""
         return await self._repo.set_cooldown(player_id, action_code, expires_at)
+
+    async def clear_cooldown(self, player_id: uuid.UUID, action_code: str) -> int:
+        """Delete the player's cooldown rows whose action code matches ``action_code`` (a SQL LIKE pattern)."""
+        return await self._repo.delete_cooldowns_by_action_code_pattern(player_id, action_code)
 
     async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
         """

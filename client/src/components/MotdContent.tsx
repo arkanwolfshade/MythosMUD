@@ -1,30 +1,50 @@
+// Yellow Sign after the Hastur glyph: four tapered strokes around a sparse hub.
+// CSS .yellow-sign uses white-space: pre.
+const YELLOW_SIGN_ASCII = `
+               .@@@@@@@@@@@@@@@@.
+          .@@@@@@'            '@@@@@.
+       .@@@@'                     '@@@@.
+     .@@@'                           '@@@
+    @@@                               '@@
+   @@                                  @@
+  @@                                   @@
+  @@                                  @@@
+  '@@.                             .@@@@
+   '@@@.                        .@@@@'
+     '@@@@@.                .@@@@@'
+       '*@@@@@@@.       .@@@@@@'
+            '*@@@*@@@@@@@'
+                   @@@
+                   @@@
+                   '@@@
+                    @@@.
+                     @@@*
+                       *@@*
+            .@@@.   .@@@.
+            @@@@'   '@@@@
+            '*@'     '@@*
+                 .@@@@
+                 @@@@@
+                  '@@*
+        *@@@@*                 *@@@@@@@@.
+      .@@@@'                     '@@@@@@@@@.
+    .@@@'                            '@@@@@@@.
+  .@@@'                                 '@@@@@
+ @@@'                                     '@@@
+@@@                                        @@@
+@@                                         @@@
+@@.                         .@@@.           @@@
+'@@.                       .@@@@@.          @@@
+ '@@@.                     @@@@@'          @@@'
+   '@@@@.                   '@@'          @@@'
+      '@@@@.                           .@@@@'
+        '*@@@*                     .@@@@@@'
+           *                      *@@@@'
+                                    *
+`.replace(/^\n|\n$/g, '');
+
 function MotdYellowSign() {
-  return (
-    <div className="yellow-sign">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;)
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;@ &nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;&nbsp;| &nbsp;&nbsp;\
-      <br />
-      &nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;)
-      <br />
-      &nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;| &nbsp;&nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;| &nbsp;/
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ | /
-      <br />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;*
-      <br />
-    </div>
-  );
+  return <div className="yellow-sign">{YELLOW_SIGN_ASCII}</div>;
 }
 
 function MotdWelcomeIntro() {
@@ -56,13 +76,13 @@ function MotdCommandsList() {
         • <code>look</code> - Examine your surroundings
       </p>
       <p>
-        • <code>move [direction]</code> - Navigate between locations
+        • <code>go [direction]</code> - Navigate between locations
       </p>
       <p>
         • <code>inventory</code> - Check your possessions
       </p>
       <p>
-        • <code>stats</code> - View your character statistics
+        • <code>status</code> - View your character's condition
       </p>
       <p>
         • <code>help</code> - Access the knowledge archives

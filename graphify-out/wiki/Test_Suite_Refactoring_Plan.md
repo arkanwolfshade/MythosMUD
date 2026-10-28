@@ -1,48 +1,55 @@
 # Test Suite Refactoring Plan
 
-> 46 nodes
+> 47 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- **Test Suite Refactoring Plan** (14 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Migration Strategy** (7 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Testing Standards and Best Practices** (6 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Test Organization Principles** (5 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Appendix B: Test Categories Reference** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Current State Analysis** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Success Criteria** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Risk Mitigation** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Tooling Updates** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Migration File Mapping** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Proposed Structure** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Timeline and Milestones** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **TEST_SUITE_REFACTORING_PLAN.md** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **1. Test Independence** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **2. Mock Usage** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **3. Assertion Quality** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **4. Test Data Management** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **5. Performance** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **6-Week Timeline** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Appendix A: Full File Mapping** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Coverage Strategy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Current Issues** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Detailed Mapping (Sample)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Directory Hierarchy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- **Documentation Deliverables** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
-- *... and 21 more nodes in this community*
+- **quality_fragmentation_lizard.py** (25 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **quality_fragmentation_guard.py** (24 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **quality_fragmentation_core.py** (18 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **ChangedFile** (11 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_ai_guardrails()** (9 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **git_show_file()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **GuardContext** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **run_cmd()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_fragmentation_trends()** (9 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **quality_fragmentation_trends.py** (9 connections) — `scripts/ci/quality_fragmentation_trends.py`
+- **main()** (8 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **_check_head_rows()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **LizardFunctionRow** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_process_head_lizard()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **build_context()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **is_safe_git_ref()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_lizard_limits()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_has_override_in_file()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **parse_lizard_output()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **run_lizard_on_content()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_process_base_lizard()** (6 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **is_code_file()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **parse_args()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **file_nloc_failures()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_map_function_node_to_row()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (14 shared connections)
+- [EventPublisher](EventPublisher.md) (11 shared connections)
+- [format_occupant_display_name](format_occupant_display_name.md) (4 shared connections)
+- [CorruptionTierCache](CorruptionTierCache.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `scripts/ci/quality_fragmentation_core.py`
+- `scripts/ci/quality_fragmentation_guard.py`
+- `scripts/ci/quality_fragmentation_lizard.py`
+- `scripts/ci/quality_fragmentation_trends.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 141 (87%)
+- INFERRED: 21 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

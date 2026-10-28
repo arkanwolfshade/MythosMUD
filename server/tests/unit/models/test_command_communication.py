@@ -11,6 +11,7 @@ from pydantic import ValidationError
 
 from server.models.command_communication import (
     EmoteCommand,
+    GlobalCommand,
     LocalCommand,
     MeCommand,
     PoseCommand,
@@ -98,6 +99,45 @@ def test_local_command_message_max_length():
             LocalCommand(message=long_message)
 
 
+# --- Tests for GlobalCommand (#813) ---
+
+
+def test_global_command_required_fields():
+    """Test GlobalCommand requires message."""
+    with patch("server.models.command_communication.validate_message_content", return_value="Hello"):
+        command = GlobalCommand(message="Hello")
+
+        assert command.command_type == "global"  # type: ignore[comparison-overlap]  # Testing str enum comparison - valid at runtime
+        # Reason: Testing field assignment - mypy may see as unreachable but validates at runtime
+        assert command.message == "Hello"  # type: ignore[unreachable]
+
+
+def test_global_command_validate_message_calls_validator():
+    """Test GlobalCommand calls validate_message_content."""
+    with patch(
+        "server.models.command_communication.validate_message_content", return_value="validated"
+    ) as mock_validator:
+        command = GlobalCommand(message="test")
+
+        mock_validator.assert_called_once_with("test")
+        assert command.message == "validated"
+
+
+def test_global_command_message_min_length():
+    """Test GlobalCommand validates message min length."""
+    with patch("server.models.command_communication.validate_message_content", side_effect=ValidationError):
+        with pytest.raises(ValidationError):
+            GlobalCommand(message="")
+
+
+def test_global_command_message_max_length():
+    """Test GlobalCommand validates message max length."""
+    long_message = "a" * 501  # Exceeds max_length=500
+    with patch("server.models.command_communication.validate_message_content", side_effect=ValidationError):
+        with pytest.raises(ValidationError):
+            GlobalCommand(message=long_message)
+
+
 # --- Tests for SystemCommand ---
 
 
@@ -127,7 +167,7 @@ def test_system_command_message_min_length():
     """Test SystemCommand validates message min length."""
     with patch("server.models.command_communication.validate_message_content", side_effect=ValidationError):
         with pytest.raises(ValidationError):
-            SystemCommand(message="")
+            _ = SystemCommand(message="")
 
 
 def test_system_command_message_max_length():
@@ -135,7 +175,7 @@ def test_system_command_message_max_length():
     long_message = "a" * 2001  # Exceeds max_length=2000
     with patch("server.models.command_communication.validate_message_content", side_effect=ValidationError):
         with pytest.raises(ValidationError):
-            SystemCommand(message=long_message)
+            _ = SystemCommand(message=long_message)
 
 
 # --- Tests for EmoteCommand ---

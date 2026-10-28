@@ -9,6 +9,9 @@
  */
 
 import { expect, test, type Page } from '@playwright/test';
+import { spawnSync } from 'child_process';
+import { join } from 'path';
+import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { executeCommand, getMessages, recoverPlayableSession, waitForMessage } from '../fixtures/auth';
 import {
   cleanupMultiPlayerContexts,
@@ -68,12 +71,39 @@ async function seedCorruption(awContext: PlayerContext, characterName: string): 
   }
 }
 
+/**
+ * Clear ArkanWolfshade's `/cleanse` cooldown (6h, DB-persisted in corruption_cooldowns) so this
+ * spec is idempotent across repeated runs. Without this, re-running the file (or the full suite)
+ * within 6h of its own prior successful cleanse hits the still-active cooldown: the "crosses a
+ * tier" test then times out waiting for a success message the server never sends.
+ */
+function resetCorruptionCooldowns(): void {
+  const seedEnv = { ...process.env, ...loadE2eEnv() };
+  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_corruption_cooldowns.py');
+  const result = spawnSync('uv', ['run', 'python', scriptPath], {
+    cwd: E2E_PROJECT_ROOT,
+    shell: false,
+    stdio: 'pipe',
+    encoding: 'utf-8',
+    env: seedEnv,
+    timeout: 20000,
+  });
+  if (result.status !== 0) {
+    console.warn(
+      '[instrumentation] e2e_reset_corruption_cooldowns.py failed',
+      result.status,
+      result.stderr?.slice(0, 500) ?? ''
+    );
+  }
+}
+
 test.describe('Corruption Cleanse Rite (#804)', () => {
   test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   test.beforeAll(async ({ browser }) => {
     test.setTimeout(300_000);
+    resetCorruptionCooldowns();
     // ArkanWolfshade is the seeded admin test player -- admin set targets itself here, so no
     // second player is needed the way admin-set-stat-command.spec.ts needs one to test rejection.
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);

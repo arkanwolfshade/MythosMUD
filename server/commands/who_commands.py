@@ -9,6 +9,7 @@ This module contains the who command handler and related helper functions.
 from typing import TYPE_CHECKING, Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 
 if TYPE_CHECKING:
     from ..models.player import Player
@@ -39,7 +40,7 @@ def format_player_location(room_id: str) -> str:
     Format player location as Zone: Sub-zone: Room from room ID.
 
     Args:
-        room_id: Room ID in format earth_arkhamcity_northside_intersection_derby_high
+        room_id: Room ID in format earth_arkhamcity_sanitarium_room_foyer_001
 
     Returns:
         str: Formatted location string
@@ -50,13 +51,13 @@ def format_player_location(room_id: str) -> str:
         return "Unknown Location"
 
     try:
-        # Parse room ID: earth_arkhamcity_northside_intersection_derby_high
+        # Parse room ID: earth_arkhamcity_sanitarium_room_foyer_001
         parts = room_id.split("_")
         if len(parts) >= 4:
             # Extract zone and sub-zone
             zone = parts[1]  # arkhamcity
             sub_zone = parts[2]  # northside
-            room_name = "_".join(parts[3:])  # intersection_derby_high
+            room_name = "_".join(parts[3:])  # e.g. intersection_derby_garrison
 
             # Convert to readable format
             zone_display = zone.replace("_", " ").title()
@@ -278,4 +279,4 @@ async def handle_who_command(
             error_message=str(e),
             exc_info=True,
         )
-        return {"result": f"Error retrieving player list: {str(e)}"}
+        return command_error(f"Error retrieving player list: {str(e)}")

@@ -1,5 +1,4 @@
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
+import { EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { PanelLayoutHandlers } from './panelLayoutTypes';
 
 interface MinimizedPanelHeaderProps {

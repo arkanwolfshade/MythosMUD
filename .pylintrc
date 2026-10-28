@@ -22,7 +22,11 @@ max-module-lines=550
 # - Ruff C901: Measures decision points (cyclomatic complexity) - industry standard, configurable
 # - Pylint R0911-R0915: Measures counts (returns, branches, args, locals, statements) - not configurable
 # See docs/LINTING_COMPLEXITY_ALIGNMENT.md for detailed explanation
-disable=line-too-long,import-outside-toplevel,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-statements,too-many-return-statements,too-many-branches,too-many-instance-attributes,too-many-public-methods
+#
+# Disable too-few-public-methods (R0903) - fires on Protocol ports, Pydantic
+# request/response schemas, BaseSettings configs, and mixins, which legitimately
+# have 0-1 public methods by design. Not a useful complexity signal for this codebase.
+disable=line-too-long,import-outside-toplevel,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-statements,too-many-return-statements,too-many-branches,too-many-instance-attributes,too-many-public-methods,too-few-public-methods
 
 # Per-file ignores matching ruff's per-file-ignores configuration
 # Format: file_pattern:rule1,rule2,rule3
@@ -37,6 +41,13 @@ per-file-ignores=
     server/validators/__init__.py:cyclic-import,R0801,
     # test_npc_combat_integration_service: Cycle is in production code (combat_service -> combat_turn_processor -> npc_instance_service)
     server/tests/unit/services/test_npc_combat_integration_service.py:cyclic-import,
+    # api/__init__.py and async_persistence.py: Codacy Cloud (pylint@3.3.6) flags R0801 anchored
+    # at line 1 of each module's docstring without naming the paired file; local pylint 3.3.6
+    # reproduction across server/ finds no match, and the Codacy dashboard's own Duplication
+    # metric already reads 0.0% (confirmed via reanalysis, 2026-09-24). Stale/orphaned findings,
+    # not real duplication -- suppress rather than chase a pairing that doesn't reproduce.
+    server/api/__init__.py:R0801,
+    server/async_persistence.py:R0801,
     # docs/**/* files: Allow various patterns common in documentation/examples
     # ruff: F821 (undefined name) → pylint: undefined-variable (E0602)
     # ruff: F841 (unused variable) → pylint: unused-variable (W0612)

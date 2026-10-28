@@ -5,9 +5,11 @@ Tests utility functions for room operations.
 """
 
 import warnings
+from types import SimpleNamespace
 
 from server.utils.room_utils import (
     extract_subzone_from_room_id,
+    format_room_location,
     get_local_channel_subject,
     get_plane_from_room_id,
     get_subzone_local_channel_subject,
@@ -18,7 +20,7 @@ from server.utils.room_utils import (
 
 def test_extract_subzone_from_room_id():
     """Test extract_subzone_from_room_id() extracts subzone."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = extract_subzone_from_room_id(room_id)
     assert result == "northside"
 
@@ -39,7 +41,7 @@ def test_extract_subzone_from_room_id_invalid():
 
 def test_get_zone_from_room_id():
     """Test get_zone_from_room_id() extracts zone."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_zone_from_room_id(room_id)
     assert result == "arkhamcity"
 
@@ -59,7 +61,7 @@ def test_get_zone_from_room_id_invalid():
 
 def test_get_plane_from_room_id():
     """Test get_plane_from_room_id() extracts plane."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_plane_from_room_id(room_id)
     assert result == "earth"
 
@@ -79,7 +81,7 @@ def test_get_plane_from_room_id_invalid():
 
 def test_is_valid_room_id_format():
     """Test is_valid_room_id_format() validates room ID format."""
-    assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high") is True
+    assert is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_garrison") is True
     assert is_valid_room_id_format("earth_zone_subzone_room") is True
     assert is_valid_room_id_format("invalid_room_id") is False
     assert is_valid_room_id_format("") is False
@@ -89,8 +91,8 @@ def test_get_local_channel_subject():
     """Test get_local_channel_subject() generates subject (deprecated)."""
     with warnings.catch_warnings(record=True):
         warnings.simplefilter("always")
-        result = get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
-        assert result == "chat.local.earth_arkhamcity_northside_intersection_derby_high"
+        result = get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_garrison")
+        assert result == "chat.local.earth_arkhamcity_northside_intersection_derby_garrison"
 
 
 def test_get_local_channel_subject_invalid():
@@ -102,7 +104,7 @@ def test_get_local_channel_subject_invalid():
 
 def test_get_subzone_local_channel_subject():
     """Test get_subzone_local_channel_subject() generates subject."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = get_subzone_local_channel_subject(room_id)
     assert result == "chat.local.subzone.northside"
 
@@ -111,3 +113,12 @@ def test_get_subzone_local_channel_subject_invalid():
     """Test get_subzone_local_channel_subject() returns None for invalid room ID."""
     assert get_subzone_local_channel_subject("invalid") is None
     assert get_subzone_local_channel_subject("") is None
+
+
+def test_format_room_location_full_and_degraded():
+    """#910: zone/sub-zone/room display names, skipping missing segments, never a raw ID."""
+    room = SimpleNamespace(zone_name="Arkham City", sub_zone_name="Sanitarium", name="Foyer")
+    assert format_room_location(room) == "Arkham City › Sanitarium › Foyer"
+    assert format_room_location(SimpleNamespace(zone_name=None, sub_zone_name=" ", name="Foyer")) == "Foyer"
+    assert format_room_location(SimpleNamespace(zone_name="Arkham City", name="Foyer")) == "Arkham City › Foyer"
+    assert format_room_location(SimpleNamespace(id="earth_x_y_z")) == ""

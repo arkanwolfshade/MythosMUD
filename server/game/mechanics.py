@@ -170,39 +170,5 @@ class GameMechanicsService:
         logger.info("Player damaged", player_id=player_id, amount=amount, damage_type=damage_type)
         return True, f"Damaged {player.name} for {amount} {damage_type} damage"
 
-    async def gain_experience(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
-        """
-        Award experience points to a player.
-
-        CRITICAL FIX: This method prevents XP awards from overwriting combat damage.
-        Uses atomic XP update via persistence.gain_experience so in-flight health
-        changes from combat are not overwritten.
-
-        Args:
-            player_id: ID of the player gaining XP
-            amount: Amount of XP to award
-            source: Source of the XP (e.g., "killed_nightgaunt")
-
-        Returns:
-            tuple: (success: bool, message: str)
-        """
-        import uuid as _uuid
-
-        player_uuid = _uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-        player = await self.persistence.get_player_by_id(player_uuid)
-        if not player:
-            logger.warning("XP gain failed - player not found", player_id=player_id)
-            log_and_raise(
-                ValidationError,
-                "Player not found for XP gain",
-                player_id=player_id,
-                amount=amount,
-                source=source,
-                operation="gain_experience",
-                details={"player_id": player_id, "amount": amount, "source": source},
-                user_friendly="Player not found",
-            )
-
-        await self.persistence.gain_experience(player, amount, source)
-        logger.info("XP awarded", player_id=player_id, amount=amount, source=source)
-        return True, f"Awarded {amount} XP to {player.name}"
+    # XP awards go through LevelService.grant_xp, the single XP/level authority (#879) --
+    # not here. This class no longer has a gain_experience method.

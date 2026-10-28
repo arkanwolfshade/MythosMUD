@@ -43,7 +43,7 @@ def test_filter_players_by_name_empty_filter():
 
 def test_format_player_location_valid():
     """Test format_player_location() formats valid room ID."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = format_player_location(room_id)
     assert "Arkhamcity" in result
     assert "Northside" in result
@@ -60,7 +60,7 @@ def test_format_player_entry():
     player = MagicMock()
     player.name = "TestPlayer"
     player.level = 5
-    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player.is_admin = False
     result = format_player_entry(player)
     assert "TestPlayer" in result
@@ -72,7 +72,7 @@ def test_format_player_entry_admin():
     player = MagicMock()
     player.name = "AdminPlayer"
     player.level = 10
-    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player.is_admin = True
     result = format_player_entry(player)
     assert "AdminPlayer" in result

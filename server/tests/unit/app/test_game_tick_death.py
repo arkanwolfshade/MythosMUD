@@ -3,6 +3,9 @@
 # pylint: disable=missing-function-docstring  # Reason: test names document behavior
 # pyright: reportPrivateUsage=false
 # Reason: this module unit-tests private tick helpers (_process_*, corpse cleanup internals).
+# pyright: reportAny=false
+# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (flux_service.process_tick_for_player,
+# .assert_awaited_once, .assert_not_awaited, ...) resolve to Any throughout this file.
 
 from __future__ import annotations
 
@@ -19,16 +22,20 @@ from server.app.game_tick_corpses import (
     _log_cleanup_results,
     cleanup_decayed_corpses,
 )
+from server.app.game_tick_death import _process_mortally_wounded_players, _process_session_dp_decay_and_death
 from server.app.game_tick_processing import (
     _process_dead_players,
     _process_mortally_wounded_player,
+    _process_passive_corruption_flux,
     _process_passive_lucidity_flux,
+    _process_single_player_room_flux,
     broadcast_tick_event,
     game_tick_loop,
     process_dp_decay_and_death,
 )
 from server.app.game_tick_protocols import _tick_online_players
 from server.models.combat import CombatStatus
+from server.services.corpse_lifecycle_service import CorpseServiceError
 
 
 @pytest.mark.asyncio
@@ -54,17 +61,15 @@ async def test_process_mortally_wounded_skips_active_combat() -> None:
     process_mortally_wounded_tick.assert_not_called()
 
 
-@pytest.mark.asyncio
-async def test_process_mortally_wounded_death_threshold() -> None:
-    process_mortally_wounded_tick: AsyncMock = AsyncMock()
+def _bleed_out_setup() -> tuple[MagicMock, MagicMock, AsyncMock, AsyncMock]:
+    """A container and player whose next tick takes the player to -10 DP, plus the limbo-move mock."""
     handle_player_death: AsyncMock = AsyncMock()
     player_death_service: MagicMock = MagicMock()
-    player_death_service.process_mortally_wounded_tick = process_mortally_wounded_tick
+    player_death_service.process_mortally_wounded_tick = AsyncMock()
     player_death_service.handle_player_death = handle_player_death
     move_player_to_limbo: AsyncMock = AsyncMock()
     player_respawn_service: MagicMock = MagicMock()
     player_respawn_service.move_player_to_limbo = move_player_to_limbo
-    get_stats: MagicMock = MagicMock(return_value={"current_dp": -10, "max_dp": 100})
     container: MagicMock = MagicMock()
     container.player_death_service = player_death_service
     container.combat_service = None
@@ -74,14 +79,74 @@ async def test_process_mortally_wounded_death_threshold() -> None:
     player.player_id = str(uuid.uuid4())
     player.name = "Victim"
     player.current_room_id = "room-1"
-    player.get_stats = get_stats
+    player.get_stats = MagicMock(return_value={"current_dp": -10, "max_dp": 100})
+    return container, player, handle_player_death, move_player_to_limbo
+
+
+@pytest.mark.asyncio
+async def test_process_mortally_wounded_death_threshold() -> None:
+    container, player, handle_player_death, move_player_to_limbo = _bleed_out_setup()
     session: AsyncMock = AsyncMock()
-    with patch(
-        "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
-        new_callable=AsyncMock,
+    order: list[str] = []
+
+    async def _record_corpse(*_args: object, **_kwargs: object) -> None:
+        order.append("corpse")
+
+    async def _record_limbo(*_args: object, **_kwargs: object) -> bool:
+        order.append("limbo")
+        return True
+
+    corpse_service = MagicMock()
+    corpse_service.create_corpse_on_death = AsyncMock(side_effect=_record_corpse)
+    move_player_to_limbo.side_effect = _record_limbo
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service) as corpse_service_cls,
     ):
         await _process_mortally_wounded_player(container, player, session)
     handle_player_death.assert_awaited_once()
+    # Bleed-out deaths never pass through combat's death handler, so the tick must make the corpse (#917):
+    # in the room the player died in, before the limbo move relocates them.
+    corpse_service_cls.assert_called_once()
+    assert corpse_service_cls.call_args.kwargs["persistence"] is container.async_persistence
+    corpse_service.create_corpse_on_death.assert_awaited_once_with(uuid.UUID(player.player_id), "room-1")
+    assert order == ["corpse", "limbo"]
+
+
+@pytest.mark.asyncio
+async def test_bleed_out_corpse_failure_does_not_abort_the_death_sequence() -> None:
+    container, player, _, move_player_to_limbo = _bleed_out_setup()
+    corpse_service = MagicMock()
+    corpse_service.create_corpse_on_death = AsyncMock(side_effect=CorpseServiceError("db down"))
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service),
+    ):
+        await _process_mortally_wounded_player(container, player, AsyncMock())
+    move_player_to_limbo.assert_awaited_once()
+    container.event_bus.publish.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_bleed_out_without_persistence_skips_corpse_but_still_moves_to_limbo() -> None:
+    container, player, _, move_player_to_limbo = _bleed_out_setup()
+    container.async_persistence = None
+    with (
+        patch(
+            "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+            new_callable=AsyncMock,
+        ),
+        patch("server.app.game_tick_death.CorpseLifecycleService") as corpse_service_cls,
+    ):
+        await _process_mortally_wounded_player(container, player, AsyncMock())
+    corpse_service_cls.assert_not_called()
+    move_player_to_limbo.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -245,26 +310,99 @@ async def test_game_tick_loop_cancelled_on_sleep() -> None:
     )
     with patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01):
         with patch("server.app.game_tick_processing.sleep", side_effect=asyncio.CancelledError):
-            with patch("server.app.game_tick_processing.process_player_effects_expiration", new_callable=AsyncMock):
-                with patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock):
-                    with patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock):
+            with patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock):
+                with patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock):
+                    with patch(
+                        "server.app.game_tick_processing.process_casting_progress",
+                        new_callable=AsyncMock,
+                    ):
                         with patch(
-                            "server.app.game_tick_processing.process_casting_progress",
+                            "server.app.game_tick_processing.process_dp_decay_and_death",
                             new_callable=AsyncMock,
                         ):
                             with patch(
-                                "server.app.game_tick_processing.process_dp_decay_and_death",
+                                "server.app.game_tick_processing.process_npc_maintenance",
                                 new_callable=AsyncMock,
                             ):
                                 with patch(
-                                    "server.app.game_tick_processing.process_npc_maintenance",
+                                    "server.app.game_tick_processing.cleanup_decayed_corpses",
                                     new_callable=AsyncMock,
                                 ):
-                                    with patch(
-                                        "server.app.game_tick_processing.cleanup_decayed_corpses",
-                                        new_callable=AsyncMock,
-                                    ):
-                                        await game_tick_loop(app)
+                                    await game_tick_loop(app)
+
+
+@pytest.mark.asyncio
+async def test_game_tick_loop_survives_unanticipated_exception() -> None:
+    """Regression: a plain Exception (e.g. DatabaseError, not in the old narrower tuple)
+    raised by a tick sub-function must not kill the loop -- register_task has no
+    restart-on-crash supervision, so an uncaught exception here used to end the game
+    tick loop permanently for the life of the server process."""
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock(
+        combat_service=None,
+        magic_service=None,
+        player_death_service=None,
+        npc_lifecycle_manager=None,
+    )
+    with (
+        patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
+        patch("server.app.game_tick_processing.sleep", side_effect=[None, asyncio.CancelledError]),
+        patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock),
+        patch(
+            "server.app.game_tick_processing.process_combat_tick",
+            new_callable=AsyncMock,
+            side_effect=[Exception("simulated database failure"), None],
+        ) as mock_combat_tick,
+        patch("server.app.game_tick_processing.process_casting_progress", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_dp_decay_and_death", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_npc_maintenance", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.cleanup_decayed_corpses", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.track_exception") as mock_track_exception,
+    ):
+        # Must not raise -- the loop should survive the first tick's exception and reach a
+        # second iteration before being cancelled via the second `sleep` call.
+        await game_tick_loop(app)
+
+    assert mock_combat_tick.await_count == 2
+    # The failure must still be loud: tracked at critical severity (feeds the existing
+    # monitoring-dashboard alert threshold), not just silently swallowed.
+    mock_track_exception.assert_called_once()
+    assert mock_track_exception.call_args.args[1]["severity"] == "critical"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("players_online", "expected_db_check_ticks"),
+    [
+        (True, list(range(12))),  # someone online: DB-backed checks run every tick
+        (False, [0, 10]),  # idle world: once per game-second (10 ticks at the 100 ms tick)
+    ],
+)
+async def test_game_tick_loop_throttles_db_checks_when_nobody_is_online(
+    players_online: bool, expected_db_check_ticks: list[int]
+) -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    app.state.container = MagicMock()
+    with (
+        patch("server.app.game_tick_processing.get_tick_interval", return_value=0.01),
+        patch("server.app.game_tick_processing.sleep", side_effect=[None] * 11 + [asyncio.CancelledError]),
+        patch("server.app.game_tick_processing.update_world_presence", return_value=players_online),
+        patch("server.app.game_tick_processing.process_status_effects", new_callable=AsyncMock) as mock_status,
+        patch("server.app.game_tick_processing.process_combat_tick", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_casting_progress", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_dp_decay_and_death", new_callable=AsyncMock) as mock_dp,
+        patch("server.app.game_tick_processing.process_combat_cleanup", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.process_npc_maintenance", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.cleanup_decayed_corpses", new_callable=AsyncMock),
+        patch("server.app.game_tick_processing.broadcast_tick_event", new_callable=AsyncMock),
+    ):
+        await game_tick_loop(app)
+
+    assert [call.args[1] for call in mock_dp.await_args_list] == expected_db_check_ticks
+    # The loop calls the status-effect step every tick; it acts only on game seconds, for online players.
+    assert mock_status.await_count == 12
 
 
 @pytest.mark.asyncio
@@ -276,6 +414,52 @@ async def test_process_passive_lucidity_flux() -> None:
     container.passive_lucidity_flux_service = passive_lucidity_flux_service
     await _process_passive_lucidity_flux(container, AsyncMock(), tick_count=1)
     process_tick.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_reports_nonzero_delta() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 1, "new_value": 11})
+    player_id = str(uuid.uuid4())
+    assert await _process_single_player_room_flux(flux_service, player_id, tick_count=1) is True
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_no_change() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 0})
+    player_id = str(uuid.uuid4())
+    assert await _process_single_player_room_flux(flux_service, player_id, tick_count=1) is False
+
+
+@pytest.mark.asyncio
+async def test_process_single_player_room_flux_swallows_bad_player_id() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock()
+    assert await _process_single_player_room_flux(flux_service, "not-a-uuid", tick_count=1) is False
+    flux_service.process_tick_for_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_process_passive_corruption_flux_no_service_is_noop() -> None:
+    container: MagicMock = MagicMock()
+    container.passive_corruption_flux_service = None
+    await _process_passive_corruption_flux(container, MagicMock(), tick_count=1)
+
+
+@pytest.mark.asyncio
+async def test_process_passive_corruption_flux_ticks_online_players() -> None:
+    flux_service: MagicMock = MagicMock()
+    flux_service.process_tick_for_player = AsyncMock(return_value={"delta": 2})
+    connection_manager: MagicMock = MagicMock()
+    connection_manager.online_players = {uuid.uuid4(): {}}
+    container: MagicMock = MagicMock()
+    container.passive_corruption_flux_service = flux_service
+    container.connection_manager = connection_manager
+
+    await _process_passive_corruption_flux(container, MagicMock(), tick_count=1)
+
+    flux_service.process_tick_for_player.assert_awaited_once()
 
 
 def test_log_cleanup_results_warning_path() -> None:
@@ -297,3 +481,39 @@ async def test_tick_online_players_counts_successes() -> None:
         await _tick_online_players([id_ok, id_skip], 3, "Processed test", process_one)
     assert seen == [str(id_ok), str(id_skip)]
     debug.assert_called_once_with("Processed test", tick_count=3, players_processed=1)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("tick_rate", "tick_count", "should_decay"),
+    [(0.1, 10, True), (0.1, 5, False), (0.1, 11, False), (1.0, 7, True)],
+)
+async def test_mortally_wounded_decay_runs_once_per_second(
+    tick_rate: float, tick_count: int, should_decay: bool
+) -> None:
+    """#908: DP decay is 1 DP per second of game time, not per tick."""
+    get_mortally_wounded_players: AsyncMock = AsyncMock(return_value=[])
+    container: MagicMock = MagicMock()
+    container.player_death_service.get_mortally_wounded_players = get_mortally_wounded_players
+    config: MagicMock = MagicMock()
+    config.game.server_tick_rate = tick_rate
+    with patch("server.app.game_tick_death.get_config", return_value=config):
+        await _process_mortally_wounded_players(container, AsyncMock(), tick_count)
+    assert get_mortally_wounded_players.await_count == int(should_decay)
+
+
+@pytest.mark.asyncio
+async def test_the_session_pass_runs_the_catatonia_clock() -> None:
+    """#1148: the clock rides the same per-tick DB session as bleed-out and passive flux."""
+    container = MagicMock()
+    session = AsyncMock()
+    with (
+        patch("server.app.game_tick_death._process_mortally_wounded_players", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_passive_lucidity_flux", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_passive_corruption_flux", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_mp_regeneration", new_callable=AsyncMock),
+        patch("server.app.game_tick_death._process_dead_players", new_callable=AsyncMock),
+        patch("server.app.game_tick_death.process_catatonia_decay", new_callable=AsyncMock) as clock,
+    ):
+        await _process_session_dp_decay_and_death(container, session, 20)
+    clock.assert_awaited_once_with(container, session, 20)

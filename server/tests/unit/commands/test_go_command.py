@@ -17,6 +17,8 @@ from server.commands.go_command import (
     _validate_player_posture,
     handle_go_command,
 )
+from server.game.movement_helpers import set_quest_activity_reader
+from server.models.room import Room
 
 
 @pytest.mark.asyncio
@@ -442,6 +444,67 @@ async def test_handle_go_command_success():
     assert result["room_id"] == "north_room"
 
 
+def _gated_go_request(*, holding: bool, requirements: dict[str, object] | None = None) -> tuple[MagicMock, AsyncMock]:
+    """A go request from a room whose `down` exit is gated (by default on the jade amulet); returns (request, move_player)."""
+    player: MagicMock = MagicMock()
+    player.current_room_id = "test_room"
+    player.player_id = uuid.uuid4()
+    player.get_stats = MagicMock(return_value={"position": "standing"})
+    player.get_inventory = MagicMock(return_value=[{"prototype_id": "jade_amulet", "quantity": 1}] if holding else [])
+    player.get_equipped_items = MagicMock(return_value={})
+    room = Room(
+        {
+            "id": "test_room",
+            "exits": {"down": "tunnel"},
+            "attributes": {
+                "exit_requirements": requirements
+                or {"down": {"item": "jade_amulet", "refusal": "Not with empty hands."}}
+            },
+        }
+    )
+    tunnel: MagicMock = MagicMock()
+
+    def room_for(room_id: str) -> object:
+        return tunnel if room_id == "tunnel" else room
+
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    persistence.get_room_by_id = MagicMock(side_effect=room_for)
+    move_player: AsyncMock = AsyncMock(return_value=True)
+    movement_service: MagicMock = MagicMock()
+    movement_service.move_player = move_player
+    container: MagicMock = MagicMock()
+    container.async_persistence = persistence
+    container.movement_service = movement_service
+    state: MagicMock = MagicMock()
+    state.container = container
+    app: MagicMock = MagicMock()
+    app.state = state
+    request: MagicMock = MagicMock()
+    request.app = app
+    return request, move_player
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_shows_the_refusal_for_a_gated_exit():
+    """A gated exit explains itself (the room's own refusal text) and never reaches the movement service."""
+    request, move_player = _gated_go_request(holding=False)
+
+    result = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+
+    assert result == {"result": "Not with empty hands."}
+    move_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_lets_a_player_holding_the_item_through_a_gated_exit():
+    request, move_player = _gated_go_request(holding=True)
+
+    _ = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+
+    move_player.assert_awaited_once()
+
+
 @pytest.mark.asyncio
 async def test_handle_go_command_rest_interrupt_still_moves():
     """Resting must cancel rest and complete the move in one go (not abort with interrupt-only)."""
@@ -485,3 +548,77 @@ async def test_handle_go_command_rest_interrupt_still_moves():
     assert result["room_id"] == "north_room"
     assert "rest is interrupted" in result["result"].lower()
     assert "you go north" in result["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_sitting_while_resting_still_cancels_and_moves() -> None:
+    """Regression: /rest seats the player; go must cancel rest before posture block (e2e login flake)."""
+    command_data: dict[str, object] = {"direction": "west"}
+    player_id = uuid.uuid4()
+    mock_player: MagicMock = MagicMock()
+    mock_player.current_room_id = "hallway"
+    mock_player.player_id = player_id
+    mock_player.get_stats = MagicMock(return_value={"position": "sitting"})
+    mock_room: MagicMock = MagicMock()
+    mock_room.id = "hallway"
+    mock_room.exits = {"west": "foyer"}
+    mock_target_room: MagicMock = MagicMock()
+    mock_persistence: AsyncMock = AsyncMock()
+    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+
+    def _room_by_id(rid: object) -> MagicMock:
+        return mock_target_room if rid == "foyer" else mock_room
+
+    mock_persistence.get_room_by_id = MagicMock(side_effect=_room_by_id)
+
+    mock_movement_service: MagicMock = MagicMock()
+    mock_movement_service.move_player = AsyncMock(return_value=True)
+    mock_connection_manager: MagicMock = MagicMock()
+    mock_container: MagicMock = MagicMock()
+    mock_container.async_persistence = mock_persistence
+    mock_container.movement_service = mock_movement_service
+    mock_container.connection_manager = mock_connection_manager
+    mock_state: MagicMock = MagicMock()
+    mock_state.container = mock_container
+    mock_app: MagicMock = MagicMock()
+    mock_app.state = mock_state
+    mock_request: MagicMock = MagicMock()
+    mock_request.app = mock_app
+
+    with (
+        patch("server.commands.go_command.is_player_resting", return_value=True),
+        patch("server.commands.go_command.cancel_rest_countdown", new_callable=AsyncMock) as mock_cancel,
+    ):
+        result: dict[str, object] = await handle_go_command(
+            command_data, {"username": "testuser"}, mock_request, None, "testplayer"
+        )
+
+    mock_cancel.assert_awaited_once()
+    result_text = str(result.get("result", "")).lower()
+    assert "stand up" not in result_text
+    assert result["room_changed"] is True
+    assert "rest is interrupted" in result_text
+
+
+@pytest.mark.asyncio
+async def test_handle_go_command_refuses_a_quest_gated_exit_until_the_activity_is_done():
+    """#1111: an exit a quest unlocks stays shut with the room's own refusal, then opens once the step is done."""
+    gate: dict[str, object] = {"down": {"quest_activity": "cmd_look", "refusal": "Look around first."}}
+    request, move_player = _gated_go_request(holding=False, requirements=gate)
+    done: set[str] = set()
+
+    async def reader(player_id: uuid.UUID, target: str) -> bool:
+        _ = player_id
+        return target in done
+
+    set_quest_activity_reader(reader)
+    try:
+        refused = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+        move_player.assert_not_awaited()
+        done.add("cmd_look")
+        _ = await handle_go_command({"direction": "down"}, {"username": "testuser"}, request, None, "testplayer")
+    finally:
+        set_quest_activity_reader(None)
+
+    assert refused == {"result": "Look around first."}
+    move_player.assert_awaited_once()

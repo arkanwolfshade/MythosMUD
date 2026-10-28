@@ -234,6 +234,15 @@ def rotate_log_files(env_log_dir: Path) -> None:
         _rotate_single_log_file(log_file, timestamp)
 
 
+def _detect_environment_from_legacy_config_path() -> str | None:
+    """Infer environment from the legacy MYTHOSMUD_CONFIG_PATH env var, for backward compatibility."""
+    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
+    for environment in ("e2e_test", "unit_test", "production", "local"):
+        if environment in config_path:
+            return environment
+    return None
+
+
 def detect_environment() -> str:
     """
     Detect the current environment based on various indicators.
@@ -268,16 +277,9 @@ def detect_environment() -> str:
     if logging_env in valid_environments:
         return logging_env
 
-    # Fallback: check legacy config path for backward compatibility
-    config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
-    if "e2e_test" in config_path:
-        return "e2e_test"
-    if "unit_test" in config_path:
-        return "unit_test"
-    if "production" in config_path:
-        return "production"
-    if "local" in config_path:
-        return "local"
+    legacy_environment = _detect_environment_from_legacy_config_path()
+    if legacy_environment is not None:
+        return legacy_environment
 
     # Default to local (not "development" - that's not a valid environment)
     return "local"

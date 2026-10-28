@@ -4,8 +4,12 @@ Unit tests for player death service.
 Tests the PlayerDeathService class for managing player mortality and DP decay.
 """
 
+# pyright: reportUnknownMemberType=false
+# TEST_MOCK: AsyncMock attribute chains off the untyped `mock_session` fixture
+# (mock_session.rollback.assert_awaited_once, ...) resolve to Unknown throughout this file.
+
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -139,6 +143,10 @@ async def test_get_mortally_wounded_players_handles_error(player_death_service, 
     mock_session.execute = AsyncMock(side_effect=Exception("Database error"))
     result = await player_death_service.get_mortally_wounded_players(mock_session)
     assert result == []
+    # Regression: this session is shared with get_dead_players for the rest of the tick;
+    # without a rollback, Postgres leaves the transaction aborted and cascades this
+    # failure onto every later query on it.
+    mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -182,6 +190,8 @@ async def test_get_dead_players_handles_error(player_death_service, mock_session
     mock_session.execute = AsyncMock(side_effect=ValueError("Database error"))
     result = await player_death_service.get_dead_players(mock_session)
     assert result == []
+    # Regression: same cascading-transaction concern as get_mortally_wounded_players.
+    mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -320,33 +330,35 @@ def test_get_room_name_for_death_with_room(player_death_service):
     """Test _get_room_name_for_death() returns room name when available."""
     mock_room = MagicMock()
     mock_room.name = "Test Room"
+    mock_room.zone_name = "Test Zone"
+    mock_room.sub_zone_name = "Test Sub"
     mock_persistence = MagicMock()
     mock_persistence.get_room_by_id.return_value = mock_room
     player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "Test Room"
+    assert result == "Test Zone › Test Sub › Test Room"
 
 
 def test_get_room_name_for_death_no_room(player_death_service):
-    """Test _get_room_name_for_death() returns room_id when room not found."""
+    """Test _get_room_name_for_death() never leaks the room_id when room not found (#910)."""
     mock_persistence = MagicMock()
     mock_persistence.get_room_by_id.return_value = None
     player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "room_001"
+    assert result == "Unknown Location"
 
 
 def test_get_room_name_for_death_empty_location(player_death_service):
-    """Test _get_room_name_for_death() returns 'Unknown' for empty location."""
+    """Test _get_room_name_for_death() returns 'Unknown Location' for empty location."""
     result = player_death_service._get_room_name_for_death("")
-    assert result == "Unknown"
+    assert result == "Unknown Location"
 
 
 def test_get_room_name_for_death_no_container(player_death_service):
-    """Test _get_room_name_for_death() returns room_id when async_persistence unavailable."""
+    """Test _get_room_name_for_death() never leaks the room_id when async_persistence unavailable (#910)."""
     player_death_service._async_persistence = None
     result = player_death_service._get_room_name_for_death("room_001")
-    assert result == "room_001"
+    assert result == "Unknown Location"
 
 
 def test_publish_death_event_with_event_bus(player_death_service, sample_player_id, mock_event_bus):
@@ -420,3 +432,50 @@ async def test_handle_player_death_handles_error(player_death_service, mock_sess
     result = await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
     assert result is False
     mock_session.rollback.assert_awaited_once()
+
+
+def _session_with_players(players: list[MagicMock]) -> AsyncMock:
+    """Async session whose select(Player) returns the given players."""
+    scalars = MagicMock()
+    scalars.all = MagicMock(return_value=players)
+    result = MagicMock()
+    result.scalars = MagicMock(return_value=scalars)
+    return AsyncMock(execute=AsyncMock(return_value=result))
+
+
+def _player(player_id: uuid.UUID, *, dead: bool = False, mortally_wounded: bool = False) -> MagicMock:
+    player = MagicMock(spec=Player)
+    player.player_id = player_id
+    player.is_dead = MagicMock(return_value=dead)
+    player.is_mortally_wounded = MagicMock(return_value=mortally_wounded)
+    return player
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("dead", [False, True])
+async def test_get_dead_players_debug_only_when_found(dead: bool) -> None:
+    """#912: runs every tick; an empty result must not emit a debug line."""
+    player_id = uuid.uuid4()
+    player = _player(player_id, dead=dead)
+    debug = MagicMock()
+    with patch("server.services.player_death_service.logger.debug", debug):
+        found = await PlayerDeathService().get_dead_players(_session_with_players([player]))
+    assert len(found) == int(dead)
+    assert debug.call_count == int(dead)
+    if dead:
+        debug.assert_called_once_with("Found dead players", count=1, player_ids=[player_id])
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("wounded", [False, True])
+async def test_get_mortally_wounded_players_debug_only_when_found(wounded: bool) -> None:
+    """#912: runs every game-second; an empty result must not emit a debug line."""
+    player_id = uuid.uuid4()
+    player = _player(player_id, mortally_wounded=wounded)
+    debug = MagicMock()
+    with patch("server.services.player_death_service.logger.debug", debug):
+        found = await PlayerDeathService().get_mortally_wounded_players(_session_with_players([player]))
+    assert len(found) == int(wounded)
+    assert debug.call_count == int(wounded)
+    if wounded:
+        debug.assert_called_once_with("Found mortally wounded players", count=1, player_ids=[player_id])

@@ -1,6 +1,6 @@
 # ADR-006: PostgreSQL as Primary Datastore
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.1** · MythosMUD · 2026-09-16
 
 ---
 
@@ -33,7 +33,10 @@ Use **PostgreSQL** as the primary datastore:
 - SQLAlchemy async ORM for data access
 - Connection pooling via SQLAlchemy engine
 - No SQLite; migration from SQLite to PostgreSQL completed
-- Alembic for schema migrations
+- Schema migrations: dbmate (`db/migrations/`, via `scripts/migrate.ps1`) on top of a single
+  schema-agnostic baseline (`db/schema.sql`, `data/db/seed.sql`) — see #811. Alembic was
+  scaffolded early on but never wired up (no `alembic.ini`/`env.py`, not a dependency) and was
+  removed in #811; it never actually ran a migration.
 
 Player data, room state, health, experience, inventory, and related entities reside in PostgreSQL. Repositories use async SQLAlchemy sessions.
 
@@ -60,13 +63,13 @@ Player data, room state, health, experience, inventory, and related entities res
 
 - ADR-005: Repository Pattern for Data Access
 - ADR-007: FastAPI with Async/Await
+- ADR-015: PostgreSQL Procedures Migration
 
 ## 7. References
 
 **[SPEC]**
 
-- [Database Access Patterns](../../DATABASE_ACCESS_PATTERNS.md)
-- [Database Pool Configuration](../../DATABASE_POOL_CONFIGURATION.md)
+- [Database Architecture](../DATABASE_ARCHITECTURE.md) — access patterns (§2) and connection pooling (§4), formerly `DATABASE_ACCESS_PATTERNS.md` and `DATABASE_POOL_CONFIGURATION.md`
 
 ## 8. Changelog
 
@@ -76,3 +79,5 @@ Player data, room state, health, experience, inventory, and related entities res
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship) per the 2026-08 audit (#721) |
+| 1.2.0 | 2026-09-15 | Replace "Alembic for schema migrations" with dbmate + baseline (#811); Alembic was scaffolded but never wired up |
+| 1.2.1 | 2026-09-16 | Repoint references to `DATABASE_ARCHITECTURE.md`, which consolidates and replaces `DATABASE_ACCESS_PATTERNS.md` and `DATABASE_POOL_CONFIGURATION.md` (#745) |

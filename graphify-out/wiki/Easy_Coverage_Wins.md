@@ -1,34 +1,27 @@
 # Easy Coverage Wins
 
-> 13 nodes
+> 5 nodes · cohesion 0.40
 
 ## Key Concepts
 
-- **Easy Coverage Wins - Quick Analysis** (9 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **📊 Recommended Priority Order** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎉 Summary** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🚀 Next Steps** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 1: Quick Wins (Tier 1 + Tier 2) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 2: Medium Effort (Tier 3) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 3: New Small Files (Tier 4) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 4: Additional Realtime Files 🔄 IN PROGRESS** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 1: 0% Coverage - Small Files (Easiest Wins) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 2: Close to 70% (Quick Top-Ups) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 3: Medium Files with Low Coverage ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 4: New Easy Wins (Small Realtime Files) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **💡 Why These Are Easy Wins** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **wearable_service()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **fixture** (2 connections)
+- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Create WearableContainerService instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- [Python Coverage Status](Python_Coverage_Status.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (2 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/EASY_COVERAGE_WINS.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

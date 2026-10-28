@@ -1,0 +1,57 @@
+# CORSConfigDict
+
+> 34 nodes · cohesion 0.10
+
+## Key Concepts
+
+- **GameMechanicsService** (21 connections) — `server/game/mechanics.py`
+- **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
+- **_player()** (7 connections) — `server/tests/unit/game/test_mechanics.py`
+- **asyncio** (7 connections)
+- **test_apply_corruption_success()** (5 connections) — `server/tests/unit/game/test_mechanics.py`
+- **.apply_corruption()** (4 connections) — `server/game/mechanics.py`
+- **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_damage_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_occult_knowledge_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_heal_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **.apply_fear()** (3 connections) — `server/game/mechanics.py`
+- **.apply_lucidity_loss()** (3 connections) — `server/game/mechanics.py`
+- **.damage_player()** (3 connections) — `server/game/mechanics.py`
+- **.gain_occult_knowledge()** (3 connections) — `server/game/mechanics.py`
+- **.heal_player()** (3 connections) — `server/game/mechanics.py`
+- **.__init__()** (3 connections) — `server/game/mechanics.py`
+- **_async_session_gen()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_experience_removed()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
+- **fixture** (2 connections)
+- **Gain occult knowledge (with lucidity loss).** (1 connections) — `server/game/mechanics.py`
+- **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
+- *... and 9 more nodes in this community*
+
+## Relationships
+
+- [endpoints.py](endpoints.py.md) (6 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (1 shared connections)
+- [reset_database](reset_database.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+
+## Source Files
+
+- `server/game/mechanics.py`
+- `server/tests/unit/game/test_mechanics.py`
+
+## Audit Trail
+
+- EXTRACTED: 62 (87%)
+- INFERRED: 9 (13%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

@@ -2,25 +2,36 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
-import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
+import type { LucidityStatus } from '../../types/lucidity';
+import type { RescueStatus } from '../../types/rescue';
 import { publishTier } from '../../utils/lucidityTierRelay';
 import { IncapacitatedBanner } from '../health/IncapacitatedBanner';
+import { RescueBanner } from '../health/RescueBanner';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
 import { GameInfoPanel } from './panels/GameInfoPanel';
+import { InventoryPanel } from './panels/InventoryPanel';
 import { LocationPanel } from './panels/LocationPanel';
 import { OccupantsPanel } from './panels/OccupantsPanel';
 import { QuestLogPanel } from './panels/QuestLogPanel';
 import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
-import { SettingsPanel } from './panels/SettingsPanel';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
 import { TentacleBackdrop } from './TentacleBackdrop';
-import type { ChatMessage, MythosTimeState, PanelVariant, Player, QuestLogEntry, Room } from './types';
+import type {
+  ChatMessage,
+  InventoryStack,
+  MythosTimeState,
+  PanelVariant,
+  Player,
+  QuestLogEntry,
+  Room,
+  RoomContainerSummary,
+} from './types';
 import { getGameInfoPanelCombatClassName } from './utils/characterInfoPanelOutline';
-import { headerHeightClass } from './utils/headerHeight';
+import { HEADER_COLLAPSED_STORAGE_KEY, headerHeightClass } from './utils/headerHeight';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 
@@ -28,7 +39,7 @@ import type { ActiveEffectDisplay } from './utils/stateUpdateUtils';
 // Extracted to reduce cyclomatic complexity
 /** Panel ids rendered in the main dock (single source for mapped PanelContainers). */
 type MainDockPanelId =
-  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'settings';
+  'chatHistory' | 'location' | 'roomDescription' | 'occupants' | 'gameInfo' | 'questLog' | 'inventory';
 
 /** Dock slot metadata (stable); panel bodies read messages/room in render to avoid invalidating a memo on every chat line. */
 type MainDockSlotMeta = {
@@ -70,6 +81,8 @@ interface GameClientV2Props {
   mythosTime: MythosTimeState | null;
   healthStatus: HealthStatus | null;
   lucidityStatus: LucidityStatus | null;
+  /** Latest rescue phase for the banner (GameState.rescueStatus, #713). */
+  rescueStatus?: RescueStatus | null;
   // Event handlers
   onSendCommand: (command: string) => void;
   onSendChatMessage: (message: string, channel: string) => void;
@@ -82,6 +95,14 @@ interface GameClientV2Props {
   questLog?: QuestLogEntry[];
   /** Called when user clicks minimap to open full map. */
   onMapClick?: () => void;
+  /** Player's carried items (from inventory_updated). */
+  playerInventory?: InventoryStack[];
+  /** Player's equipped-slot items, keyed by slot_type (from inventory_updated). */
+  playerEquipped?: Record<string, InventoryStack>;
+  /** Containers known to be in the current room (from container.created). */
+  roomContainers?: RoomContainerSummary[];
+  /** Opens a container by id (HTTP /api/containers/open). */
+  onOpenContainer?: (containerId: string) => void;
 }
 
 // Main game client component with three-column layout
@@ -102,6 +123,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     mythosTime,
     healthStatus,
     lucidityStatus,
+    rescueStatus = null,
     onSendCommand,
     onSendChatMessage,
     onClearMessages,
@@ -112,6 +134,10 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     questLog = [],
     onMapClick,
     authToken,
+    playerInventory = [],
+    playerEquipped = {},
+    roomContainers = [],
+    onOpenContainer = () => {},
   } = props;
   const panelManager = usePanelManager();
 
@@ -119,7 +145,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
   // from the same source as the header's own height - see headerHeightClass (#699).
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(() => {
     try {
-      return localStorage.getItem('mythosmud-ui-v2-header-collapsed') === 'true';
+      return localStorage.getItem(HEADER_COLLAPSED_STORAGE_KEY) === 'true';
     } catch {
       return false;
     }
@@ -129,7 +155,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     setIsHeaderCollapsed(prev => {
       const next = !prev;
       try {
-        localStorage.setItem('mythosmud-ui-v2-header-collapsed', String(next));
+        localStorage.setItem(HEADER_COLLAPSED_STORAGE_KEY, String(next));
       } catch {
         // localStorage unavailable (private mode, etc.) - collapse state just won't persist.
       }
@@ -143,10 +169,8 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     [healthStatus, player]
   );
 
-  const derivedLucidityStatus = useMemo<LucidityStatus | null>(
-    () => lucidityStatus ?? deriveLucidityStatusFromPlayer(player, undefined),
-    [lucidityStatus, player]
-  );
+  // Lucidity is server-authoritative and never a player stat: game_state / lucidity_change / delirium respawn.
+  const derivedLucidityStatus: LucidityStatus | null = lucidityStatus;
 
   // Self-clearing: tracks the authoritative DP tier exactly, no minimum dwell time (#715).
   const isIncapacitated = derivedHealthStatus?.tier === 'incapacitated';
@@ -209,49 +233,45 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         panelClassName: getGameInfoPanelCombatClassName(Boolean(player?.in_combat)),
       },
       { id: 'questLog', variant: 'default' },
-      { id: 'settings', variant: 'default' },
+      { id: 'inventory', variant: 'default' },
     ],
     [occupantsTitle, player]
   );
 
-  const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => {
-    switch (id) {
-      case 'chatHistory':
-        return (
-          <ChatHistoryPanel
-            messages={messages}
-            onSendChatMessage={onSendChatMessage}
-            onClearMessages={onClearMessages}
-            onDownloadLogs={onDownloadLogs}
-            isConnected={isConnected}
-            corruption={player?.stats?.corruption ?? 0}
-          />
-        );
-      case 'location':
-        return <LocationPanel room={room} />;
-      case 'roomDescription':
-        return <RoomDescriptionPanel room={room} />;
-      case 'occupants':
-        return <OccupantsPanel room={room} />;
-      case 'gameInfo':
-        return (
-          <GameInfoPanel
-            messages={messages}
-            onClearMessages={onClearMessages}
-            onDownloadLogs={onDownloadLogs}
-            inCombat={Boolean(player?.in_combat)}
-          />
-        );
-      case 'questLog':
-        return <QuestLogPanel questLog={questLog} />;
-      case 'settings':
-        return <SettingsPanel />;
-      default: {
-        const _exhaustive: never = id;
-        return _exhaustive;
-      }
-    }
+  const mainDockSlotContent: Record<MainDockPanelId, React.ReactNode> = {
+    chatHistory: (
+      <ChatHistoryPanel
+        messages={messages}
+        onSendChatMessage={onSendChatMessage}
+        onClearMessages={onClearMessages}
+        onDownloadLogs={onDownloadLogs}
+        isConnected={isConnected}
+        corruption={player?.stats?.corruption ?? 0}
+      />
+    ),
+    location: <LocationPanel room={room} />,
+    roomDescription: <RoomDescriptionPanel room={room} />,
+    occupants: <OccupantsPanel room={room} />,
+    gameInfo: (
+      <GameInfoPanel
+        messages={messages}
+        onClearMessages={onClearMessages}
+        onDownloadLogs={onDownloadLogs}
+        inCombat={Boolean(player?.in_combat)}
+      />
+    ),
+    questLog: <QuestLogPanel questLog={questLog} />,
+    inventory: (
+      <InventoryPanel
+        inventory={playerInventory}
+        equipped={playerEquipped}
+        roomContainers={roomContainers}
+        onSendCommand={onSendCommand}
+        onOpenContainer={onOpenContainer}
+      />
+    ),
   };
+  const renderMainDockSlotContent = (id: MainDockPanelId): React.ReactNode => mainDockSlotContent[id];
 
   const characterInfoPanel = panelManager.getPanel('characterInfo');
   const commandHistoryPanel = panelManager.getPanel('commandHistory');
@@ -283,13 +303,20 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
         <div
           className={`relative flex min-h-0 flex-1 ${headerHeightClass(isHeaderCollapsed, mythosTime).padding} transition-[padding-top] duration-300`}
         >
-          {isIncapacitated && (
-            <div
-              className={`absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 px-4 pt-2`}
-            >
-              <IncapacitatedBanner />
-            </div>
-          )}
+          {/* pointer-events-none: this strip is present even when both banners render nothing, and must
+              not swallow clicks meant for the panels beneath; each banner re-enables its own. */}
+          <div
+            className={`pointer-events-none absolute inset-x-0 ${headerHeightClass(isHeaderCollapsed, mythosTime).offset} z-40 flex flex-col gap-2 px-4 pt-2`}
+          >
+            {isIncapacitated && (
+              <IncapacitatedBanner className="pointer-events-auto" currentDp={derivedHealthStatus?.current} />
+            )}
+            <RescueBanner
+              rescueStatus={rescueStatus}
+              isCatatonic={derivedLucidityStatus?.tier === 'catatonic'}
+              currentLcd={derivedLucidityStatus?.current}
+            />
+          </div>
           {mainDockSlots.map(slot => {
             const panel = panelManager.getPanel(slot.id);
             if (!panel?.isVisible) {

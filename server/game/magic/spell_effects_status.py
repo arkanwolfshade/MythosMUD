@@ -7,10 +7,12 @@ Extracted from spell_effects.py to keep the main engine under the line limit.
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
+from server.game.effect_store import SPELL_EFFECT_CATEGORY
 from server.game.magic.spell_effect_flee import run_flee_effect
-from server.models.game import StatusEffect, StatusEffectType
+from server.game.magic.spell_effect_types import SpellEffectsEngineEffectPort
+from server.models.game import StatusEffectType
 from server.models.spell import Spell
 from server.realtime.login_grace_period import is_player_in_login_grace_period
 from server.schemas.shared import TargetMatch, TargetType
@@ -43,12 +45,12 @@ def _grace_period_blocks_negative_status_effect(
         return False
     try:
         return is_player_in_login_grace_period(target_id, engine.connection_manager)
-    except (AttributeError, ImportError, TypeError, ValueError):
+    except AttributeError, ImportError, TypeError, ValueError:
         return False
 
 
 async def _apply_status_effect_to_player(
-    engine: Any,
+    engine: SpellEffectsEngineEffectPort,
     target_id: uuid.UUID,
     effect_type: StatusEffectType,
     duration: int,
@@ -56,20 +58,19 @@ async def _apply_status_effect_to_player(
     spell: Spell,
     target: TargetMatch,
 ) -> dict[str, Any]:
-    """Load player, append status effect, save; return result dict or error if player not found."""
-    player = await engine.player_service.persistence.get_player_by_id(target_id)
+    """Add the status effect as a player_effects row; return result dict or error if player not found."""
+    persistence = engine.player_service.persistence
+    player = await persistence.get_player_by_id(target_id)
     if not player:
         return {"success": False, "message": "Target player not found", "effect_applied": False}
-    status_effects = player.get_status_effects()
-    new_effect = StatusEffect(
-        effect_type=effect_type,
-        duration=duration,
-        intensity=intensity,
-        source=f"spell:{spell.spell_id}",
+    # Online game seconds; 0 keeps StatusEffect's meaning of "permanent" (until removed).
+    _ = await persistence.add_player_effect(
+        target_id,
+        effect_type.value,
+        SPELL_EFFECT_CATEGORY,
+        duration if duration > 0 else None,
+        {"intensity": intensity, "source": f"spell:{spell.spell_id}"},
     )
-    status_effects.append(new_effect.model_dump())
-    player.set_status_effects(status_effects)
-    await engine.player_service.persistence.save_player(player)
     return {
         "success": True,
         "message": f"Applied {effect_type.value} to {target.target_name}",
@@ -124,19 +125,17 @@ def _parse_status_effect_metadata(
 
 
 async def _remove_player_status_effect(
-    engine: Any,
+    engine: SpellEffectsEngineEffectPort,
     target_id: uuid.UUID,
     target: TargetMatch,
     effect_type: StatusEffectType,
 ) -> dict[str, Any]:
     """Remove a matching status effect from a player."""
-    player = await engine.player_service.persistence.get_player_by_id(target_id)
+    persistence = engine.player_service.persistence
+    player = await persistence.get_player_by_id(target_id)
     if not player:
         return {"success": False, "message": "Target player not found", "effect_applied": False}
-    status_effects = player.get_status_effects()
-    filtered_effects = [se for se in status_effects if se.get("effect_type") != effect_type.value]
-    player.set_status_effects(filtered_effects)
-    await engine.player_service.persistence.save_player(player)
+    _ = await persistence.remove_player_effects_by_type(target_id, effect_type.value)
     return {
         "success": True,
         "message": f"Removed {effect_type.value} from {target.target_name}",
@@ -166,7 +165,9 @@ async def _apply_player_status_with_grace_check(
             "message": f"Target is protected and immune to {effect_type.value}",
             "effect_applied": False,
         }
-    return await _apply_status_effect_to_player(engine, target_id, effect_type, duration, intensity, spell, target)
+    return await _apply_status_effect_to_player(
+        cast(SpellEffectsEngineEffectPort, engine), target_id, effect_type, duration, intensity, spell, target
+    )
 
 
 async def _handle_player_status_effect(
@@ -182,7 +183,9 @@ async def _handle_player_status_effect(
     try:
         target_id = uuid.UUID(target.target_id)
         if remove_effect:
-            return await _remove_player_status_effect(engine, target_id, target, effect_type)
+            return await _remove_player_status_effect(
+                cast(SpellEffectsEngineEffectPort, engine), target_id, target, effect_type
+            )
         return await _apply_player_status_with_grace_check(
             engine, spell, target, effect_type, duration, intensity, target_id
         )

@@ -10,6 +10,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from ..models.lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
+from ..models.player import Player
+
+
+class PlayerGoneError(LookupError):
+    """The player row no longer exists (deleted or reset), so there is no lucidity to create or change (#1147)."""
 
 
 def _utc_now() -> datetime:
@@ -34,10 +39,18 @@ class LucidityRepository:
         return result.scalar_one_or_none()
 
     async def get_or_create_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity:
-        """Get existing player lucidity record or create a new one."""
+        """Get existing player lucidity record or create a new one.
+
+        Raises:
+            PlayerGoneError: no record exists and the player is gone, so inserting would violate the foreign key.
+        """
         record = await self.get_player_lucidity(player_id)
         if record is not None:
             return record
+
+        player_exists = await self._session.execute(select(Player.player_id).where(Player.player_id == player_id))
+        if player_exists.scalar_one_or_none() is None:
+            raise PlayerGoneError(str(player_id))
 
         record = PlayerLucidity(player_id=player_id)
         self._session.add(record)

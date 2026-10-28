@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Layout } from 'react-grid-layout';
 
 // Layout configuration for different screen sizes
-export const layoutConfig = {
+const layoutConfig = {
   lg: [
     { i: 'chat', x: 0, y: 0, w: 6, h: 8, minW: 4, minH: 6 },
     { i: 'gameLog', x: 6, y: 0, w: 6, h: 8, minW: 4, minH: 6 },
@@ -34,7 +34,7 @@ const STORAGE_KEYS = {
 };
 
 // Panel state interface
-export interface PanelState {
+interface PanelState {
   isMinimized: boolean;
   isMaximized: boolean;
   isVisible: boolean;

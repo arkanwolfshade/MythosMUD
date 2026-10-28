@@ -13,12 +13,14 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy import Select, select
-from sqlalchemy.exc import DatabaseError, SQLAlchemyError
+from sqlalchemy.exc import DatabaseError, IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...async_persistence import AsyncPersistenceLayer
+from ...config import get_config
 from ...models.lucidity import PlayerLucidity
 from ...models.player import Player
+from ...services.lucidity_repository import PlayerGoneError
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...structured_logging.enhanced_logging_config import get_logger
@@ -84,8 +86,21 @@ class PlayerFluxCtx:  # pylint: disable=too-few-public-methods  # Reason: datacl
     session: AsyncSession
 
 
+@dataclass
+class _PlayerFluxComputation:  # pylint: disable=too-few-public-methods  # Reason: dataclass bundle for lizard PARAM
+    """Bundle for _apply_player_flux_adjustment (lizard PARAM)."""
+
+    player_id_uuid: uuid.UUID
+    player_id_str: str
+    room_id: str
+    delta: int
+    base_flux: float
+    companion_flux: float
+    total_flux: float
+
+
 class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Reason: Lucidity flux service requires many state tracking and configuration attributes
-    """Applies passive LCD flux each in-game minute with structured telemetry."""
+    """Applies passive LCD flux once per real-time minute (process_interval_seconds) with structured telemetry."""
 
     def __init__(
         self,
@@ -102,7 +117,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             dict[str, object],  # normalize_environment_config returns dict[str, Any]
             normalize_environment_config(cfg.environment_config or DEFAULT_ENVIRONMENT_CONFIG),
         )
-        self._ticks_per_minute = max(1, cfg.ticks_per_minute)
+        self._process_interval_seconds: float = cfg.process_interval_seconds
+        self._ticks_per_run: int = max(1, round(cfg.process_interval_seconds / get_config().game.server_tick_rate))
         self._adaptive_window = max(1, cfg.adaptive_window_minutes)
         self._epsilon = 1e-6
         self._context_resolver = cfg.context_resolver
@@ -119,7 +135,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
 
         logger.info(
             "PassiveLucidityFluxService initialized",
-            ticks_per_minute=self._ticks_per_minute,
+            process_interval_seconds=self._process_interval_seconds,
+            ticks_per_run=self._ticks_per_run,
             adaptive_window_minutes=self._adaptive_window,
             room_cache_ttl=self._room_cache_ttl,
         )
@@ -134,6 +151,42 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                 if room is not None:
                     room_cache[room_id] = room
         return room_cache
+
+    async def _apply_player_flux_adjustment(
+        self, ctx: PlayerFluxCtx, computation: _PlayerFluxComputation, flux_context: PassiveFluxContext
+    ) -> LucidityUpdateResult | None:
+        """Apply the lucidity adjustment inside a savepoint, tolerating a since-removed player."""
+        try:
+            # Savepoint: e2e (and logout/delete) can remove players between load and flush.
+            async with ctx.session.begin_nested():
+                await handle_hallucination_triggers(
+                    computation.player_id_uuid,
+                    computation.player_id_str,
+                    computation.room_id,
+                    cast(dict[str, object], cast(object, ctx.lucidity_records)),
+                    ctx.session,
+                )
+                return await ctx.lucidity_service.apply_lucidity_adjustment(
+                    computation.player_id_uuid,
+                    computation.delta,
+                    reason_code="passive_flux",
+                    metadata={
+                        "context_tags": list(flux_context.tags),
+                        "source": flux_context.source,
+                        "base_flux": computation.base_flux,
+                        "companion_flux": computation.companion_flux,
+                        "total_flux": computation.total_flux,
+                        "tick_count": ctx.tick_count,
+                        **flux_context.metadata,
+                    },
+                )
+        except IntegrityError, PlayerGoneError:
+            logger.warning(
+                "Skipping passive LCD flux for missing player",
+                player_id=computation.player_id_str,
+                room_id=computation.room_id,
+            )
+            return None
 
     async def _process_single_player(self, ctx: PlayerFluxCtx) -> tuple[str, LucidityUpdateResult | None]:
         """Process a single player's passive flux."""
@@ -161,26 +214,18 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             )
         if not delta:
             return player_id_str, None
-        await handle_hallucination_triggers(
-            player_id_uuid,
-            player_id_str,
-            room_id,
-            cast(dict[str, object], cast(object, ctx.lucidity_records)),
-            ctx.session,
-        )
-        result = await ctx.lucidity_service.apply_lucidity_adjustment(
-            player_id_uuid,
-            delta,
-            reason_code="passive_flux",
-            metadata={
-                "context_tags": list(context.tags),
-                "source": context.source,
-                "base_flux": base_flux,
-                "companion_flux": companion_flux,
-                "total_flux": total_flux,
-                "tick_count": ctx.tick_count,
-                **context.metadata,
-            },
+        result = await self._apply_player_flux_adjustment(
+            ctx,
+            _PlayerFluxComputation(
+                player_id_uuid=player_id_uuid,
+                player_id_str=player_id_str,
+                room_id=room_id,
+                delta=delta,
+                base_flux=base_flux,
+                companion_flux=companion_flux,
+                total_flux=total_flux,
+            ),
+            context,
         )
         return player_id_str, result
 
@@ -232,7 +277,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         logger.debug(
             "Processing passive LCD flux tick",
             tick_count=tick_count,
-            ticks_per_minute=self._ticks_per_minute,
+            ticks_per_run=self._ticks_per_run,
             should_process=self._should_process_tick(tick_count),
         )
 
@@ -273,7 +318,8 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
     def get_flux_runtime_status(self) -> dict[str, object]:
         """Snapshot of scheduler state for ops and tests."""
         return {
-            "ticks_per_minute": self._ticks_per_minute,
+            "process_interval_seconds": self._process_interval_seconds,
+            "ticks_per_run": self._ticks_per_run,
             "adaptive_window_minutes": self._adaptive_window,
             "tracked_players": len(self._player_room_tracker),
             "residual_count": len(self._residuals),
@@ -282,7 +328,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         }
 
     def _should_process_tick(self, tick_count: int) -> bool:
-        return self._ticks_per_minute <= 1 or not tick_count % self._ticks_per_minute
+        return not tick_count % self._ticks_per_run
 
     async def _get_room_cached(self, room_id: str) -> FluxRoom | None:
         """Get room from cache or fetch from database with TTL management."""
@@ -333,7 +379,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                 if "+" in last_active_str or "-" in last_active_str[-6:]:
                     return datetime.fromisoformat(last_active_str)
                 return datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
-            except (ValueError, AttributeError):
+            except ValueError, AttributeError:
                 return None
 
         return None  # type: ignore[unreachable]  # Reason: Defensive programming fallback

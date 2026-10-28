@@ -1,6 +1,6 @@
 ---
 name: mythosmud-coppa-checklist
-description: Apply MythosMUD COPPA checklist when adding or changing user data, registration, or features affecting minors: no PII from minors without consent, minimize data, secure storage, right to deletion. Use when implementing auth, user data, or features that collect or display user information.
+description: "Apply MythosMUD COPPA checklist when adding or changing user data, registration, or features affecting minors: no PII from minors without consent, minimize data, secure storage, right to deletion. Use when implementing auth, user data, or features that collect or display user information."
 ---
 
 # MythosMUD COPPA Checklist

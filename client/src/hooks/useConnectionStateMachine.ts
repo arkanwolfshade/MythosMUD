@@ -10,13 +10,6 @@
 import { assign, setup } from 'xstate';
 
 /**
- * Connection state definitions.
- *
- * AI: Explicit states prevent impossible states like "connected but also connecting"
- */
-export type ConnectionState = 'disconnected' | 'connecting_ws' | 'fully_connected' | 'reconnecting' | 'failed';
-
-/**
  * Events that trigger state transitions.
  *
  * AI: Type-safe events ensure all transitions are explicit and testable.

@@ -10,6 +10,8 @@ import { secureTokenStorage } from './security.js';
 export interface LogoutHandlerOptions {
   /** Authentication token for server logout command */
   authToken: string;
+  /** Selected character, so the server logs out that character rather than one named after the account */
+  characterId?: string;
   /** Function to disconnect from game server */
   disconnect: () => void;
   /** Function to clear all client-side state */
@@ -29,7 +31,7 @@ export interface LogoutHandlerOptions {
  * 5. Always proceeds with client-side logout even if server fails
  */
 export async function logoutHandler(options: LogoutHandlerOptions): Promise<void> {
-  const { authToken, disconnect, clearState, navigateToLogin, timeout = 5000 } = options;
+  const { authToken, characterId, disconnect, clearState, navigateToLogin, timeout = 5000 } = options;
 
   logger.info('logoutHandler', 'Starting logout process', {
     hasAuthToken: !!authToken,
@@ -39,7 +41,7 @@ export async function logoutHandler(options: LogoutHandlerOptions): Promise<void
   try {
     // Step 1: Send logout command to server (with timeout)
     if (authToken) {
-      await sendLogoutCommandToServer(authToken, timeout);
+      await sendLogoutCommandToServer(authToken, timeout, characterId);
     }
 
     logger.info('logoutHandler', 'Server logout command completed');
@@ -142,14 +144,18 @@ function createLogoutAbortTimer(timeoutMs: number): { controller: AbortControlle
   };
 }
 
-async function postLogoutCommandRequest(authToken: string, signal: AbortSignal): Promise<Response> {
+async function postLogoutCommandRequest(
+  authToken: string,
+  signal: AbortSignal,
+  characterId?: string
+): Promise<Response> {
   return fetch(`${API_V1_BASE}/command`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${authToken}`,
     },
-    body: JSON.stringify({ command: 'logout' }),
+    body: JSON.stringify(characterId ? { command: 'logout', character_id: characterId } : { command: 'logout' }),
     signal,
   });
 }
@@ -163,18 +169,18 @@ async function processLogoutHttpResponse(response: Response): Promise<void> {
 }
 
 /** Fetch + validate/logout body; timer cleared by caller via finally. */
-async function runLogoutServerPipeline(authToken: string, signal: AbortSignal): Promise<void> {
-  const response = await postLogoutCommandRequest(authToken, signal);
+async function runLogoutServerPipeline(authToken: string, signal: AbortSignal, characterId?: string): Promise<void> {
+  const response = await postLogoutCommandRequest(authToken, signal, characterId);
   await processLogoutHttpResponse(response);
 }
 
 /**
  * Sends logout command to server with timeout handling
  */
-async function sendLogoutCommandToServer(authToken: string, timeout: number): Promise<void> {
+async function sendLogoutCommandToServer(authToken: string, timeout: number, characterId?: string): Promise<void> {
   const { controller, clearTimer } = createLogoutAbortTimer(timeout);
   try {
-    await runLogoutServerPipeline(authToken, controller.signal);
+    await runLogoutServerPipeline(authToken, controller.signal, characterId);
   } catch (error) {
     logServerLogoutCommandError(error, timeout);
     throw error;

@@ -25,13 +25,11 @@ export interface PanelState {
   zIndex: number;
 }
 
-export interface PanelLayout {
-  [panelId: string]: PanelState;
-}
+type PanelLayout = Record<string, PanelState>;
 
 // Panel management context type
 export interface PanelContextType {
-  panels: PanelLayout;
+  panels: Record<string, PanelState>;
   addPanel: (id: string, title: string, initialPosition?: PanelPosition, initialSize?: PanelSize) => void;
   removePanel: (id: string) => void;
   updatePanel: (id: string, updates: Partial<PanelState>) => void;

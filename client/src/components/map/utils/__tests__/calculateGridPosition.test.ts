@@ -6,6 +6,7 @@ import type { Node } from 'reactflow';
 import { describe, expect, it } from 'vitest';
 import type { RoomNodeData } from '../../types';
 import { calculateGridPosition, defaultGridLayoutConfig, type GridLayoutConfig } from '../layout';
+import { GRID_PITCH } from '../mapGeometry';
 
 describe('calculateGridPosition', () => {
   it('should use stored position when available', () => {
@@ -24,7 +25,8 @@ describe('calculateGridPosition', () => {
     const nodes: Node<RoomNodeData>[] = [node];
     const position = calculateGridPosition(node, 0, nodes);
 
-    expect(position).toEqual({ x: 100, y: 200 });
+    // Stored coordinates are GRID UNITS; grid positions are pixels (#829).
+    expect(position).toEqual({ x: 100 * GRID_PITCH, y: 200 * GRID_PITCH });
   });
 
   it('should calculate grid position when no stored position', () => {

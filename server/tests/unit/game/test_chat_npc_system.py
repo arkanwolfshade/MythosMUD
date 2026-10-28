@@ -2,7 +2,7 @@
 
 import uuid
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -10,11 +10,14 @@ from server.events.event_types import NPCSpoke
 from server.game.chat_message import ChatMessage
 from server.game.chat_npc_system import (
     deliver_fake_npc_whisper,
+    deliver_npc_room_message,
     deliver_npc_room_speech,
+    deliver_personal_quest,
     deliver_personal_system,
     npc_sender_id,
     reset_npc_spoke_subscription_for_tests,
     send_fake_npc_whisper,
+    send_npc_room_message,
     send_npc_say_to_room,
     send_personal_system_message,
     set_chat_service_for_npc_system,
@@ -35,7 +38,7 @@ from server.npc.npc_display_names import register_npc_display_name, resolve_npc_
 
 
 @pytest.fixture(autouse=True)
-def _reset_chat_npc_wiring():  # pyright: ignore[reportUnusedFunction] - pytest autouse; not called directly
+def _reset_chat_npc_wiring():  # pytest autouse; not called directly
     """Keep process-wide chat wiring isolated per test."""
     set_chat_service_for_npc_system(None)
     reset_npc_spoke_subscription_for_tests()
@@ -166,6 +169,24 @@ async def test_send_fake_npc_whisper_targets_player_as_whisper():
 
 
 @pytest.mark.asyncio
+async def test_a_quest_line_goes_to_one_player_on_the_quest_channel():
+    """Quest notices and narration are personal like system lines, but on their own channel."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with patch(
+        "server.game.chat_npc_system.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await send_personal_system_message(chat_service, player_id, "Quest started: Fetch", channel="quest")
+
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "quest"
+    assert message["target_id"] == str(player_id)
+
+
+@pytest.mark.asyncio
 async def test_send_fake_npc_whisper_rejects_empty():
     """Fake NPC whisper fails closed on empty content, same as a real whisper would."""
     result = await send_fake_npc_whisper(_mock_chat_service(), uuid.uuid4(), "The Whisperer", "")
@@ -177,6 +198,8 @@ async def test_deliver_when_chat_service_unwired():
     """Delivery helpers no-op when ChatService is not wired."""
     npc = await deliver_npc_room_speech(npc_id="n1", room_id="r1", message="Hi", npc_name="N")
     system = await deliver_personal_system(uuid.uuid4(), "Quest started: X")
+    quest = await deliver_personal_quest(uuid.uuid4(), "The bones rattle.")
+    assert quest["success"] is False
     fake_whisper = await deliver_fake_npc_whisper(uuid.uuid4(), "The Whisperer", "They're watching you...")
     assert npc["success"] is False
     assert system["success"] is False
@@ -191,7 +214,7 @@ async def test_deliver_npc_room_speech_uses_registered_name():
     register_npc_display_name("npc-42", "Morgan")
 
     with patch(
-        "server.game.chat_npc_system.send_npc_say_to_room",
+        "server.game.chat_npc_system.send_npc_room_message",
         new_callable=AsyncMock,
         return_value={"success": True},
     ) as send:
@@ -236,10 +259,10 @@ def test_resolve_npc_display_name():
     assert resolve_npc_display_name("missing") == "Someone"
 
 
-def test_notify_quest_lifecycle_schedules_personal_system():
-    """Quest notify helpers schedule personal system chat with expected text."""
+def test_notify_quest_lifecycle_schedules_quest_channel_lines():
+    """Quest notify helpers schedule quest-channel lines with the expected text."""
     player_id = uuid.uuid4()
-    with patch("server.game.quest.quest_chat_notify.schedule_personal_system") as schedule:
+    with patch("server.game.quest.quest_chat_notify.schedule_personal_quest") as schedule:
         notify_quest_started(player_id, "Fetch")
         notify_quest_progress(player_id, "Fetch")
         notify_quest_completed(player_id, "Fetch")
@@ -309,3 +332,187 @@ async def test_chat_service_npc_and_personal_wrappers():
     ) as personal:
         _ = await service.send_personal_system_message(uuid.uuid4(), "Quest started: X")
     personal.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_an_npc_emote_goes_out_on_the_emote_channel_to_the_whole_room():
+    """A gesture goes out on the emote channel ("<NPC> <text>"), kept in room history like a say (#1103)."""
+    chat_service = _mock_chat_service()
+
+    with (
+        patch(
+            "server.game.chat_npc_system.publish_chat_message_to_nats", new_callable=AsyncMock, return_value=True
+        ) as publish,
+        patch("server.game.chat_npc_system.store_message_in_room_history") as store,
+    ):
+        result = await send_npc_room_message(
+            chat_service,
+            channel="emote",
+            npc_id="lamp",
+            npc_name="Lamplighter",
+            room_id="r1",
+            message="offers a wary nod in greeting.",
+        )
+
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "emote"
+    assert message["sender_name"] == "Lamplighter"
+    assert message["speaker_kind"] == "npc"
+    assert "target_id" not in message
+    publish.assert_awaited_once()
+    store.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_a_private_npc_emote_carries_its_target_and_stays_out_of_room_history():
+    """A private emote carries target_id for the NATS handler and must not be replayed to the room (#1103)."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with (
+        patch(
+            "server.game.chat_npc_system.publish_chat_message_to_nats", new_callable=AsyncMock, return_value=True
+        ) as publish,
+        patch("server.game.chat_npc_system.store_message_in_room_history") as store,
+    ):
+        result = await send_npc_room_message(
+            chat_service,
+            channel="emote",
+            npc_id="lamp",
+            npc_name="Lamplighter",
+            room_id="r1",
+            message="goes still as you approach.",
+            target_player_id=player_id,
+        )
+
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "emote"
+    assert message["target_id"] == str(player_id)
+    store.assert_not_called()
+    publish.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_an_npc_emote_rejects_an_empty_message_and_missing_room():
+    chat_service = _mock_chat_service()
+    empty = await send_npc_room_message(
+        chat_service, channel="emote", npc_id="n1", npc_name="N", room_id="r1", message=" "
+    )
+    no_room = await send_npc_room_message(
+        chat_service, channel="emote", npc_id="n1", npc_name="N", room_id="", message="nods."
+    )
+    assert empty["success"] is False
+    assert no_room["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_deliver_npc_room_message_uses_the_wired_chat_service_and_passes_channel_and_target():
+    chat_service = _mock_chat_service()
+    set_chat_service_for_npc_system(chat_service)
+    player_id = uuid.uuid4()
+
+    with patch(
+        "server.game.chat_npc_system.send_npc_room_message", new_callable=AsyncMock, return_value={"success": True}
+    ) as send:
+        result = await deliver_npc_room_message(
+            channel="emote",
+            npc_id="lamp",
+            room_id="r1",
+            message="nods.",
+            npc_name="Lamplighter",
+            target_player_id=player_id,
+        )
+
+    assert result["success"] is True
+
+    assert send.await_args is not None
+    assert send.await_args.kwargs["target_player_id"] == player_id
+    assert send.await_args.kwargs["npc_name"] == "Lamplighter"
+    assert send.await_args.kwargs["channel"] == "emote"
+
+
+@pytest.mark.asyncio
+async def test_deliver_npc_room_message_without_a_chat_service_fails_closed():
+    result = await deliver_npc_room_message(channel="emote", npc_id="lamp", room_id="r1", message="nods.")
+    assert result["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_a_private_npc_say_carries_its_target_and_stays_out_of_room_history():
+    """#1107: an NPC's dialogue line is speech only the conversing player hears, not a room-wide say."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with (
+        patch(
+            "server.game.chat_npc_system.publish_chat_message_to_nats", new_callable=AsyncMock, return_value=True
+        ) as publish,
+        patch("server.game.chat_npc_system.store_message_in_room_history") as store,
+    ):
+        result = await send_npc_say_to_room(
+            chat_service,
+            npc_id="ghoul",
+            npc_name="Pale Ghoul",
+            room_id="r1",
+            message="Sit. I can mend that.",
+            target_player_id=player_id,
+        )
+
+    message = cast(dict[str, object], result["message"])
+    assert message["channel"] == "say"
+    assert message["speaker_kind"] == "npc"
+    assert message["target_id"] == str(player_id)
+    store.assert_not_called()
+    publish.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_deliver_npc_room_speech_passes_the_target():
+    set_chat_service_for_npc_system(_mock_chat_service())
+    player_id = uuid.uuid4()
+
+    with patch(
+        "server.game.chat_npc_system.send_npc_room_message", new_callable=AsyncMock, return_value={"success": True}
+    ) as send:
+        result = await deliver_npc_room_speech(
+            npc_id="ghoul", room_id="r1", message="Hello.", target_player_id=player_id
+        )
+
+    assert result["success"] is True
+    assert send.await_args is not None
+    assert send.await_args.kwargs["target_player_id"] == player_id
+    assert send.await_args.kwargs["channel"] == "say"
+
+
+@pytest.mark.asyncio
+async def test_a_private_npc_line_is_logged_as_private_not_as_public_room_chat():
+    """#1107: the chat log is read by moderators; a line only one player heard must not look like room chat."""
+    chat_service = _mock_chat_service()
+    player_id = uuid.uuid4()
+
+    with (
+        patch("server.game.chat_npc_system.publish_chat_message_to_nats", new_callable=AsyncMock, return_value=True),
+        patch("server.game.chat_message_helpers.chat_logger.log_chat_message") as logged,
+    ):
+        _ = await send_npc_say_to_room(
+            chat_service,
+            npc_id="ghoul",
+            npc_name="Pale Ghoul",
+            room_id="r1",
+            message="Sit.",
+            target_player_id=player_id,
+        )
+
+    logged.assert_called_once_with(
+        {
+            "message_id": ANY,
+            "channel": "say",
+            "sender_id": npc_sender_id("ghoul"),
+            "sender_name": "Pale Ghoul",
+            "content": "Sit.",
+            "room_id": "r1",
+            "target_player_id": str(player_id),
+            "filtered": False,
+            "moderation_notes": None,
+        }
+    )

@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, Text, text
+from sqlalchemy import BigInteger, DateTime, Text, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import Mapped, mapped_column
@@ -26,9 +26,13 @@ class DialogueDefinition(Base):
         MutableDict.as_mutable(JSONB),
         nullable=False,
     )
+    # No ORM ForeignKey: npc_definitions belongs to the NPC models' separate npc_metadata (they
+    # target the NPC database, see server/npc_metadata.py), so a ForeignKey here made the shared
+    # metadata unresolvable (NoReferencedTableError) and silently broke integration cleanup (#949).
+    # The constraint itself lives in db/schema.sql: dialogue_definitions_npc_definition_id_fkey
+    # (ON DELETE SET NULL).
     npc_definition_id: Mapped[int | None] = mapped_column(
         BigInteger,
-        ForeignKey("npc_definitions.id", ondelete="SET NULL"),
         nullable=True,
         unique=True,
     )

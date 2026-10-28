@@ -1,12 +1,12 @@
 """
 Unit tests for lucidity recovery command handlers.
 
-Tests the pray, meditate, group_solace, therapy, and folk_tonic commands.
+Tests the pray, meditate, group_solace, and therapy commands.
 """
 
 # pylint: disable=redefined-outer-name,too-many-lines
 # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
-# Reason: This file tests multiple related lucidity recovery commands (pray, meditate, group_solace, therapy, folk_tonic) with comprehensive test coverage. Splitting would fragment related tests and reduce maintainability.
+# Reason: This file tests multiple related lucidity recovery commands (pray, meditate, group_solace, therapy) with comprehensive test coverage. Splitting would fragment related tests and reduce maintainability.
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -15,7 +15,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.lucidity_recovery_commands import (
-    handle_folk_tonic_command,
     handle_group_solace_command,
     handle_meditate_command,
     handle_pray_command,
@@ -330,37 +329,6 @@ async def test_handle_therapy_command_delegates(mock_request, mock_persistence, 
             )
 
             assert "therapy" in result["result"]
-
-
-@pytest.mark.asyncio
-async def test_handle_folk_tonic_command_delegates(mock_request, mock_persistence, mock_player):
-    """Test handle_folk_tonic_command delegates to _perform_recovery_action."""
-    mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-    mock_request.app.state.container.async_persistence = mock_persistence
-
-    mock_result = MagicMock()
-    mock_result.delta = 5
-    mock_result.new_lcd = 55
-
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
-        with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
-            mock_service = AsyncMock()
-            mock_service_class.return_value = mock_service
-            mock_service.perform_recovery_action = AsyncMock(return_value=mock_result)
-
-            result = await handle_folk_tonic_command(
-                command_data={},
-                current_user={"username": "TestPlayer"},
-                request=mock_request,
-                alias_storage=None,
-                player_name="TestPlayer",
-            )
-
-            assert "folk tonic" in result["result"]
 
 
 @pytest.mark.asyncio

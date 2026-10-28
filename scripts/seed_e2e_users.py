@@ -11,6 +11,7 @@ Both seeded characters use DEFAULT_RESPAWN_ROOM (server.constants.spawn_defaults
 Player rows use CALL upsert_player (db/procedures/players.sql) so player_inventories stays consistent.
 
 Safe to run multiple times: skips existing users by username; skips player if character name exists.
+Ids are deterministic (uuid5 of the name), so a re-seed after the rows are deleted recreates the same ids.
 
 Run from project root: uv run python scripts/seed_e2e_users.py
 Use the same DATABASE_URL and POSTGRES_SEARCH_PATH as the E2E server (e.g. .env.e2e_test).
@@ -51,6 +52,22 @@ DEFAULT_RESPAWN_ROOM: str = cast(str, _default_respawn_room)  # pyright: ignore[
 
 E2E_PASSWORD = "Cthulhu1"
 
+# The E2E accounts get the same ids on every seed (#969). make test-playwright's integration stage deletes
+# users/players under a still-running E2E server; re-seeding with fresh uuid4s left that server holding ids that
+# no longer existed (stale players, NPCs attacking a deleted ArkanWolfshade).
+_E2E_ID_NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "mythosmud:e2e-accounts")
+
+
+def e2e_user_id(username: str) -> uuid.UUID:
+    """Deterministic users.id for a seeded E2E account."""
+    return uuid.uuid5(_E2E_ID_NAMESPACE, f"user:{username}")
+
+
+def e2e_player_id(character_name: str) -> uuid.UUID:
+    """Deterministic players.player_id for a seeded E2E character."""
+    return uuid.uuid5(_E2E_ID_NAMESPACE, f"player:{character_name}")
+
+
 # Stats aligned with mythos_e2e players.stats default + fields used by gameplay/teardown.
 DEFAULT_STATS: dict[str, int | str] = {
     "strength": 50,
@@ -62,7 +79,6 @@ DEFAULT_STATS: dict[str, int | str] = {
     "education": 50,
     "charisma": 50,
     "luck": 50,
-    "lucidity": 100,
     "occult": 0,
     "corruption": 0,
     "current_dp": 20,
@@ -103,14 +119,23 @@ E2E_USER_SPECS: tuple[E2eUserSpec, ...] = (
         seed_player=True,
         player_is_admin=0,
     ),
+    # Put into tutorial state by `e2e_reset_players.py --tutorial` (tutorial E2E specs).
+    E2eUserSpec(
+        username="E2ETutorial",
+        email="e2etutorial@test.local",
+        is_superuser=False,
+        is_admin=False,
+        seed_player=True,
+        player_is_admin=0,
+    ),
 )
 
 UPSERT_PLAYER_SQL = """
 CALL upsert_player(
-    $1::uuid, $2::uuid, $3::varchar(50), $4::text, $5::text,
-    $6::varchar(255), $7::varchar(100), $8::int, $9::int, $10::int,
-    $11::bigint, $12::timestamptz, $13::timestamptz, $14::jsonb,
-    $15::boolean, $16::timestamptz, $17::varchar(255), $18::text, $19::text
+    $1::uuid, $2::uuid, $3::varchar(50), $4::text,
+    $5::varchar(255), $6::varchar(100), $7::int, $8::int, $9::int,
+    $10::bigint, $11::timestamptz, $12::timestamptz, $13::jsonb,
+    $14::boolean, $15::timestamptz, $16::varchar(255), $17::text, $18::text
 )
 """
 
@@ -127,14 +152,13 @@ async def _ensure_player_for_user(
     if existing_char:
         return
 
-    player_id = uuid.uuid4()
+    player_id = e2e_player_id(character_name)
     stats_json = json.dumps(DEFAULT_STATS)
     _ = await conn.execute(
         UPSERT_PLAYER_SQL,
         player_id,
         user_id,
         character_name,
-        "[]",
         "[]",
         DEFAULT_RESPAWN_ROOM,
         DEFAULT_RESPAWN_ROOM,
@@ -176,7 +200,7 @@ async def _seed_e2e_users() -> None:
             if row:
                 user_id = cast(uuid.UUID, row["id"])
             else:
-                user_id = uuid.uuid4()
+                user_id = e2e_user_id(spec.username)
                 _ = await conn.execute(
                     """
                     INSERT INTO users (

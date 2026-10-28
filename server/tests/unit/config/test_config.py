@@ -55,5 +55,4 @@ def test_get_config_has_game_config():
     """Test that config has game configuration."""
     config = get_config()
 
-    assert hasattr(config.game, "aliases_dir")
-    assert isinstance(config.game.aliases_dir, str)
+    assert isinstance(config.game.max_aliases_per_player, int)

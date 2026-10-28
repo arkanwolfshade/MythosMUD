@@ -15,7 +15,7 @@ from ..exceptions import LoggedHTTPException
 from ..models.container import ContainerComponent
 from ..schemas.containers import ContainerLootAllResponse
 from ..structured_logging.enhanced_logging_config import get_logger
-from ..utils.audit_logger import audit_logger
+from ..utils.audit_logger import ContainerInteractionEvent, audit_logger
 from .container_events import emit_loot_all_event
 from .container_exception_handlers import handle_loot_all_exceptions
 from .container_helpers import (
@@ -35,15 +35,26 @@ async def _audit_loot_all(
     player_id: Any, player: Any, request_data: LootAllRequest, final_container: Any, items_looted: int
 ) -> None:
     try:
+        # Reason: DYNAMIC_DISPATCH - player_id/player/final_container are Any per this function's
+        # own established, unsuppressed parameters; str() narrows each to str for the event.
+        # Appropriate because: same unsuppressed convention as this module's other Any handling.
         audit_logger.log_container_interaction(
-            player_id=str(player_id),
-            player_name=str(player.name),
-            container_id=str(request_data.container_id),
-            event_type="container_loot_all",
-            source_type=str(final_container.source_type.value),
-            room_id=str(final_container.room_id),
-            items_count=items_looted,
-            success=True,
+            ContainerInteractionEvent(
+                player_id=str(player_id),  # pyright: ignore[reportAny]
+                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                player_name=str(player.name),  # pyright: ignore[reportAny]
+                container_id=str(request_data.container_id),
+                event_type="container_loot_all",
+                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                source_type=str(final_container.source_type.value),  # pyright: ignore[reportAny]
+                # Reason: DYNAMIC_DISPATCH - same untyped-Any convention as player_id above.
+                # Appropriate because: same unsuppressed convention as this function's own signature.
+                room_id=str(final_container.room_id),  # pyright: ignore[reportAny]
+                items_count=items_looted,
+                success=True,
+            )
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Audit log errors unpredictable, must not fail request
         logger.warning("Failed to log container loot_all to audit log", error=str(e))
@@ -97,7 +108,7 @@ async def loot_all_items(
         )
         await _audit_loot_all(player_id, player, request_data, final_container, items_looted)
         return _build_loot_all_response(final_container, player_inventory, items_looted)
-    except (LoggedHTTPException, HTTPException):
+    except LoggedHTTPException, HTTPException:
         raise
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container operation errors unpredictable, must create error context
         handle_loot_all_exceptions(e, request, current_user, request_data.container_id)

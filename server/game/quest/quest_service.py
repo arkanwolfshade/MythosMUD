@@ -10,8 +10,11 @@ applies rewards (XP, item, spell) via injected services.
 from __future__ import annotations
 
 import uuid
+from collections.abc import Iterable
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol, cast
+
+from pydantic import BaseModel, TypeAdapter
 
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
@@ -25,16 +28,28 @@ from server.game.quest.quest_chat_notify import (
     notify_quest_started,
     should_notify_quest_progress,
 )
+from server.game.quest.quest_rewards import QuestRewardsMixin
 from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.events.event_bus import EventBus
+
 logger = get_logger(__name__)
 
 
-async def _call_add_item_to_inventory(fn: Any, player_id: uuid.UUID, item_id: str, count: int) -> None:
-    """Call inventory add_item_to_inventory (fn from getattr). Isolates Any call for type checkers."""
-    await fn(player_id, item_id, count)  # fn is Any from getattr; callable at runtime (guarded by callable(add))
+class _GoalState(BaseModel):
+    goal_type: str
+    target: str | None = None
+    done: bool = False
+
+
+class _EntryGoals(BaseModel):
+    goals_with_progress: list[_GoalState]
+
+
+_QUEST_LOG_GOALS = TypeAdapter(list[_EntryGoals])
 
 
 def _parse_definition(definition: dict[str, Any]) -> QuestDefinitionSchema:
@@ -118,7 +133,28 @@ def _build_collect_n_progress(
     return new_progress
 
 
-class QuestService:
+class _OfferLookup(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The slice of QuestDefinitionRepository a run restart reads."""
+
+    async def list_quest_ids_offered_by(self, entity_type: str, entity_id: str) -> list[str]:
+        """Quest ids offered by one trigger entity."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
+class _InstanceStore(Protocol):
+    """The slice of QuestInstanceRepository a run restart drives."""
+
+    async def get_by_player_and_quest(self, player_id: uuid.UUID, quest_id: str) -> QuestInstance | None:
+        """The player's instance of this quest, in any state."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    async def update_state_and_progress(
+        self, instance_id: uuid.UUID, state: str | None = None, progress: dict[str, int] | None = None
+    ) -> None:
+        """Change an instance's state and/or progress."""
+
+
+class QuestService(QuestRewardsMixin):
     """
     Core quest logic: start by trigger, progress by events, complete/turn-in, abandon.
 
@@ -143,6 +179,14 @@ class QuestService:
         self._event_bus = event_bus
         self._async_persistence = async_persistence
         logger.info("QuestService initialized")
+
+    def _publish_log_changed(self, player_id: uuid.UUID) -> None:
+        """Tell subscribers the player's quest log changed, so their Journal panel can refresh."""
+        bus = cast("EventBus | None", self._event_bus)
+        if bus is not None:
+            from server.events.event_types import QuestLogChanged
+
+            bus.publish(QuestLogChanged(player_id=str(player_id)))
 
     def set_spell_learning_service(self, service: Any) -> None:
         """Set the spell learning service (e.g. when wired after construction by the container)."""
@@ -201,12 +245,14 @@ class QuestService:
             if _has_collect_n_goals(definition):
                 await self.sync_collect_progress(player_id)
             notify_quest_started(player_id, definition.title)
+            self._publish_log_changed(player_id)
             return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
         await self._instance_repo.create(player_id, quest_id, state="active", progress={})
         logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
         if _has_collect_n_goals(definition):
             await self.sync_collect_progress(player_id)
         notify_quest_started(player_id, definition.title)
+        self._publish_log_changed(player_id)
         return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
 
     async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
@@ -294,7 +340,9 @@ class QuestService:
             if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
                 notify_quest_progress(player_id, definition.title)
             if will_complete:
-                await self._complete_instance(player_id, instance, definition)
+                await self._complete_instance(player_id, instance, definition)  # announces the log itself
+            else:
+                self._publish_log_changed(player_id)
             return True
         return False
 
@@ -310,6 +358,18 @@ class QuestService:
                 player_id, instance, definition, activity_target, "complete_activity"
             ):
                 break
+
+    async def has_completed_activity(self, player_id: uuid.UUID, activity_target: str) -> bool:
+        """Whether any quest of the player's, active or completed, has this complete_activity goal done.
+
+        What a quest-gated exit asks (``exit_requirements`` ``quest_activity``).
+        """
+        log = _QUEST_LOG_GOALS.validate_python(await self.get_quest_log(player_id, include_completed=True))
+        return any(
+            goal.goal_type == "complete_activity" and goal.target == activity_target and goal.done
+            for entry in log
+            for goal in entry.goals_with_progress
+        )
 
     async def record_kill(self, player_id: uuid.UUID, npc_definition_id: str) -> None:
         """Record a kill for kill_n goals; update matching active instances and complete if auto_complete."""
@@ -354,7 +414,9 @@ class QuestService:
         if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
             notify_quest_progress(player_id, definition.title)
         if will_complete:
-            await self._complete_instance(player_id, instance, definition)
+            await self._complete_instance(player_id, instance, definition)  # announces the log itself
+        elif new_progress != old_progress:
+            self._publish_log_changed(player_id)
 
     async def sync_collect_progress(self, player_id: uuid.UUID) -> None:
         """
@@ -426,98 +488,7 @@ class QuestService:
             from server.events.event_types import QuestCompleted
 
             self._event_bus.publish(QuestCompleted(player_id=str(player_id), quest_id=instance.quest_id))
-
-    async def _apply_xp_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single XP reward. No-op if no level service or zero amount."""
-        amount = reward.config.get("amount", 0)
-        if not amount or not self._level_service:
-            return
-        try:
-            await self._level_service.grant_xp(player_id, amount)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: XP reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest XP",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                amount=amount,
-                error=str(e),
-            )
-
-    async def _apply_spell_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single spell reward. No-op if no spell_learning_service or no spell_id."""
-        spell_id = reward.config.get("spell_id") or reward.config.get("spell")
-        if not spell_id or not self._spell_learning_service:
-            return
-        try:
-            await self._spell_learning_service.learn_spell_from_quest(player_id, quest_id, spell_id)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: Spell reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest spell",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                spell_id=spell_id,
-                error=str(e),
-            )
-
-    async def _apply_item_reward(self, player_id: uuid.UUID, quest_id: str, reward: Any) -> None:
-        """Apply a single item reward. Skips if inventory full (per plan)."""
-        if not self._inventory_service:
-            return
-        has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-        if not has_slot:
-            logger.warning(
-                "Quest item reward skipped: inventory full",
-                player_id=str(player_id),
-                quest_id=quest_id,
-            )
-            return
-        item_id = reward.config.get("item_id") or reward.config.get("item")
-        if not item_id:
-            return
-        try:
-            add = getattr(self._inventory_service, "add_item_to_inventory", None)
-            if callable(add):
-                await _call_add_item_to_inventory(add, player_id, item_id, 1)
-        except Exception as e:  # pylint: disable=broad-except  # Reason: Item reward must not crash quest completion; log and continue
-            logger.warning(
-                "Failed to grant quest item",
-                player_id=str(player_id),
-                quest_id=quest_id,
-                item_id=item_id,
-                error=str(e),
-            )
-
-    async def _apply_rewards(
-        self,
-        player_id: uuid.UUID,
-        quest_id: str,
-        definition: QuestDefinitionSchema,
-    ) -> None:
-        """Apply XP, item, and spell rewards. Block item if inventory full (per plan)."""
-        for reward in definition.rewards:
-            if reward.type == "xp":
-                await self._apply_xp_reward(player_id, quest_id, reward)
-            elif reward.type == "spell":
-                await self._apply_spell_reward(player_id, quest_id, reward)
-            elif reward.type == "item":
-                await self._apply_item_reward(player_id, quest_id, reward)
-
-    def _turn_in_inventory_full_error(
-        self, player_id: uuid.UUID, definition: QuestDefinitionSchema
-    ) -> dict[str, Any] | None:
-        """Return inventory-full error when an item reward needs a free slot."""
-        if not self._inventory_service:
-            return None
-        for reward in definition.rewards:
-            if reward.type != "item":
-                continue
-            has_slot = getattr(self._inventory_service, "has_inventory_slot", lambda _: True)(player_id)
-            if not has_slot:
-                return {
-                    "success": False,
-                    "message": "Your inventory is full. Free a slot before turning in.",
-                }
-        return None
+        self._publish_log_changed(player_id)
 
     def _turn_in_validation_error(
         self,
@@ -616,7 +587,43 @@ class QuestService:
             definition = _parse_definition(dict(definition_row.definition))
             title = definition.title
         notify_quest_abandoned(player_id, title)
+        self._publish_log_changed(player_id)
         return {"success": True, "message": "Quest abandoned."}
+
+    async def _offered_quest_chain(self, room_ids: Iterable[str]) -> list[str]:
+        """Quest ids offered by any of these rooms, plus every quest those unlock by completion, transitively."""
+        found: list[str] = []
+        pending: list[tuple[str, str]] = [("room", room_id) for room_id in room_ids]
+        while pending:
+            entity_type, entity_id = pending.pop()
+            for quest_id in await cast("_OfferLookup", self._def_repo).list_quest_ids_offered_by(
+                entity_type, entity_id
+            ):
+                if quest_id not in found:
+                    found.append(quest_id)
+                    pending.append(("quest", quest_id))
+        return found
+
+    async def reset_offered_quests(self, player_id: uuid.UUID, room_ids: Iterable[str]) -> list[str]:
+        """Return the quests a set of rooms offers (and the chain they unlock) to a clean, not-started state.
+
+        For a player restarting an instanced run: their rows become ``abandoned`` with empty progress, which the
+        quest log hides and ``start_quest`` re-activates, so the first act restarts on spawn and the later acts
+        wait to be unlocked again. Returns the quest ids that were reset.
+        """
+        # shortcut: one offer query per room (rare restart path), batch the lookup if templates grow large
+        instances = cast("_InstanceStore", self._instance_repo)
+        reset: list[str] = []
+        for quest_id in await self._offered_quest_chain(room_ids):
+            instance = await instances.get_by_player_and_quest(player_id, quest_id)
+            if instance is None or instance.state == "abandoned":
+                continue
+            await instances.update_state_and_progress(instance.id, state="abandoned", progress={})
+            reset.append(quest_id)
+        if reset:
+            logger.info("Quests reset for a fresh instance", player_id=str(player_id), quest_ids=reset)
+            self._publish_log_changed(player_id)
+        return reset
 
     async def get_quest_log(self, player_id: uuid.UUID, include_completed: bool = True) -> list[dict[str, Any]]:
         """Return quest log entries (active and optionally completed) for API/command."""
@@ -637,6 +644,7 @@ class QuestService:
                     {
                         "goal_type": goal.type,
                         "target": goal.target,
+                        "description": goal.description,
                         "current": current,
                         "required": required,
                         "done": (current >= required if goal.type in ("kill_n", "collect_n") else (current == 1)),

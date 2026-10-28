@@ -24,6 +24,7 @@ vi.mock('../../../../utils/security', () => ({
 describe('useCommandHandlers', () => {
   const mockSendCommand = vi.fn().mockResolvedValue(true);
   const mockSetGameState = vi.fn();
+  const mockHandleGameEvent = vi.fn();
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -41,6 +42,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -54,6 +56,7 @@ describe('useCommandHandlers', () => {
         isConnected: false,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -70,6 +73,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -86,6 +90,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -102,6 +107,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -118,6 +124,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -134,6 +141,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -150,6 +158,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -167,6 +176,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommandFail,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -183,6 +193,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -199,6 +210,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -218,6 +230,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -234,6 +247,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -250,6 +264,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -266,6 +281,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -282,6 +298,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -300,6 +317,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommandFail,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -317,6 +335,7 @@ describe('useCommandHandlers', () => {
         isConnected: true,
         sendCommand: mockSendCommand,
         setGameState: mockSetGameState,
+        handleGameEvent: mockHandleGameEvent,
       })
     );
 
@@ -335,6 +354,7 @@ describe('useCommandHandlers', () => {
           isConnected: true,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -351,6 +371,7 @@ describe('useCommandHandlers', () => {
           isConnected: false,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -367,6 +388,7 @@ describe('useCommandHandlers', () => {
           isConnected: true,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -386,6 +408,7 @@ describe('useCommandHandlers', () => {
           isConnected: true,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -403,6 +426,7 @@ describe('useCommandHandlers', () => {
           isConnected: true,
           sendCommand: mockSendCommandFail,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -415,12 +439,13 @@ describe('useCommandHandlers', () => {
   });
 
   describe('handleClearMessages', () => {
-    it('should clear messages', () => {
+    it('should route a local clear event through the event log', () => {
       const { result } = renderHook(() =>
         useCommandHandlers({
           isConnected: true,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 
@@ -428,7 +453,9 @@ describe('useCommandHandlers', () => {
         result.current.handleClearMessages();
       });
 
-      expect(mockSetGameState).toHaveBeenCalled();
+      expect(mockHandleGameEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ event_type: 'client_messages_cleared' })
+      );
     });
   });
 
@@ -439,6 +466,7 @@ describe('useCommandHandlers', () => {
           isConnected: true,
           sendCommand: mockSendCommand,
           setGameState: mockSetGameState,
+          handleGameEvent: mockHandleGameEvent,
         })
       );
 

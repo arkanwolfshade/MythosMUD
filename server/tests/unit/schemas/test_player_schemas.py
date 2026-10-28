@@ -38,20 +38,19 @@ def test_player_create():
     assert player.name == "TestPlayer"
     assert player.user_id == user_id
     assert isinstance(player.stats, Stats)
-    # Stats() generates random core stats, but lucidity defaults to 100
+    # Stats() generates random core stats; lucidity is not one of them (player_lucidity, ADR-029 step 3a)
     # Type checker doesn't properly infer Stats from Field(default_factory=Stats)
     # Access via getattr to avoid FieldInfo type inference issue
     stats_value = getattr(player, "stats")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
     assert isinstance(stats_value, Stats)
-    assert stats_value.lucidity == 100
+    assert "lucidity" not in stats_value.model_dump()
     assert player.inventory == []
-    assert player.status_effects == []
 
 
 def test_player_create_custom_stats():
     """Test PlayerCreate can have custom stats."""
     user_id = uuid.uuid4()
-    custom_stats = Stats(lucidity=90, strength=50)
+    custom_stats = Stats(strength=50)
     player = PlayerCreate(
         name="TestPlayer",
         user_id=user_id,
@@ -62,7 +61,7 @@ def test_player_create_custom_stats():
     # Access via getattr to avoid FieldInfo type inference issue
     stats_value = getattr(player, "stats")  # noqa: B009  # Reason: Using getattr to work around Pydantic Field typing limitation
     assert isinstance(stats_value, Stats)
-    assert stats_value.lucidity == 90
+    assert stats_value.strength == 50
 
 
 def test_player_read():
@@ -78,7 +77,6 @@ def test_player_read():
         name="TestPlayer",
         stats=Stats(),
         inventory=[],
-        status_effects=[],
         created_at=created_at,
         last_active=last_active,
     )
@@ -104,7 +102,6 @@ def test_player_read_defaults():
         name="TestPlayer",
         stats=Stats(),
         inventory=[],
-        status_effects=[],
         created_at=created_at,
         last_active=last_active,
     )

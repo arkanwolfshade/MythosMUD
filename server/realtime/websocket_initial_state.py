@@ -139,6 +139,19 @@ async def send_game_state_event_safely(
         raise
 
 
+async def _get_lucidity_for_client(player_id: uuid.UUID) -> tuple[str | None, int | None]:
+    """Get authoritative (tier, current_lcd) for game_state, or (None, None) if no row yet."""
+    from ..database import get_async_session
+    from ..models.lucidity import PlayerLucidity
+
+    async for session in get_async_session():
+        record = await session.get(PlayerLucidity, player_id)
+        if record:
+            return record.current_tier, record.current_lcd
+        break
+    return None, None
+
+
 async def send_initial_game_state(
     websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> tuple[str | None, bool]:
@@ -163,6 +176,7 @@ async def send_initial_game_state(
             occupant_names.append(player_name)
 
         player_data_for_client = await prepare_player_data(player, player_id, connection_manager)
+        lucidity_tier, current_lcd = await _get_lucidity_for_client(player_id)
 
         game_state_event = build_event(
             "game_state",
@@ -171,6 +185,8 @@ async def send_initial_game_state(
                 "room": room_data,
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),
+                "lucidity_tier": lucidity_tier,
+                "current_lcd": current_lcd,
             },
             player_id=player_id_str,
             room_id=str(canonical_room_id),
@@ -188,11 +204,66 @@ def _get_death_location_name(room: Room | dict[str, object]) -> str:
     """Extract death location name from room object or dict."""
     if isinstance(room, dict):
         name = room.get("name")
-        return str(name) if name is not None else "Unknown Location"
-    room_name = cast(object, room.name)
-    if isinstance(room_name, str):
-        return room_name
+        return str(name) if name is not None else "The Spaces Between"
+    from ..utils.room_utils import format_room_location
+
+    return format_room_location(room) or "The Spaces Between"
+
+
+def _usable_persisted_death_name(stored_name: object, stored_id: object, limbo_id: str) -> str | None:
+    """Return persisted display name when it is not limbo/void."""
+    if not isinstance(stored_name, str) or not stored_name.strip():
+        return None
+    if stored_name == "The Spaces Between" or limbo_id in (stored_id, stored_name):
+        return None
+    return stored_name
+
+
+def _non_limbo_room_id(stored_id: object, limbo_id: str) -> str | None:
+    """Return death_room_id when it is a non-empty, non-limbo string."""
+    if not isinstance(stored_id, str) or not stored_id.strip() or stored_id == limbo_id:
+        return None
+    return stored_id
+
+
+def _room_name_from_lookup(looked_up: object) -> str | None:
+    """Extract a non-empty room name from a sync room lookup result."""
+    if looked_up is None or hasattr(looked_up, "__await__"):
+        return None
+    from ..utils.room_utils import format_room_location
+
+    return format_room_location(looked_up) or None
+
+
+def _lookup_death_room_display_name(stored_id: str) -> str:
+    """Resolve a death_room_id to a "Zone › Sub-zone › Room" string; never fall back to the raw id (#910)."""
+    from ..container.async_persistence_access import get_container_async_persistence
+
+    try:
+        persistence = get_container_async_persistence()
+        looked_up = persistence.get_room_by_id(stored_id) if persistence else None
+        name = _room_name_from_lookup(looked_up)
+        if name is not None:
+            return name
+    except AttributeError, TypeError, RuntimeError, ValueError:
+        pass
     return "Unknown Location"
+
+
+def _resolve_stored_death_location(player: "Player", canonical_room_id: str, room: "Room | dict[str, object]") -> str:
+    """Prefer persisted death room over current room (which is often limbo)."""
+    from ..constants.spawn_defaults import LIMBO_ROOM_ID
+
+    stats = player.get_stats() if hasattr(player, "get_stats") else {}
+    usable_name = _usable_persisted_death_name(stats.get("death_location"), stats.get("death_room_id"), LIMBO_ROOM_ID)
+    if usable_name is not None:
+        return usable_name
+    stored_id = _non_limbo_room_id(stats.get("death_room_id"), LIMBO_ROOM_ID)
+    if stored_id is not None:
+        return _lookup_death_room_display_name(stored_id)
+    if str(canonical_room_id) == LIMBO_ROOM_ID:
+        return "The Spaces Between"
+    return _get_death_location_name(room)
 
 
 async def _get_player_for_death_check(
@@ -238,7 +309,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
     # Do not send based on limbo alone: player must only be in limbo at -10 DP, so if they are
     # in limbo with DP > -10 that is an invalid state; avoid showing respawn modal at 0 DP.
     if current_dp <= -10:
-        death_location_name = _get_death_location_name(room)
+        death_location_name = _resolve_stored_death_location(player, canonical_room_id, room)
         death_event = build_event(
             "player_died",
             {
@@ -250,13 +321,35 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
             },
             player_id=player_id_str,
         )
-        if await send_game_state_event_safely(websocket, death_event, player_id_str):
+        sent = await send_game_state_event_safely(websocket, death_event, player_id_str)
+        if sent:
             return
         logger.info(
             "Sent death notification to player on login",
             player_id=player_id_str,
             current_dp=current_dp,
             in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
+            death_location=death_location_name,
+        )
+
+
+async def check_and_send_delirium_notification(player_id: uuid.UUID, player_id_str: str) -> None:
+    """Re-send rescue_update(delirium) to a reconnecting player whose LCD is still <= -10.
+
+    Mirrors check_and_send_death_notification: a player who disconnected mid-delirium (before
+    respawn_player_from_delirium ran) would otherwise never see the client-side delirium modal
+    again on reconnect. Targets only this player (send_rescue_update_event -> _dispatch_player_event
+    delivers to a single player_id), never a room/broadcast.
+    """
+    _tier, current_lcd = await _get_lucidity_for_client(player_id)
+    if current_lcd is not None and current_lcd <= -10:
+        from ..services.lucidity_event_dispatcher import send_rescue_update_event
+
+        await send_rescue_update_event(
+            player_id=player_id_str,
+            status="delirium",
+            current_lcd=current_lcd,
+            message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
         )
 
 

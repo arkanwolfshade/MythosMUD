@@ -27,7 +27,8 @@ from ..alias_storage import AliasStorage
 from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import PlayerPositionService
 from ..structured_logging.enhanced_logging_config import get_logger
-from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds
+from .command_results import command_error
+from .rest_countdown_task import create_rest_countdown_task, rest_countdown_seconds, send_intentional_disconnect_notice
 
 logger = get_logger(__name__)
 
@@ -104,12 +105,24 @@ async def _delayed_disconnect_player_intentionally(
     """
     connection_ids_to_close: list[str] = list(connection_manager.player_websockets.get(player_id, []))
     connection_manager.intentional_disconnects.add(player_id)
+    # Same notice the countdown path sends: a typed /rest never sets the client's intentional-exit flag, so
+    # without it the client reads the close as a failure and reconnects instead of returning to login.
+    await send_intentional_disconnect_notice(player_id, connection_manager, message="")
     try:
         await asyncio.sleep(0.1)
 
         logger.info("Disconnecting player intentionally via /rest", player_id=player_id)
         for connection_id in connection_ids_to_close:
             _ = await connection_manager.disconnect_websocket_connection(player_id, connection_id)
+        if not connection_manager.player_websockets.get(player_id):
+            # Closing by connection id only cleans up connection data; it never takes the player out of
+            # online tracking. The socket's own close handler does that only while it still sees the
+            # intentional mark, which the finally below clears, so whether /rest really logged the
+            # player out depended on which task ran first. When it did not, the player stayed "online":
+            # nobody saw them leave, and a quick relog was taken for an extra connection that skipped
+            # enter setup (the tutorial re-entry repair, player_entered_game). Do the intentional
+            # teardown here while the mark is still set; processed_disconnects keeps it to once.
+            await connection_manager.force_disconnect_player(player_id)
     except (AttributeError, RuntimeError, ValueError, TypeError) as e:
         logger.error("Error disconnecting player", player_id=player_id, error=str(e), exc_info=True)
     finally:
@@ -210,16 +223,19 @@ async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: 
         logger.warning("Failed to stand player after rest cancel", player_id=player_id, error=str(e))
 
 
-async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -> None:
+async def cancel_rest_countdown(
+    player_id: uuid.UUID, connection_manager: Any, *, restore_standing: bool = True
+) -> None:
     """
     Cancel the rest countdown for a player.
 
-    Called from combat, movement, and spell paths when rest must be interrupted.
-    Also restores standing posture (/rest had sat the player).
+    Called from combat, movement, spell, and posture-command paths when rest must be interrupted.
+    Also restores standing posture (/rest had sat the player), unless the caller is itself changing posture.
 
     Args:
         player_id: The player's ID
         connection_manager: ConnectionManager instance
+        restore_standing: Stand the player after cancelling; False when a posture command applies its own change
     """
     if player_id not in connection_manager.resting_players:
         return
@@ -238,7 +254,8 @@ async def cancel_rest_countdown(player_id: uuid.UUID, connection_manager: Any) -
     finally:
         if player_id in connection_manager.resting_players:
             del connection_manager.resting_players[player_id]
-        await _stand_after_cancelled_rest(player_id, connection_manager)
+        if restore_standing:
+            await _stand_after_cancelled_rest(player_id, connection_manager)
 
 
 def is_player_resting(player_id: uuid.UUID, connection_manager: Any) -> bool:
@@ -300,13 +317,13 @@ async def _resolve_rest_command_setup(
     """
     app = request.app if request else None
     if not app:
-        return {"result": "System error: application not available."}
+        return command_error("System error: application not available.")
 
     persistence, connection_manager = await _get_services_from_app(app)
     if not persistence:
-        return {"result": "System error: persistence layer not available."}
+        return command_error("System error: persistence layer not available.")
     if not connection_manager:
-        return {"result": "System error: connection manager not available."}
+        return command_error("System error: connection manager not available.")
 
     player = await persistence.get_player_by_name(player_name)
     if not player:
@@ -368,6 +385,12 @@ async def _execute_rest_flow(
     """Run rest rules after setup: resting check, combat, rest location vs countdown."""
     if is_player_resting(player_id, connection_manager):
         return {"result": "You are already resting. The countdown will complete shortly."}
+
+    # Read the registry directly: importing ground_channel here would close an import cycle
+    # (ground_channel -> services -> ... -> rest_command). Only the rescuer channels, so only they are rejected.
+    channeling = getattr(connection_manager, "grounding_by_rescuer", None)
+    if isinstance(channeling, dict) and player_id in channeling:
+        return {"result": "You cannot rest while a grounding ritual is underway."}
 
     if await check_player_in_combat(player_id, app):
         return {"result": "You cannot rest during combat. End combat first."}

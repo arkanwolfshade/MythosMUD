@@ -22,7 +22,9 @@ from structlog.stdlib import BoundLogger
 from server.alias_storage import AliasStorage
 from server.async_persistence import AsyncPersistenceLayer
 from server.commands.combat_app_protocols import AppWithState
+from server.commands.combat_assist import run_handle_assist_command
 from server.commands.combat_attack import run_handle_attack_command
+from server.commands.combat_protect import run_handle_protect_command
 from server.commands.combat_taunt import run_handle_taunt_command
 from server.game.player_service import PlayerService
 from server.realtime.login_grace_period import is_player_in_login_grace_period
@@ -34,6 +36,8 @@ from server.services.target_resolution_service import TargetResolutionService
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 from server.validators.combat_validator import CombatValidator
+
+from .command_results import command_error
 
 if TYPE_CHECKING:
     from server.events.event_bus import EventBus
@@ -73,6 +77,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     npc_combat_service: NPCCombatIntegrationService
     persistence: AsyncPersistenceLayer
     _item_prototype_registry: object | None
+    _party_service: object | None
     combat_validator: CombatValidator
     target_resolution_service: TargetResolutionService
 
@@ -112,6 +117,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         )
         self.persistence = async_persistence
         self._item_prototype_registry = opt.item_prototype_registry
+        self._party_service = opt.party_service
         self.combat_validator = CombatValidator(party_service=opt.party_service)
         self.target_resolution_service = TargetResolutionService(
             async_persistence,
@@ -138,6 +144,11 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     def item_prototype_registry(self) -> object | None:
         """Item prototype registry for command modules."""
         return self._item_prototype_registry
+
+    @property
+    def party_service(self) -> object | None:
+        """Party service for command modules (bare ``assist`` follows the party leader)."""
+        return self._party_service
 
     async def check_and_interrupt_rest(
         self, request_app: AppWithState | None, player_name: str, current_user: Mapping[str, object]
@@ -206,8 +217,10 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return {"result": "You are still warded by protective energies. You cannot engage in combat yet."}
         # Lazy import: avoids import-time cycle (combat_handler <-> rest_command chain) and satisfies
         # static analysis that ties top-level rest_command imports to unused-symbol false positives.
+        from server.commands.ground_channel import cancel_ground_channel
         from server.commands.rest_command import cancel_rest_countdown, is_player_resting
 
+        await cancel_ground_channel(player_id, connection_manager)  # attacking breaks /ground too (#713)
         if is_player_resting(player_id, connection_manager):
             await cancel_rest_countdown(player_id, connection_manager)
             logger.info("Rest interrupted by combat command", player_id=player_id, player_name=player_name)
@@ -261,7 +274,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             return None, None, {"result": "You are not in a room."}
         room = persistence.get_room_by_id(room_id)
         if not room:
-            return None, None, {"result": "You are in an unknown room."}
+            return None, None, command_error("You are in an unknown room.")
         return player, room, None
 
     def _validate_combat_target_match(
@@ -303,7 +316,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         """Resolve combat target using target resolution service."""
         pid_raw = getattr(player, "player_id", None)
         if pid_raw is None:
-            return None, {"result": "Invalid player state."}
+            return None, command_error("Invalid player state.")
         target_result = await self.target_resolution_service.resolve_target(pid_raw, target_name)
         return self._validate_combat_target_match(target_result, player)
 
@@ -325,7 +338,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         request: object | None,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, str]:
+    ) -> Mapping[str, object]:
         """Handle attack commands (attack, punch, kick, etc.)."""
         return await run_handle_attack_command(self, command_data, current_user, request, alias_storage, player_name)
 
@@ -356,6 +369,28 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
     ) -> dict[str, str]:
         """Handle taunt command: draw NPC aggro (ADR-016). Room-local only."""
         return await run_handle_taunt_command(self, command_data, current_user, request, alias_storage, player_name)
+
+    async def handle_assist_command(
+        self,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
+        request: object | None,
+        alias_storage: AliasStorage | None,
+        player_name: str,
+    ) -> Mapping[str, object]:
+        """Handle assist command: join a player's (or your party leader's) fight and attack their foe (#833)."""
+        return await run_handle_assist_command(self, command_data, current_user, request, alias_storage, player_name)
+
+    async def handle_protect_command(
+        self,
+        command_data: dict[str, Any],
+        current_user: dict[str, Any],
+        request: object | None,
+        alias_storage: AliasStorage | None,
+        player_name: str,
+    ) -> dict[str, str]:
+        """Handle protect command: cover an ally so NPC blows aimed at them land on you (#991)."""
+        return await run_handle_protect_command(self, command_data, current_user, request, alias_storage, player_name)
 
     def _get_room_data(self, room_id: str) -> object | None:
         """Get room data from persistence."""

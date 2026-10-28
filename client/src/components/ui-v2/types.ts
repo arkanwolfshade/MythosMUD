@@ -1,6 +1,8 @@
 // TypeScript interfaces for UI v2 panel system
 // Type definitions for UI v2 components
 
+import type { MessageCategory, NpcOccupant } from '../../types/messageCategory';
+
 export interface Player {
   /** Character/player UUID from server (player_id). Used for Skills tab URL, etc. */
   id?: string;
@@ -12,7 +14,7 @@ export interface Player {
   stats?: {
     current_dp: number; // Represents determination points (DP)
     max_dp?: number; // Represents max determination points (DP)
-    lucidity: number;
+    // No lucidity here: it is not a stat (server: player_lucidity). Read GameState.lucidityStatus.
     max_lucidity?: number;
     strength?: number;
     dexterity?: number;
@@ -43,13 +45,17 @@ export interface Room {
   plane?: string;
   zone?: string;
   sub_zone?: string;
+  /** Display names (zones.name / subzones.name); zone/sub_zone above are stable IDs. */
+  zone_name?: string | null;
+  sub_zone_name?: string | null;
   environment?: string;
   exits: Record<string, string>;
   // Legacy: flat list of occupant names (for backward compatibility)
   occupants?: string[];
   // New: structured occupant data with separate players and NPCs
   players?: string[];
-  npcs?: string[];
+  /** Each NPC with the disposition the server tagged it with (phantoms are `aggressive_mob`). */
+  npcs?: NpcOccupant[];
   occupant_count?: number;
   entities?: Array<{
     name: string;
@@ -66,6 +72,8 @@ export interface QuestLogEntry {
   goals_with_progress: Array<{
     goal_type?: string;
     target?: string;
+    /** Authored journal text; shown instead of the raw target. */
+    description?: string | null;
     current?: number;
     required?: number;
     done?: boolean;
@@ -74,23 +82,90 @@ export interface QuestLogEntry {
   state: string;
 }
 
+/** A styled span inside a message line (#1025). The spans' text joins back to `ChatMessage.text`. */
+export interface MessageSegment {
+  text: string;
+  /** Style of this span; absent means the line's own category. */
+  category?: MessageCategory;
+}
+
 export interface ChatMessage {
   text: string;
   timestamp: string;
+  /** True when `text` is finished HTML (e.g. help) to render through SafeHtml; otherwise plain text. */
   isHtml: boolean;
-  isCompleteHtml?: boolean;
-  messageType?: string;
+  /** Server-assigned semantic category; drives presentation and panel routing. */
+  category: MessageCategory;
+  /** Chat-conversation identity (whisper, party, ...); present on chat.* messages only. */
   channel?: string;
-  type?: string;
   /** Optional: 'npc' | 'system' when server marks non-player speakers. */
   speakerKind?: string;
+  /** Validated styled spans (NPC names); only on plain-text lines, and only when they join back to `text`. */
+  segments?: MessageSegment[];
   aliasChain?: Array<{
     original: string;
     expanded: string;
     alias_name: string;
   }>;
   rawText?: string;
-  tags?: string[];
+}
+
+/** Weapon stats on an inventory stack (mirrors server WeaponStats). */
+interface WeaponStats {
+  min_damage: number;
+  max_damage: number;
+  modifier?: number;
+  damage_types?: string[];
+  magical?: boolean;
+}
+
+/** A stack of items, in a container or in a player's inventory (mirrors server InventoryStack). */
+export interface InventoryStack {
+  item_instance_id: string;
+  prototype_id: string;
+  item_id: string;
+  item_name: string;
+  slot_type: string;
+  quantity: number;
+  metadata?: Record<string, unknown>;
+  weapon?: WeaponStats;
+  flags?: string[];
+  origin?: Record<string, unknown>;
+  created_at?: string;
+  inner_container?: {
+    capacity_slots: number;
+    items: InventoryStack[];
+    lock_state?: string | null;
+    allowed_roles?: string[];
+  } | null;
+}
+
+type ContainerSourceType = 'environment' | 'equipment' | 'corpse';
+type ContainerLockState = 'unlocked' | 'locked' | 'sealed';
+
+/** Full container state (mirrors server ContainerComponent.model_dump()). */
+export interface ContainerSnapshot {
+  container_id: string;
+  source_type: ContainerSourceType;
+  owner_id?: string | null;
+  room_id?: string | null;
+  entity_id?: string | null;
+  lock_state: ContainerLockState;
+  capacity_slots: number;
+  weight_limit?: number | null;
+  decay_at?: string | null;
+  allowed_roles: string[];
+  items: InventoryStack[];
+  metadata: Record<string, unknown>;
+}
+
+/** Room-level container summary, populated from container.created (corpse spawn). */
+export interface RoomContainerSummary {
+  container_id: string;
+  source_type: ContainerSourceType;
+  owner_id?: string | null;
+  decay_at?: string | null;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PanelPosition {
@@ -121,10 +196,6 @@ export interface PanelState {
   /** Layout saved when minimizing; restored when the panel is expanded again. */
   preMinimizePosition?: PanelPosition;
   preMinimizeSize?: PanelSize;
-}
-
-export interface PanelLayout {
-  panels: Record<string, PanelState>;
 }
 
 export type PanelVariant = 'default' | 'eldritch' | 'elevated';

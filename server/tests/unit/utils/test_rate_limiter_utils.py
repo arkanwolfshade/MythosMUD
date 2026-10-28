@@ -14,6 +14,7 @@ from server.utils.rate_limiter import (
     auth_login_limiter,
     auth_login_rate_limit_settings,
     character_creation_limiter,
+    character_creation_rate_limit_settings,
     stats_roll_limiter,
 )
 
@@ -197,6 +198,24 @@ def test_character_creation_limiter_initialized():
     """Test character_creation_limiter is initialized with correct defaults."""
     assert character_creation_limiter.max_requests == 5
     assert character_creation_limiter.window_seconds == 300
+
+
+def test_character_creation_rate_limit_settings_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("CHARACTER_CREATION_RATE_LIMIT_MAX", raising=False)
+    monkeypatch.delenv("CHARACTER_CREATION_RATE_LIMIT_WINDOW", raising=False)
+    assert character_creation_rate_limit_settings() == (5, 300)
+
+
+def test_character_creation_rate_limit_settings_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CHARACTER_CREATION_RATE_LIMIT_MAX", "1000")
+    monkeypatch.setenv("CHARACTER_CREATION_RATE_LIMIT_WINDOW", "120")
+    assert character_creation_rate_limit_settings() == (1000, 120)
+
+
+def test_character_creation_limiter_matches_settings() -> None:
+    max_requests, window_seconds = character_creation_rate_limit_settings()
+    assert character_creation_limiter.max_requests == max_requests
+    assert character_creation_limiter.window_seconds == window_seconds
 
 
 def test_auth_login_rate_limit_settings_defaults(monkeypatch):

@@ -23,12 +23,14 @@ from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from ..config import get_config
+from ..constants.npc_disposition import DEFAULT_NPC_DISPOSITION, NpcDisposition
 from ..events.event_bus import EventBus
-from ..game.mechanics import GameMechanicsService
 from ..models.combat import CombatResult
+from ..realtime.connection_utils import get_npc_disposition_from_instance
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
+from .combat_types import AlreadyEngagedError
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_grace import (
     is_npc_attack_on_player_blocked_by_login_grace_period,
@@ -65,7 +67,6 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
 
     event_bus: EventBus
     _persistence: AsyncPersistenceLayer
-    _game_mechanics: GameMechanicsService
     _player_combat_service: PlayerCombatService
     _combat_memory: NPCCombatMemory
     _uuid_mapping: NPCCombatUUIDMapping
@@ -124,7 +125,6 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
         )
-        self._game_mechanics = GameMechanicsService(async_persistence)
 
     def _init_player_combat_service(self, player_combat_service: PlayerCombatService | None) -> None:
         if player_combat_service is not None:
@@ -145,7 +145,7 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
         self._combat_memory = NPCCombatMemory()
         self._uuid_mapping = NPCCombatUUIDMapping()
         self._data_provider = NPCCombatDataProvider(async_persistence)
-        self._rewards = NPCCombatRewards(async_persistence, self._game_mechanics)
+        self._rewards = NPCCombatRewards()
         self._lucidity = NPCCombatLucidity()
         self._lifecycle = NPCCombatLifecycle(async_persistence)
 
@@ -218,6 +218,11 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
             await self._end_combat_if_participant_in_combat(player_id, npc_id)
             return False
 
+        # #833: refuse before first-engagement side effects (memory, encounter lucidity) fire for the wrong foe.
+        engaged_foe = await self.get_engaged_foe_name(player_id, npc_id)
+        if engaged_foe:
+            raise AlreadyEngagedError(engaged_foe)
+
         first_engagement = self._combat_memory.record_attack(npc_id, player_id)
         attacker_uuid, target_uuid = await self._setup_combat_uuids_and_mappings(
             player_id, npc_id, room_id, first_engagement
@@ -241,6 +246,14 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                 self.handle_npc_death,
             )
         )
+
+    async def _apply_first_sight_lucidity(self, npc_id: str, target_id: str, room_id: str) -> None:
+        """Shock the target the first time an NPC engages them, as the player-attack path does."""
+        if not self._combat_memory.record_attack(npc_id, target_id):
+            return
+        npc_definition: object | None = await self._data_provider.get_npc_definition(npc_id)
+        if npc_definition is not None:
+            await self._lucidity.apply_encounter_lucidity_effect(target_id, npc_id, npc_definition, room_id)
 
     async def _run_npc_attack_on_player_after_grace(
         self,
@@ -271,14 +284,18 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                 return True
             return False
 
-        await self._apply_npc_attack_damage_for_npc_initiated_combat(
+        await self._apply_first_sight_lucidity(npc_id, target_id, room_id)
+        if not await self._apply_npc_attack_damage_for_npc_initiated_combat(
+            npc_id=npc_id,
             room_id=room_id,
             target_id=target_id,
             npc_instance=npc_instance,
             npc_uuid=npc_uuid,
             player_uuid=player_uuid,
             attack_damage=attack_damage,
-        )
+        ):
+            logger.debug("NPC attack on player skipped - the NPC was despawned first", npc_id=npc_id)
+            return False
         self._broadcast_npc_attack_on_player_started(
             npc_id=npc_id,
             target_id=target_id,
@@ -389,6 +406,17 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                     target_id=target_id,
                 )
                 return False
+            if "already in combat" in str(e).lower():
+                # Expected contention, not a fault: a player (or this NPC) can be in only one
+                # combat at a time, so when several aggressive NPCs share a room, every one after
+                # the first is refused here on each aggro attempt. Logging that at ERROR flooded
+                # errors.log with routine gameplay.
+                logger.debug(
+                    "NPC attack on player skipped - a participant is already in combat",
+                    npc_id=npc_id,
+                    target_id=target_id,
+                )
+                return False
             logger.error(
                 "Error handling NPC attack on player",
                 error=str(e),
@@ -443,3 +471,12 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
     def get_original_string_id(self, uuid_id: UUID) -> str | None:
         """Get the original string ID from a UUID."""
         return self._uuid_mapping.get_original_string_id(uuid_id)
+
+    def get_npc_disposition(self, participant_id: UUID) -> NpcDisposition:
+        """
+        Disposition of the NPC behind a combat participant id, for styling its name in a room line (#1036).
+
+        Falls back to the default (passive) when the participant has no mapped live instance.
+        """
+        string_id = self.get_original_string_id(participant_id)
+        return get_npc_disposition_from_instance(string_id) if string_id else DEFAULT_NPC_DISPOSITION

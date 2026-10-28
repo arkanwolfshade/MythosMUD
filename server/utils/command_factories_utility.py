@@ -20,7 +20,9 @@ from ..models.command import (
     ShutdownCommand,
     SpellCommand,
     SpellsCommand,
+    StopCommand,
     SummonCommand,
+    TeachCommand,
     TeleportCommand,
     UnaliasCommand,
 )
@@ -268,3 +270,23 @@ class UtilityCommandFactory:
             )
         spell_name = " ".join(args)  # Allow multi-word spell names
         return LearnCommand(spell_name=spell_name)
+
+    @staticmethod
+    def create_stop_command(args: list[str]) -> StopCommand:
+        """Create StopCommand from arguments (no args needed)."""
+        if args:
+            log_and_raise_enhanced(
+                MythosValidationError, "Stop command takes no arguments", args=args, logger_name=__name__
+            )
+        return StopCommand()
+
+    @staticmethod
+    def create_teach_command(args: list[str]) -> TeachCommand:
+        """Create TeachCommand from arguments.
+
+        NPC name/spell name parsing and the "usage" message for missing args
+        are handled by handle_teach_command itself, so this takes any args
+        (including none) and builds a bare command.
+        """
+        del args  # Reason: handle_teach_command parses args from command_data directly
+        return TeachCommand()

@@ -1,6 +1,7 @@
 """Unit tests for RoomEventHandler integration."""
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -94,6 +95,24 @@ async def test_handle_player_entered_nats_publish_failure(room_handler: RoomEven
     publisher.publish_player_entered_event = AsyncMock(side_effect=RuntimeError("nats down"))
     await room_handler.handle_player_entered_room({"room_id": "room-001", "player_id": "p1"})
     room_handler.broadcast_to_room.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_player_left_room_missing_room_id(room_handler: RoomEventHandler) -> None:
+    """Parity check: handle_player_left_room shares _broadcast_room_occupants_update's
+    missing-room_id guard with handle_player_entered_room (issue #787)."""
+    await room_handler.handle_player_left_room({"player_id": "p1"})
+    cast(AsyncMock, room_handler.broadcast_to_room).assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_player_entered_room_occupant_lookup_error_is_caught(room_handler: RoomEventHandler) -> None:
+    """The outer exception handler in _broadcast_room_occupants_update must swallow errors
+    from any step, not just NATS publishing -- previously untested."""
+    room_handler.room_manager.get_room_occupants = AsyncMock(side_effect=RuntimeError("db down"))
+    with patch("server.realtime.integration.room_event_handler.logger"):
+        await room_handler.handle_player_entered_room({"room_id": "room-001", "player_id": "p1"})
+    cast(AsyncMock, room_handler.broadcast_to_room).assert_not_awaited()
 
 
 @pytest.mark.asyncio

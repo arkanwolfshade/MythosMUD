@@ -1,10 +1,10 @@
-# Nats Manual Acknowledgment Guide
+# NATS Manual Acknowledgment Guide
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **NATS Manual Acknowledgment Guide** (0 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
+- **apply_player_skills_migration.py** (0 connections) — `scripts/apply_player_skills_migration.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
+- `scripts/apply_player_skills_migration.py`
 
 ## Audit Trail
 

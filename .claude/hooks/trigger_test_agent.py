@@ -57,7 +57,7 @@ def _load_state(state_file: Path) -> dict[str, list[str]] | None:
         return None
     try:
         state = json.loads(state_file.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return None
     return cast(dict[str, list[str]], state) if isinstance(state, dict) else None
 
@@ -89,7 +89,7 @@ def main() -> None:
     """
     try:
         payload = json.load(sys.stdin)
-    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+    except json.JSONDecodeError, UnicodeDecodeError, OSError:
         _exit_empty()
 
     session_id = payload.get("session_id")

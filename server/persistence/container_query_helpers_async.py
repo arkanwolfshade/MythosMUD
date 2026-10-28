@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from sqlalchemy import text
@@ -92,6 +92,48 @@ async def get_containers_by_room_id_async(session: AsyncSession, room_id: str) -
             room_id=room_id,
             details={"room_id": room_id, "error": str(e)},
             user_friendly="Failed to retrieve containers",
+        )
+    # log_and_raise always raises; no return needed here.
+
+
+async def get_bank_container_async(session: AsyncSession, owner_id: UUID) -> ContainerData | None:
+    """Get a player's bank deposit box (async) via get_bank_container procedure, or None if never opened."""
+    try:
+        result = await session.execute(
+            text(
+                """
+                SELECT
+                    container_instance_id,
+                    source_type,
+                    owner_id,
+                    room_id,
+                    entity_id,
+                    lock_state,
+                    capacity_slots,
+                    weight_limit,
+                    decay_at,
+                    allowed_roles,
+                    metadata_json,
+                    created_at,
+                    updated_at,
+                    container_item_instance_id
+                FROM get_bank_container(:owner_id)
+                """
+            ),
+            {"owner_id": str(owner_id)},
+        )
+        row = result.fetchone()
+        if row is None:
+            return None
+        return await _build_container_data_from_row_async(session, tuple(row), cast(UUID, row[0]))
+    except SQLAlchemyError as e:
+        log_and_raise(
+            DatabaseError,
+            f"Database error retrieving bank container: {e}",
+            operation="get_bank_container_async",
+            owner_id=str(owner_id),
+            details={"owner_id": str(owner_id), "error": str(e)},
+            user_friendly="Failed to retrieve bank container",
         )
     # log_and_raise always raises; no return needed here.
 

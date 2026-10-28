@@ -152,6 +152,47 @@ async def test_perform_direct_npc_attack(integration: NPCCombatIntegration) -> N
     integration.apply_combat_effects.assert_awaited_once()
 
 
+class _Player:
+    """Just enough of a Player for the incapacitation check."""
+
+    def __init__(self, dp: int) -> None:
+        self._dp: int = dp
+
+    def get_stats(self) -> dict[str, int]:
+        return {"current_dp": self._dp}
+
+
+def _integration_with_player(player: _Player | None) -> NPCCombatIntegration:
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    return NPCCombatIntegration(event_bus=EventBus(), async_persistence=persistence)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("dp", "attacks"), [(50, True), (1, True), (0, False), (-6, False)])
+async def test_npc_attack_only_proceeds_while_the_player_is_above_zero_dp(dp: int, attacks: bool) -> None:
+    """#1058: a mob neither opens nor rejoins a fight with a downed player; it resumes once they are healed."""
+    integration = _integration_with_player(_Player(dp))
+    with patch.object(
+        integration, "_try_delegate_npc_attack_to_combat_service", new_callable=AsyncMock, return_value=True
+    ) as delegate:
+        ok = await integration.handle_npc_attack("npc-1", str(uuid.uuid4()), "room-1", 5)
+    assert ok is attacks
+    assert delegate.await_count == (1 if attacks else 0)
+
+
+@pytest.mark.asyncio
+async def test_npc_attack_on_an_unknown_player_is_not_blocked() -> None:
+    """A target that is not a loadable player (an NPC, a stale id) is treated as attackable."""
+    integration = _integration_with_player(None)
+    with patch.object(
+        integration, "_try_delegate_npc_attack_to_combat_service", new_callable=AsyncMock, return_value=True
+    ) as delegate:
+        ok = await integration.handle_npc_attack("npc-1", str(uuid.uuid4()), "room-1", 5)
+    assert ok is True
+    delegate.assert_awaited_once()
+
+
 @pytest.mark.asyncio
 async def test_handle_npc_attack_delegated(integration: NPCCombatIntegration) -> None:
     with patch.object(

@@ -5,7 +5,10 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.exc import IntegrityError
 
+from server.config import get_config
+from server.services.lucidity_repository import PlayerGoneError
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
@@ -14,12 +17,23 @@ from server.services.passive_lucidity_flux.service import PassiveLucidityFluxSer
 
 def _make_service(**kwargs: object) -> PassiveLucidityFluxService:
     config = FluxServiceConfig(
-        ticks_per_minute=2,
+        # Every 2 ticks, whatever the configured tick rate.
+        process_interval_seconds=2 * get_config().game.server_tick_rate,
         adaptive_window_minutes=5,
         lucidity_rate_overrides={"earth|arkham|downtown": -0.5},
         **kwargs,
     )
     return PassiveLucidityFluxService(config=config)
+
+
+@pytest.mark.parametrize(("tick_rate", "expected_ticks"), [(0.1, 600), (1.0, 60)])
+def test_default_cadence_is_once_per_real_minute(tick_rate: float, expected_ticks: int) -> None:
+    """#914: per-minute rates must apply once per minute, not every 6 ticks (~100x/min at 0.1s)."""
+    real = get_config()
+    config = real.model_copy(update={"game": real.game.model_copy(update={"server_tick_rate": tick_rate})})
+    with patch("server.services.passive_lucidity_flux.service.get_config", return_value=config):
+        svc = PassiveLucidityFluxService(config=FluxServiceConfig(lucidity_rate_overrides={}))
+    assert svc.get_flux_runtime_status()["ticks_per_run"] == expected_ticks
 
 
 def test_should_process_tick() -> None:
@@ -308,3 +322,52 @@ async def test_process_single_player_no_delta() -> None:
     )
     assert result is None
     assert player_id_str
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "missing_player_error",
+    [
+        IntegrityError("INSERT", {}, Exception("player_lucidity_player_id_fkey")),
+        PlayerGoneError("deleted"),  # #1147: the repository now refuses to insert before the FK can fire
+    ],
+)
+async def test_process_single_player_skips_missing_player_fk(missing_player_error: Exception) -> None:
+    """E2E truncate race: player deleted after load must not abort the flux tick."""
+
+    def resolver(_player: object, _ts: datetime) -> PassiveFluxContext:
+        return PassiveFluxContext(base_flux=-1.0, source="test")
+
+    svc = _make_service(context_resolver=resolver)
+    player_id = uuid.uuid4()
+    player = MagicMock(player_id=str(player_id), current_room_id="room-a")
+    lucidity_service: AsyncMock = AsyncMock()
+    lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=missing_player_error)
+    nested = MagicMock()
+    nested.__aenter__ = AsyncMock(return_value=None)
+    nested.__aexit__ = AsyncMock(return_value=None)
+    session: AsyncMock = AsyncMock()
+    begin_nested: MagicMock = MagicMock(return_value=nested)
+    session.begin_nested = begin_nested
+
+    with patch(
+        "server.services.passive_lucidity_flux.service.handle_hallucination_triggers",
+        new_callable=AsyncMock,
+    ):
+        # Same private entry as test_process_single_player_no_delta (unit seam for one player).
+        player_id_str, result = await svc._process_single_player(  # pyright: ignore[reportPrivateUsage]
+            PlayerFluxCtx(
+                player=player,
+                players=[player],
+                lucidity_records={},
+                room_cache={},
+                timestamp=datetime.now(UTC),
+                tick_count=2,
+                lucidity_service=lucidity_service,
+                session=session,
+            )
+        )
+
+    assert result is None
+    assert player_id_str == str(player_id)
+    begin_nested.assert_called_once()

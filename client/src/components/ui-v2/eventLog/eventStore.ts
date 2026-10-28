@@ -8,7 +8,7 @@ import type { EventLog, EventLogEntry } from './types';
  * Append-only store of game events. Events are never removed except by clear() (e.g. on disconnect).
  * Used by the projector to derive GameState from the full log.
  */
-export interface IEventStore {
+interface IEventStore {
   /** Append one or more events to the log */
   append(events: GameEvent | GameEvent[]): void;
   /** Return a read-only snapshot of the current log */

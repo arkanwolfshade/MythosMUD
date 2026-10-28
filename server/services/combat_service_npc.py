@@ -103,7 +103,7 @@ def resolve_npc_participant_id_in_combat(service: CombatService, combat: CombatI
         participant_id = UUID(str(npc_id))
         if participant_id in combat.participants:
             return participant_id
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         pass
     return find_participant_uuid_by_string_id(service, combat, npc_id)
 
@@ -133,7 +133,7 @@ def get_combat_id_for_npc(service: CombatService, npc_id: UUID | str) -> UUID | 
     try:
         npc_uuid = UUID(str(npc_id))
         return service.get_combat_id_for_npc_uuid(npc_uuid)
-    except (ValueError, TypeError):
+    except ValueError, TypeError:
         pass
     return get_combat_id_for_npc_via_mapping(service, str(npc_id))
 
@@ -190,7 +190,7 @@ def npc_in_combat_by_uuid_lookup(service: CombatService, npc_id: str) -> bool:
     try:
         npc_uuid = UUID(npc_id)
         return service.get_combat_id_for_npc_uuid(npc_uuid) is not None
-    except (ValueError, TypeError, AttributeError):
+    except ValueError, TypeError, AttributeError:
         return False
 
 

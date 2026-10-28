@@ -1,6 +1,6 @@
 ---
 name: mythosmud-logging-standards
-description: Use MythosMUD logging: get_logger from server.logging.enhanced_logging_config, structured key=value args, no f-strings or context= parameter. Use when adding or editing Python logging, or when the user mentions logs or logging.
+description: "Use MythosMUD logging: get_logger from server.logging.enhanced_logging_config, structured key=value args, no f-strings or context= parameter. Use when adding or editing Python logging, or when the user mentions logs or logging."
 ---
 
 # MythosMUD Logging Standards

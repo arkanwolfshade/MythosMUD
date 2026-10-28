@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import logging
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING, cast
 
 import structlog
@@ -107,7 +107,7 @@ def configure_enhanced_structlog(
     environment = config.environment
 
     # Base processors with MDC support (no renderer)
-    base_processors = [
+    base_processors: list[Processor] = [
         # Security first - sanitize sensitive data
         sanitize_sensitive_data,
         # Add correlation and context information
@@ -148,9 +148,19 @@ def configure_enhanced_structlog(
             # This prevents logging failures from crashing the application
             return f"Logging renderer error: {type(e).__name__}: {str(e)}"
 
+    _configure_structlog_with_fallback(base_processors, strip_ansi_renderer)
+
+    # AI Agent: Now that structlog is configured, log the enhanced error handling setup
+    # This confirms that the global error handler is capturing all errors from all modules
+    if not config.disable_logging:
+        _log_enhanced_logging_configured(config, environment)
+
+
+def _configure_structlog_with_fallback(base_processors: Sequence[Processor], strip_ansi_renderer: Processor) -> None:
+    """Configure structlog with the enhanced pipeline, falling back to a basic one on failure."""
     try:
         structlog.configure(
-            processors=cast(Iterable[Processor], base_processors + [strip_ansi_renderer]),
+            processors=cast(Iterable[Processor], [*base_processors, strip_ansi_renderer]),
             context_class=dict,
             logger_factory=LoggerFactory(),
             wrapper_class=BoundLogger,
@@ -178,19 +188,19 @@ def configure_enhanced_structlog(
             logger_factory=LoggerFactory(),
         )
 
-    # AI Agent: Now that structlog is configured, log the enhanced error handling setup
-    # This confirms that the global error handler is capturing all errors from all modules
-    if not config.disable_logging:
-        env_log_dir = resolve_log_base(config.log_base) / environment
-        errors_log_path = env_log_dir / "errors.log"
-        # NOTE: upstream structlog types get_logger() as Any; cast narrows to BoundLogger.
-        configured_logger = cast(BoundLogger, structlog.get_logger(__name__))
-        configured_logger.info(
-            "Enhanced error logging configured",
-            errors_log_path=str(errors_log_path),
-            captures_all_errors=True,
-            global_error_handler_enabled=True,
-        )
+
+def _log_enhanced_logging_configured(config: LoggingConfig, environment: str) -> None:
+    """Emit the one-time confirmation log that enhanced error logging is active."""
+    env_log_dir = resolve_log_base(config.log_base) / environment
+    errors_log_path = env_log_dir / "errors.log"
+    # NOTE: upstream structlog types get_logger() as Any; cast narrows to BoundLogger.
+    configured_logger = cast(BoundLogger, structlog.get_logger(__name__))
+    configured_logger.info(
+        "Enhanced error logging configured",
+        errors_log_path=str(errors_log_path),
+        captures_all_errors=True,
+        global_error_handler_enabled=True,
+    )
 
 
 def setup_enhanced_logging(

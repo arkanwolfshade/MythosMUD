@@ -13,6 +13,7 @@ from ..database import get_async_session
 from ..services.player_preferences_service import PlayerPreferencesService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 
 logger = get_logger(__name__)
 
@@ -81,11 +82,11 @@ async def _handle_default_channel_setting(
     """Handle setting default channel. Returns result dict or None if not a default command."""
     default_channel = command_data.get("action") or command_data.get("channel")
     if not default_channel:
-        return {"result": "Usage: /channel default <channel_name>"}
+        return command_error("Usage: /channel default <channel_name>")
 
     default_channel = default_channel.lower().strip()
     if default_channel not in VALID_CHANNELS:
-        return {"result": f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}"}
+        return command_error(f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}")
 
     async for session in get_async_session():
         try:
@@ -99,19 +100,19 @@ async def _handle_default_channel_setting(
 
             error = result.get("error", "Unknown error")
             logger.warning("Failed to update default channel", player_name=player_name, error=error)
-            return {"result": f"Error setting default channel: {error}"}
+            return command_error(f"Error setting default channel: {error}")
         except SQLAlchemyError as e:
             await session.rollback()
             logger.error("Error updating default channel", player_name=player_name, error=str(e))
-            return {"result": f"Error setting default channel: {str(e)}"}
+            return command_error(f"Error setting default channel: {str(e)}")
 
-    return {"result": "Error: Could not access database."}
+    return command_error("Error: Could not access database.")
 
 
 def _validate_channel_name(channel: str) -> dict[str, str] | None:
     """Validate channel name. Returns error dict if invalid, None if valid."""
     if channel not in VALID_CHANNELS:
-        return {"result": f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}"}
+        return command_error(f"Invalid channel. Valid channels: {', '.join(sorted(VALID_CHANNELS))}")
     return None
 
 
@@ -143,11 +144,11 @@ async def handle_channel_command(
 
     persistence, player = await _get_persistence_and_player(request, current_user, player_name)
     if not persistence or not player:
-        return {"result": "Channel preferences are not available." if not persistence else "Player not found."}
+        return command_error("Channel preferences are not available." if not persistence else "Player not found.")
 
     channel = _extract_channel_from_command(command_data, player_name)
     if not channel:
-        return {"result": "Usage: /channel <channel_name> or /channel default <channel_name>"}
+        return command_error("Usage: /channel <channel_name> or /channel default <channel_name>")
 
     if channel == "default":
         result = await _handle_default_channel_setting(command_data, player, player_name)

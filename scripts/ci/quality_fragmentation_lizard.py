@@ -93,7 +93,7 @@ def run_lizard_on_content(path: str, content: str) -> list[LizardFunctionRow]:
     try:
         output = run_cmd(["lizard", "-j", temp_path], check=False)
         return parse_lizard_output(output)
-    except (OSError, UnicodeDecodeError, ValueError):
+    except OSError, UnicodeDecodeError, ValueError:
         return []
     finally:
         Path(temp_path).unlink(missing_ok=True)

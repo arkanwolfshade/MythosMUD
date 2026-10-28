@@ -6,10 +6,9 @@
  * the recipient receives the intended message.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensurePlayerInGame,
   getPlayerMessages,
@@ -17,20 +16,15 @@ import {
   waitForCrossPlayerMessage,
 } from '../fixtures/multiplayer';
 
-test.describe('Whisper Logging', () => {
+test.describe('Whisper Logging', { tag: '@shared-session' }, () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     // Create contexts for both players (AW is admin, Ithaqua is not)
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('whisper messages should be private between players', async () => {

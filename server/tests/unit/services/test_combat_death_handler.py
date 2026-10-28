@@ -1,11 +1,15 @@
 """Unit tests for CombatDeathHandler."""
 
+# pyright: reportUnknownMemberType=false, reportUnknownParameterType=false, reportMissingParameterType=false
+# Reason: the tests take untyped pytest fixtures and assert on MagicMock/AsyncMock attributes.
+
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
+from server.models.room import Room
 from server.services.combat_death_handler import CombatDeathHandler
 
 
@@ -17,6 +21,7 @@ def combat_service():
     svc.publish_npc_died_event_to_nats = AsyncMock(return_value=True)
     svc.publish_player_died_event_to_nats = AsyncMock(return_value=True)
     svc.publish_player_mortally_wounded_event_to_nats = AsyncMock(return_value=True)
+    svc.remove_participant = AsyncMock(return_value=False)
     return svc
 
 
@@ -194,6 +199,10 @@ async def test_handle_target_state_mortally_wounded(mock_messaging, handler, pla
     mock_messaging.broadcast_player_mortally_wounded.assert_awaited_once()
     # #634: also NATS-consumable alongside the direct room broadcast
     combat_service.publish_player_mortally_wounded_event_to_nats.assert_awaited_once()
+    # #1058: the downed player leaves the fight so attackers disengage and the bleed-out can start
+    combat_service.remove_participant.assert_awaited_once_with(
+        combat.combat_id, player_target.participant_id, "Player incapacitated"
+    )
 
 
 @pytest.mark.asyncio
@@ -207,8 +216,48 @@ async def test_handle_target_state_player_death(mock_death, handler, player_targ
 
 @pytest.mark.asyncio
 @patch("server.services.combat_messaging_integration.combat_messaging_integration")
-async def test_handle_target_state_mortally_wounded_error(mock_messaging, handler, player_target, combat):
+async def test_handle_target_state_mortally_wounded_error(
+    mock_messaging, handler, player_target, combat, combat_service
+):
     mock_messaging.broadcast_player_mortally_wounded = AsyncMock(side_effect=KeyError("bad"))
     await handler.handle_target_state_changes(
         player_target, MagicMock(), target_mortally_wounded=True, target_died=False, combat=combat
     )
+    # a failed broadcast must not leave the downed player stuck in the fight
+    combat_service.remove_participant.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("room_attrs", "expected"),
+    [
+        (
+            {"zone_name": "Arkham City", "sub_zone_name": "Sanitarium", "name": "Foyer"},
+            "Arkham City › Sanitarium › Foyer",
+        ),
+        ({"name": "Foyer"}, "Foyer"),
+        ({"name": ""}, "Unknown Location"),
+    ],
+)
+async def test_death_location_uses_display_names_never_room_id(
+    room_attrs: dict[str, str],
+    expected: str,
+    handler: CombatDeathHandler,
+    player_target: CombatParticipant,
+    combat: CombatInstance,
+):
+    """#910: death_location is 'Zone > Sub-zone > Room', skipping blanks, never the raw room ID."""
+    room = Room({"id": combat.room_id} | room_attrs)
+    broadcast = AsyncMock(return_value=True)
+    with (
+        patch(
+            "server.container.async_persistence_access.get_container_async_persistence",
+            return_value=MagicMock(get_room_by_id=MagicMock(return_value=room)),
+        ),
+        patch("server.services.combat_messaging_integration.combat_messaging_integration") as messaging,
+        patch.object(CombatDeathHandler, "_create_corpse_on_death", new_callable=AsyncMock),
+    ):
+        messaging.broadcast_player_death = broadcast
+        await handler._handle_player_death_events(player_target, combat)  # pyright: ignore[reportPrivateUsage]
+    assert broadcast.await_args is not None
+    assert broadcast.await_args.kwargs["death_location"] == expected

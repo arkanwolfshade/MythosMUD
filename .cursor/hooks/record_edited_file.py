@@ -78,7 +78,7 @@ def _load_payload() -> dict[str, Any] | None:
     try:
         result: dict[str, Any] = json.load(sys.stdin)
         return result
-    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+    except json.JSONDecodeError, UnicodeDecodeError, OSError:
         return None
 
 
@@ -89,7 +89,7 @@ def _load_state(state_file: Path) -> dict[str, list[str]]:
     try:
         data = json.loads(state_file.read_text(encoding="utf-8"))
         return data if isinstance(data, dict) else {}
-    except (json.JSONDecodeError, OSError):
+    except json.JSONDecodeError, OSError:
         return {}
 
 

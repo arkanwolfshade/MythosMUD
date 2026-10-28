@@ -13,14 +13,18 @@ from __future__ import annotations
 
 import uuid as uuid_lib
 from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from anyio import sleep
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster
     from server.container.main import ApplicationContainer
+    from server.services.lucidity_helpers import CatatoniaObserverProtocol
+    from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
+    from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
 
@@ -31,7 +35,23 @@ COMBAT_ATTRS = (
     "combat_service",
     "catatonia_registry",
     "passive_lucidity_flux_service",
+    "passive_corruption_flux_service",
 )
+
+
+def make_lucidity_adjuster(observer: CatatoniaObserverProtocol | None) -> LucidityAdjuster:
+    """Apply one lucidity adjustment through LucidityService in its own committed session."""
+
+    async def adjust(player_id: uuid_lib.UUID, delta: int, reason_code: str) -> None:
+        from server.database import get_async_session
+        from server.services.lucidity_service import LucidityService
+
+        async for session in get_async_session():
+            service = LucidityService(session, catatonia_observer=observer)
+            _ = await service.apply_lucidity_adjustment(player_id, delta, reason_code=reason_code)
+            await session.commit()
+
+    return adjust
 
 
 class CombatBundle:
@@ -43,6 +63,7 @@ class CombatBundle:
     combat_service: Any = None
     catatonia_registry: Any = None
     passive_lucidity_flux_service: Any = None
+    passive_corruption_flux_service: PassiveCorruptionFluxService | None = None
 
     async def _sanitarium_failover_callback(
         self, container: ApplicationContainer, player_id: str, current_lcd: int
@@ -100,13 +121,18 @@ class CombatBundle:
 
         logger.debug("Initializing combat services...")
 
+        from server.game.first_exposure import make_first_exposure_finish
         from server.services.catatonia_registry import CatatoniaRegistry
         from server.services.passive_lucidity_flux_service import PassiveLucidityFluxService
         from server.services.player_combat_service import PlayerCombatService
         from server.services.player_death_service import PlayerDeathService
         from server.services.player_respawn_service import PlayerRespawnService
 
-        self.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
+        self.player_combat_service = PlayerCombatService(
+            cast(object, container.persistence),
+            cast(object, container.event_bus),
+            level_service=cast(object, container.level_service),
+        )
         if container.connection_manager is not None:
             container.connection_manager.set_player_combat_service(self.player_combat_service)
         if container.movement_service is not None:
@@ -121,8 +147,14 @@ class CombatBundle:
         )
         logger.info("Player death service initialized")
 
+        # player_combat_service / async_persistence are declared Any; narrow them at this boundary.
+        respawn_combat = cast("PlayerCombatService | None", self.player_combat_service)
+        respawn_rooms = cast("AsyncPersistenceLayer | None", container.async_persistence)
         self.player_respawn_service = PlayerRespawnService(
-            event_bus=container.event_bus, player_combat_service=self.player_combat_service
+            event_bus=container.event_bus,
+            player_combat_service=respawn_combat,
+            room_lookup=respawn_rooms.get_room_by_id if respawn_rooms else None,
+            first_exposure_finish=make_first_exposure_finish(container),
         )
         logger.info("Player respawn service initialized")
 
@@ -131,6 +163,12 @@ class CombatBundle:
 
         self.catatonia_registry = CatatoniaRegistry(failover_callback=failover_cb)
         logger.info("Catatonia registry initialized")
+        # Lucidity changes made through the persistence layer (combat, spells) go through LucidityService with this
+        # registry, like every other lucidity write (ADR-029 step 3a).
+        persistence = cast("AsyncPersistenceLayer | None", container.async_persistence)
+        if persistence is not None:
+            registry = cast("CatatoniaObserverProtocol", self.catatonia_registry)
+            persistence.set_lucidity_adjuster(make_lucidity_adjuster(registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,
@@ -138,6 +176,15 @@ class CombatBundle:
             catatonia_observer=self.catatonia_registry,
         )
         logger.info("Passive lucidity flux service initialized")
+
+        from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
+
+        # container.async_persistence is declared `Any` on ApplicationContainer (a cross-cutting
+        # namespace shared by every bundle); it is always a real AsyncPersistenceLayer by
+        # construction -- same precedent as container/bundles/npc.py's event_bus cast.
+        async_persistence = cast("AsyncPersistenceLayer", container.async_persistence)
+        self.passive_corruption_flux_service = PassiveCorruptionFluxService(persistence=async_persistence)
+        logger.info("Passive corruption flux service initialized")
 
         logger.info("All combat services initialized")
 
@@ -158,7 +205,7 @@ class CombatBundle:
         """Create CombatService with NATS and register it. Assumes NATS is connected."""
         from server.services.combat_service import CombatService, PlayerLifecycleServices, set_combat_service
 
-        self.combat_service = CombatService(
+        combat_service = CombatService(
             self.player_combat_service,
             container.nats_service,
             player_lifecycle_services=PlayerLifecycleServices(
@@ -167,6 +214,8 @@ class CombatBundle:
             ),
             event_bus=container.event_bus,
         )
+        combat_service.skill_service = container.skill_service  # graded taunt rolls (#833)
+        self.combat_service = combat_service
         set_combat_service(self.combat_service)
         if container.player_service is None:
             raise RuntimeError("PlayerService must be initialized")

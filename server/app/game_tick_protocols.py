@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from collections.abc import Awaitable, Callable, Mapping
 from typing import TYPE_CHECKING, Protocol, cast
@@ -24,11 +25,14 @@ __all__ = [
     "_TickCombatService",
     "_TickConnectionManager",
     "_TickContainer",
+    "_TickCorruptionFlux",
     "_TickDeathService",
     "_TickEventBus",
     "_TickMagicService",
     "_TickMpRegen",
     "_TickNpcLifecycle",
+    "_TickNpcThreadManager",
+    "_TickPlayerRegistry",
     "_TickRespawnService",
     "_app_container",
     "_online_player_ids",
@@ -49,6 +53,8 @@ class _TickCombatService(Protocol):
     async def get_combat_by_participant(self, participant_id: uuid.UUID) -> CombatInstance | None: ...
 
     async def publish_player_dp_decay_event_to_nats(self, event: PlayerDPDecayEvent) -> bool: ...
+
+    async def cleanup_stale_combats(self) -> int: ...
 
 
 class _TickMagicService(Protocol):
@@ -83,14 +89,28 @@ class _TickMpRegen(Protocol):
     async def process_tick_regeneration(self, player_id: uuid.UUID) -> Mapping[str, object]: ...
 
 
+class _TickCorruptionFlux(Protocol):
+    async def process_tick_for_player(self, player_id: uuid.UUID, tick_count: int) -> Mapping[str, object]: ...
+
+
+class _TickNpcThreadManager(Protocol):
+    players_present: asyncio.Event
+
+
 class _TickNpcLifecycle(Protocol):
     respawn_queue: dict[str, Mapping[str, object]]
+    thread_manager: _TickNpcThreadManager
 
     def periodic_maintenance(self) -> dict[str, object]: ...
 
 
+class _TickPlayerRegistry(Protocol):
+    def schedule_sweep(self) -> None: ...
+
+
 class _TickContainer(Protocol):
     async_persistence: AsyncPersistenceLayer | None
+    player_registry: _TickPlayerRegistry | None
     connection_manager: _TickConnectionManager | None
     combat_service: _TickCombatService | None
     magic_service: _TickMagicService | None
@@ -98,6 +118,7 @@ class _TickContainer(Protocol):
     player_respawn_service: _TickRespawnService | None
     event_bus: _TickEventBus | None
     passive_lucidity_flux_service: PassiveLucidityFluxService | None
+    passive_corruption_flux_service: _TickCorruptionFlux | None
     mp_regeneration_service: _TickMpRegen | None
     npc_lifecycle_manager: _TickNpcLifecycle | None
 

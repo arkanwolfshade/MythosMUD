@@ -86,8 +86,14 @@ export default {
         'eldritch-blur': 'eldritch-blur 1.5s ease-in-out infinite alternate',
         'eldritch-shadow': 'eldritch-shadow 2s ease-in-out infinite',
         'eldritch-border': 'eldritch-border 2s linear infinite',
+        // Rescue banner ETA bar (#713); duration is overridden inline from the server's eta_seconds.
+        'rescue-fill': 'rescue-fill 1s linear forwards',
       },
       keyframes: {
+        'rescue-fill': {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },

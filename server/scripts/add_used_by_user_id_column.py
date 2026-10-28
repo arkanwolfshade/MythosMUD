@@ -8,6 +8,7 @@ This script adds the used_by_user_id column to track which user consumed which i
 import os
 import sys
 from pathlib import Path
+from typing import cast
 
 from anyio import run
 from dotenv import load_dotenv
@@ -81,7 +82,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            table_exists = result.scalar()
+            table_exists = cast(object, result.scalar())
 
             if not table_exists:
                 logger.error("Invites table does not exist in database")
@@ -100,7 +101,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            column_exists = result.scalar()
+            column_exists = cast(object, result.scalar())
 
             if column_exists:
                 logger.info("Column used_by_user_id already exists, skipping migration")
@@ -124,7 +125,7 @@ async def apply_migration(database_url: str) -> bool:
                     """
                 )
             )
-            column_exists = result.scalar()
+            column_exists = cast(object, result.scalar())
 
             if column_exists:
                 logger.info("Migration applied successfully - used_by_user_id column added")

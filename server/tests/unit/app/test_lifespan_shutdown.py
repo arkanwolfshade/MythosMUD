@@ -5,12 +5,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi import FastAPI
 
 from server.app.lifespan_shutdown import (
+    _flush_live_instances,
+    _flush_player_registry,
     _shutdown_connection_manager,
     _shutdown_event_bus,
     _shutdown_mythos_chronicle,
@@ -19,6 +22,7 @@ from server.app.lifespan_shutdown import (
     _shutdown_task_registry,
     shutdown_services,
 )
+from server.exceptions import DatabaseError
 
 
 @pytest.fixture
@@ -177,19 +181,79 @@ async def test_shutdown_services_orchestrates_all(mock_app: FastAPI, mock_contai
     container_shutdown: AsyncMock = AsyncMock()
     mock_container.shutdown = container_shutdown
     with (
+        patch("server.app.lifespan_shutdown._flush_live_instances", new_callable=AsyncMock) as flush,
         patch("server.app.lifespan_shutdown._shutdown_mythos_chronicle", new_callable=AsyncMock) as chronicle,
         patch("server.app.lifespan_shutdown._shutdown_nats_handler", new_callable=AsyncMock) as nats,
         patch("server.app.lifespan_shutdown._shutdown_connection_manager", new_callable=AsyncMock) as conn,
         patch("server.app.lifespan_shutdown._shutdown_mythos_tick_scheduler", new_callable=AsyncMock) as tick,
         patch("server.app.lifespan_shutdown._shutdown_task_registry", new_callable=AsyncMock) as tasks,
+        patch("server.app.lifespan_shutdown._flush_player_registry", new_callable=AsyncMock) as players,
         patch("server.app.lifespan_shutdown._shutdown_event_bus", new_callable=AsyncMock) as bus,
     ):
+        order: list[str] = []
+
+        def record(name: str) -> Callable[[object], None]:
+            return lambda _container: order.append(name)
+
+        tasks.side_effect = record("tasks")
+        players.side_effect = record("players")
+        bus.side_effect = record("bus")
         await shutdown_services(mock_app, mock_container)
 
+    flush.assert_awaited_once_with(mock_container)
     chronicle.assert_awaited_once()
     nats.assert_awaited_once_with(mock_app)
     conn.assert_awaited_once_with(mock_app)
     tick.assert_awaited_once_with(mock_app)
     tasks.assert_awaited_once_with(mock_container)
+    players.assert_awaited_once_with(mock_container)
     bus.assert_awaited_once_with(mock_container)
     container_shutdown.assert_awaited_once()
+    # Players are written after the tick loop's tasks stop and before the event bus goes away.
+    assert order == ["tasks", "players", "bus"]
+
+
+@pytest.mark.asyncio
+async def test_flush_live_instances_flushes_all(mock_container: MagicMock) -> None:
+    flush_all = AsyncMock(return_value=3)
+    mock_container.configure_mock(**{"instance_flush_service.flush_all": flush_all})
+
+    await _flush_live_instances(mock_container)
+
+    flush_all.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_flush_live_instances_tolerates_missing_service_and_errors(mock_container: MagicMock) -> None:
+    mock_container.configure_mock(instance_flush_service=None)
+    await _flush_live_instances(mock_container)
+
+    failing = AsyncMock(side_effect=DatabaseError("database already closed"))
+    mock_container.configure_mock(
+        **{"instance_flush_service": MagicMock(), "instance_flush_service.flush_all": failing}
+    )
+    await _flush_live_instances(mock_container)  # logged, never raised
+
+    failing.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_flush_player_registry_writes_dirty_players(mock_container: MagicMock) -> None:
+    close = AsyncMock(return_value=2)
+    mock_container.configure_mock(**{"player_registry.close": close})
+
+    await _flush_player_registry(mock_container)
+
+    close.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_flush_player_registry_tolerates_missing_registry_and_errors(mock_container: MagicMock) -> None:
+    mock_container.configure_mock(player_registry=None)
+    await _flush_player_registry(mock_container)
+
+    failing = AsyncMock(side_effect=DatabaseError("database already closed"))
+    mock_container.configure_mock(**{"player_registry": MagicMock(), "player_registry.close": failing})
+    await _flush_player_registry(mock_container)  # logged, never raised
+
+    failing.assert_awaited_once()

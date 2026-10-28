@@ -51,7 +51,7 @@ def extract_function_and_class_names(file_path: Path) -> set[str]:
     try:
         content = file_path.read_text(encoding="utf-8")
         tree = ast.parse(content, filename=str(file_path))
-    except (SyntaxError, UnicodeDecodeError, PermissionError):
+    except SyntaxError, UnicodeDecodeError, PermissionError:
         return names
 
     for node in ast.walk(tree):
@@ -129,7 +129,7 @@ def analyze_file(file_path: Path) -> list[dict[str, Any]]:
     try:
         content = file_path.read_text(encoding="utf-8")
         lines = content.splitlines()
-    except (UnicodeDecodeError, PermissionError):
+    except UnicodeDecodeError, PermissionError:
         return issues
 
     for line_num, line in enumerate(lines, start=1):

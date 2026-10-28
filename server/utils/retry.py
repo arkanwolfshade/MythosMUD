@@ -7,7 +7,7 @@ database errors with exponential backoff.
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Retry utilities require many parameters for complete retry configuration and context
 
-import asyncio
+import inspect
 import time
 from collections.abc import Callable
 from functools import wraps
@@ -267,7 +267,7 @@ def retry_with_backoff(
     """
 
     def decorator(func: F) -> F:
-        if asyncio.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func):
             return cast(
                 F,
                 _create_async_wrapper(func, max_attempts, initial_delay, max_delay, exponential_base, retry_on),

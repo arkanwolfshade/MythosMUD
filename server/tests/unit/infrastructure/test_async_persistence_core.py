@@ -6,6 +6,8 @@ Part of split from test_async_persistence.py to satisfy file-nloc limit.
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members for unit testing
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names must match fixture names
+# pyright: reportPrivateUsage=false
+# Reason: this module unit-tests AsyncPersistenceLayer's delegation, which means stubbing its private _player_repo.
 
 import uuid
 from datetime import UTC, datetime
@@ -280,6 +282,19 @@ async def test_save_players_delegates(async_persistence_layer):
     await async_persistence_layer.save_players(mock_players)
 
     async_persistence_layer._player_repo.save_players.assert_awaited_once_with(mock_players)
+
+
+@pytest.mark.asyncio
+async def test_clear_player_inventory_delegates(async_persistence_layer: AsyncPersistenceLayer) -> None:
+    """clear_player_inventory delegates to PlayerRepository and passes its result through (#917)."""
+    player_id = uuid.uuid4()
+    repo_clear = AsyncMock(return_value=True)
+
+    with patch.object(async_persistence_layer._player_repo, "clear_player_inventory", new=repo_clear):
+        result = await async_persistence_layer.clear_player_inventory(player_id)
+
+    assert result is True
+    repo_clear.assert_awaited_once_with(player_id)
 
 
 @pytest.mark.asyncio

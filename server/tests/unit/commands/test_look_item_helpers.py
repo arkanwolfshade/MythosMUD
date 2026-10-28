@@ -196,3 +196,20 @@ def test_find_item_in_equipped_instance_number_out_of_range():
     equipped = {"head": {"item_name": "Helmet", "prototype_id": "helmet_001"}}
     result = _find_item_in_equipped(equipped, "helmet", instance_number=5)
     assert result is None
+
+
+ADVERTISER = {"item_name": "Arkham Advertiser", "item_id": "item_003", "metadata": {"keywords": ["newspaper"]}}
+
+
+def test_look_finds_an_item_by_an_authored_keyword_wherever_it_is():
+    """`look newspaper` resolves the Arkham Advertiser on the floor, in a pocket or worn (#1106)."""
+    other = {"item_name": "sword", "item_id": "item_001"}
+
+    assert _find_item_in_room_drops([other, ADVERTISER], "newspaper") is ADVERTISER
+    assert _find_item_in_inventory([other, ADVERTISER], "newspaper") is ADVERTISER
+    assert _find_item_in_equipped({"main_hand": other, "head": ADVERTISER}, "newspaper") == ("head", ADVERTISER)
+
+
+def test_look_ignores_a_keyword_that_only_partly_matches():
+    """Keywords are whole words: "news" is not "newspaper"."""
+    assert _find_item_in_inventory([ADVERTISER], "news") is None

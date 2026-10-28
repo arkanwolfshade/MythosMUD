@@ -9,7 +9,10 @@ isProject: false
 
 ## Source and constraints
 
-- **Source**: Call of Cthulhu 7th Edition and _The Grand Grimoire of Cthulhu Mythos Magic_ (Chaosium). Your copies live under `C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium`; that path is not listable/readable from this environment (likely Proton Drive), so spell names and themes below are taken from publicly referenced CoC 7e and Grand Grimoire spell lists.
+- **Source**: Call of Cthulhu 7th Edition and _The Grand Grimoire of Cthulhu Mythos
+  Magic_. Local PDF copies may be unavailable to agents (cloud sync paths); spell
+  names and themes below are taken from publicly referenced CoC 7e and Grand
+  Grimoire spell lists.
 - **Model**: Every spell must conform to the existing [Spell](e:\projects\GitHub\MythosMUD\server\models\spell.py) Pydantic model and the `mythos_unit.spells` schema in [db/mythos_unit_ddl.sql](e:\projects\GitHub\MythosMUD\db\mythos_unit_ddl.sql) (spell_id, name, description, school, mp_cost, lucidity_cost, corruption_on_learn/cast, casting_time_seconds, target_type, range_type, effect_type, effect_data, materials).
 - **Priority**: Balanced mix—some **mythos** (lucidity/corruption costs, school `mythos`), some **clerical** or **elemental** (MP-only, schools `clerical` / `elemental` / `other`).
 

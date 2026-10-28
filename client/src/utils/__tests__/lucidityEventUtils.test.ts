@@ -45,8 +45,9 @@ describe('lucidityEventUtils', () => {
       '2025-11-13T12:00:00Z'
     );
 
-    // Assert - should use fallback tier 'lucid' when tier is not a string
-    expect(status.tier).toBe('lucid');
+    // Assert - no previous tier and no valid tier on the payload: stays undefined rather than
+    // inventing one (the server is authoritative for tier; see server-authority.mdc).
+    expect(status.tier).toBeUndefined();
   });
 
   it('should parse number from string in parseNumber', () => {
@@ -67,8 +68,8 @@ describe('lucidityEventUtils', () => {
     // Arrange - Test line 12: sanitizeTier when tier is not in valid list
     const { status } = buildLucidityStatus(null, { tier: 'invalid_tier', current_lcd: 50 }, '2025-11-13T12:00:00Z');
 
-    // Assert - should use fallback tier 'lucid' when tier is invalid
-    expect(status.tier).toBe('lucid');
+    // Assert - invalid tier string with no previous tier: stays undefined, never invented.
+    expect(status.tier).toBeUndefined();
   });
 
   it('should handle parseNumber with non-finite parsed value', () => {
@@ -179,11 +180,11 @@ describe('lucidityEventUtils', () => {
     const { status, delta } = buildLucidityStatus(null, { current_lcd: 75, delta: -5 }, '2025-11-13T12:00:00Z');
     const message = buildLucidityChangeMessage(status, delta, {});
 
-    // Assert - should not include reason or source (tier is always in parentheses at end)
+    // Assert - should not include reason or source; no tier was supplied and none is invented
     expect(message).toMatch(/lucidity loses 5/i);
     expect(message).not.toMatch(/\(disturbing|\(encounter/); // No reason in parentheses
     expect(message).not.toMatch(/due to/); // No source
-    expect(message).toMatch(/\(Lucid\)/); // Tier is always in parentheses
+    expect(message).not.toMatch(/\(Lucid\)/); // No tier known yet
   });
 
   it('should build lucidity change message with reason but no source', () => {
@@ -202,11 +203,11 @@ describe('lucidityEventUtils', () => {
     const { status, delta } = buildLucidityStatus(null, { current_lcd: 75, delta: -5 }, '2025-11-13T12:00:00Z');
     const message = buildLucidityChangeMessage(status, delta, { source: 'Byakhee' });
 
-    // Assert - should include source but not reason (tier is always in parentheses at end)
+    // Assert - should include source but not reason; no tier was supplied and none is invented
     expect(message).toMatch(/lucidity loses 5/i);
     expect(message).not.toMatch(/\(disturbing|\(encounter/); // No reason in parentheses
     expect(message).toMatch(/due to Byakhee/i); // Source
-    expect(message).toMatch(/\(Lucid\)/); // Tier is always in parentheses
+    expect(message).not.toMatch(/\(Lucid\)/); // No tier known yet
   });
 
   it('should handle positive delta in lucidity change message', () => {

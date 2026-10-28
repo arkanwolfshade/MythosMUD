@@ -1,42 +1,43 @@
 # Transaction Boundaries Audit
 
-> 20 nodes
+> 18 nodes · cohesion 0.14
 
 ## Key Concepts
 
-- **Transaction Boundaries Audit** (12 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Transaction Management Patterns** (4 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Audited Operations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Recommendations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Multi-Step Operations** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **✅ AsyncPersistenceLayer (Async)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Audit Date** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Current State: ✅ GOOD** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Future Improvements** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Notes** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 1: Connection Context Manager (PersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 2: Explicit Transaction (AsyncPersistenceLayer)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Pattern 3: SQLAlchemy Session (ORM)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **✅ PersistenceLayer (Sync)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Player Save with Inventory** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **References** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Summary** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **Verification Checklist** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **PostgresConnection Context Manager** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **SQLAlchemy Session Transactions** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
+- **.create_character_with_stats()** (6 connections) — `server/game/character_creation_service.py`
+- **.validate_character_stats()** (5 connections) — `server/game/character_creation_service.py`
+- **Any** (5 connections)
+- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
+- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
+- **.roll_character_stats()** (4 connections) — `server/game/character_creation_service.py`
+- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
+- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **UUID** (2 connections)
+- **Validate character stats against class prerequisites. Args: stats: The stats…** (1 connections) — `server/game/character_creation_service.py`
+- **Create a new character with specific stats. Args: name: The character's name…** (1 connections) — `server/game/character_creation_service.py`
+- **Get information about all available character classes and their prerequisites.…** (1 connections) — `server/game/character_creation_service.py`
+- **Service class for character creation and stats generation business operations.** (1 connections) — `server/game/character_creation_service.py`
+- **Get a description for a character class.** (1 connections) — `server/game/character_creation_service.py`
+- **Initialize the character creation service with a player service.** (1 connections) — `server/game/character_creation_service.py`
+- **Roll random stats for character creation. Args: method: The dice rolling method…** (1 connections) — `server/game/character_creation_service.py`
+- **Test CharacterCreationService initialization.** (1 connections) — `server/tests/unit/game/test_character_creation_service.py`
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (6 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [endpoints.py](endpoints.py.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- `server/game/character_creation_service.py`
+- `server/tests/unit/game/test_character_creation_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

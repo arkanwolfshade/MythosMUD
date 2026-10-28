@@ -13,6 +13,9 @@ from server.alias_storage import AliasStorage
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
+from .command_results import command_error
+from .read_text import readable_result
+
 logger = get_logger(__name__)
 
 
@@ -182,13 +185,13 @@ async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-lo
 
     app = request.app if request else None
     if not app:
-        return {"result": "System error: application not available."}
+        return command_error("System error: application not available.")
 
     persistence = getattr(app.state, "persistence", None)
     spell_learning_service = getattr(app.state, "spell_learning_service", None)
 
     if not persistence:
-        return {"result": "System error: persistence layer not available."}
+        return command_error("System error: persistence layer not available.")
 
     if not spell_learning_service:
         return {"result": "Spell learning system not initialized."}
@@ -199,7 +202,11 @@ async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-lo
 
     args = command_data.get("args", [])
     if not args:
-        return {"result": "Usage: /read <item_name> [spell_name]"}
+        return command_error("Usage: /read <item_name> [spell_name]")
+
+    readable = readable_result(cast(object, player), cast(list[object], args))
+    if readable is not None:
+        return readable
 
     item_name = args[0]
     spell_name = args[1] if len(args) > 1 else None
@@ -208,4 +215,4 @@ async def handle_read_command(  # pylint: disable=too-many-arguments,too-many-lo
         return await _process_spellbook_read(app, spell_learning_service, player, item_name, spell_name)
     except (ValueError, KeyError, TypeError) as e:
         logger.error("Error reading spellbook", player_name=player_name, item_name=item_name, error=str(e))
-        return {"result": f"An error occurred while reading '{item_name}': {str(e)}"}
+        return command_error(f"An error occurred while reading '{item_name}': {str(e)}")

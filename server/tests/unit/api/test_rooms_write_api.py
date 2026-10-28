@@ -14,17 +14,17 @@ from server.api.rooms import (
     ExitCreateRequest,
     ExitUpdateRequest,
     RoomUpdateRequest,
-    _apply_room_exit_to_memory,
-    _apply_room_properties_to_memory,
-    _build_exit_attributes,
-    _create_room_link_in_db,
-    _delete_room_link_in_db,
-    _update_room_link_in_db,
-    _update_room_properties_in_db,
+    apply_room_exit_to_memory,
+    apply_room_properties_to_memory,
+    build_exit_attributes,
     create_room_exit,
+    create_room_link_in_db,
     delete_room_exit,
+    delete_room_link_in_db,
     update_room,
     update_room_exit,
+    update_room_link_in_db,
+    update_room_properties_in_db,
 )
 from server.exceptions import LoggedHTTPException
 from server.game.room_service import RoomService
@@ -38,34 +38,40 @@ def _admin_user() -> MagicMock:
 
 
 def _bypass_admin_auth():
-    return patch("server.api.rooms.get_admin_auth_service", return_value=MagicMock())
+    return patch("server.api.rooms_helpers.get_admin_auth_service", return_value=MagicMock())
 
 
-# -- _build_exit_attributes -------------------------------------------------
+# -- build_exit_attributes -------------------------------------------------
 
 
 def test_build_exit_attributes_empty_when_nothing_set() -> None:
-    assert _build_exit_attributes(None, None) == "{}"
+    assert build_exit_attributes(None, None) == "{}"
 
 
 def test_build_exit_attributes_includes_flags_and_description() -> None:
     import json
 
-    payload = json.loads(_build_exit_attributes(["one_way"], "A narrow gap."))
+    payload = json.loads(build_exit_attributes(["one_way"], "A narrow gap."))
     assert payload == {"flags": ["one_way"], "description": "A narrow gap."}
 
 
-# -- _update_room_properties_in_db -------------------------------------------
+# -- update_room_properties_in_db -------------------------------------------
 
 
 @pytest.mark.asyncio
 async def test_update_room_properties_in_db_success() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.scalar.return_value = True
+    # update_room_properties_in_db unpacks result.one() as a 2-tuple (see #663).
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    result.one.return_value = (True, "arena")  # pyright: ignore[reportAny]
     session.execute = AsyncMock(return_value=result)
-    updated = await _update_room_properties_in_db(session, "room_1", "New Name", None, "arena", True)
+    updated, resolved_environment = await update_room_properties_in_db(
+        session, "room_1", "New Name", None, "arena", True
+    )
     assert updated is True
+    assert resolved_environment == "arena"
     session.commit.assert_awaited_once()
 
 
@@ -73,14 +79,18 @@ async def test_update_room_properties_in_db_success() -> None:
 async def test_update_room_properties_in_db_not_found_does_not_commit() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.scalar.return_value = False
+    # update_room_properties_in_db unpacks result.one() as a 2-tuple (see #663).
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    result.one.return_value = (False, None)  # pyright: ignore[reportAny]
     session.execute = AsyncMock(return_value=result)
-    updated = await _update_room_properties_in_db(session, "missing", None, None, None, False)
+    updated, resolved_environment = await update_room_properties_in_db(session, "missing", None, None, None, False)
     assert updated is False
+    assert resolved_environment is None
     session.commit.assert_not_awaited()
 
 
-# -- _create_room_link_in_db / _update_room_link_in_db / _delete_room_link_in_db --
+# -- create_room_link_in_db / update_room_link_in_db / delete_room_link_in_db --
 
 
 @pytest.mark.asyncio
@@ -89,7 +99,7 @@ async def test_create_room_link_in_db_success() -> None:
     result = MagicMock()
     result.scalar.return_value = True
     session.execute = AsyncMock(return_value=result)
-    created = await _create_room_link_in_db(session, "room_1", "north", "room_2", "{}")
+    created = await create_room_link_in_db(session, "room_1", "north", "room_2", "{}")
     assert created is True
     session.commit.assert_awaited_once()
 
@@ -100,7 +110,7 @@ async def test_update_room_link_in_db_not_found_does_not_commit() -> None:
     result = MagicMock()
     result.scalar.return_value = False
     session.execute = AsyncMock(return_value=result)
-    updated = await _update_room_link_in_db(session, "room_1", "north", None, None)
+    updated = await update_room_link_in_db(session, "room_1", "north", None, None)
     assert updated is False
     session.commit.assert_not_awaited()
 
@@ -111,7 +121,7 @@ async def test_delete_room_link_in_db_success() -> None:
     result = MagicMock()
     result.scalar.return_value = True
     session.execute = AsyncMock(return_value=result)
-    deleted = await _delete_room_link_in_db(session, "room_1", "north")
+    deleted = await delete_room_link_in_db(session, "room_1", "north")
     assert deleted is True
     session.commit.assert_awaited_once()
 
@@ -162,7 +172,9 @@ async def test_update_room_empty_string_environment_clears_to_none() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True
+            "server.api.rooms_helpers.update_room_properties_in_db",
+            new_callable=AsyncMock,
+            return_value=(True, "outdoors"),
         ) as mock_update,
     ):
         response = await update_room(
@@ -185,7 +197,11 @@ async def test_update_room_success_returns_updated_fields() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True),
+        patch(
+            "server.api.rooms_helpers.update_room_properties_in_db",
+            new_callable=AsyncMock,
+            return_value=(True, "arena"),
+        ),
     ):
         response = await update_room(
             "room_1",
@@ -200,22 +216,29 @@ async def test_update_room_success_returns_updated_fields() -> None:
 
 
 def test_apply_room_properties_to_memory_updates_environment() -> None:
-    """Regression: list_rooms reads RoomRepository memory; PUT must mutate it (#627)."""
+    """Regression: list_rooms reads RoomRepository memory; PUT must mutate it (#627).
+
+    #663: environment lives in rooms.environment now, not attributes -- resolved_environment
+    (the room -> subzone -> zone -> 'outdoors' cascade, computed in SQL) is what memory_room.
+    environment gets, while room_environment gets the raw requested value.
+    """
     memory_room = MagicMock()
     memory_room.name = "Archives"
     memory_room.description = "Dusty stacks"
     memory_room.environment = "indoors"
-    memory_room.attributes = {"environment": "indoors"}
+    memory_room.room_environment = "indoors"
     room_service = MagicMock(spec=RoomService)
     persistence: MagicMock = MagicMock()
     persistence.get_room_by_id.return_value = memory_room
     room_service.persistence = persistence
 
-    _apply_room_properties_to_memory(room_service, "room_1", "Patient Archives", None, "outdoors", True)
+    apply_room_properties_to_memory(room_service, "room_1", "Patient Archives", None, "outdoors", True, "outdoors")
 
     assert memory_room.name == "Patient Archives"
     assert memory_room.environment == "outdoors"
-    assert memory_room.attributes["environment"] == "outdoors"
+    # Reason: TEST_MOCK - MagicMock attribute access has no static type.
+    # Appropriate because: same unsuppressed mock convention as the other tests in this file.
+    assert memory_room.room_environment == "outdoors"  # pyright: ignore[reportAny]
 
 
 def test_apply_room_exit_to_memory_sets_and_deletes() -> None:
@@ -227,10 +250,10 @@ def test_apply_room_exit_to_memory_sets_and_deletes() -> None:
     persistence.get_room_by_id.return_value = memory_room
     room_service.persistence = persistence
 
-    _apply_room_exit_to_memory(room_service, "room_1", "east", "room_2")
+    apply_room_exit_to_memory(room_service, "room_1", "east", "room_2")
     assert memory_room.exits["east"] == "room_2"
 
-    _apply_room_exit_to_memory(room_service, "room_1", "east", None, delete=True)
+    apply_room_exit_to_memory(room_service, "room_1", "east", None, delete=True)
     assert "east" not in memory_room.exits
 
 
@@ -280,7 +303,7 @@ async def test_create_room_exit_duplicate_direction_409() -> None:
     with (
         _bypass_admin_auth(),
         patch(
-            "server.api.rooms._create_room_link_in_db",
+            "server.api.rooms_helpers_exits.create_room_link_in_db",
             new_callable=AsyncMock,
             side_effect=IntegrityError("stmt", {}, Exception("unique_violation")),
         ),
@@ -305,7 +328,7 @@ async def test_create_room_exit_success() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._create_room_link_in_db", new_callable=AsyncMock, return_value=True),
+        patch("server.api.rooms_helpers_exits.create_room_link_in_db", new_callable=AsyncMock, return_value=True),
     ):
         response = await create_room_exit(
             "room_1",
@@ -328,7 +351,7 @@ async def test_update_room_exit_not_found_404() -> None:
     room_service.get_room = AsyncMock(return_value={"id": "room_1"})
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._update_room_link_in_db", new_callable=AsyncMock, return_value=False),
+        patch("server.api.rooms.update_room_link_in_db", new_callable=AsyncMock, return_value=False),
     ):
         with pytest.raises(LoggedHTTPException) as ei:
             await update_room_exit(
@@ -350,7 +373,7 @@ async def test_update_room_exit_success() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._update_room_link_in_db", new_callable=AsyncMock, return_value=True),
+        patch("server.api.rooms.update_room_link_in_db", new_callable=AsyncMock, return_value=True),
     ):
         response = await update_room_exit(
             "room_1",
@@ -372,7 +395,7 @@ async def test_delete_room_exit_not_found_404() -> None:
     room_service = MagicMock(spec=RoomService)
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._delete_room_link_in_db", new_callable=AsyncMock, return_value=False),
+        patch("server.api.rooms.delete_room_link_in_db", new_callable=AsyncMock, return_value=False),
     ):
         with pytest.raises(LoggedHTTPException) as ei:
             await delete_room_exit(
@@ -392,7 +415,7 @@ async def test_delete_room_exit_success() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._delete_room_link_in_db", new_callable=AsyncMock, return_value=True),
+        patch("server.api.rooms.delete_room_link_in_db", new_callable=AsyncMock, return_value=True),
     ):
         response = await delete_room_exit(
             "room_1",

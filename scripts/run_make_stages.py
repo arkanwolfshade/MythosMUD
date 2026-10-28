@@ -2,7 +2,7 @@
 """Run Make stages sequentially; fail loudly and stop on the first bad stage.
 
 Used by composite Makefile targets (all, codacy-tools, test, test-coverage).
-Fail conditions: non-zero exit, or a Python traceback/callstack in stage output.
+Fail conditions: non-zero exit, a Python traceback/callstack, or a Node/V8 fatal crash in stage output.
 """
 
 from __future__ import annotations
@@ -16,6 +16,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BANNER = "=" * 72
 TRACEBACK_MARKER = "Traceback (most recent call last):"
+# Banner V8 prints after every fatal error ("FATAL ERROR: ... heap out of memory"). Not the
+# "FATAL ERROR:" prefix itself: the server logs that phrase too. A crashed vitest once still left the
+# stage at exit 0 under commit-charge exhaustion (#950), so the output is the reliable signal.
+NODE_FATAL_MARKER = "----- Native stack trace -----"
 
 
 def keep_going_requested(makeflags: str | None = None) -> bool:
@@ -38,6 +42,8 @@ def stage_failed_from_output(output: str, returncode: int) -> str | None:
         return f"non-zero exit ({returncode})"
     if TRACEBACK_MARKER in output:
         return "traceback/callstack detected in output"
+    if NODE_FATAL_MARKER in output:
+        return "Node/V8 fatal crash detected in output"
     return None
 
 

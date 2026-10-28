@@ -54,7 +54,7 @@ vi.mock('react-rnd', () => ({
 }));
 
 // Mock child components
-vi.mock('../../../ui/EldritchIcon', () => ({
+vi.mock('../../primitives/EldritchIcon', () => ({
   EldritchIcon: ({ name, size, variant }: { name: string; size: number; variant?: string }) => (
     <span data-testid={`eldritch-icon-${name}`} data-variant={variant} style={{ width: size, height: size }}>
       {name}
@@ -68,7 +68,7 @@ vi.mock('../../../ui/EldritchIcon', () => ({
   },
 }));
 
-vi.mock('../../../ui/TerminalButton', () => ({
+vi.mock('../../primitives/TerminalButton', () => ({
   TerminalButton: ({
     children,
     onClick,

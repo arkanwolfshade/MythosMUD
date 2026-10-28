@@ -2,6 +2,7 @@
 
 from typing import Any, cast
 
+from server.constants.message_category import MessageCategory
 from server.realtime.envelope import build_event
 from server.services.combat_messaging.base import HasConnectionManager, log_room_broadcast_result
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -52,6 +53,7 @@ class PlayerBroadcastMixin(HasConnectionManager):
                 "player_name": player_name,
                 "attacker_name": attacker_name,
                 "message": personal_message,
+                "category": MessageCategory.COMBAT_STATUS.value,
             },
             room_id=room_id,
             player_id=player_id,
@@ -63,6 +65,7 @@ class PlayerBroadcastMixin(HasConnectionManager):
                 "player_name": player_name,
                 "attacker_name": attacker_name,
                 "message": room_message,
+                "category": MessageCategory.COMBAT_STATUS.value,
             },
             room_id=room_id,
         )
@@ -97,13 +100,19 @@ class PlayerBroadcastMixin(HasConnectionManager):
                 "death_location": death_location,
                 "current_dp": current_dp,
                 "message": personal_message,
+                "category": MessageCategory.COMBAT_DEATH.value,
             },
             room_id=room_id,
             player_id=player_id,
         )
         room_event = build_event(
             "player_died_room",
-            {"player_id": player_id, "player_name": player_name, "message": room_message},
+            {
+                "player_id": player_id,
+                "player_name": player_name,
+                "message": room_message,
+                "category": MessageCategory.COMBAT_DEATH.value,
+            },
             room_id=room_id,
         )
         try:
@@ -120,7 +129,12 @@ class PlayerBroadcastMixin(HasConnectionManager):
         message = f"Your lifeforce ebbs away... (DP: {current_dp})"
         decay_event = build_event(
             "player_dp_decay",
-            {"player_id": player_id, "current_dp": current_dp, "message": message},
+            {
+                "player_id": player_id,
+                "current_dp": current_dp,
+                "message": message,
+                "category": MessageCategory.STATUS_HEALTH.value,
+            },
             player_id=player_id,
         )
         try:

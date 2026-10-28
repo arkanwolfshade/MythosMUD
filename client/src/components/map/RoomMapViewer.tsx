@@ -47,17 +47,8 @@ export interface RoomMapViewerProps {
 /**
  * Room Map Viewer component.
  */
-export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
-  plane,
-  zone,
-  subZone,
-  currentRoomId,
-  baseUrl,
-  authToken,
-  onRoomSelect,
-  tier,
-  playerId,
-}) => {
+export const RoomMapViewer: React.FC<RoomMapViewerProps> = props => {
+  const { plane, zone, subZone, currentRoomId, baseUrl, authToken, onRoomSelect, tier, playerId } = props;
   const isHallucinating = tier === 'deranged' && Boolean(playerId);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');

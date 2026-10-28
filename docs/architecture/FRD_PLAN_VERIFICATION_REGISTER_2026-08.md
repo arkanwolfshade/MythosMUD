@@ -175,7 +175,7 @@ Per the class-gated disposition (declared before adjudication, decision 4):
 | Finding | Disposition |
 |---|---|
 | Reversed compass shipped as seeded hallucination, not the FRD's fixed swap | Not filed — this is the intended, better design (per the implementation's own doc comment); recording the drift here is sufficient, no code change implied |
-| `server_authority_remediation` client-side pass still unverified | **Filed: `#752`** — no existing open issue found matching "server authority client" scope |
+| `server_authority_remediation` client-side pass still unverified | **Filed: `#752`** — no existing open issue found matching "server authority client" scope. Closed by `CLIENT_SERVER_AUTHORITY_REGISTER_2026-09.md`. |
 | Currency/trade-goods economy module absent | **Dedupe: none found** — no open issue names an economy module; candidate for a new filing, deferred to the doc-gap backlog owner rather than filed here (out of this pass's scope per the approved plan) |
 | Party shared XP/loot/quest sync absent | **Dedupe: none found** for XP/loot specifically; `#583` (NPC dialogue trees + milestone quest chat) is adjacent but not the same claim |
 | Friends list (referenced in `PRD.md` §8, `mud_subsystems_gap_analysis`) | **Dedupe: `#147`** already open — not re-filed |

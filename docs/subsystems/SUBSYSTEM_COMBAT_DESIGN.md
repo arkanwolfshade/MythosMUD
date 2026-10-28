@@ -1,6 +1,6 @@
 # Combat Subsystem Design
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-10-14
 
 ---
 
@@ -96,6 +96,19 @@ flowchart LR
 - **Incapacitated (DP <= 0)**: Player cannot attack; DP 0 to -9 is mortally wounded, and
   DP <= -10 is dead/respawn; "You are
   incapacitated and cannot attack."
+- **A downed player leaves the fight (#1058)**: the moment a hit takes a player to DP <= 0 they are removed
+  from the combat (participants, turn order, aggro). If no other player can still act, the combat ends, so
+  NPCs stop attacking and the bleed-out (SUBSYSTEM_RESPAWN_DESIGN.md) runs at once. In a group fight the
+  rest carry on without them. Aggressive mobs do not re-engage a player at DP <= 0 (checked in
+  `NPCCombatIntegrationBase._handle_npc_attack_core`); once a heal brings the player above 0 they are a
+  valid target again. NPCs that were only defending themselves have no memory of the fight and stay calm.
+  Inside a fight an incapacitated player (`CombatParticipant.is_incapacitated()`: dead, or a player at 0 to -9
+  DP) carries zero threat: aggro never picks them as a candidate, an NPC drops them as its current target, and
+  the fallback target choice skips them, so a downed player is never hit even if they somehow remain listed.
+- **Attack messages are per viewer (#1056)**: a melee hit on an NPC publishes `npc_attacked` only (no
+  `npc_took_damage`, which is for spells and Steal Life). The events reach the whole room, and the client
+  words them from the viewer's side: "You attack X" for the attacker, "Alice attacks X" for bystanders; and
+  "X attacks you" for the victim, "X attacks Alice" for bystanders. A bystander's DP is never overwritten.
 - **Weapon from equipped main_hand**: Prototype metadata.weapon (min_damage, max_damage, modifier,
   damage_types); else config.game.basic_unarmed_damage.
 - **Single handler singleton**: get_combat_command_handler(app) creates CombatCommandHandler once
@@ -173,3 +186,4 @@ See also [SUBSYSTEM_PARTY_DESIGN.md](SUBSYSTEM_PARTY_DESIGN.md), [SUBSYSTEM_REST
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Fix 5 broken component links (wrong depth, 1 also broken across a line wrap); fix 1 link where the closing bracket and opening paren landed on separate lines (#695) |
+| 1.2.0 | 2026-10-14 | #1056-#1059: incapacitated players leave combat and are not re-engaged by aggressive mobs until healed above 0 DP; melee no longer double-announces; attack lines are worded per viewer |

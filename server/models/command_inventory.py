@@ -79,6 +79,28 @@ class GetCommand(BaseCommand):
     quantity: int | None = Field(None, ge=1, description="Quantity to get (defaults to full stack)")
 
 
+class BankCommand(BaseCommand):
+    """Command for listing the contents of the player's bank deposit box."""
+
+    command_type: Literal[CommandType.BANK] = CommandType.BANK
+
+
+class DepositCommand(BaseCommand):
+    """Command for depositing an inventory item into the player's bank deposit box."""
+
+    command_type: Literal[CommandType.DEPOSIT] = CommandType.DEPOSIT
+    item: str = Field(..., min_length=1, description="Item name or inventory index to deposit")
+    quantity: int | None = Field(None, ge=1, description="Quantity to deposit (defaults to full stack)")
+
+
+class WithdrawCommand(BaseCommand):
+    """Command for withdrawing an item from the player's bank deposit box into inventory."""
+
+    command_type: Literal[CommandType.WITHDRAW] = CommandType.WITHDRAW
+    item: str = Field(..., min_length=1, description="Item name or deposit box index to withdraw")
+    quantity: int | None = Field(None, ge=1, description="Quantity to withdraw (defaults to full stack)")
+
+
 class EquipCommand(BaseCommand):
     """Command for equipping an item from inventory."""
 
@@ -131,6 +153,41 @@ class EquipCommand(BaseCommand):
         if not normalized:
             raise ValueError("Slot cannot be empty")
         return normalized
+
+
+class UseCommand(BaseCommand):
+    """Command for using a consumable item from inventory (also reached via drink/quaff)."""
+
+    command_type: Literal[CommandType.USE] = CommandType.USE
+    index: int | None = Field(default=None, ge=1, description="Inventory slot index to use (1-based).")
+    search_term: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier to resolve inventory item.",
+    )
+
+    @field_validator("search_term")
+    @classmethod
+    def validate_search_term(cls, v: str | None) -> str | None:
+        """Strip search term; blank becomes None."""
+        if v is None:
+            return v
+        return v.strip() or None
+
+    @model_validator(mode="after")
+    def validate_use_requirements(self) -> "UseCommand":
+        """Ensure either index or search_term is provided."""
+        if self.index is None and self.search_term is None:
+            raise ValueError("Use command requires an item number or name.")
+        return self
+
+
+class ReadCommand(BaseCommand):
+    """Command for reading an item (a spellbook, or any item with readable text) from inventory."""
+
+    command_type: Literal[CommandType.READ] = CommandType.READ
+    args: list[str] = Field(default_factory=list, description="Item name, then an optional spell name")
 
 
 class UnequipCommand(BaseCommand):

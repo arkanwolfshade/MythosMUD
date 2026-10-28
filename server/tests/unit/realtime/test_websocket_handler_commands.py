@@ -11,6 +11,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.commands.command_results import command_error
+from server.constants.message_category import MessageCategory
 from server.realtime.websocket_handler_commands import (
     _attach_room_state_to_result,
     _resolve_get_room_state_callable,
@@ -310,3 +312,140 @@ async def test_handle_game_command_broadcasts_when_result_requests(
 
     assert mock_websocket.send_json.await_count >= 1
     mock_ws_connection_manager.broadcast_to_room.assert_awaited_once()
+
+
+async def _run_game_command_with_unified_result(
+    mock_websocket: MagicMock,
+    cm: MagicMock,
+    tmp_path: Path,
+    unified_result: dict[str, object],
+) -> None:
+    """Drive handle_game_command with a canned process_command_unified result."""
+    aliases_dir = str(tmp_path / "aliases")
+    with patch("server.config.get_config") as mock_get_config:
+        mock_config = MagicMock()
+        mock_config.game.aliases_dir = aliases_dir
+        mock_get_config.return_value = mock_config
+        with (
+            patch(
+                "server.command_handler_unified.process_command_unified",
+                new_callable=AsyncMock,
+                return_value=unified_result,
+            ),
+            patch("server.realtime.websocket_handler_app_state.resolve_and_setup_app_state_services", MagicMock()),
+        ):
+            await handle_game_command(mock_websocket, TEST_PLAYER_ID_STR, "noop", connection_manager=cm)
+
+
+def _player_cm(mock_ws_connection_manager: MagicMock) -> MagicMock:
+    pl = MagicMock()
+    pl.current_room_id = uuid.uuid4()
+    pl.name = "Tester"
+    mock_ws_connection_manager.get_player = AsyncMock(return_value=pl)
+    mock_ws_connection_manager.async_persistence = MagicMock()
+    mock_ws_connection_manager.app = MagicMock()
+    mock_ws_connection_manager.app.state = MagicMock()
+    return mock_ws_connection_manager
+
+
+@pytest.mark.asyncio
+async def test_command_response_defaults_to_command_output_category(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(mock_websocket, cm, tmp_path, {"result": "You have 3 items."})
+
+    sent = mock_websocket.send_json.await_args[0][0]
+    assert sent["event_type"] == "command_response"
+    assert sent["data"]["category"] == MessageCategory.COMMAND_OUTPUT
+
+
+@pytest.mark.asyncio
+async def test_command_response_keeps_system_error_from_command_error(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(
+        mock_websocket, cm, tmp_path, {**command_error("Usage: go <direction>")}
+    )
+
+    sent = mock_websocket.send_json.await_args[0][0]
+    assert sent["data"]["result"] == "Usage: go <direction>"
+    assert sent["data"]["category"] == MessageCategory.SYSTEM_ERROR
+
+
+@pytest.mark.asyncio
+async def test_command_response_keeps_a_handler_supplied_category(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(
+        mock_websocket,
+        cm,
+        tmp_path,
+        {"result": "You say: hi", "category": MessageCategory.CHAT_SAY, "channel": "say"},
+    )
+
+    data = mock_websocket.send_json.await_args[0][0]["data"]
+    assert data["category"] == MessageCategory.CHAT_SAY
+    assert data["channel"] == "say"
+
+
+@pytest.mark.asyncio
+async def test_room_broadcast_defaults_to_command_output_category(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(
+        mock_websocket, cm, tmp_path, {"result": "ok", "broadcast": "Tester waves.", "broadcast_type": "emote"}
+    )
+
+    broadcast_event = cm.broadcast_to_room.await_args[0][1]
+    assert broadcast_event["data"] == {"result": "Tester waves.", "category": MessageCategory.COMMAND_OUTPUT}
+
+
+@pytest.mark.asyncio
+async def test_room_broadcast_uses_broadcast_category_override(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    cm = _player_cm(mock_ws_connection_manager)
+    await _run_game_command_with_unified_result(
+        mock_websocket,
+        cm,
+        tmp_path,
+        {
+            "result": "ok",
+            "broadcast": "Tester says: hi",
+            "broadcast_type": "say",
+            "broadcast_category": MessageCategory.CHAT_SAY,
+        },
+    )
+
+    broadcast_event = cm.broadcast_to_room.await_args[0][1]
+    assert broadcast_event["data"]["category"] == MessageCategory.CHAT_SAY
+
+
+@pytest.mark.asyncio
+async def test_process_websocket_command_player_not_found_is_system_error() -> None:
+    cm = MagicMock()
+    cm.get_player = AsyncMock(return_value=None)
+
+    result = await process_websocket_command("look", [], TEST_PLAYER_ID_STR, cm)
+
+    assert result == {"result": "Player not found", "category": MessageCategory.SYSTEM_ERROR}
+
+
+@pytest.mark.asyncio
+async def test_command_response_carries_the_handlers_segments_untouched(
+    mock_websocket: MagicMock, mock_ws_connection_manager: MagicMock, tmp_path: Path
+) -> None:
+    """#1039: a command that styles an NPC name returns ``segments``; the chokepoint must not drop them."""
+    cm = _player_cm(mock_ws_connection_manager)
+    segments = [{"text": "You attack "}, {"text": "Ghoul", "category": "npc.aggressive_mob"}, {"text": "!"}]
+    await _run_game_command_with_unified_result(
+        mock_websocket, cm, tmp_path, {"result": "You attack Ghoul!", "segments": segments}
+    )
+
+    sent = mock_websocket.send_json.await_args[0][0]
+    assert sent["data"]["result"] == "You attack Ghoul!"
+    assert sent["data"]["segments"] == segments

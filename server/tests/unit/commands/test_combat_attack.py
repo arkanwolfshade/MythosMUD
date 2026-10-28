@@ -13,6 +13,7 @@ import pytest
 from server.commands import combat_attack
 from server.models.combat import CombatResult
 from server.schemas.shared.target_resolution import TargetType
+from server.services.combat_types import AlreadyEngagedError
 
 # pylint: disable=redefined-outer-name,protected-access
 # Reason: pytest fixtures; tests call combat_attack private helpers (no public test seam).
@@ -143,7 +144,33 @@ async def test_execute_combat_action_failure_message(mock_handler: MagicMock) ->
     npc.name = "Orc"
     with patch("server.commands.combat_attack._resolve_combat_damage", return_value=5):
         out = await combat_attack._execute_combat_action(mock_handler, "hero", "n1", "punch", "r1", npc_instance=npc)
-    assert "cannot attack" in out["result"].lower()
+    assert "cannot attack" in str(out["result"]).lower()
+
+
+@pytest.mark.asyncio
+async def test_execute_combat_action_reports_the_foe_when_already_engaged(mock_handler: MagicMock) -> None:
+    """#833: an engaged player is told which foe they are on, not the generic 'cannot attack' line."""
+    persistence: MagicMock = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=MagicMock(player_id="pid"))
+    mock_handler.persistence = persistence
+    npc_combat_service: MagicMock = MagicMock()
+    npc_combat_service.handle_player_attack_on_npc = AsyncMock(side_effect=AlreadyEngagedError("Ghoul"))
+    mock_handler.npc_combat_service = npc_combat_service
+    npc = MagicMock()
+    npc.name = "Orc"
+    with patch("server.commands.combat_attack._resolve_combat_damage", return_value=5):
+        out = await combat_attack._execute_combat_action(mock_handler, "hero", "n1", "punch", "r1", npc_instance=npc)
+    assert out["result"] == "You're already fighting Ghoul."
+
+
+@pytest.mark.asyncio
+async def test_execute_attack_on_npc_goes_through_the_normal_attack_path(mock_handler: MagicMock) -> None:
+    """#833: assist attacks an already-resolved NPC via the same path as `attack` (so joins and refusals match)."""
+    run: AsyncMock = AsyncMock(return_value={"result": "You attack Orc!"})
+    with patch("server.commands.combat_attack._execute_combat_action", new=run):
+        out = await combat_attack.execute_attack_on_npc(mock_handler, "hero", "npc1", "r1", npc_instance=None)
+    assert out == {"result": "You attack Orc!"}
+    run.assert_awaited_once_with(mock_handler, "hero", "npc1", "attack", "r1", npc_instance=None)
 
 
 @pytest.mark.asyncio
@@ -193,7 +220,7 @@ async def test_run_handle_attack_command_success_path(mock_handler: MagicMock) -
             None,
             "hero",
         )
-    assert "slap" in out["result"].lower() and "orc" in out["result"].lower()
+    assert "slap" in str(out["result"]).lower() and "orc" in str(out["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -229,7 +256,7 @@ async def test_execute_phantom_combat_action_success(mock_handler: MagicMock) ->
         out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
     combat_service.start_combat.assert_awaited_once()
     combat_service.process_attack.assert_awaited_once()
-    assert "Shambling Horror" in out["result"]
+    assert "Shambling Horror" in str(out["result"])
 
 
 @pytest.mark.asyncio
@@ -242,7 +269,7 @@ async def test_execute_phantom_combat_action_already_dissipated(mock_handler: Ma
     mock_handler.persistence = persistence
     with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
         out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
-    assert "dissipated" in out["result"].lower()
+    assert "dissipated" in str(out["result"]).lower()
 
 
 @pytest.mark.asyncio
@@ -268,4 +295,4 @@ async def test_run_handle_attack_command_routes_phantom_target(mock_handler: Mag
             mock_handler, {"target_player": "shambling"}, {"username": "u"}, req, None, "hero"
         )
     phantom_exec.assert_awaited_once()
-    assert "Shambling Horror" in out["result"]
+    assert "Shambling Horror" in str(out["result"])

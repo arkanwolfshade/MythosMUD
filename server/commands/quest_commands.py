@@ -8,7 +8,7 @@ offered quests; turns in at NPC when goals are met.
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from ..alias_storage import AliasStorage
 from ..game.quest import QuestService
@@ -20,6 +20,7 @@ from ..game.quest.quest_chat_notify import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .command_results import command_error
 from .look_npc import _find_matching_npcs, _get_lifecycle_manager, _get_npc_room_id, _should_include_npc
 
 logger = get_logger(__name__)
@@ -60,7 +61,7 @@ def _resolve_player_id(player: Any) -> uuid.UUID | None:
         return None
     try:
         return uuid.UUID(str(raw)) if not isinstance(raw, uuid.UUID) else raw
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
 
 
@@ -111,11 +112,11 @@ async def _resolve_quest_command_context(
 
 
 def _format_goal_line(goal: dict[str, Any]) -> str:
-    """Return a single goal progress line for the quest log."""
-    target = goal.get("target") or "?"
+    """Return a single goal progress line for the quest log (the authored description, else the target)."""
+    label = goal.get("description") or goal.get("target") or "?"
     if goal.get("done", False):
-        return f"      - {target}: done"
-    return f"      - {target}: {goal.get('current', 0)}/{goal.get('required', 1)}"
+        return f"      - {label}: done"
+    return f"      - {label}: {goal.get('current', 0)}/{goal.get('required', 1)}"
 
 
 def _format_one_quest_entry(e: dict[str, Any]) -> list[str]:
@@ -160,6 +161,16 @@ def _active_npc_ids_in_room(lifecycle: Any, room_id: Any) -> list[Any]:
         for npc_id, npc_instance in (lifecycle.active_npcs or {}).items()
         if _get_npc_room_id(npc_instance) == room_id and _should_include_npc(npc_instance)
     ]
+
+
+def npc_instance_in_room(npc_id: str, room_id: str) -> object | None:
+    """The live NPC with this id if it is currently in ``room_id``, else None."""
+    lifecycle = cast(object | None, _get_lifecycle_manager())
+    active = cast(dict[str, object] | None, getattr(lifecycle, "active_npcs", None)) or {}
+    npc = active.get(npc_id)
+    if npc is None or _get_npc_room_id(npc) != room_id or not _should_include_npc(npc):
+        return None
+    return npc
 
 
 def resolve_npc_in_player_room(player: Any, npc_name: str) -> tuple[Any | None, str | None]:
@@ -219,16 +230,16 @@ async def handle_journal_command(
     try:
         player = await persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
-            return {"result": "Character not found."}
+            return command_error("Character not found.")
         player_id = _resolve_player_id(player)
         if not player_id:
-            return {"result": "Character id is invalid."}
+            return command_error("Character id is invalid.")
 
         entries = await quest_service.get_quest_log(player_id, include_completed=True)
         return {"result": _format_quest_log(entries)}
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Command must return user message, not crash
         logger.exception("Journal/quests command failed", player=player_name, error=str(e))
-        return {"result": "Failed to load quest log."}
+        return command_error("Failed to load quest log.")
 
 
 async def _handle_quest_abandon(quest_service: Any, player_id: uuid.UUID, remainder: str) -> dict[str, str]:
@@ -315,7 +326,7 @@ async def _quest_command_ready(
     if ctx_error:
         return {"result": ctx_error}
     if not quest_service or not player_id or player is None:
-        return {"result": "Quest system error. Please try again."}
+        return command_error("Quest system error. Please try again.")
     return player, player_id, quest_service
 
 
@@ -349,4 +360,4 @@ async def handle_quest_command(
         return await _handle_quest_npc_sub(quest_service, player, player_id, sub, remainder)
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: Command must return user message, not crash
         logger.exception("Quest command failed", player_id=str(player_id), subcommand=sub, error=str(e))
-        return {"result": "Failed to process quest command."}
+        return command_error("Failed to process quest command.")

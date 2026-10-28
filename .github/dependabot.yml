@@ -17,6 +17,13 @@ updates:
     ignore:
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+    # vitest and @vitest/coverage-v8 must be the exact same version (the coverage plugin pins its vitest peer), but
+    # client/.npmrc sets legacy-peer-deps, so npm would not flag a mismatch. Bump them in one PR.
+    groups:
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
 
   - package-ecosystem: npm
     directory: /client/.vite/deps

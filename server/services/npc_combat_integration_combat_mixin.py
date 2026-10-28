@@ -11,7 +11,8 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from ..app.game_tick_counter import get_current_tick
-from ..models.combat import CombatResult
+from ..constants.npc_disposition import NpcDisposition
+from ..models.combat import CombatInstance, CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
@@ -52,6 +53,34 @@ class _NPCCombatIntegrationDeps(Protocol):
         """Start a new combat from mixin combat pipeline."""
         raise NotImplementedError
 
+    async def join_existing_combat_for_mixin(
+        self,
+        player_id: str,
+        room_id: str,
+        attacker_uuid: UUID,
+        target_uuid: UUID,
+        damage: int,
+        combat: CombatInstance,
+    ) -> CombatResult:
+        """Join the combat the target NPC is already in (#833)."""
+        raise NotImplementedError
+
+    def get_npc_disposition(self, participant_id: UUID) -> NpcDisposition:
+        """Disposition of the NPC behind a combat participant id (#1036)."""
+        raise NotImplementedError
+
+    async def join_player_to_combat(
+        self,
+        player_id: str,
+        room_id: str,
+        player_uuid: UUID,
+        combat: CombatInstance,
+        foe_name: str,
+        foe_id: UUID | None = None,
+    ) -> None:
+        """Add a player to a fight under way and announce it (#833, #991)."""
+        raise NotImplementedError
+
 
 class NPCCombatIntegrationCombatMixin:
     """start_combat / process_attack paths and post-death broadcast."""
@@ -60,31 +89,46 @@ class NPCCombatIntegrationCombatMixin:
 
     async def _apply_npc_attack_damage_for_npc_initiated_combat(
         self: _NPCCombatIntegrationDeps,
+        npc_id: str,
         room_id: str,
         target_id: str,
         npc_instance: object,
         npc_uuid: UUID,
         player_uuid: UUID,
         attack_damage: int,
-    ) -> None:
+    ) -> bool:
         """
         Resolve participant combat data and apply the initial attack damage through CombatService.
 
         Damage amount is the caller-supplied ``attack_damage``; combat resolution (armor, etc.)
         is handled inside ``process_attack``.
+
+        An NPC can be despawned (a disengage, say) while this attack is awaiting its lookups or
+        ``start_combat``'s checks. Despawning is synchronous, so each check below sees it with nothing able
+        to interleave before the act that follows; a combat opened for a gone NPC would hold the player in it
+        with nothing to fight. Returns False, with no combat left behind, when the NPC is gone.
         """
         current_tick = get_current_tick()
         data_provider = self.get_data_provider()
+
+        def npc_despawned() -> bool:
+            return data_provider.get_npc_instance(npc_id) is None
+
         player_name = await data_provider.get_player_name(target_id)
         attacker_data = data_provider.get_npc_combat_data(npc_instance, npc_uuid)
         target_data = await data_provider.get_player_combat_data(target_id, player_uuid, player_name)
+        if npc_despawned():
+            return False
 
-        _ = await self.get_combat_service().start_combat(
+        combat = await self.get_combat_service().start_combat(
             room_id=room_id,
             attacker=attacker_data,
             target=target_data,
             current_tick=current_tick,
         )
+        if npc_despawned():
+            await self.get_combat_service().end_combat(combat.combat_id, "NPC despawned before the combat began")
+            return False
         _ = await self.get_combat_service().process_attack(
             attacker_id=npc_uuid,
             target_id=player_uuid,
@@ -92,6 +136,7 @@ class NPCCombatIntegrationCombatMixin:
             is_initial_attack=True,
             damage_type="physical",
         )
+        return True
 
     def _broadcast_npc_attack_on_player_started(
         self: _NPCCombatIntegrationDeps,
@@ -124,6 +169,16 @@ class NPCCombatIntegrationCombatMixin:
         combat_service = self.get_combat_service()
         existing_combat = await combat_service.get_combat_by_participant(attacker_uuid)
         if existing_combat:
+            if target_uuid not in existing_combat.participants:
+                # #833: one NPC per combat; an engaged player cannot queue an attack on a foe outside their fight.
+                return CombatResult(
+                    success=False,
+                    damage=0,
+                    target_died=False,
+                    combat_ended=False,
+                    message="Already fighting another foe",
+                    combat_id=existing_combat.combat_id,
+                )
             queued = await combat_service.queue_combat_action(
                 combat_id=existing_combat.combat_id,
                 participant_id=attacker_uuid,
@@ -150,8 +205,66 @@ class NPCCombatIntegrationCombatMixin:
 
             logger.warning("Failed to queue action, executing immediately", participant_id=attacker_uuid)
             return await combat_service.process_attack(attacker_id=attacker_uuid, target_id=target_uuid, damage=damage)
+        target_combat = await combat_service.get_combat_by_participant(target_uuid)
+        if target_combat:
+            return await self.join_existing_combat_for_mixin(
+                player_id, room_id, attacker_uuid, target_uuid, damage, target_combat
+            )
         return await self.start_new_combat_for_mixin(
             player_id, room_id, attacker_uuid, target_uuid, damage, npc_instance, current_tick
+        )
+
+    async def join_existing_combat_for_mixin(
+        self: _NPCCombatIntegrationDeps,
+        player_id: str,
+        room_id: str,
+        attacker_uuid: UUID,
+        target_uuid: UUID,
+        damage: int,
+        combat: CombatInstance,
+    ) -> CombatResult:
+        """Join the combat the target NPC is already in (#833); the first attack is queued for the next round."""
+        npc = combat.participants.get(target_uuid)
+        foe_name = npc.name if npc else "the creature"
+        await self.join_player_to_combat(player_id, room_id, attacker_uuid, combat, foe_name, foe_id=target_uuid)
+        _ = await self.get_combat_service().queue_combat_action(
+            combat_id=combat.combat_id,
+            participant_id=attacker_uuid,
+            action_type="attack",
+            target_id=target_uuid,
+            damage=damage,
+        )
+        return CombatResult(
+            success=True,
+            damage=0,
+            target_died=False,
+            combat_ended=False,
+            message="Joined combat; attack queued for next round",
+            combat_id=combat.combat_id,
+        )
+
+    async def join_player_to_combat(
+        self: _NPCCombatIntegrationDeps,
+        player_id: str,
+        room_id: str,
+        player_uuid: UUID,
+        combat: CombatInstance,
+        foe_name: str,
+        foe_id: UUID | None = None,
+    ) -> None:
+        """
+        Add a player to a fight already under way and tell the room (#833, #991).
+
+        ``CombatService.join_combat`` refuses a phantom fight, another room, and a player already fighting elsewhere.
+        The caller queues the joiner's first action (an attack for ``attack``, a protect for ``protect``).
+        """
+        data_provider = self.get_data_provider()
+        player_name = await data_provider.get_player_name(player_id)
+        joiner = await data_provider.get_player_combat_data(player_id, player_uuid, player_name)
+        await self.get_combat_service().join_combat(combat, joiner, room_id)
+        foe_disposition = self.get_npc_disposition(foe_id) if foe_id is not None else None
+        _ = await self.get_messaging_integration().broadcast_player_joined_combat(
+            room_id, str(combat.combat_id), player_name, foe_name, player_id, npc_disposition=foe_disposition
         )
 
     async def start_new_combat_for_mixin(
@@ -203,7 +316,7 @@ class NPCCombatIntegrationCombatMixin:
                     )
                     if isinstance(current_rid_raw, str):
                         broadcast_room_id = current_rid_raw
-                except (ValueError, TypeError, AttributeError):
+                except ValueError, TypeError, AttributeError:
                     pass
             await broadcast_room_update(
                 str(killer_id),

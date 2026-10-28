@@ -11,6 +11,7 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
+from server.constants.containers import BANK_SOURCE_TYPE, CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from server.models.container import (
     ContainerComponent,
     ContainerLockState,
@@ -26,13 +27,31 @@ def test_container_source_type_enum_values():
     assert ContainerSourceType.ENVIRONMENT.value == "environment"
     assert ContainerSourceType.EQUIPMENT.value == "equipment"
     assert ContainerSourceType.CORPSE.value == "corpse"
+    assert ContainerSourceType.BANK.value == "bank"
 
 
 def test_container_source_type_enum_all_types():
     """Test ContainerSourceType enum contains all expected types."""
-    expected_types = {"environment", "equipment", "corpse"}
+    expected_types = {"environment", "equipment", "corpse", "bank"}
     actual_types = {t.value for t in ContainerSourceType}
     assert actual_types == expected_types
+
+
+def test_container_source_type_enum_matches_the_persistence_validation_list():
+    """The persistence layer validates against CONTAINER_SOURCE_TYPES; it must never drift from the enum."""
+    assert set(CONTAINER_SOURCE_TYPES) == {t.value for t in ContainerSourceType}
+    assert BANK_SOURCE_TYPE == ContainerSourceType.BANK.value
+
+
+def test_bank_container_needs_neither_a_room_nor_an_entity():
+    """A bank deposit box belongs to its owner alone: no room (so room lookups never see it), no entity."""
+    owner_id = uuid4()
+    box = ContainerComponent(
+        container_id=uuid4(), source_type=ContainerSourceType.BANK, owner_id=owner_id, capacity_slots=100
+    )
+    assert box.room_id is None
+    assert box.entity_id is None
+    assert box.owner_id == owner_id
 
 
 # --- Tests for ContainerLockState enum ---
@@ -411,7 +430,7 @@ def test_container_component_capacity_slots_validation_max():
             container_id=uuid4(),
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id="room123",
-            capacity_slots=21,  # Above maximum of 20
+            capacity_slots=MAX_CONTAINER_CAPACITY_SLOTS + 1,
         )
 
 
@@ -429,9 +448,9 @@ def test_container_component_capacity_slots_valid_range():
         container_id=uuid4(),
         source_type=ContainerSourceType.ENVIRONMENT,
         room_id="room123",
-        capacity_slots=20,  # Maximum
+        capacity_slots=MAX_CONTAINER_CAPACITY_SLOTS,
     )
-    assert container2.capacity_slots == 20
+    assert container2.capacity_slots == MAX_CONTAINER_CAPACITY_SLOTS
 
     container3 = ContainerComponent(
         container_id=uuid4(),

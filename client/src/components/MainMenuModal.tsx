@@ -2,15 +2,16 @@
  * Main Menu Modal component.
  *
  * A modal dialog accessible via ESC key that provides access to
- * map, logout, and settings (placeholder) functionality.
+ * map, logout, and a Settings sub-menu (UI preferences, layout reset).
  *
  * As documented in the Pnakotic Manuscripts, proper access control
  * interfaces are essential for maintaining the integrity of our
  * eldritch architecture.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { SettingsToggles } from './SettingsToggles';
 
 export interface MainMenuModalProps {
   /** Whether the modal is open */
@@ -21,6 +22,8 @@ export interface MainMenuModalProps {
   onMapClick?: () => void;
   /** Callback when logout button is clicked */
   onLogoutClick: () => void;
+  /** Callback for Settings > Reset UI Layout; the button is hidden when omitted */
+  onResetLayoutClick?: () => void;
   /** Current room information (if provided, map opens in new tab) */
   currentRoom?: {
     id: string;
@@ -34,16 +37,60 @@ export interface MainMenuModalProps {
   playerId?: string | null;
 }
 
-/**
- * Main Menu Modal component.
- */
-export const MainMenuModal: React.FC<MainMenuModalProps> = ({
-  isOpen,
-  onClose,
-  onLogoutClick,
-  currentRoom,
-  playerId,
-}) => {
+type MenuView = 'main' | 'settings';
+
+const PRIMARY_BUTTON_CLASS =
+  'w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium';
+const NEUTRAL_BUTTON_CLASS =
+  'w-full px-4 py-3 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded hover:bg-mythos-terminal-surface transition-colors text-left font-medium';
+
+/** Locks body scroll and disables pointer events on the game container while a modal is open. */
+function useLockGameContainer(isOpen: boolean): void {
+  useEffect(() => {
+    const gameContainer = document.querySelector('[data-game-container]') as HTMLElement | null;
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      if (gameContainer) gameContainer.style.pointerEvents = 'none';
+    } else {
+      document.body.style.overflow = '';
+      if (gameContainer) gameContainer.style.pointerEvents = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      const container = document.querySelector('[data-game-container]') as HTMLElement | null;
+      if (container) container.style.pointerEvents = '';
+    };
+  }, [isOpen]);
+}
+
+/** ESC steps back one level (Settings -> Main Menu) and closes the menu from the top level. */
+function useMenuEscape(view: MenuView, setView: (view: MenuView) => void, onClose: () => void): void {
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (view === 'settings') setView('main');
+      else onClose();
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [view, setView, onClose]);
+}
+
+type MainMenuViewProps = Pick<MainMenuModalProps, 'onClose' | 'onLogoutClick' | 'currentRoom' | 'playerId'> & {
+  onSettingsClick: () => void;
+};
+
+function MainMenuView(props: MainMenuViewProps) {
+  const { onClose, onLogoutClick, currentRoom, playerId, onSettingsClick } = props;
+
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank');
+    onClose();
+  };
+
   const handleMapClick = () => {
     // Always open map in new tab (plan 10.7 V5: include playerId for ownership)
     const params = new URLSearchParams();
@@ -55,66 +102,113 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
       if (currentRoom.subZone) params.set('subZone', currentRoom.subZone);
     }
     const query = params.toString();
-    window.open(query ? `/map?${query}` : '/map', '_blank');
-    onClose();
+    openInNewTab(query ? `/map?${query}` : '/map');
   };
 
-  const handleSkillsClick = () => {
-    const url = playerId ? `/skills?playerId=${encodeURIComponent(playerId)}` : '/skills';
-    window.open(url, '_blank');
-    onClose();
-  };
+  return (
+    <div className="space-y-3">
+      {/* Map Button */}
+      <button onClick={handleMapClick} className={PRIMARY_BUTTON_CLASS} style={{ pointerEvents: 'auto' }} type="button">
+        Map (New Tab)
+      </button>
 
-  const handleDialogueEditorClick = () => {
-    window.open('/admin/content/dialogue', '_blank');
-    onClose();
-  };
+      {/* Skills (New Tab) - plan 10.7 V1 */}
+      <button
+        onClick={() => openInNewTab(playerId ? `/skills?playerId=${encodeURIComponent(playerId)}` : '/skills')}
+        className={PRIMARY_BUTTON_CLASS}
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Skills (New Tab)
+      </button>
 
-  // Handle ESC key to close modal
-  useEffect(() => {
-    if (!isOpen) return;
+      <button
+        onClick={() => openInNewTab('/catalog')}
+        className={PRIMARY_BUTTON_CLASS}
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Catalog (New Tab)
+      </button>
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
+      <button
+        onClick={() => openInNewTab('/manual')}
+        className={PRIMARY_BUTTON_CLASS}
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Manual (New Tab)
+      </button>
 
-    window.addEventListener('keydown', handleEscape);
-    return () => {
-      window.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose]);
+      <button
+        onClick={() => openInNewTab('/admin/content/dialogue')}
+        className={PRIMARY_BUTTON_CLASS}
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Content Tools — Dialogue (New Tab)
+      </button>
 
-  // Prevent body scroll and disable pointer events on game content when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      // Disable pointer events on the main game container to prevent panel dragging
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = 'none';
-      }
-    } else {
-      document.body.style.overflow = '';
-      // Re-enable pointer events on the main game container
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = '';
-      }
-    }
-    return () => {
-      document.body.style.overflow = '';
-      const gameContainer = document.querySelector('[data-game-container]');
-      if (gameContainer) {
-        (gameContainer as HTMLElement).style.pointerEvents = '';
-      }
-    };
-  }, [isOpen]);
+      <button
+        onClick={onSettingsClick}
+        className={NEUTRAL_BUTTON_CLASS}
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Settings
+      </button>
 
-  if (!isOpen) return null;
+      {/* Logout Button */}
+      <button
+        onClick={() => {
+          onLogoutClick();
+          onClose();
+        }}
+        className="w-full px-4 py-3 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors text-left font-medium"
+        style={{ pointerEvents: 'auto' }}
+        type="button"
+      >
+        Logout
+      </button>
+    </div>
+  );
+}
 
-  const modalContent = (
+type SettingsViewProps = Pick<MainMenuModalProps, 'onClose' | 'onResetLayoutClick'> & { onBack: () => void };
+
+function SettingsView({ onClose, onResetLayoutClick, onBack }: SettingsViewProps) {
+  return (
+    <div className="space-y-3">
+      <button onClick={onBack} className={NEUTRAL_BUTTON_CLASS} style={{ pointerEvents: 'auto' }} type="button">
+        ← Back
+      </button>
+
+      {onResetLayoutClick ? (
+        <button
+          onClick={() => {
+            onResetLayoutClick();
+            onClose();
+          }}
+          className={NEUTRAL_BUTTON_CLASS}
+          style={{ pointerEvents: 'auto' }}
+          type="button"
+        >
+          Reset UI Layout
+        </button>
+      ) : null}
+
+      <SettingsToggles />
+    </div>
+  );
+}
+
+/** The open dialog. Mounted only while the menu is open, so `view` resets to 'main' on every open. */
+function MainMenuDialog(props: Omit<MainMenuModalProps, 'isOpen'>) {
+  const { onClose, onLogoutClick, onResetLayoutClick, currentRoom, playerId } = props;
+  const [view, setView] = useState<MenuView>('main');
+  useMenuEscape(view, setView, onClose);
+
+  return (
     <div
       className="fixed inset-0 z-100 flex items-center justify-center"
       style={{ pointerEvents: 'auto' }}
@@ -127,7 +221,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
         aria-label="Dismiss menu (backdrop)"
       />
       <div
-        className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
+        className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="main-menu-title"
@@ -135,9 +229,10 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
       >
         <div className="flex items-center justify-between mb-6">
           <h2 id="main-menu-title" className="text-2xl font-bold text-mythos-terminal-text">
-            Main Menu
+            {view === 'main' ? 'Main Menu' : 'Settings'}
           </h2>
           <button
+            type="button"
             onClick={onClose}
             className="text-mythos-terminal-text hover:text-mythos-terminal-error text-2xl leading-none"
             aria-label="Close menu"
@@ -146,65 +241,37 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
           </button>
         </div>
 
-        <div className="space-y-3">
-          {/* Map Button */}
-          <button
-            onClick={handleMapClick}
-            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
-            style={{ pointerEvents: 'auto' }}
-            type="button"
-          >
-            Map (New Tab)
-          </button>
+        {view === 'main' ? (
+          <MainMenuView
+            onClose={onClose}
+            onLogoutClick={onLogoutClick}
+            currentRoom={currentRoom}
+            playerId={playerId}
+            onSettingsClick={() => setView('settings')}
+          />
+        ) : (
+          <SettingsView onClose={onClose} onResetLayoutClick={onResetLayoutClick} onBack={() => setView('main')} />
+        )}
 
-          {/* Skills (New Tab) - plan 10.7 V1 */}
-          <button
-            onClick={handleSkillsClick}
-            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
-            style={{ pointerEvents: 'auto' }}
-            type="button"
-          >
-            Skills (New Tab)
-          </button>
-
-          <button
-            onClick={handleDialogueEditorClick}
-            className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
-            style={{ pointerEvents: 'auto' }}
-            type="button"
-          >
-            Content Tools — Dialogue (New Tab)
-          </button>
-
-          {/* Settings Button (Placeholder - Inactive) */}
-          <button
-            disabled
-            className="w-full px-4 py-3 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text/50 rounded cursor-not-allowed text-left font-medium opacity-50"
-            aria-label="Settings (coming soon)"
-            type="button"
-          >
-            Settings
-          </button>
-
-          {/* Logout Button */}
-          <button
-            onClick={() => {
-              onLogoutClick();
-              onClose();
-            }}
-            className="w-full px-4 py-3 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors text-left font-medium"
-            style={{ pointerEvents: 'auto' }}
-            type="button"
-          >
-            Logout
-          </button>
+        <div className="mt-6 text-xs text-mythos-terminal-text/50 text-center">
+          {view === 'main' ? 'Press ESC to close' : 'Press ESC to go back'}
         </div>
-
-        <div className="mt-6 text-xs text-mythos-terminal-text/50 text-center">Press ESC to close</div>
       </div>
     </div>
   );
+}
+
+/**
+ * Main Menu Modal component.
+ */
+export const MainMenuModal: React.FC<MainMenuModalProps> = props => {
+  const { isOpen, ...dialogProps } = props;
+
+  // Prevent body scroll and disable pointer events on game content when modal is open
+  useLockGameContainer(isOpen);
+
+  if (!isOpen) return null;
 
   // Render modal in a portal to ensure it's always on top
-  return createPortal(modalContent, document.body);
+  return createPortal(<MainMenuDialog {...dialogProps} />, document.body);
 };

@@ -5,13 +5,33 @@ This module provides utility functions for room-related operations,
 including sub-zone extraction for the Advanced Chat Channels feature.
 """
 
+from typing import cast
+
+LOCATION_SEPARATOR = " \N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK} "
+
+
+def _display_text(room: object, attr: str) -> str:
+    value = cast(object, getattr(room, attr, None))
+    return value.strip() if isinstance(value, str) else ""
+
+
+def format_room_location(room: object) -> str:
+    """
+    Build "Zone › Sub-zone › Room" from a room's display names (#910).
+
+    Segments that are missing or blank are skipped, and raw IDs are never used, so the
+    result is "" when the room carries no usable names; callers pick their own fallback.
+    """
+    parts = (_display_text(room, attr) for attr in ("zone_name", "sub_zone_name", "name"))
+    return LOCATION_SEPARATOR.join(p for p in parts if p)
+
 
 def extract_subzone_from_room_id(room_id: str) -> str | None:
     """
     Extract sub-zone from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkhamcity_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_garrison
 
     Args:
         room_id: The room ID to extract sub-zone from
@@ -20,7 +40,7 @@ def extract_subzone_from_room_id(room_id: str) -> str | None:
         The sub-zone name, or None if the room ID format is invalid
 
     Examples:
-        >>> extract_subzone_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
+        >>> extract_subzone_from_room_id("earth_arkhamcity_northside_intersection_derby_garrison")
         'northside'
         >>> extract_subzone_from_room_id("earth_arkhamcity_downtown_market_square")
         'downtown'
@@ -35,7 +55,7 @@ def extract_subzone_from_room_id(room_id: str) -> str | None:
         return None
 
     # The sub-zone is the third part (index 2) for arkhamcity format
-    # Format: earth_arkhamcity_northside_intersection_derby_high
+    # Format: earth_arkhamcity_northside_intersection_derby_garrison
     # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
     return parts[2]
 
@@ -45,7 +65,7 @@ def get_zone_from_room_id(room_id: str) -> str | None:
     Extract zone from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkhamcity_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_garrison
 
     Args:
         room_id: The room ID to extract zone from
@@ -54,7 +74,7 @@ def get_zone_from_room_id(room_id: str) -> str | None:
         The zone name, or None if the room ID format is invalid
 
     Examples:
-        >>> get_zone_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
+        >>> get_zone_from_room_id("earth_arkhamcity_northside_intersection_derby_garrison")
         'arkhamcity'
         >>> get_zone_from_room_id("earth_innsmouth_docks_warehouse_1")
         'innsmouth'
@@ -67,7 +87,7 @@ def get_zone_from_room_id(room_id: str) -> str | None:
         return None
 
     # The zone is the second part (index 1) for arkhamcity format
-    # Format: earth_arkhamcity_northside_intersection_derby_high
+    # Format: earth_arkhamcity_northside_intersection_derby_garrison
     # Parts: [0]earth [1]arkhamcity [2]northside [3]intersection [4]derby [5]high
     return parts[1]
 
@@ -77,7 +97,7 @@ def get_plane_from_room_id(room_id: str) -> str | None:
     Extract plane from room ID.
 
     Room ID format: {plane}_{zone}_{sub_zone}_{room_name}
-    Example: earth_arkhamcity_northside_intersection_derby_high
+    Example: earth_arkhamcity_northside_intersection_derby_garrison
 
     Args:
         room_id: The room ID to extract plane from
@@ -86,7 +106,7 @@ def get_plane_from_room_id(room_id: str) -> str | None:
         The plane name, or None if the room ID format is invalid
 
     Examples:
-        >>> get_plane_from_room_id("earth_arkhamcity_northside_intersection_derby_high")
+        >>> get_plane_from_room_id("earth_arkhamcity_northside_intersection_derby_garrison")
         'earth'
         >>> get_plane_from_room_id("dream_innsmouth_docks_warehouse_1")
         'dream'
@@ -113,7 +133,7 @@ def is_valid_room_id_format(room_id: str) -> bool:
         True if the room ID format is valid, False otherwise
 
     Examples:
-        >>> is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_high")
+        >>> is_valid_room_id_format("earth_arkhamcity_northside_intersection_derby_garrison")
         True
         >>> is_valid_room_id_format("invalid_room_id")
         False
@@ -143,8 +163,8 @@ def get_local_channel_subject(room_id: str) -> str | None:
         The NATS subject for local channel messages, or None if room ID is invalid
 
     Examples:
-        >>> get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
-        'chat.local.earth_arkhamcity_northside_intersection_derby_high'
+        >>> get_local_channel_subject("earth_arkhamcity_northside_intersection_derby_garrison")
+        'chat.local.earth_arkhamcity_northside_intersection_derby_garrison'
 
     AI: This function is deprecated and should not be used in new code.
     AI: It constructs a legacy subject pattern that is not part of the standardized system.
@@ -181,7 +201,7 @@ def get_subzone_local_channel_subject(room_id: str) -> str | None:
         The NATS subject for sub-zone local channel messages, or None if room ID is invalid
 
     Examples:
-        >>> get_subzone_local_channel_subject("earth_arkhamcity_northside_intersection_derby_high")
+        >>> get_subzone_local_channel_subject("earth_arkhamcity_northside_intersection_derby_garrison")
         'chat.local.subzone.northside'
 
     AI: This function constructs a valid standardized subject but NATSSubjectManager should be preferred.

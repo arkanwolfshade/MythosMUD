@@ -15,6 +15,7 @@ from typing import assert_never, cast
 from structlog.stdlib import BoundLogger
 
 from server.exceptions import ValidationError
+from server.game.instance_manager import TemplateRoomEntryError
 from server.game.magic.spell_effect_flee import run_flee_effect
 from server.game.magic.spell_effect_types import (
     NpcSpellDamageTarget,
@@ -33,6 +34,7 @@ from server.game.magic.spell_effects_support import (
     process_create_object_effect,
     process_stat_modify_effect,
 )
+from server.game.magic.spell_effects_threat import add_utility_threat_for_spell
 from server.game.movement_service import MovementService
 from server.game.player_service import PlayerService
 from server.models.spell import Spell, SpellEffectType
@@ -122,9 +124,15 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             mastery=mastery,
         )
         mastery_modifier = 1.0 + (mastery / 100.0)
-        return await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
+        result = await self._dispatch_effect(spell, target, caster_id, mastery_modifier)
+        if (
+            spell.effect_type in (SpellEffectType.STATUS_EFFECT, SpellEffectType.STAT_MODIFY)
+            and result.get("success") is True
+        ):
+            add_utility_threat_for_spell(self._combat_service, caster_id, target)  # #833: support can pull
+        return result
 
-    async def _dispatch_effect(
+    async def _dispatch_effect(  # lizard: allow ccn (exhaustive match/case over SpellEffectType, one delegating line per case; assert_never enforces exhaustiveness, see #787)
         self,
         spell: Spell,
         target: TargetMatch,
@@ -271,7 +279,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         max_dp = int(stats_after.get("max_dp", 0))
         try:
             npc_id_ev: uuid.UUID | str = uuid.UUID(str(target.target_id))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             npc_id_ev = npc_instance.npc_id
 
         # Spell damage updates the live NPC instance first (take_damage). Combat UI and melee
@@ -445,6 +453,11 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
                 "destination_room_id": destination_room_id,
                 "original_room_id": original_room_id,
             }
+        except TemplateRoomEntryError as e:
+            logger.warning(
+                "Teleport spell targets an instance template room", room_id=e.room_id, spell_id=spell.spell_id
+            )
+            return {"success": False, "message": str(e), "effect_applied": False}
         except OSError as e:
             logger.error("Error teleporting player", target_id=target.target_id, error=str(e))
             return {"success": False, "message": f"Failed to teleport: {str(e)}", "effect_applied": False}

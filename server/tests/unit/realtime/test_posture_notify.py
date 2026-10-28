@@ -7,7 +7,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.constants.message_category import MessageCategory
 from server.realtime.posture_notify import (
+    attach_posture_self_message,
     emit_posture_change,
     format_room_posture_message,
     normalize_posture,
@@ -111,3 +113,17 @@ async def test_emit_posture_change_attach_only_returns_message() -> None:
     assert self_msg is not None
     assert "lie" in self_msg.lower()
     send_personal_message.assert_not_called()
+
+
+def test_attach_posture_self_message_tags_room_movement_by_default() -> None:
+    payload: dict[str, object] = {"stats": {}}
+    attach_posture_self_message(payload, "You sit.", previous_position="standing")
+    assert payload["posture_message"] == "You sit."
+    assert payload["previous_position"] == "standing"
+    assert payload["category"] == MessageCategory.ROOM_MOVEMENT
+
+
+def test_attach_posture_self_message_accepts_another_category_and_omits_unknown_previous() -> None:
+    payload: dict[str, object] = {}
+    attach_posture_self_message(payload, "You collapse.", category=MessageCategory.STATUS_HEALTH)
+    assert payload == {"posture_message": "You collapse.", "category": MessageCategory.STATUS_HEALTH}

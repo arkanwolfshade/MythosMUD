@@ -4,8 +4,10 @@ This module handles graceful shutdown of all services in the MythosMUD server.
 """
 
 from fastapi import FastAPI
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..container import ApplicationContainer
+from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_service import get_mythos_chronicle
 from .lifespan_protocols import (
@@ -126,13 +128,39 @@ async def _shutdown_event_bus(container: ApplicationContainer) -> None:
         logger.error("Error shutting down EventBus", error=str(e))
 
 
+async def _flush_live_instances(container: ApplicationContainer) -> None:
+    """Send every live instance's floor items to its lost-and-found while persistence is still up."""
+    flusher = container.instance_flush_service
+    if flusher is None:
+        return
+    try:
+        moved = await flusher.flush_all()
+        logger.info("Live instances flushed for shutdown", stack_count=moved)
+    except (DatabaseError, SQLAlchemyError, RuntimeError) as e:
+        logger.error("Error flushing live instances at shutdown", error=str(e))
+
+
+async def _flush_player_registry(container: ApplicationContainer) -> None:
+    """Write every dirty player while persistence is still up (ADR-029): after the tick loop and logouts stop."""
+    registry = container.player_registry
+    if registry is None:
+        return
+    try:
+        written = await registry.close()
+        logger.info("Player registry flushed for shutdown", players_written=written)
+    except (DatabaseError, SQLAlchemyError, RuntimeError) as e:
+        logger.error("Error flushing the player registry at shutdown", error=str(e))
+
+
 async def shutdown_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Handle graceful shutdown of all services."""
+    await _flush_live_instances(container)
     await _shutdown_mythos_chronicle()
     await _shutdown_nats_handler(app)
     await _shutdown_connection_manager(app)
     await _shutdown_mythos_tick_scheduler(app)
     await _shutdown_task_registry(container)
+    await _flush_player_registry(container)
     await _shutdown_event_bus(container)
 
     logger.info("Shutting down ApplicationContainer")

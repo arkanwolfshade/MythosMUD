@@ -12,44 +12,23 @@ from typing import cast
 
 from anyio import sleep
 from sqlalchemy.exc import SQLAlchemyError
-from structlog.stdlib import BoundLogger
 
 from ..async_persistence import AsyncPersistenceLayer
+from ..constants.message_category import MessageCategory
+from ..constants.npc_disposition import NpcOccupant
 from ..events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..models.player import Player
 from ..models.room import Room
+from ..services.lucidity_helpers import resolve_tier
 from ..utils.int_coercion import coerce_int
 from . import player_event_handlers_respawn_room as respawn_room
-from .connection_manager import ConnectionManager
+from .player_event_handler_base import PlayerEventHandlerBase
 from .player_event_handlers_respawn_types import RespawnPlayerEventPayload, RespawnPlayerStatsPayload
-from .player_event_handlers_utils import PlayerEventHandlerUtils
 from .posture_notify import emit_posture_change
 
 
-class PlayerRespawnEventHandler:
+class PlayerRespawnEventHandler(PlayerEventHandlerBase):
     """Handles player respawn events (respawn, delirium respawn)."""
-
-    connection_manager: ConnectionManager | None
-    utils: PlayerEventHandlerUtils
-    _logger: BoundLogger
-
-    def __init__(
-        self,
-        connection_manager: ConnectionManager | None,
-        utils: PlayerEventHandlerUtils,
-        logger: BoundLogger,
-    ) -> None:
-        """
-        Initialize respawn event handler.
-
-        Args:
-            connection_manager: ConnectionManager instance
-            utils: PlayerEventHandlerUtils instance
-            logger: Logger instance
-        """
-        self.connection_manager = connection_manager
-        self.utils = utils
-        self._logger = logger
 
     def update_connection_manager_position(self, player_id_str: str, updated_position: str) -> None:
         """
@@ -86,13 +65,11 @@ class PlayerRespawnEventHandler:
         player: Player,
         stats: dict[str, object],
         updated_position: str,
-        lucidity: int,
     ) -> RespawnPlayerEventPayload:
-        """Build client-expected player payload for respawn events."""
+        """Build client-expected player payload for respawn events (lucidity is not a stat; see ADR-029 step 3a)."""
         stats_payload: RespawnPlayerStatsPayload = {
             "current_dp": coerce_int(stats.get("current_dp"), default=100),
             "max_dp": coerce_int(stats.get("max_dp"), default=100),
-            "lucidity": lucidity,
             "max_lucidity": coerce_int(stats.get("max_lucidity"), default=100),
             "occult_knowledge": coerce_int(stats.get("occult_knowledge"), default=0),
             "fear": coerce_int(stats.get("fear"), default=0),
@@ -147,12 +124,11 @@ class PlayerRespawnEventHandler:
 
             stats = player.get_stats()
             updated_position = self._position_from_stats(stats)
-            lucidity = coerce_int(stats.get("lucidity"), default=100)
 
             # Update connection manager's in-memory position state
             self.update_connection_manager_position(player_id_str, updated_position)
 
-            player_data = self._build_respawn_player_payload(player, stats, updated_position, lucidity)
+            player_data = self._build_respawn_player_payload(player, stats, updated_position)
             self._logger.debug(
                 "Retrieved player data for respawn event",
                 player_id=player_id_str,
@@ -227,7 +203,6 @@ class PlayerRespawnEventHandler:
         stats_payload: RespawnPlayerStatsPayload = {
             "current_dp": coerce_int(stats.get("current_dp"), default=event.new_dp),
             "max_dp": coerce_int(actual_max_dp, default=event.new_dp),
-            "lucidity": coerce_int(stats.get("lucidity"), default=100),
             "max_lucidity": coerce_int(stats.get("max_lucidity"), default=100),
             "occult_knowledge": coerce_int(stats.get("occult_knowledge"), default=0),
             "fear": coerce_int(stats.get("fear"), default=0),
@@ -297,7 +272,7 @@ class PlayerRespawnEventHandler:
         player_id_str: str,
         player_data: RespawnPlayerEventPayload | None,
         room_data: dict[str, object] | None,
-        npc_names: list[str],
+        npc_names: list[NpcOccupant],
         player_names: list[str],
         occupant_names: list[str],
     ) -> dict[str, object]:
@@ -313,6 +288,7 @@ class PlayerRespawnEventHandler:
                 "old_dp": event.old_dp,
                 "new_dp": event.new_dp,
                 "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                "category": MessageCategory.SYSTEM_INFO,
                 "player": player_data,
                 "room": room_data,
                 # CRITICAL: Also include top-level players/npcs/occupants for client projector compatibility
@@ -426,13 +402,13 @@ class PlayerRespawnEventHandler:
 
     async def _prepare_room_data_for_respawn(
         self, room_id: str, respawned_player_name: str
-    ) -> tuple[dict[str, object] | None, list[str], list[str], list[str]]:
-        """Prepare room data with NPC and player names for a respawn event."""
+    ) -> tuple[dict[str, object] | None, list[NpcOccupant], list[str], list[str]]:
+        """Prepare room data with NPC occupants and player names for a respawn event."""
         return await respawn_room.prepare_room_data_for_respawn(self, room_id, respawned_player_name, self._logger)
 
     def _room_data_from_persistence_room(
         self, room: Room, respawned_player_name: str
-    ) -> tuple[dict[str, object], list[str], list[str], list[str]]:
+    ) -> tuple[dict[str, object], list[NpcOccupant], list[str], list[str]]:
         """Build room payload from persistence when no live connection manager is available."""
         return respawn_room.room_data_from_persistence_room(self, room, respawned_player_name)
 
@@ -459,9 +435,9 @@ class PlayerRespawnEventHandler:
         return current_lucidity
 
     async def _fetch_delirium_respawn_player_snapshot(
-        self, player_id_str: str, default_lucidity: int
+        self, player_id_str: str
     ) -> tuple[RespawnPlayerEventPayload, str]:
-        """Load player stats, lucidity, and client payload for delirium respawn."""
+        """Load player stats and client payload for delirium respawn."""
         player_uuid = uuid.UUID(player_id_str)
         connection_manager = self.connection_manager
         if not connection_manager:
@@ -476,19 +452,17 @@ class PlayerRespawnEventHandler:
         stats = player.get_stats()
         updated_position = self._position_from_stats(stats)
         self.update_connection_manager_position(player_id_str, updated_position)
-        current_lucidity = await self.get_current_lucidity(player_uuid, default_lucidity)
-        player_data = self._build_respawn_player_payload(player, stats, updated_position, current_lucidity)
+        player_data = self._build_respawn_player_payload(player, stats, updated_position)
         return player_data, updated_position
 
     async def get_player_data_for_delirium_respawn(
-        self, player_id_str: str, default_lucidity: int
+        self, player_id_str: str
     ) -> tuple[RespawnPlayerEventPayload | None, str]:
         """
         Get updated player data for delirium respawn event.
 
         Args:
             player_id_str: The player ID as string
-            default_lucidity: Default lucidity value from event
 
         Returns:
             Tuple of (player_data dict or None, updated_position string)
@@ -501,14 +475,11 @@ class PlayerRespawnEventHandler:
             return None, "standing"
 
         try:
-            player_data, updated_position = await self._fetch_delirium_respawn_player_snapshot(
-                player_id_str, default_lucidity
-            )
+            player_data, updated_position = await self._fetch_delirium_respawn_player_snapshot(player_id_str)
             self._logger.debug(
                 "Retrieved player data for delirium respawn event",
                 player_id=player_id_str,
                 position=updated_position,
-                lucidity=player_data["stats"]["lucidity"],
             )
             return player_data, updated_position
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
@@ -531,7 +502,14 @@ class PlayerRespawnEventHandler:
             player_id_str = str(event.player_id)
 
             # Get updated player data to include in event payload
-            player_data, _ = await self.get_player_data_for_delirium_respawn(player_id_str, event.new_lucidity)
+            player_data, _ = await self.get_player_data_for_delirium_respawn(player_id_str)
+            # Lucidity travels top-level, as in game_state (the client's lucidity meter reads these two fields).
+            current_lcd = await self.get_current_lucidity(uuid.UUID(player_id_str), event.new_lucidity)
+
+            # Room data (client needs it to re-render on delirium respawn, same as player_respawned)
+            room_data, _npc_names, _player_names, _occupant_names = await self._prepare_room_data_for_respawn(
+                event.respawn_room_id, event.player_name
+            )
 
             # Send personal message to the player
             from .envelope import build_event
@@ -544,8 +522,12 @@ class PlayerRespawnEventHandler:
                     "respawn_room_id": event.respawn_room_id,
                     "old_lucidity": event.old_lucidity,
                     "new_lucidity": event.new_lucidity,
+                    "current_lcd": current_lcd,
+                    "lucidity_tier": resolve_tier(current_lcd),
                     "message": "You have been restored to lucidity and returned to the Sanitarium.",
+                    "category": MessageCategory.SYSTEM_INFO,
                     "player": player_data,
+                    "room": room_data,
                 },
                 player_id=player_id_str,
             )

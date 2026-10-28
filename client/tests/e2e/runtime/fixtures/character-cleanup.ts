@@ -11,12 +11,12 @@ import { LoginPage } from '../pages';
 import { TEST_TIMEOUTS } from './test-data';
 
 /** Character names that must never be deleted by E2E cleanup. */
-export const PROTECTED_CHARACTER_NAMES = ['ArkanWolfshade', 'Ithaqua'] as const;
+const PROTECTED_CHARACTER_NAMES = ['ArkanWolfshade', 'Ithaqua'] as const;
 
 const PROTECTED_CHARACTER_NAME_SET = new Set<string>(PROTECTED_CHARACTER_NAMES);
 
 /** Regex for character names created by E2E tests (revised creation, skills tests). */
-export const TEST_CHARACTER_NAME_PATTERN = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
+const TEST_CHARACTER_NAME_PATTERN = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
 
 const MAX_CLEANUP_ITERATIONS = 10;
 
@@ -24,6 +24,10 @@ type CharacterCardLocator = ReturnType<Page['locator']>;
 
 function isProtected(name: string): boolean {
   return PROTECTED_CHARACTER_NAME_SET.has(name.trim());
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function isTestCharacter(name: string): boolean {
@@ -83,7 +87,7 @@ async function confirmCharacterDeletion(page: Page, charName: string): Promise<v
   // not a signal to silently re-loop over a stale reference.
   await page
     .locator('.character-card')
-    .filter({ has: page.locator('h3.character-name', { hasText: charName, exact: true }) })
+    .filter({ has: page.locator('h3.character-name', { hasText: new RegExp(`^${escapeRegExp(charName)}$`) }) })
     .waitFor({ state: 'detached', timeout: TEST_TIMEOUTS.LOGIN });
 }
 
@@ -103,7 +107,7 @@ async function tryDeleteOneTestCharacter(page: Page): Promise<boolean> {
     if (!isDeletableTestCharacter(charName)) continue;
 
     const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
-    if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) continue;
+    if (!(await deleteBtn.isVisible().catch(() => false))) continue;
 
     await deleteCharacterFromCard(page, card, charName);
     return true;

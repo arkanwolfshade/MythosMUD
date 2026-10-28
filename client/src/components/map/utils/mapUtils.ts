@@ -11,9 +11,10 @@
  */
 
 import type { Edge, Node } from 'reactflow';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import type { ExitEdgeData, RoomNodeData } from '../types';
 import { applyGridLayout, type GridLayoutConfig } from './layout';
+import { GRID_PITCH } from './mapGeometry';
 
 /**
  * Exit value type - can be null, string (room ID), or object with target/flags/description.
@@ -36,6 +37,25 @@ type RoomWithCoordinates = Room & {
 };
 
 /**
+ * Directions whose exit target is not among the loaded rooms.
+ *
+ * The map is fetched one sub-zone at a time, so an exit into another sub-zone (the
+ * Sanitarium door off Derby Street, say) has no node to connect to and no edge is drawn.
+ * Recording the direction lets the node itself show that the way out exists.
+ */
+const findDepartures = (room: RoomWithCoordinates, known: Set<string>): string[] => {
+  if (!room.exits) return [];
+  const departing: string[] = [];
+  for (const [direction, exitValue] of Object.entries(room.exits)) {
+    const target = extractExitTarget(exitValue as ExitValue);
+    if (target !== null && !known.has(target)) {
+      departing.push(direction);
+    }
+  }
+  return departing;
+};
+
+/**
  * Convert a single room to a React Flow node.
  */
 export const roomToNode = (
@@ -50,10 +70,11 @@ export const roomToNode = (
   const nodeType =
     room.environment === 'intersection' || room.sub_zone?.includes('intersection') ? 'intersection' : 'room';
 
-  // Use stored coordinates if available, otherwise use default position (will be set by grid layout)
+  // Stored coordinates are GRID UNITS; React Flow wants pixels (see GRID_PITCH).
+  const { map_x: storedX, map_y: storedY } = room;
   const position =
-    room.map_x !== null && room.map_x !== undefined && room.map_y !== null && room.map_y !== undefined
-      ? { x: room.map_x, y: room.map_y }
+    storedX !== null && storedX !== undefined && storedY !== null && storedY !== undefined
+      ? { x: storedX * GRID_PITCH, y: storedY * GRID_PITCH }
       : { x: 0, y: 0 };
 
   const nodeData: RoomNodeData = {
@@ -67,6 +88,12 @@ export const roomToNode = (
     isCurrentLocation,
     occupants: room.occupants,
     occupantCount: room.occupant_count,
+    // Carried through so useMapLayout can tell a positioned node from one that still
+    // needs layout. Omitting these is why every stored-coordinate branch downstream was
+    // unreachable even once the API started returning coordinates.
+    map_x: room.map_x,
+    map_y: room.map_y,
+    departures: _allRooms.length ? findDepartures(room, new Set(_allRooms.map(r => r.id))) : undefined,
   };
 
   return {
@@ -164,38 +191,28 @@ const extractExitDescription = (exitValue: ExitValue): string | undefined => {
  * @param direction - The exit direction (north, south, east, west, etc.)
  * @returns Object with sourceHandle and targetHandle IDs
  */
-const getEdgeHandles = (direction: string): { sourceHandle: string; targetHandle: string } => {
-  const normalizedDirection = direction.toLowerCase();
+type EdgeHandles = { sourceHandle: string; targetHandle: string };
 
-  switch (normalizedDirection) {
-    case 'north':
-      // Source exits north, so edge starts at top of source, ends at bottom of target
-      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
-    case 'south':
-      // Source exits south, so edge starts at bottom of source, ends at top of target
-      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
-    case 'east':
-      // Source exits east, so edge starts at right of source, ends at left of target
-      return { sourceHandle: 'source-right', targetHandle: 'target-left' };
-    case 'west':
-      // Source exits west, so edge starts at left of source, ends at right of target
-      return { sourceHandle: 'source-left', targetHandle: 'target-right' };
-    case 'northeast':
-      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
-    case 'northwest':
-      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
-    case 'southeast':
-      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
-    case 'southwest':
-      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
-    case 'up':
-      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
-    case 'down':
-      return { sourceHandle: 'source-bottom', targetHandle: 'target-top' };
-    default:
-      // For unknown directions, use default (top to bottom)
-      return { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
-  }
+const DEFAULT_EDGE_HANDLES: EdgeHandles = { sourceHandle: 'source-top', targetHandle: 'target-bottom' };
+
+// Source exits in `direction`, so the edge starts at the matching side of the source and ends
+// at the opposite side of the target. Diagonals/up/down fall back to top-bottom (no diagonal
+// handles exist on the room node).
+const EDGE_HANDLES_BY_DIRECTION: Record<string, EdgeHandles> = {
+  north: { sourceHandle: 'source-top', targetHandle: 'target-bottom' },
+  south: { sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  east: { sourceHandle: 'source-right', targetHandle: 'target-left' },
+  west: { sourceHandle: 'source-left', targetHandle: 'target-right' },
+  northeast: DEFAULT_EDGE_HANDLES,
+  northwest: DEFAULT_EDGE_HANDLES,
+  southeast: { sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  southwest: { sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+  up: DEFAULT_EDGE_HANDLES,
+  down: { sourceHandle: 'source-bottom', targetHandle: 'target-top' },
+};
+
+const getEdgeHandles = (direction: string): EdgeHandles => {
+  return EDGE_HANDLES_BY_DIRECTION[direction.toLowerCase()] ?? DEFAULT_EDGE_HANDLES;
 };
 
 /**

@@ -4,11 +4,12 @@ Unit tests for message filtering.
 Tests the MessageFilteringHelper class.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.realtime.message_filtering import MessageFilteringHelper
+from server.realtime.message_filtering import BroadcastFilterContext, MessageFilteringHelper
 
 
 @pytest.fixture
@@ -47,29 +48,6 @@ def test_collect_room_targets_empty(message_filtering_helper, mock_connection_ma
     mock_connection_manager.canonical_room_id = MagicMock(return_value="room_001")
     result = message_filtering_helper.collect_room_targets("room_001")
     assert result == set()
-
-
-@pytest.mark.asyncio
-async def test_preload_receiver_mute_data(message_filtering_helper):
-    """Test preload_receiver_mute_data() preloads mute data."""
-    mock_user_manager = AsyncMock()
-    mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={"player_001": True, "player_002": True})
-    targets = {"player_001", "player_002"}
-    await message_filtering_helper.preload_receiver_mute_data(mock_user_manager, targets, "sender_001")
-    mock_user_manager.load_player_mutes_batch.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_preload_receiver_mute_data_excludes_sender(message_filtering_helper):
-    """Test preload_receiver_mute_data() excludes sender from targets."""
-    mock_user_manager = AsyncMock()
-    mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={"player_001": True})
-    targets = {"player_001", "sender_001"}
-    await message_filtering_helper.preload_receiver_mute_data(mock_user_manager, targets, "sender_001")
-    # Should only load for player_001, not sender_001
-    call_args = mock_user_manager.load_player_mutes_batch.call_args[0][0]
-    assert "sender_001" not in call_args
-    assert "player_001" in call_args
 
 
 def test_collect_room_targets_with_canonical_id(message_filtering_helper, mock_connection_manager):
@@ -140,6 +118,34 @@ def test_get_player_room_from_online_players_not_found(message_filtering_helper,
     mock_connection_manager.online_players = {}
     result = message_filtering_helper.get_player_room_from_online_players("player_001")
     assert result is None
+
+
+def test_get_player_room_from_online_players_uuid_lookup(
+    message_filtering_helper: MessageFilteringHelper, mock_connection_manager: MagicMock
+):
+    """UUID-keyed cache entries (the common case) resolve via _room_id_from_player_info.
+
+    Issue #787: covers the UUID lookup branch, which the string-keyed fixture above never
+    exercises, extracted alongside _room_id_from_player_info().
+    """
+    player_uuid = uuid.uuid4()
+    mock_connection_manager.online_players = {player_uuid: {"current_room_id": "room_007"}}
+    result = message_filtering_helper.get_player_room_from_online_players(str(player_uuid))
+    assert result == "room_007"
+
+
+def test_get_player_room_from_online_players_malformed_entry(
+    message_filtering_helper: MessageFilteringHelper, mock_connection_manager: MagicMock
+):
+    """A cache entry with no usable current_room_id yields None instead of raising.
+
+    Covers _room_id_from_player_info()'s non-dict and missing/blank-room-id branches.
+    """
+    mock_connection_manager.online_players = {"player_001": "not-a-dict"}
+    assert message_filtering_helper.get_player_room_from_online_players("player_001") is None
+
+    mock_connection_manager.online_players = {"player_001": {"current_room_id": ""}}
+    assert message_filtering_helper.get_player_room_from_online_players("player_001") is None
 
 
 @pytest.mark.asyncio
@@ -281,7 +287,6 @@ async def test_is_player_in_room_error_returns_false(message_filtering_helper, m
 
 def test_is_player_muted_global_mute_and_admin(message_filtering_helper):
     um = MagicMock()
-    um.load_player_mutes = MagicMock(return_value=True)
     um.is_player_muted = MagicMock(return_value=False)
     um.is_player_muted_by_others = MagicMock(return_value=True)
     um.is_admin_sync = MagicMock(return_value=False)
@@ -295,7 +300,7 @@ def test_is_player_muted_global_mute_and_admin(message_filtering_helper):
 
 def test_is_player_muted_by_receiver_exception(message_filtering_helper):
     um = MagicMock()
-    um.load_player_mutes = MagicMock(side_effect=RuntimeError("mute fail"))
+    um.is_player_muted = MagicMock(side_effect=RuntimeError("mute fail"))
     message_filtering_helper.user_manager = um
     assert message_filtering_helper.is_player_muted_by_receiver("receiver_001", "sender_001") is False
 
@@ -303,7 +308,6 @@ def test_is_player_muted_by_receiver_exception(message_filtering_helper):
 @pytest.mark.asyncio
 async def test_is_player_muted_with_user_manager_async_paths(message_filtering_helper):
     um = MagicMock()
-    um.load_player_mutes_async = AsyncMock(return_value=True)
     um.is_player_muted = MagicMock(return_value=False)
     um.is_player_muted_by_others = MagicMock(return_value=True)
     um.is_admin = AsyncMock(return_value=False)
@@ -319,7 +323,7 @@ async def test_is_player_muted_with_user_manager_async_paths(message_filtering_h
         is False
     )
 
-    um.load_player_mutes_async = AsyncMock(side_effect=RuntimeError("async mute fail"))
+    um.is_player_muted = MagicMock(side_effect=RuntimeError("async mute fail"))
     assert (
         await message_filtering_helper.is_player_muted_by_receiver_with_user_manager(um, "receiver_001", "sender_001")
         is False
@@ -338,7 +342,6 @@ async def test_check_player_mute_status_patched_and_emote(message_filtering_help
         is True
     )
 
-    um.load_player_mutes_async = AsyncMock(return_value=True)
     um.is_player_muted = MagicMock(return_value=False)
     um.is_player_muted_by_others = MagicMock(return_value=False)
     um.is_admin = AsyncMock(return_value=False)
@@ -357,19 +360,83 @@ async def test_filter_target_players_room_and_mute(message_filtering_helper, moc
     }
     mock_connection_manager.canonical_room_id = MagicMock(side_effect=lambda x: x)
     um = MagicMock()
-    um.load_player_mutes_async = AsyncMock(return_value=True)
     um.is_player_muted = MagicMock(side_effect=lambda r, s: r == "p1")
     um.is_player_muted_by_others = MagicMock(return_value=False)
     um.is_admin = AsyncMock(return_value=False)
 
-    filtered = await message_filtering_helper.filter_target_players(
-        {"sender", "p1", "p2"},
-        "sender",
-        "room_001",
-        "say",
-        "msg-1",
-        um,
-        {"sender_name": "Ada"},
-        None,
+    ctx = BroadcastFilterContext(
+        sender_id="sender",
+        room_id="room_001",
+        channel="say",
+        message_id="msg-1",
+        user_manager=um,
+        chat_event_data={"sender_name": "Ada"},
+        handler_instance=None,
     )
+    filtered = await message_filtering_helper.filter_target_players({"sender", "p1", "p2"}, ctx)
     assert filtered == []
+
+
+@pytest.mark.asyncio
+async def test_filter_target_players_includes_allowed_player(
+    message_filtering_helper: MessageFilteringHelper, mock_connection_manager: MagicMock
+):
+    """A player who is in-room, unmuted, and not the sender is included in the result.
+
+    Issue #787: the room_and_mute test above only exercises _should_include_target's
+    False-returning branches; this covers the True (append) path through
+    filter_target_players / _should_include_target.
+    """
+    # canonical_room_id's fixture default (return_value=None) already resolves identity via
+    # compare_canonical_rooms' `or player_room_id` fallback; no override needed here.
+    mock_connection_manager.online_players = {
+        "p1": {"current_room_id": "room_001"},
+        "sender": {"current_room_id": "room_001"},
+    }
+    um = MagicMock()
+    um.is_player_muted = MagicMock(return_value=False)
+    um.is_player_muted_by_others = MagicMock(return_value=False)
+    um.is_admin = AsyncMock(return_value=False)
+
+    ctx = BroadcastFilterContext(
+        sender_id="sender",
+        room_id="room_001",
+        channel="say",
+        message_id="msg-1",
+        user_manager=um,
+        chat_event_data={"sender_name": "Ada"},
+        handler_instance=None,
+    )
+    filtered = await message_filtering_helper.filter_target_players({"sender", "p1"}, ctx)
+    assert filtered == ["p1"]
+
+
+@pytest.mark.asyncio
+async def test_filter_target_players_skips_mute_check_for_non_sensitive_channel(
+    message_filtering_helper: MessageFilteringHelper, mock_connection_manager: MagicMock
+):
+    """A channel outside MUTE_SENSITIVE_CHANNELS bypasses the mute check entirely.
+
+    Covers _should_include_target's should_apply_mute=False branch.
+    """
+    mock_connection_manager.online_players = {
+        "p1": {"current_room_id": "room_001"},
+        "sender": {"current_room_id": "room_001"},
+    }
+    um = MagicMock()
+    # If the mute check ran, this would filter p1 out; asserting it doesn't proves the skip.
+    is_player_muted_mock: MagicMock = MagicMock(return_value=True)
+    um.is_player_muted = is_player_muted_mock
+
+    ctx = BroadcastFilterContext(
+        sender_id="sender",
+        room_id="room_001",
+        channel="party",
+        message_id="msg-1",
+        user_manager=um,
+        chat_event_data={},
+        handler_instance=None,
+    )
+    filtered = await message_filtering_helper.filter_target_players({"sender", "p1"}, ctx)
+    assert filtered == ["p1"]
+    is_player_muted_mock.assert_not_called()

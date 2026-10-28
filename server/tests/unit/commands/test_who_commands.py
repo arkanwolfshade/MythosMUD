@@ -81,12 +81,12 @@ def test_filter_players_by_name_case_insensitive():
 
 def test_format_player_location_valid():
     """Test formatting valid player location."""
-    room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     result = format_player_location(room_id)
 
     assert "Arkhamcity" in result
     assert "Northside" in result
-    assert "Intersection Derby High" in result
+    assert "Intersection Derby Garrison" in result
 
 
 def test_format_player_location_invalid():
@@ -107,7 +107,7 @@ def test_format_player_entry_basic():
     player = MagicMock()
     player.name = "TestPlayer"
     player.level = 5
-    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player.is_admin = False
 
     result = format_player_entry(player)
@@ -122,7 +122,7 @@ def test_format_player_entry_admin():
     player = MagicMock()
     player.name = "AdminPlayer"
     player.level = 10
-    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player.is_admin = True
 
     result = format_player_entry(player)
@@ -267,12 +267,12 @@ def test_format_who_result_with_players():
     player1 = MagicMock()
     player1.name = "Alice"
     player1.level = 5
-    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player1.is_admin = False
     player2 = MagicMock()
     player2.name = "Bob"
     player2.level = 10
-    player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player2.is_admin = False
 
     result = format_who_result([player1, player2])
@@ -287,7 +287,7 @@ def test_format_who_result_with_players_and_filter():
     player1 = MagicMock()
     player1.name = "Alice"
     player1.level = 5
-    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player1.is_admin = False
 
     result = format_who_result([player1], filter_term="al")
@@ -372,7 +372,7 @@ async def test_handle_who_command_success():
     player1 = MagicMock()
     player1.name = "Alice"
     player1.level = 5
-    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player1.is_admin = False
     player1.last_active = datetime.now(UTC).isoformat()
 
@@ -403,14 +403,14 @@ async def test_handle_who_command_with_filter():
     player1 = MagicMock()
     player1.name = "Alice"
     player1.level = 5
-    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player1.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player1.is_admin = False
     player1.last_active = datetime.now(UTC).isoformat()
 
     player2 = MagicMock()
     player2.name = "Bob"
     player2.level = 10
-    player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+    player2.current_room_id = "earth_arkhamcity_northside_intersection_derby_garrison"
     player2.is_admin = False
     player2.last_active = datetime.now(UTC).isoformat()
 

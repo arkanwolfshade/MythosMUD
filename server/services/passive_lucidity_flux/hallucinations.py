@@ -6,6 +6,8 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ...constants.message_segments import message_with_segments, npc_name_segment
+from ...constants.npc_disposition import NpcDisposition
 from ...structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -20,11 +22,15 @@ async def handle_phantom_hostile_hallucination(
     from ...services.phantom_hostile_service import phantom_hostile_service
 
     phantom_data = phantom_hostile_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
-    spawn_message = f"A {phantom_data['name']} materializes before you!"
+    # #1036/ADR-024: the phantom's name is styled exactly like a real hostile's (aggressive_mob).
+    line = message_with_segments(
+        ["A ", npc_name_segment(phantom_data["name"], NpcDisposition.AGGRESSIVE_MOB), " materializes before you!"]
+    )
+    spawn_message = line["message"]
     # #714: the phantom itself is already visible via the per-viewer room payload (see
     # phantom_visibility.py) -- this is just the spawn moment's ambient narration, delivered
     # like any other environmental system line so it carries no "this is fake" marker.
-    _ = await deliver_personal_system(player_id_uuid, spawn_message)
+    _ = await deliver_personal_system(player_id_uuid, spawn_message, line["segments"])
     await send_hallucination_event(
         player_id_uuid,
         hallucination_type="phantom_hostile_spawn",

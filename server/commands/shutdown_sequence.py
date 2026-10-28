@@ -5,38 +5,91 @@ This module handles the phased shutdown sequence that ensures all server
 components are properly cleaned up before termination.
 """
 
-from typing import Any
+import uuid
+from collections.abc import Awaitable, Callable
+from typing import Any, Protocol
 
 from ..exceptions import DatabaseError
+from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .shutdown_process_termination import schedule_process_termination
 
 logger = get_logger(__name__)
 
 
-async def _persist_all_players(app: Any) -> None:
+class _ConnectionManager(Protocol):
+    def get_online_players(self) -> list[dict[str, object]]:
+        """Return currently connected players."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+    async def force_disconnect_player(self, player_id: uuid.UUID) -> None:
+        """Disconnect one player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+
+class _PlayerStore(Protocol):
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
+        """Load a player by ID."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+    async def save_player(self, player: Player) -> None:
+        """Persist a player."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+
+class _PlayerShutdownState(Protocol):
+    @property
+    def connection_manager(self) -> _ConnectionManager | None:
+        """Connection manager, if running."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+    @property
+    def persistence(self) -> _PlayerStore:
+        """Player persistence layer."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+
+class _PlayerShutdownApp(Protocol):
+    @property
+    def state(self) -> _PlayerShutdownState:
+        """Application state."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
+
+
+def _online_player_ids(connection_manager: _ConnectionManager) -> list[uuid.UUID]:
+    """Return connected player IDs as UUIDs, skipping (and logging) any that are malformed."""
+    ids: list[uuid.UUID] = []
+    for p in connection_manager.get_online_players():
+        raw = p.get("player_id")
+        if raw is None:
+            continue
+        try:
+            ids.append(raw if isinstance(raw, uuid.UUID) else uuid.UUID(str(raw)))
+        except ValueError:
+            logger.warning("Skipping malformed player ID during shutdown", player_id=raw)
+    return ids
+
+
+async def _persist_all_players(app: _PlayerShutdownApp) -> None:
     """Phase 1: Persist all active player data."""
     logger.info("Phase 1: Persisting all active player data")
-    if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+    connection_manager = app.state.connection_manager
+    if connection_manager:
         try:
-            connected_players = [
-                p.get("player_id")
-                for p in app.state.connection_manager.get_online_players()
-                if p.get("player_id") is not None
-            ]
+            connected_players = _online_player_ids(connection_manager)
             logger.info("Persisting connected players", count=len(connected_players))
 
             persistence = app.state.persistence
             for player_id in connected_players:
                 try:
-                    player_obj = persistence.get_player(player_id)
+                    player_obj = await persistence.get_player_by_id(player_id)
                     if player_obj:
                         await persistence.save_player(player_obj)
                         logger.debug("Persisted player", player_id=player_id)
                     else:
                         logger.warning("Player object not found for ID, skipping persistence", player_id=player_id)
-                except DatabaseError as e:
-                    logger.error("Failed to persist player", player_id=player_id, error=str(e))
+                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: one bad player must not stop the rest being saved
+                    logger.error("Failed to persist player", player_id=player_id, error=str(e), exc_info=True)
 
             logger.info("Phase 1 complete: All player data persisted")
         except DatabaseError as e:
@@ -80,25 +133,19 @@ async def _despawn_all_npcs(app: Any) -> None:
         logger.warning("No NPC spawning service found, skipping NPC despawn")
 
 
-async def _disconnect_all_players(app: Any) -> None:
+async def _disconnect_all_players(app: _PlayerShutdownApp) -> None:
     """Phase 3: Disconnect all players gracefully."""
     logger.info("Phase 3: Disconnecting all players")
-    if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+    connection_manager = app.state.connection_manager
+    if connection_manager:
         try:
-            connected_players = [
-                p.get("player_id")
-                for p in app.state.connection_manager.get_online_players()
-                if p.get("player_id") is not None
-            ]
+            connected_players = _online_player_ids(connection_manager)
             logger.info("Disconnecting connected players", count=len(connected_players))
-
-            import uuid as uuid_module
 
             for player_id in connected_players:
                 try:
-                    player_id_uuid = uuid_module.UUID(player_id) if isinstance(player_id, str) else player_id
-                    await app.state.connection_manager.force_disconnect_player(player_id_uuid)
-                    logger.debug("Disconnected player", player_id=player_id_uuid)
+                    await connection_manager.force_disconnect_player(player_id)
+                    logger.debug("Disconnected player", player_id=player_id)
                 except OSError as e:
                     logger.error("Failed to disconnect player", player_id=player_id, error=str(e))
 
@@ -175,7 +222,7 @@ async def _cancel_background_tasks(app: Any) -> None:
         logger.warning("No task registry found, skipping task cancellation")
 
 
-async def execute_shutdown_sequence(app: Any) -> None:
+async def execute_shutdown_sequence(app: _PlayerShutdownApp) -> None:
     """
     Execute the graceful shutdown sequence.
 
@@ -193,19 +240,22 @@ async def execute_shutdown_sequence(app: Any) -> None:
     """
     logger.info("=== Beginning Graceful Shutdown Sequence ===")
 
+    phases: list[Callable[[_PlayerShutdownApp], Awaitable[None]]] = [
+        _persist_all_players,
+        _despawn_all_npcs,
+        _disconnect_all_players,
+        _stop_nats_message_handler,
+        _disconnect_nats_service,
+        _cleanup_connection_manager,
+        _cancel_background_tasks,
+    ]
     try:
-        await _persist_all_players(app)
-        await _despawn_all_npcs(app)
-        await _disconnect_all_players(app)
-        await _stop_nats_message_handler(app)
-        await _disconnect_nats_service(app)
-        await _cleanup_connection_manager(app)
-        await _cancel_background_tasks(app)
-
+        for phase in phases:
+            try:
+                await phase(app)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: a failed phase must not block the remaining phases or process exit
+                logger.error("Shutdown phase failed, continuing", phase=phase.__name__, error=str(e), exc_info=True)
         logger.info("=== Graceful Shutdown Sequence Complete ===")
+    finally:
         logger.info("Scheduling process termination after graceful shutdown completion")
         schedule_process_termination(0.3)
-
-    except OSError as e:
-        logger.error("Critical error during shutdown sequence", error=str(e), exc_info=True)
-        raise

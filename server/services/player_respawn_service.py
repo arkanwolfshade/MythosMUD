@@ -11,23 +11,36 @@ from __future__ import annotations
 # pylint: disable=too-many-locals,too-many-statements,too-many-lines  # Reason: Respawn service requires many intermediate variables and statements for complex respawn logic; single cohesive module preferred over split.
 import random
 import uuid
-from collections.abc import Mapping, Sequence
-from datetime import UTC, datetime, timedelta
+from collections.abc import Callable, Mapping, Sequence
+from datetime import UTC, datetime
 from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID
+from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
-from ..models.game import PositionState
-from ..models.lucidity import LucidityActionCode, PlayerLucidity
+from ..game.first_exposure import FinishFirstExposure, apply_first_exposure_end_state, tutorial_instance_of
+from ..game.instance_manager import is_template_room, template_exit_room_id
+from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
+from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
-from .lucidity_service import LucidityService
+from .debrief_service import mark_debrief_pending
+from .lucidity_service import LucidityService, resolve_tier
+from .player_respawn_state import (
+    apply_sanitarium_player_state,
+    apply_standard_respawn_state,
+    log_delirium_respawn,
+    log_sanitarium_respawn,
+    log_standard_respawn,
+    normalize_current_dp,
+    record_death_room_on_player,
+)
 
 
 def _utc_now() -> datetime:
@@ -81,6 +94,8 @@ class PlayerRespawnService:
         self,
         event_bus: _RespawnEventPublisher | None = None,
         player_combat_service: _PlayerCombatClearing | None = None,
+        room_lookup: Callable[[str], Room | None] | None = None,
+        first_exposure_finish: FinishFirstExposure | None = None,
     ) -> None:
         """
         Initialize the player respawn service.
@@ -88,22 +103,39 @@ class PlayerRespawnService:
         Args:
             event_bus: Optional event bus for publishing events
             player_combat_service: Optional player combat service for clearing combat state
+            room_lookup: Optional room-by-id lookup; lets a respawn room that is an instance
+                template be redirected to that template's exit room
+            first_exposure_finish: Optional post-commit hook that finishes the First Exposure tutorial
+                (corruption floor, epilogue quest, instance flush) for a player who was inside it
         """
         self._event_bus: _RespawnEventPublisher | None = event_bus
         self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
+        self._room_lookup: Callable[[str], Room | None] | None = room_lookup
+        self._first_exposure_finish: FinishFirstExposure | None = first_exposure_finish
         logger.info(
             "PlayerRespawnService initialized",
             event_bus_available=bool(event_bus),
             player_combat_service_available=bool(player_combat_service),
         )
 
-    @staticmethod
-    def _normalize_current_dp(stats: dict[str, object]) -> int:
-        """Return current_dp as an int, defaulting to 0 for non-numeric values."""
-        current_dp = stats.get("current_dp", 0)
-        if isinstance(current_dp, int | float):
-            return int(current_dp)
-        return 0
+    def _redirect_template_respawn(self, player_id: uuid.UUID, respawn_room_id: str) -> str:
+        """A template room is never entered directly: respawn at its exit room instead.
+
+        ponytail: always the exit room, never the player's live instance -- the only template
+        today (tutorial bedroom) is no_death, so a respawn into a live instance cannot happen.
+        Route to the instance once an instance template allows death.
+        """
+        room = self._room_lookup(respawn_room_id) if self._room_lookup else None
+        if room is None or not is_template_room(room):
+            return respawn_room_id
+        exit_room_id = template_exit_room_id(room)
+        logger.warning(
+            "Respawn room is an instance template; using its exit room",
+            player_id=player_id,
+            template_room_id=respawn_room_id,
+            exit_room_id=exit_room_id,
+        )
+        return exit_room_id
 
     def _can_move_to_limbo(self, player: Player, death_location: str) -> tuple[bool, int]:
         """Return (allowed, current_dp_int) for limbo movement gate checks."""
@@ -111,7 +143,7 @@ class PlayerRespawnService:
             return True, 0
 
         stats = player.get_stats() or {}
-        current_dp_int = self._normalize_current_dp(stats)
+        current_dp_int = normalize_current_dp(stats)
         player_is_dead = player.is_dead()
 
         # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
@@ -200,72 +232,6 @@ class PlayerRespawnService:
         )
         self._event_bus.publish(event)
 
-    @staticmethod
-    def _apply_standard_respawn_state(player: Player, respawn_room: str) -> tuple[int, int, str]:
-        """Restore full health and move player to respawn_room; return (old_dp, max_dp, old_room)."""
-        old_dp = player.restore_to_full_health()
-        stats = player.get_stats()
-        max_dp = coerce_int(stats.get("max_dp", 100), default=100)
-        old_room = player.current_room_id
-        player.current_room_id = respawn_room
-        return old_dp, max_dp, old_room
-
-    @staticmethod
-    def _log_standard_respawn(
-        player: Player, player_id: uuid.UUID, respawn_room: str, old_dp: int, max_dp: int, old_room: str
-    ) -> None:
-        """Log standard respawn details."""
-        logger.info(
-            "Player respawned",
-            player_id=player_id,
-            player_name=player.name,
-            respawn_room=respawn_room,
-            old_dp=old_dp,
-            new_dp=max_dp,
-            max_dp=max_dp,
-            from_limbo=old_room == LIMBO_ROOM_ID,
-        )
-
-    @staticmethod
-    def _apply_sanitarium_player_state(player: Player, respawn_room: str) -> tuple[dict[str, object], str]:
-        """Set posture to standing and move player to respawn room; return (stats, old_room)."""
-        stats = player.get_stats()
-        stats["position"] = PositionState.STANDING
-        player.set_stats(stats)
-        old_room = player.current_room_id
-        player.current_room_id = respawn_room
-        return stats, old_room
-
-    @staticmethod
-    def _log_sanitarium_respawn(
-        player: Player, player_id: uuid.UUID, respawn_room: str, old_lucidity: int, new_lucidity: int, old_room: str
-    ) -> None:
-        """Log sanitarium respawn details."""
-        logger.info(
-            "Player respawned from sanitarium",
-            player_id=player_id,
-            player_name=player.name,
-            respawn_room=respawn_room,
-            old_lucidity=old_lucidity,
-            new_lucidity=new_lucidity,
-            from_room=old_room,
-        )
-
-    @staticmethod
-    def _log_delirium_respawn(
-        player: Player, player_id: uuid.UUID, respawn_room: str, old_lucidity: int, new_lucidity: int, old_room: str
-    ) -> None:
-        """Log delirium respawn details."""
-        logger.info(
-            "Player respawned from delirium",
-            player_id=player_id,
-            player_name=player.name,
-            respawn_room=respawn_room,
-            old_lucidity=old_lucidity,
-            new_lucidity=new_lucidity,
-            from_room=old_room,
-        )
-
     async def _prepare_delirium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, str, int, int] | None:
@@ -279,13 +245,17 @@ class PlayerRespawnService:
         old_lucidity = lucidity_record.current_lcd
         new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
         lucidity_record.current_lcd = new_lucidity
-        lucidity_record.current_tier = "lucid"  # Reset tier to lucid
+        lucidity_record.current_tier = resolve_tier(new_lucidity)
         lucidity_record.last_updated_at = _utc_now()
 
-        respawn_room = DEFAULT_RESPAWN_ROOM
+        await mark_debrief_pending(LucidityService(session), player_id)
+
+        respawn_room = RECOVERY_WARD_ROOM_ID
         _ = player.restore_to_full_health()
         old_room = player.current_room_id
         player.current_room_id = respawn_room
+        if apply_first_exposure_end_state(player, lucidity_record):
+            new_lucidity = lucidity_record.current_lcd
         return respawn_room, old_room, old_lucidity, new_lucidity
 
     async def _prepare_sanitarium_respawn(
@@ -296,7 +266,6 @@ class PlayerRespawnService:
             LIABILITY_CATALOG,
             decode_liabilities,
             encode_liabilities,
-            resolve_tier,
         )
 
         lucidity_row = await session.get(PlayerLucidity, player_id)
@@ -322,10 +291,9 @@ class PlayerRespawnService:
             random_module=random,
         )
 
-        respawn_room = DEFAULT_RESPAWN_ROOM
-        stats, old_room = self._apply_sanitarium_player_state(player, respawn_room)
-        debrief_expires_at = _utc_now() + timedelta(days=365)  # Far future expiration
-        _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, debrief_expires_at)
+        respawn_room = RECOVERY_WARD_ROOM_ID
+        stats, old_room = apply_sanitarium_player_state(player, respawn_room)
+        await mark_debrief_pending(lucidity_service, player_id)
 
         return respawn_room, stats, old_room, old_lucidity, new_lucidity
 
@@ -364,6 +332,8 @@ class PlayerRespawnService:
 
             # Move player to limbo room
             old_room = player.current_room_id
+            # Record where they died before overwriting current_room_id with limbo.
+            record_death_room_on_player(player, death_location if death_location else str(old_room))
             player.current_room_id = LIMBO_ROOM_ID
 
             # Commit changes using async API
@@ -418,7 +388,7 @@ class PlayerRespawnService:
                     player_id=player_id,
                     custom_respawn_room=respawn_room_id,
                 )
-                return respawn_room_id
+                return self._redirect_template_respawn(player_id, respawn_room_id)
 
             logger.debug(
                 "Using default respawn room for player",
@@ -460,7 +430,7 @@ class PlayerRespawnService:
             # Get respawn room using async API
             respawn_room = await self.get_respawn_room(player_id, session)
 
-            old_dp, max_dp, old_room = self._apply_standard_respawn_state(player, respawn_room)
+            old_dp, max_dp, old_room = apply_standard_respawn_state(player, respawn_room)
 
             # BUGFIX #244: clear combat state on resurrection to prevent stale combat continuity.
             await self._clear_respawn_combat_state(player_id=player_id, respawn_context="standard")
@@ -468,7 +438,7 @@ class PlayerRespawnService:
             # Commit changes using async API
             await session.commit()
 
-            self._log_standard_respawn(player, player_id, respawn_room, old_dp, max_dp, old_room)
+            log_standard_respawn(player, player_id, respawn_room, old_dp, max_dp, old_room)
 
             self._publish_standard_respawn_event(
                 player_id=player_id,
@@ -489,13 +459,22 @@ class PlayerRespawnService:
             await session.rollback()
             return False
 
+    async def _finish_first_exposure(self, player_id: uuid.UUID, instance_id: str | None) -> None:
+        """After the respawn committed: finish the tutorial the player just left. Never fails the respawn."""
+        if not instance_id or self._first_exposure_finish is None:
+            return
+        try:
+            await self._first_exposure_finish(player_id, instance_id)
+        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the respawn already committed; a failed finish must not turn it into an error
+            logger.error("First Exposure finish failed", player_id=player_id, instance_id=instance_id, error=str(e))
+
     async def respawn_player_from_delirium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
-        Respawn a delirious player at the Sanitarium with restored lucidity.
+        Respawn a delirious player in the Sanitarium Recovery Ward with restored lucidity.
 
         This method:
         1. Sets player lucidity to 10
-        2. Moves player to Sanitarium (default respawn room)
+        2. Moves player to the Recovery Ward (RECOVERY_WARD_ROOM_ID) and leaves a pending debrief
         3. Publishes delirium respawn event for UI updates
 
         Args:
@@ -506,12 +485,14 @@ class PlayerRespawnService:
             True if respawn was successful, False otherwise
         """
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
+            # inventory_record is loaded up front: the end of the tutorial reads equipment, and a lazy load of that
+            # relationship fails inside the async session.
+            player = await session.get(Player, player_id, options=[selectinload(Player.inventory_record)])
             if not player:
                 logger.warning("Player not found for delirium respawn", player_id=player_id)
                 return False
 
+            first_exposure_instance = tutorial_instance_of(player)
             prepared = await self._prepare_delirium_respawn(player_id, player, session)
             if not prepared:
                 return False
@@ -522,7 +503,7 @@ class PlayerRespawnService:
             # Commit changes using async API
             await session.commit()
 
-            self._log_delirium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
+            log_delirium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
 
             self._publish_delirium_respawn_event(
                 player_id=player_id,
@@ -533,6 +514,7 @@ class PlayerRespawnService:
                 old_room=old_room,
             )
 
+            await self._finish_first_exposure(player_id, first_exposure_instance)
             return True
 
         except (DatabaseError, SQLAlchemyError) as e:
@@ -552,7 +534,7 @@ class PlayerRespawnService:
 
         This method:
         1. Sets player lucidity to 1 (Deranged tier)
-        2. Moves player to Sanitarium (default respawn room)
+        2. Moves player to the Recovery Ward (RECOVERY_WARD_ROOM_ID) and leaves a pending debrief
         3. Increases liability stages (or adds one if none exist)
         4. Publishes sanitarium respawn event for UI updates
 
@@ -580,7 +562,7 @@ class PlayerRespawnService:
             # Commit changes using async API (includes debrief flag)
             await session.commit()
 
-            self._log_sanitarium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
+            log_sanitarium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
 
             self._publish_standard_respawn_event(
                 player_id=player_id,

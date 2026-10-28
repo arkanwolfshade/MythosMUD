@@ -10,6 +10,7 @@ fall out of alignment with the eldritch record.
 
 from __future__ import annotations
 
+import uuid
 from typing import Protocol, TypedDict
 
 from ..alias_storage import AliasStorage
@@ -61,7 +62,7 @@ class SupportsPlayerPersistence(Protocol):  # pylint: disable=too-few-public-met
 class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Live presence surface used to mirror posture into online player records."""
 
-    online_players: dict[str, dict[str, object]]
+    online_players: dict[uuid.UUID, dict[str, object]]
 
     def get_online_player_by_display_name(self, display_name: str) -> dict[str, object] | None: ...
 
@@ -79,16 +80,16 @@ class PlayerPositionService:
         self._connection_manager: SupportsConnectionManager | None = connection_manager
         self._alias_storage: AliasStorage | None = alias_storage
 
-    def ensure_default_aliases(self, player_name: str) -> None:
+    async def ensure_default_aliases(self, player_name: str) -> None:
         """Ensure the expected aliases exist for position commands."""
         if not self._alias_storage:
             return
 
         for alias_name, command in _DEFAULT_ALIAS_MAP.items():
             try:
-                existing_alias = self._alias_storage.get_alias(player_name, alias_name)
+                existing_alias = await self._alias_storage.get_alias(player_name, alias_name)
                 if existing_alias is None or existing_alias.command.lower() != command:
-                    _ = self._alias_storage.create_alias(player_name, alias_name, command)
+                    _ = await self._alias_storage.create_alias(player_name, alias_name, command)
             except Exception as exc:  # noqa: B904  # pragma: no cover - defensive logging path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Alias seeding errors unpredictable, must log but continue
                 logger.warning(
                     "Failed to seed default position alias",
@@ -194,7 +195,7 @@ class PlayerPositionService:
         """Mutate persistence and in-memory tracking to reflect the requested position."""
         normalized_position = self._validate_position(target_position)
         response = self._initial_response(player_name, normalized_position)
-        self.ensure_default_aliases(player_name)
+        await self.ensure_default_aliases(player_name)
 
         if not self._persistence:
             response["message"] = "Position changes are currently unavailable."
@@ -240,18 +241,12 @@ class PlayerPositionService:
             return
 
         try:
-            key = str(player.player_id)
-            online_players = connection_manager.online_players
-            existing = online_players.get(key)
-            if existing is None:
-                created: dict[str, object] = {}
-                created["player_id"] = key
-                created["player_name"] = player.name or player_name
-                created["connection_types"] = set[str]()
-                created["total_connections"] = 0
-                online_players[key] = created
-                existing = created
-            existing["position"] = position
+            # online_players is keyed by uuid.UUID and owned by the presence tracker. Only mirror posture onto an
+            # entry that is already there: creating one here (it once did, under a str key) left a permanent
+            # phantom "online" player that no disconnect ever removed (#1115).
+            existing = connection_manager.online_players.get(uuid.UUID(str(player.player_id)))
+            if existing is not None:
+                existing["position"] = position
 
             getter_info = connection_manager.get_online_player_by_display_name(player_name)
             if getter_info is not None:

@@ -7,11 +7,16 @@ Handles player DP persistence, verification, and event publishing.
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Persistence handling requires many parameters and intermediate variables for complex persistence logic. Combat persistence handler requires extensive persistence logic for comprehensive DP management.
 
 import asyncio
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    # Runtime import stays inline (in the two publish methods) to avoid a circular import;
+    # this one is type-checking only and never executes.
+    from server.events.event_types import PlayerDPUpdated
 
 logger = get_logger(__name__)
 
@@ -27,6 +32,60 @@ class CombatPersistenceHandler:
             combat_service: Reference to the parent CombatService
         """
         self._combat_service = combat_service
+
+    # Exceptions from event_bus.publish()/nats_service.publish() that are logged and
+    # swallowed rather than propagated -- a DP event/correction failing to broadcast must
+    # never fail the combat action that triggered it.
+    _EVENT_PUBLISH_EXCEPTIONS: tuple[type[Exception], ...] = (
+        NATSError,
+        ValueError,
+        RuntimeError,
+        AttributeError,
+        ConnectionError,
+        TypeError,
+        KeyError,
+    )
+
+    def _publish_dp_event_to_bus(
+        self, event: "PlayerDPUpdated", player_id: UUID, event_label: str, success_extra: dict[str, object]
+    ) -> None:
+        """Publish a PlayerDPUpdated(-shaped) event to the shared combat-service event bus.
+
+        Shared by _publish_player_dp_update_event_impl and _publish_player_dp_correction_event
+        (issue #787): both looked up the same event_bus and ran the identical
+        publish-or-log-and-swallow sequence, differing only in the log text/extra fields.
+        """
+        # Reason: SERIALIZATION_BOUNDARY - _combat_service is Any per this class's own
+        # __init__(combat_service: Any); every method in this class resolves dependencies
+        # off it the same way.
+        # Appropriate because: consistent with this class's established, unsuppressed
+        # convention; narrowing it means Protocol-typing CombatService/EventBus, out of
+        # scope for this extraction.
+        event_bus = getattr(self._combat_service, "_event_bus", None)  # pyright: ignore[reportAny]
+        if not event_bus:
+            logger.warning("No event bus available for event", event_label=event_label, player_id=player_id)
+            return
+        try:
+            # Reason: SERIALIZATION_BOUNDARY - event_bus is Any (see getattr above).
+            # Appropriate because: same class-wide unsuppressed Any convention as above.
+            event_bus.publish(event)  # pyright: ignore[reportAny]
+            logger.info(
+                "Published event to event bus",
+                event_label=event_label,
+                player_id=player_id,
+                # Reason: SERIALIZATION_BOUNDARY - event_bus is Any (see getattr above).
+                # Appropriate because: same class-wide unsuppressed Any convention as above.
+                event_bus_type=type(event_bus).__name__,  # pyright: ignore[reportAny]
+                **success_extra,
+            )
+        except self._EVENT_PUBLISH_EXCEPTIONS as e:
+            logger.error(
+                "Failed to publish event to event bus",
+                event_label=event_label,
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
+            )
 
     def _get_persistence_layer(self) -> Any | None:
         """
@@ -324,6 +383,59 @@ class CombatPersistenceHandler:
         """
         await self._publish_player_dp_update_event_impl(player_id, old_dp, new_dp, max_dp, combat_id, room_id)
 
+    # Reason: SERIALIZATION_BOUNDARY - _combat_service is Any per this class's own
+    # __init__(combat_service: Any) (unchanged by this refactor); every method in this class
+    # resolves its dependencies off it the same way via getattr.
+    # Appropriate because: consistent with this class's established, unsuppressed convention;
+    # narrowing it means Protocol-typing CombatService/NATSService/CombatEventPublisher, out
+    # of scope for this extraction.
+    async def _publish_dp_update_to_nats(self, dp_update_event: "PlayerDPUpdated") -> None:
+        """Publish a PlayerDPUpdated event via NATS, for systems that don't use the event bus."""
+        # Reason: SERIALIZATION_BOUNDARY - _combat_service is Any per this class's own
+        # __init__(combat_service: Any); every method here resolves dependencies off it.
+        # Appropriate because: consistent with this class's established convention; Protocol-
+        # typing NATSService here is out of scope for this complexity-only extraction.
+        nats_service = getattr(self._combat_service, "_nats_service", None)  # pyright: ignore[reportAny]
+        if not nats_service:
+            logger.debug("No NATS service available for DP update event", player_id=dp_update_event.player_id)
+            return
+
+        # Reason: SERIALIZATION_BOUNDARY - _combat_service is Any (see nats_service above).
+        # Appropriate because: same class-wide convention as the nats_service lookup above.
+        combat_event_publisher = getattr(self._combat_service, "_combat_event_publisher", None)  # pyright: ignore[reportAny]
+        # Reason: SERIALIZATION_BOUNDARY - combat_event_publisher is Any (see getattr above).
+        # Appropriate because: same class-wide convention as the nats_service lookup above.
+        if combat_event_publisher and hasattr(combat_event_publisher, "subject_manager"):  # pyright: ignore[reportAny]
+            # Reason: SERIALIZATION_BOUNDARY - combat_event_publisher is Any (see above).
+            # Appropriate because: same class-wide convention as the nats_service lookup above.
+            subject = combat_event_publisher.subject_manager.build_subject(  # pyright: ignore[reportAny]
+                "combat_dp_update", player_id=str(dp_update_event.player_id)
+            )
+        else:
+            # Legacy fallback
+            subject = f"combat.dp_update.{dp_update_event.player_id}"
+            logger.warning(
+                "Using legacy subject construction - subject_manager not available",
+                event_type="combat_dp_update",
+                player_id=str(dp_update_event.player_id),
+            )
+
+        message_data = {
+            "event_type": "player_dp_updated",
+            "data": {
+                "player_id": str(dp_update_event.player_id),
+                "old_dp": dp_update_event.old_dp,
+                "new_dp": dp_update_event.new_dp,
+                "max_dp": dp_update_event.max_dp,
+                "damage_taken": dp_update_event.damage_taken,
+                "timestamp": dp_update_event.timestamp.isoformat(),
+            },
+        }
+        # Reason: SERIALIZATION_BOUNDARY - nats_service is Any (see getattr above).
+        # Appropriate because: same class-wide unsuppressed Any convention as above.
+        await nats_service.publish(subject, message_data)  # pyright: ignore[reportAny]
+        logger.debug("Published PlayerDPUpdated event to NATS", player_id=dp_update_event.player_id)
+
     async def _publish_player_dp_update_event_impl(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
@@ -355,14 +467,9 @@ class CombatPersistenceHandler:
             )
             from server.events.event_types import PlayerDPUpdated
 
-            # CRITICAL: Use the shared EventBus instance from __init__, not a new one
-            # This ensures events are routed to the same EventBus that RealTimeEventHandler subscribes to
-            event_bus = getattr(self._combat_service, "_event_bus", None)
-
             # Calculate damage taken (negative for healing)
             damage_taken = old_dp - new_dp
 
-            # Create and publish the event
             dp_update_event = PlayerDPUpdated(
                 player_id=player_id,  # player_id is already UUID
                 old_dp=old_dp,
@@ -376,69 +483,15 @@ class CombatPersistenceHandler:
 
             # Publish to event bus so RealTimeEventHandler can send it to the client
             # CRITICAL: RealTimeEventHandler subscribes to the event bus, not NATS directly
-            if event_bus:
-                try:
-                    event_bus.publish(dp_update_event)
-                    logger.info(
-                        "Published PlayerDPUpdated event to event bus (immediate UI update)",
-                        player_id=player_id,
-                        old_dp=old_dp,
-                        new_dp=new_dp,
-                        event_bus_type=type(event_bus).__name__,
-                    )
-                except (
-                    NATSError,
-                    ValueError,
-                    RuntimeError,
-                    AttributeError,
-                    ConnectionError,
-                    TypeError,
-                    KeyError,
-                ) as e:
-                    logger.error(
-                        "Failed to publish PlayerDPUpdated event to event bus",
-                        player_id=player_id,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                        exc_info=True,
-                    )
-            else:
-                logger.warning("No event bus available for DP update event", player_id=player_id)
+            self._publish_dp_event_to_bus(
+                dp_update_event,
+                player_id,
+                "PlayerDPUpdated event (immediate UI update)",
+                {"old_dp": old_dp, "new_dp": new_dp},
+            )
 
             # Also publish via NATS for other systems that might be listening
-            nats_service = getattr(self._combat_service, "_nats_service", None)
-            combat_event_publisher = getattr(self._combat_service, "_combat_event_publisher", None)
-            if nats_service:
-                # Convert event to NATS message format
-                # Build subject using combat event publisher's subject manager
-                if combat_event_publisher and hasattr(combat_event_publisher, "subject_manager"):
-                    subject = combat_event_publisher.subject_manager.build_subject(
-                        "combat_dp_update", player_id=str(dp_update_event.player_id)
-                    )
-                else:
-                    # Legacy fallback
-                    subject = f"combat.dp_update.{dp_update_event.player_id}"
-                    logger.warning(
-                        "Using legacy subject construction - subject_manager not available",
-                        event_type="combat_dp_update",
-                        player_id=str(dp_update_event.player_id),
-                    )
-
-                message_data = {
-                    "event_type": "player_dp_updated",
-                    "data": {
-                        "player_id": str(dp_update_event.player_id),
-                        "old_dp": dp_update_event.old_dp,
-                        "new_dp": dp_update_event.new_dp,
-                        "max_dp": dp_update_event.max_dp,
-                        "damage_taken": dp_update_event.damage_taken,
-                        "timestamp": dp_update_event.timestamp.isoformat(),
-                    },
-                }
-                await nats_service.publish(subject, message_data)
-                logger.debug("Published PlayerDPUpdated event to NATS", player_id=player_id)
-            else:
-                logger.debug("No NATS service available for DP update event", player_id=player_id)
+            await self._publish_dp_update_to_nats(dp_update_event)
 
             logger.info(
                 "Published PlayerDPUpdated event",
@@ -448,15 +501,7 @@ class CombatPersistenceHandler:
                 damage_taken=damage_taken,
             )
 
-        except (
-            NATSError,
-            ValueError,
-            RuntimeError,
-            AttributeError,
-            ConnectionError,
-            TypeError,
-            KeyError,
-        ) as e:
+        except self._EVENT_PUBLISH_EXCEPTIONS as e:
             logger.error(
                 "Error publishing PlayerDPUpdated event",
                 player_id=player_id,
@@ -498,11 +543,6 @@ class CombatPersistenceHandler:
             )
             from server.events.event_types import PlayerDPUpdated
 
-            # Get event bus - use global EventBus instance
-            # EventBus instances are designed to be shared across the application
-            # CRITICAL: Use the shared EventBus instance from __init__, not a new one
-            event_bus = getattr(self._combat_service, "_event_bus", None)
-
             # Create correction event - damage_taken is 0 since we're reverting
             correction_event = PlayerDPUpdated(
                 player_id=player_id,  # player_id is already UUID
@@ -515,42 +555,11 @@ class CombatPersistenceHandler:
                 room_id=room_id,
             )
 
-            # Publish to event bus
-            if event_bus:
-                try:
-                    event_bus.publish(correction_event)
-                    logger.info(
-                        "Published DP correction event to event bus",
-                        player_id=player_id,
-                        correct_dp=correct_dp,
-                    )
-                except (
-                    NATSError,
-                    ValueError,
-                    RuntimeError,
-                    AttributeError,
-                    ConnectionError,
-                    TypeError,
-                    KeyError,
-                ) as e:
-                    logger.error(
-                        "Failed to publish DP correction event to event bus",
-                        player_id=player_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
-            else:
-                logger.warning("No event bus available for DP correction event", player_id=player_id)
+            self._publish_dp_event_to_bus(
+                correction_event, player_id, "DP correction event", {"correct_dp": correct_dp}
+            )
 
-        except (
-            NATSError,
-            ValueError,
-            RuntimeError,
-            AttributeError,
-            ConnectionError,
-            TypeError,
-            KeyError,
-        ) as e:
+        except self._EVENT_PUBLISH_EXCEPTIONS as e:
             logger.error(
                 "Error publishing DP correction event",
                 player_id=player_id,

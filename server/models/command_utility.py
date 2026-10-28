@@ -66,6 +66,16 @@ class SkillsCommand(BaseCommand):
     command_type: Literal[CommandType.SKILLS] = CommandType.SKILLS
 
 
+class CatalogCommand(BaseCommand):
+    """Command for browsing item prototypes (/catalog with optional filters)."""
+
+    command_type: Literal[CommandType.CATALOG] = CommandType.CATALOG
+    args: list[str] = Field(
+        default_factory=list,
+        description="Optional filters, e.g. page=2 type=weapon search=knife",
+    )
+
+
 class JournalCommand(BaseCommand):
     """Command for viewing the active character's quest log (journal)."""
 

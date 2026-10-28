@@ -9,8 +9,26 @@ import { vi } from 'vitest';
 
 declare const global: typeof globalThis;
 
-const { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval } = vi.hoisted(() => {
-  const mockResourceManager = {
+/**
+ * Annotated rather than inferred: the inferred mock type reaches into a vitest internal chunk
+ * (`Procedure`), which TS2883 rejects as non-portable for an exported declaration. Matches the
+ * `ReturnType<typeof vi.fn>` idiom already used for mockedSetInterval below.
+ */
+type ResourceManagerMock = Record<
+  | 'registerEventSource'
+  | 'registerWebSocket'
+  | 'registerTimer'
+  | 'registerInterval'
+  | 'registerCustomResource'
+  | 'removeTimer'
+  | 'removeInterval'
+  | 'cleanup'
+  | 'getStats',
+  ReturnType<typeof vi.fn>
+>;
+
+const { mockResourceManager, fetchSpy } = vi.hoisted(() => {
+  const mockResourceManager: ResourceManagerMock = {
     registerEventSource: vi.fn(),
     registerWebSocket: vi.fn(),
     registerTimer: vi.fn(),
@@ -79,7 +97,7 @@ const { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval } 
     window.clearInterval = mockedClearInterval;
   }
 
-  return { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval };
+  return { mockResourceManager, fetchSpy };
 });
 
 vi.mock('../../utils/logger', () => ({
@@ -182,10 +200,11 @@ export const wsTestState = {
 
 export const defaultOptions = {
   authToken: 'test-token',
+  characterId: 'test-character-id',
   sessionId: 'test-session-id',
 };
 
-export { fetchSpy, mockResourceManager, mockedClearInterval, mockedSetInterval };
+export { fetchSpy, mockResourceManager };
 
 export function wsConnectionBeforeEach(): void {
   vi.clearAllMocks();

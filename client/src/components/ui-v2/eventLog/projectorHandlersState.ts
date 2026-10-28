@@ -1,10 +1,12 @@
 // State/room/player/combat event handlers for the projector (split from projector.ts for file-nloc)
 
+import type { MessageCategory } from '../../../types/messageCategory';
+import { buildLucidityStatus } from '../../../utils/lucidityEventUtils';
 import type { GameEvent } from '../eventHandlers/types';
-import type { Player, QuestLogEntry, Room } from '../types';
+import type { Player, QuestLogEntry, Room, RoomContainerSummary } from '../types';
 import { mergeRoomState } from '../utils/roomMergeUtils';
 import type { GameState } from '../utils/stateUpdateUtils';
-import { GAME_LOG_CHANNEL, appendMessage, appendMovementMessage, buildChatMessage } from './projectorMessageUtils';
+import { appendMessage, appendMovementMessage, buildChatMessage, readCategory } from './projectorMessageUtils';
 import {
   deriveRoomFromGameState,
   deriveRoomFromRoomOccupants,
@@ -14,20 +16,44 @@ import {
 
 export type ProjectorHandler = (prevState: GameState, event: GameEvent) => GameState;
 
-function appendPostureGameInfoMessage(prevState: GameState, event: GameEvent, messageText: string): GameState {
+function appendPostureGameInfoMessage(
+  prevState: GameState,
+  event: GameEvent,
+  messageText: string,
+  category: MessageCategory
+): GameState {
   const trimmed = messageText.trim();
   if (!trimmed) return prevState;
-  const msg = buildChatMessage(trimmed, event.timestamp, {
-    messageType: 'system',
-    channel: GAME_LOG_CHANNEL,
-  });
+  const msg = buildChatMessage(trimmed, event.timestamp, { category });
   return { ...prevState, messages: appendMessage(prevState.messages, msg) };
 }
 
 function mergePostureMessageIntoState(prevState: GameState, event: GameEvent): GameState {
   const postureMessage = typeof event.data.posture_message === 'string' ? event.data.posture_message.trim() : '';
   if (!postureMessage) return prevState;
-  return appendPostureGameInfoMessage(prevState, event, postureMessage);
+  // The player's own posture line rides on a state payload (player_update, dp updates, decay); the server tags the
+  // line itself (posture_notify.attach_posture_self_message): room.movement, or status.health for the decay collapse.
+  return appendPostureGameInfoMessage(prevState, event, postureMessage, readCategory(event.data, event.event_type));
+}
+
+/**
+ * Room containers carried on a room payload (#711).
+ *
+ * container.created only reaches players subscribed the instant a corpse spawns, which never
+ * includes its own owner -- they are dead at that moment. room_state/game_state backfills the
+ * list on (re)entry and respawn so the owner can actually see their corpse. Absent/!array means
+ * "no information", so the previous list is kept rather than wiped.
+ */
+function roomContainersField(event: GameEvent): Partial<GameState> {
+  const room = event.data.room;
+  if (!room || typeof room !== 'object') return {};
+  const containers = (room as { containers?: unknown }).containers;
+  if (!Array.isArray(containers)) return {};
+  const summaries = containers.filter(
+    (c): c is RoomContainerSummary =>
+      !!c && typeof c === 'object' && typeof (c as RoomContainerSummary).container_id === 'string'
+  );
+  return { roomContainers: summaries };
 }
 
 /** Drop undefined-valued keys so a spread doesn't clobber a good prior value with `undefined`. */
@@ -54,39 +80,64 @@ function mergeRespawnedPlayer(prevPlayer: Player | null, incoming: Player): Play
   } as Player;
 }
 
+/** Narrow the untyped `event.data.player` blob down to a real Player, or null if it isn't one. */
+function asPlayer(playerData: unknown): Player | null {
+  return playerData &&
+    typeof playerData === 'object' &&
+    'name' in playerData &&
+    typeof (playerData as Player).name === 'string'
+    ? (playerData as Player)
+    : null;
+}
+
+/** lucidity_tier/current_lcd are top-level fields (server: PlayerLucidity, not the stats blob). */
+function deriveLucidityStatus(prevState: GameState, event: GameEvent, player: Player | null) {
+  const lucidityTier = event.data.lucidity_tier as string | undefined;
+  if (lucidityTier === undefined) return prevState.lucidityStatus;
+  return buildLucidityStatus(
+    prevState.lucidityStatus ?? null,
+    { current_lcd: event.data.current_lcd, tier: lucidityTier },
+    event.timestamp,
+    (player ?? prevState.player)?.stats?.max_lucidity
+  ).status;
+}
+
+/** Grace-period fields shared by game_state and effects_update; spread only when present. */
+function gracePeriodFields(event: GameEvent) {
+  const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
+  const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
+  return {
+    ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
+    ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+  };
+}
+
+/** questLog field shared by game_state and quest_log_updated; spread only when present. */
+function questLogField(event: GameEvent) {
+  const questLog = event.data.quest_log as unknown[] | undefined;
+  return Array.isArray(questLog) ? { questLog: questLog as QuestLogEntry[] } : {};
+}
+
 export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   game_state(prevState, event) {
-    const playerData = event.data.player as unknown;
     const room = deriveRoomFromGameState(event);
-    const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
-    const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
     const following = event.data.following as { target_name: string; target_type: 'player' | 'npc' } | null | undefined;
-    const questLog = event.data.quest_log as unknown[] | undefined;
-    const player =
-      playerData &&
-      typeof playerData === 'object' &&
-      playerData !== null &&
-      'name' in playerData &&
-      typeof (playerData as Player).name === 'string'
-        ? (playerData as Player)
-        : null;
+    const player = asPlayer(event.data.player);
+    const lucidityStatus = deriveLucidityStatus(prevState, event, player);
     return {
       ...prevState,
       player: player ?? prevState.player,
       room: room ?? prevState.room,
-      ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
-      ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
+      ...roomContainersField(event),
+      ...gracePeriodFields(event),
       ...(following !== undefined && { followingTarget: following ?? null }),
-      ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
+      ...questLogField(event),
+      lucidityStatus,
     };
   },
 
   quest_log_updated(prevState, event) {
-    const questLog = event.data.quest_log as unknown[] | undefined;
-    return {
-      ...prevState,
-      ...(Array.isArray(questLog) && { questLog: questLog as QuestLogEntry[] }),
-    };
+    return { ...prevState, ...questLogField(event) };
   },
 
   follow_state(prevState, event) {
@@ -95,18 +146,12 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   effects_update(prevState, event) {
-    const loginGracePeriodActive = event.data.login_grace_period_active as boolean | undefined;
-    const loginGracePeriodRemaining = event.data.login_grace_period_remaining as number | undefined;
-    return {
-      ...prevState,
-      ...(loginGracePeriodActive !== undefined && { loginGracePeriodActive }),
-      ...(loginGracePeriodRemaining !== undefined && { loginGracePeriodRemaining }),
-    };
+    return { ...prevState, ...gracePeriodFields(event) };
   },
 
   room_state(prevState, event) {
     const room = deriveRoomFromRoomState(event);
-    return room ? { ...prevState, room } : prevState;
+    return room ? { ...prevState, room, ...roomContainersField(event) } : prevState;
   },
 
   room_update(prevState, event) {
@@ -166,8 +211,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const reason = event.data.reason as string | undefined;
     if (reason?.trim()) {
       const msg = buildChatMessage(reason.trim(), event.timestamp, {
-        messageType: 'system',
-        channel: GAME_LOG_CHANNEL,
+        category: readCategory(event.data, event.event_type),
       });
       next = { ...next, messages: appendMessage(prevState.messages, msg) };
     }
@@ -175,21 +219,22 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
   },
 
   player_died(prevState, event) {
-    const deathData = event.data as { current_dp?: number };
-    const deathCurrentDp = deathData.current_dp;
-    if (!prevState.player?.stats || typeof deathCurrentDp !== 'number' || deathCurrentDp > -10) {
-      return prevState;
-    }
-    return {
-      ...prevState,
-      player: {
-        ...prevState.player,
-        stats: {
-          ...prevState.player.stats,
-          current_dp: deathCurrentDp,
-        },
-      },
+    const deathData = event.data as {
+      current_dp?: number;
+      death_location?: string;
     };
+    const deathCurrentDp = deathData.current_dp;
+    let next = { ...prevState, isDead: true, deathLocation: deathData.death_location ?? null };
+    if (prevState.player?.stats && typeof deathCurrentDp === 'number') {
+      next = {
+        ...next,
+        player: {
+          ...prevState.player,
+          stats: { ...prevState.player.stats, current_dp: deathCurrentDp },
+        },
+      };
+    }
+    return next;
   },
   playerdied(prevState, event) {
     return stateHandlers.player_died!(prevState, event);
@@ -199,13 +244,23 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const player = event.data.player as Player | undefined;
     const room = event.data.room as Room | undefined;
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
-    let next = prevState;
+    let next: GameState = {
+      ...prevState,
+      isDead: false,
+      deathLocation: null,
+      isDelirious: false,
+      deliriumLocation: null,
+      rescueStatus: null,
+    };
     if (player) next = { ...next, player: mergeRespawnedPlayer(next.player, player) };
-    if (room) next = { ...next, room };
+    // A delirium respawn restores lucidity: it arrives top-level (current_lcd, lucidity_tier), as in game_state.
+    next = { ...next, lucidityStatus: deriveLucidityStatus(next, event, next.player) };
+    // Respawn is the one moment the corpse owner is guaranteed to have missed their own corpse's
+    // container.created broadcast (they were dead), so backfill from the respawn room payload.
+    if (room) next = { ...next, room, ...roomContainersField(event) };
     if (messageText) {
       const msg = buildChatMessage(messageText, event.timestamp, {
-        messageType: 'system',
-        channel: GAME_LOG_CHANNEL,
+        category: readCategory(event.data, event.event_type),
       });
       next = { ...next, messages: appendMessage(next.messages, msg) };
     }
@@ -225,8 +280,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const playerName = event.data.player_name as string | undefined;
     if (!playerName || typeof playerName !== 'string' || !playerName.trim()) return prevState;
     const msg = buildChatMessage(`${playerName} has entered the game.`, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
+      category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -235,8 +289,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const messageText = event.data.message as string | undefined;
     if (!messageText) return prevState;
     const msg = buildChatMessage(messageText, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
+      category: readCategory(event.data, event.event_type),
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },
@@ -245,8 +298,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const playerName = event.data.player_name as string | undefined;
     if (!playerName) return prevState;
     const msg = buildChatMessage(`${playerName} has left the game.`, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
+      category: 'room.movement',
     });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },
@@ -255,8 +307,7 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     const messageText = event.data.message as string | undefined;
     if (!messageText) return prevState;
     const msg = buildChatMessage(messageText, event.timestamp, {
-      messageType: 'system',
-      channel: 'game',
+      category: readCategory(event.data, event.event_type),
     });
     return { ...prevState, messages: appendMovementMessage(prevState.messages, msg) };
   },
@@ -266,55 +317,68 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       new_dp?: number;
       max_dp?: number;
       posture?: string;
-      posture_message?: string;
       player?: { stats?: { current_dp?: number; max_dp?: number; position?: string } };
     };
     const newDp = data.new_dp ?? data.player?.stats?.current_dp;
     const maxDp = data.max_dp ?? data.player?.stats?.max_dp;
     const position = data.posture ?? data.player?.stats?.position;
-    const oldDp = prevState.player?.stats?.current_dp ?? 0;
     if (!prevState.player?.stats || newDp === undefined) return prevState;
-    if (oldDp <= -10 && newDp > oldDp) return prevState;
-    return mergePostureMessageIntoState(
-      {
-        ...prevState,
-        player: {
-          ...prevState.player,
-          stats: {
-            ...prevState.player.stats,
-            current_dp: newDp,
-            ...(maxDp !== undefined && { max_dp: maxDp }),
-            ...(position !== undefined && { position }),
-          },
+    return {
+      ...prevState,
+      player: {
+        ...prevState.player,
+        stats: {
+          ...prevState.player.stats,
+          current_dp: newDp,
+          ...(maxDp !== undefined && { max_dp: maxDp }),
+          ...(position !== undefined && { position }),
         },
       },
-      event
-    );
+    };
   },
   playerdpupdated(prevState, event) {
     return stateHandlers.player_dp_updated!(prevState, event);
   },
 
+  // Bleed-out: the server sends two decay events per second. The DP (new_dp or current_dp) drives the
+  // incapacitated countdown (#1059); only the one with a `message` adds a Game Info line.
   player_dp_decay(prevState, event) {
-    return mergePostureMessageIntoState(prevState, event);
+    const data = event.data as { new_dp?: number; current_dp?: number; message?: string };
+    const dp = data.new_dp ?? data.current_dp;
+    const withDp: GameState =
+      prevState.player?.stats && dp !== undefined
+        ? { ...prevState, player: { ...prevState.player, stats: { ...prevState.player.stats, current_dp: dp } } }
+        : prevState;
+    return typeof data.message === 'string'
+      ? appendPostureGameInfoMessage(withDp, event, data.message, readCategory(event.data, event.event_type))
+      : withDp;
   },
 
   player_posture_change(prevState, event) {
     const messageText = typeof event.data.message === 'string' ? event.data.message.trim() : '';
     if (!messageText) return prevState;
-    return appendPostureGameInfoMessage(prevState, event, messageText);
+    return appendPostureGameInfoMessage(prevState, event, messageText, readCategory(event.data, event.event_type));
   },
 
   lucidity_change(prevState, event) {
-    const currentDp = event.data.current_dp as number | undefined;
-    if (!prevState.player?.stats || currentDp === undefined) return prevState;
-    return {
-      ...prevState,
-      player: {
-        ...prevState.player,
-        stats: { ...prevState.player.stats, current_dp: currentDp },
-      },
-    };
+    const playerMaxLucidity = prevState.player?.stats?.max_lucidity;
+    const { status } = buildLucidityStatus(
+      prevState.lucidityStatus ?? null,
+      event.data,
+      event.timestamp,
+      playerMaxLucidity
+    );
+    let next: GameState = { ...prevState, lucidityStatus: status };
+    if (prevState.player?.stats) {
+      next = {
+        ...next,
+        player: {
+          ...prevState.player,
+          stats: { ...prevState.player.stats, max_lucidity: status.max },
+        },
+      };
+    }
+    return next;
   },
   luciditychange(prevState, event) {
     return stateHandlers.lucidity_change!(prevState, event);
@@ -330,10 +394,6 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
     };
   },
 
-  follow_request_cleared(prevState) {
-    return { ...prevState, pendingFollowRequest: null };
-  },
-
   party_invite(prevState, event) {
     const inviteId = typeof event.data.invite_id === 'string' ? event.data.invite_id : '';
     const inviterName = typeof event.data.inviter_name === 'string' ? event.data.inviter_name : 'Someone';
@@ -342,9 +402,5 @@ export const stateHandlers: Partial<Record<string, ProjectorHandler>> = {
       ...prevState,
       pendingPartyInvite: { invite_id: inviteId, inviter_name: inviterName },
     };
-  },
-
-  party_invite_cleared(prevState) {
-    return { ...prevState, pendingPartyInvite: null };
   },
 };

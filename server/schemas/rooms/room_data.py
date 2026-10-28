@@ -30,7 +30,13 @@ class RoomData(BaseModel):
     plane: str | None = Field(default=None, description="Plane name")
     zone: str | None = Field(default=None, description="Zone name")
     sub_zone: str | None = Field(default=None, description="Sub-zone name")
-    environment: str | None = Field(default=None, description="Environment type")
+    environment: str | None = Field(
+        default=None,
+        description="Resolved environment (room's own value, else subzone's, else zone's, else 'outdoors')",
+    )
+    room_environment: str | None = Field(
+        default=None, description="Room's own environment override; None means it inherits from its subzone/zone"
+    )
     exits: dict[str, str | None] = Field(default_factory=dict, description="Room exits mapping direction to room ID")
     containers: list[Any] | None = Field(default=None, description="Containers in the room")
     players: list[Any] | None = Field(default=None, description="Players in the room")

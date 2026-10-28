@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -36,7 +37,9 @@ async def test_get_transfer_out_of_container_error() -> None:
         new_callable=AsyncMock,
         return_value={"error": "nope"},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert result == {"result": "nope"}
 
 
@@ -44,12 +47,15 @@ async def test_get_transfer_out_of_container_error() -> None:
 async def test_get_transfer_out_of_container_success() -> None:
     player = MagicMock(spec=Player)
     player.name = "P"
+    player.player_id = uuid.uuid4()
     with patch(
         "server.commands.inventory_get_command.transfer_item_from_container",
         new_callable=AsyncMock,
         return_value={"success": True, "transfer_quantity": 1, "item_display_name": "coin"},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert "You get" in str(result["result"])
     assert result["game_log_channel"] == "game-log"
 
@@ -62,7 +68,9 @@ async def test_get_transfer_out_of_container_not_success() -> None:
         new_callable=AsyncMock,
         return_value={"success": False},
     ):
-        result = await _get_transfer_out_of_container(MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag")
+        result = await _get_transfer_out_of_container(
+            MagicMock(), MagicMock(), MagicMock(), player, uuid.uuid4(), {}, 1, "bag"
+        )
     assert "Failed to transfer" in str(result["result"])
 
 
@@ -190,3 +198,91 @@ async def test_handle_get_command_uses_pickup_wiring() -> None:
                     "TestPlayer",
                 )
     assert command_result_text(result) == "picked"
+
+
+@pytest.mark.asyncio
+async def test_handle_get_command_passes_persistence_to_validation() -> None:
+    """#711: the container service is resolved from persistence, not a phantom app.state entry.
+
+    validate_get_command_inputs needs persistence to build/reuse the shared ContainerService, so
+    guard the wiring -- passing `request` here instead silently reintroduces
+    "Container service is unavailable." for every `get <item> from <container>`.
+    """
+    w = PickupTestWiring()
+    w.set_floor_stack({"item_name": "coin", "quantity": 1})
+    with (
+        patch(
+            "server.commands.inventory_get_command.validate_get_command_inputs",
+            new_callable=AsyncMock,
+            return_value=("coin", "room", None, MagicMock(), w.room_manager),
+        ) as mock_validate,
+        patch(
+            "server.commands.inventory_get_command.complete_pickup_after_floor_extract",
+            new_callable=AsyncMock,
+            return_value={"result": "picked"},
+        ),
+        patch("server.commands.inventory_get_command.resolve_pickup_item_index", return_value=(0, None, None)),
+    ):
+        _ = await handle_get_command(
+            {"item": "coin", "container": "room"},
+            {"name": "TestPlayer"},
+            w.request,
+            None,
+            "TestPlayer",
+        )
+
+    command_data, connection_manager, persistence = cast(tuple[object, object, object], mock_validate.call_args.args)
+    assert command_data == {"item": "coin", "container": "room"}
+    assert connection_manager is not None
+    # Specifically the persistence layer, not the request -- both are truthy mocks, so identity
+    # is the only assertion that actually catches the regression.
+    assert persistence is w.persistence
+    assert persistence is not w.request
+
+
+def _chest_row(container_id: uuid.UUID, items: list[dict[str, object]]) -> dict[str, object]:
+    """A room container as get_containers_by_room_id returns it: contents under items_json."""
+    return {"container_id": str(container_id), "source_type": "environment", "items_json": items}
+
+
+@pytest.mark.asyncio
+async def test_get_from_container_path_reads_persistence_items_json() -> None:
+    """`get sling from chest` finds items stored under items_json (they used to be invisible)."""
+    player = MagicMock(spec=Player)
+    player.current_room_id = "room_1"
+    player.name = "P"
+    rt = GetCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    spec = GetItemSpec(player=player, item_name="sling", container_name="chest", quantity=1)
+    container_id = uuid.uuid4()
+    sling: dict[str, object] = {"item_id": "pack_dark_ages.weapon.sling", "item_name": "Sling", "quantity": 1}
+    transfer = AsyncMock(return_value={"result": "You get 1x Sling from chest."})
+    with (
+        patch(
+            "server.commands.inventory_get_command.find_container_in_room",
+            return_value=(_chest_row(container_id, [sling]), container_id),
+        ),
+        patch("server.commands.inventory_get_command._get_transfer_out_of_container", transfer),
+    ):
+        result = await _get_from_container_path(rt, spec)
+
+    assert result == {"result": "You get 1x Sling from chest."}
+    assert transfer.await_args is not None
+    assert transfer.await_args.args[5] == sling
+
+
+@pytest.mark.asyncio
+async def test_get_from_empty_container_says_item_not_there() -> None:
+    """An empty container is not "invalid container data": the item just is not in it."""
+    player = MagicMock(spec=Player)
+    player.current_room_id = "room_1"
+    player.name = "P"
+    rt = GetCommandRuntime(MagicMock(), MagicMock(), MagicMock(), MagicMock(), MagicMock())
+    spec = GetItemSpec(player=player, item_name="sling", container_name="chest", quantity=1)
+    container_id = uuid.uuid4()
+    with patch(
+        "server.commands.inventory_get_command.find_container_in_room",
+        return_value=(_chest_row(container_id, []), container_id),
+    ):
+        result = await _get_from_container_path(rt, spec)
+
+    assert result == {"result": "You don't see 'sling' in chest."}

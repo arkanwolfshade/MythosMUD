@@ -60,6 +60,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.game.magic.magic_service import MagicService
+    from server.game.skill_service import SkillService
     from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
     from server.services.player_death_service import PlayerDeathService
@@ -80,6 +81,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     _player_death_service: "PlayerDeathService | None"
     _player_respawn_service: "PlayerRespawnService | None"
     magic_service: "MagicService | None"
+    skill_service: "SkillService | None"  # #833: graded skill rolls (taunt); linked after both services exist
     _event_bus: EventBus
     _combat_event_publisher: CombatEventPublisher
     _auto_progression_enabled: bool
@@ -113,6 +115,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self._player_death_service = life.player_death_service if life else None
         self._player_respawn_service = life.player_respawn_service if life else None
         self.magic_service = magic_service  # For casting state checks
+        self.skill_service = None
         # CRITICAL: Use shared EventBus instance, not a new one
         self._event_bus = event_bus or EventBus()
         # Create combat event publisher with proper NATS service and subject_manager
@@ -206,7 +209,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             turn_interval_seconds=self._turn_interval_seconds,
         )
 
-        await register_combat_impl(self, combat, attacker, room_id)
+        await register_combat_impl(self, combat, room_id)
 
         logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
 
@@ -502,26 +505,22 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     async def register_combat_state(
         self,
         combat: CombatInstance,
-        attacker_id: UUID,
-        attacker_name: str,
         room_id: str,
     ) -> None:
-        """Register combat in tracking dicts and notify player combat service."""
+        """Register combat in tracking dicts (by participant type, not attacker role) and notify player service (#918)."""
         self._active_combats[combat.combat_id] = combat
-        self._player_combats[attacker_id] = combat.combat_id
-        target_id = next(
-            (p.participant_id for p in combat.participants.values() if p.participant_id != attacker_id),
-            None,
-        )
-        if target_id:
-            self._npc_combats[target_id] = combat.combat_id
-        if self._player_combat_service:
-            await self._player_combat_service.track_player_combat_state(
-                player_id=attacker_id,
-                player_name=attacker_name,
-                combat_id=combat.combat_id,
-                room_id=room_id,
-            )
+        for participant in combat.participants.values():
+            if participant.participant_type == CombatParticipantType.NPC:
+                self._npc_combats[participant.participant_id] = combat.combat_id
+                continue
+            self._player_combats[participant.participant_id] = combat.combat_id
+            if self._player_combat_service:
+                await self._player_combat_service.track_player_combat_state(
+                    player_id=participant.participant_id,
+                    player_name=participant.name,
+                    combat_id=combat.combat_id,
+                    room_id=room_id,
+                )
 
     async def publish_combat_started_event(self, event: CombatStartedEvent) -> None:
         """Publish a combat started event to NATS."""
@@ -555,6 +554,38 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         """Remove combat from tracking dictionaries."""
         self._cleanup_handler.cleanup_combat_tracking(combat)
 
+    async def register_joined_participant(self, combat: CombatInstance, participant_id: UUID, room_id: str) -> None:
+        """Track one player who joined a running combat (#833); mirrors the player branch of register_combat_state."""
+        participant = combat.participants[participant_id]
+        self._player_combats[participant_id] = combat.combat_id
+        if self._player_combat_service:
+            await self._player_combat_service.track_player_combat_state(
+                player_id=participant_id,
+                player_name=participant.name,
+                combat_id=combat.combat_id,
+                room_id=room_id,
+            )
+
+    async def join_combat(self, combat: CombatInstance, joiner: CombatParticipantData, room_id: str) -> None:
+        """Add a player to a combat already in progress (#833). Raises ValueError if they may not join."""
+        from server.services.combat_service_start import join_existing_combat
+
+        await join_existing_combat(self, combat, joiner, room_id)
+
+    async def untrack_participant(self, participant_id: UUID) -> None:
+        """Stop tracking a player who left a combat that continues without them (#833)."""
+        _ = self._player_combats.pop(participant_id, None)
+        if self._player_combat_service:
+            await self._player_combat_service.clear_player_combat_state(participant_id)
+
+    async def remove_participant(
+        self, combat_id: UUID, participant_id: UUID, reason: str = "Participant left combat"
+    ) -> bool:
+        """Remove a player from a combat; ends it only if no player is left (#833). True if it ended."""
+        from server.services.combat_service_end import remove_participant as remove_participant_impl
+
+        return await remove_participant_impl(self, combat_id, participant_id, reason)
+
     def check_connection_state(self, room_id: str) -> None:
         """Check connection state before publishing combat ended event."""
         self._cleanup_handler.check_connection_state(room_id)
@@ -585,6 +616,12 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
             "player_combats": len(self._player_combats),
             "npc_combats": len(self._npc_combats),
         }
+
+    async def execute_flee_failed_free_hits(self, combat_id: UUID, fleeing_participant_id: UUID) -> None:
+        """Give each acting opponent one free hit after a failed voluntary flee (#820)."""
+        from server.services.combat_flee_handler import execute_flee_failed_free_hits as impl
+
+        await impl(self, combat_id, fleeing_participant_id)
 
 
 __all__ = ["COMBAT_SERVICE", "CombatService", "PlayerLifecycleServices", "get_combat_service", "set_combat_service"]

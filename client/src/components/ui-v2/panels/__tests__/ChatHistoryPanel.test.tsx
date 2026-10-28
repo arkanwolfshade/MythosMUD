@@ -25,17 +25,14 @@ describe('ChatHistoryPanel', () => {
       text: 'Hello world',
       timestamp: new Date().toISOString(),
       isHtml: false,
-      messageType: 'chat',
+      category: 'chat.say',
       channel: 'say',
-      type: 'say',
     },
     {
       text: 'System message',
       timestamp: new Date().toISOString(),
       isHtml: false,
-      messageType: 'system',
-      channel: 'system',
-      type: 'system',
+      category: 'system.info',
     },
   ];
 
@@ -58,40 +55,51 @@ describe('ChatHistoryPanel', () => {
     expect(screen.queryByText('System message')).not.toBeInTheDocument();
   });
 
-  it('should filter out game-log channel messages', () => {
-    const messagesWithGameLog: ChatMessage[] = [
-      {
-        text: 'Game log message',
-        timestamp: new Date().toISOString(),
-        isHtml: false,
-        messageType: 'system',
-        channel: 'game-log',
-        type: 'system',
-      },
-    ];
+  it.each([
+    ['combat.hit', 'Combat message'],
+    ['room.movement', 'Room message'],
+    ['status.lucidity', 'Status message'],
+    ['command.output', 'Command message'],
+  ] as const)('should filter out %s messages: the Chat panel shows chat.* only', (category, text) => {
+    const nonChat: ChatMessage[] = [{ text, timestamp: new Date().toISOString(), isHtml: false, category }];
 
-    renderPanel(
-      <ChatHistoryPanel messages={messagesWithGameLog} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
-    );
-    expect(screen.queryByText('Game log message')).not.toBeInTheDocument();
+    renderPanel(<ChatHistoryPanel messages={nonChat} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />);
+    expect(screen.queryByText(text)).not.toBeInTheDocument();
   });
 
-  it('should filter out combat messages', () => {
-    const messagesWithCombat: ChatMessage[] = [
+  it('renders a plain-text chat line as a pre-wrap text node, never as markup', () => {
+    const plain: ChatMessage[] = [
       {
-        text: 'Combat message',
+        text: '<b>bold?</b>\nsecond line',
         timestamp: new Date().toISOString(),
         isHtml: false,
-        messageType: 'combat',
-        channel: 'game',
-        type: 'system',
+        category: 'chat.say',
+        channel: 'say',
       },
     ];
-
-    renderPanel(
-      <ChatHistoryPanel messages={messagesWithCombat} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+    const { container } = renderPanel(
+      <ChatHistoryPanel messages={plain} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
     );
-    expect(screen.queryByText('Combat message')).not.toBeInTheDocument();
+    expect(container.querySelector('b')).toBeNull();
+    const body = container.querySelector('[data-message-text] > span') as HTMLElement;
+    expect(body.textContent).toBe('<b>bold?</b>\nsecond line');
+    expect(body.style.whiteSpace).toBe('pre-wrap');
+  });
+
+  it('renders an isHtml chat line through SafeHtml as real markup', () => {
+    const html: ChatMessage[] = [
+      {
+        text: '<strong>LOOK</strong>',
+        timestamp: new Date().toISOString(),
+        isHtml: true,
+        category: 'chat.say',
+        channel: 'say',
+      },
+    ];
+    const { container } = renderPanel(
+      <ChatHistoryPanel messages={html} onSendChatMessage={mockOnSendChatMessage} isConnected={true} />
+    );
+    expect(container.querySelector('[data-message-text] strong')?.textContent).toBe('LOOK');
   });
 
   it('should call onClearMessages when clear button is clicked', () => {
@@ -221,28 +229,37 @@ describe('ChatHistoryPanel', () => {
       expect(screen.getByRole('log', { name: 'Chat Messages' }).className).toContain('mythos-corruption-grain');
     });
 
-    it('does not tint tagged or typed messages away from their semantic color', () => {
-      const taggedMessages: ChatMessage[] = [
+    it('tints only the plain register: a whisper keeps its semantic style at full corruption', () => {
+      const lines: ChatMessage[] = [
         {
-          text: 'A rescue attempt',
+          text: 'A private word',
           timestamp: new Date().toISOString(),
           isHtml: false,
-          messageType: 'chat',
-          tags: ['rescue'],
+          category: 'chat.whisper',
+          channel: 'whisper',
+        },
+        {
+          text: 'A spoken word',
+          timestamp: new Date().toISOString(),
+          isHtml: false,
+          category: 'chat.say',
+          channel: 'say',
         },
       ];
       renderPanel(
         <ChatHistoryPanel
-          messages={taggedMessages}
+          messages={lines}
           onSendChatMessage={mockOnSendChatMessage}
           isConnected={true}
           corruption={100}
         />
       );
-      const messageEl = screen.getByText('A rescue attempt').closest('[data-message-text]');
-      expect(messageEl).not.toBeNull();
-      expect(messageEl!.className).not.toContain('mythos-corruption-text');
-      expect(messageEl!.className).toContain('text-mythos-terminal-primary');
+      const whisper = screen.getByText('A private word').closest('[data-message-text]');
+      expect(whisper).not.toBeNull();
+      expect(whisper!.className).not.toContain('mythos-corruption-text');
+      expect(whisper!.className).toContain('cat-reg-private');
+      const say = screen.getByText('A spoken word').closest('[data-message-text]');
+      expect(say!.className).toContain('mythos-corruption-text');
     });
 
     it('leaves an old message unaltered at zero corruption but decays it at high corruption', () => {
@@ -250,7 +267,7 @@ describe('ChatHistoryPanel', () => {
         text: 'one two three four five six seven eight nine ten eleven twelve',
         timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(), // 1 hour old
         isHtml: false,
-        messageType: 'chat',
+        category: 'chat.say',
         channel: 'say',
       };
 

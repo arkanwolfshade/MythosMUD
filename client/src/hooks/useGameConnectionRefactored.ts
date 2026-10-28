@@ -217,7 +217,12 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     },
     onMessage: event => {
       try {
-        const data = JSON.parse(event.data);
+        const data = JSON.parse(event.data) as GameEvent;
+        // #822: typed /rest (and any server intentional_disconnect) never sets the Logout
+        // button's flag; arm it here so onDisconnect skips reconnect and calls logout.
+        if (data.event_type === 'intentional_disconnect' && intentionalExitInProgressRef) {
+          intentionalExitInProgressRef.current = true;
+        }
         setLastEvent(data);
         onEventRef.current?.(data);
       } catch (error) {

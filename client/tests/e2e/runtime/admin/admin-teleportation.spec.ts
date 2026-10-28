@@ -7,10 +7,10 @@
  * teleportation messages are properly broadcast to all relevant players.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, recoverPlayableSession, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
@@ -29,20 +29,16 @@ async function assertLookVisibleInPanels(page: Page): Promise<void> {
   await expect(cue.first()).toBeVisible({ timeout: 45000 });
 }
 
-test.describe('Admin Teleportation', () => {
+test.describe('Admin Teleportation', { tag: '@shared-session' }, () => {
   test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(300_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-  });
-
-  test.afterAll(async () => {
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('AW should be able to teleport Ithaqua', async ({ browser }) => {

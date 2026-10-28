@@ -1,5 +1,4 @@
-import type { Channel } from '../components/ui/ChannelSelector';
-import { MythosIcons } from '../components/ui/EldritchIcon';
+import { MythosIcons, type Channel } from '../components/ui-v2/primitives';
 
 // Channel configuration for MythosMUD
 // This defines all available chat channels with their properties

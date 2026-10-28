@@ -36,15 +36,19 @@ describe('IntersectionNode', () => {
     data: defaultData,
     selected: false,
     dragging: false,
+    zIndex: 0,
+    isConnectable: false,
+    xPos: 0,
+    yPos: 0,
   };
 
   it('should render intersection node', () => {
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...defaultProps} />);
+    render(<IntersectionNode {...defaultProps} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
   it('should render all handles', () => {
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...defaultProps} />);
+    render(<IntersectionNode {...defaultProps} />);
     expect(screen.getByTestId('handle-target-top')).toBeInTheDocument();
     expect(screen.getByTestId('handle-target-right')).toBeInTheDocument();
     expect(screen.getByTestId('handle-target-bottom')).toBeInTheDocument();
@@ -63,7 +67,7 @@ describe('IntersectionNode', () => {
         isCurrentLocation: true,
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -75,7 +79,7 @@ describe('IntersectionNode', () => {
         hasUnsavedChanges: true,
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -87,7 +91,7 @@ describe('IntersectionNode', () => {
         environment: 'indoors',
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -99,7 +103,7 @@ describe('IntersectionNode', () => {
         subZone: 'campus',
       },
     };
-    render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    render(<IntersectionNode {...props} />);
     expect(screen.getByText('Intersection')).toBeInTheDocument();
   });
 
@@ -122,10 +126,10 @@ describe('IntersectionNode', () => {
       // Same props - should not re-render
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
     const initialRender = screen.getByText('Intersection');
 
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    rerender(<IntersectionNode {...props2} />);
     const afterRerender = screen.getByText('Intersection');
 
     expect(initialRender).toBe(afterRerender);
@@ -148,8 +152,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when isCurrentLocation changes
   });
 
@@ -170,9 +174,9 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
     expect(screen.getByText('Intersection 1')).toBeInTheDocument();
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    rerender(<IntersectionNode {...props2} />);
     expect(screen.getByText('Intersection 2')).toBeInTheDocument();
   });
 
@@ -193,8 +197,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when hasUnsavedChanges changes
   });
 
@@ -215,8 +219,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when environment changes
   });
 
@@ -237,8 +241,8 @@ describe('IntersectionNode', () => {
       },
     };
 
-    const { rerender } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props1} />);
-    rerender(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props2} />);
+    const { rerender } = render(<IntersectionNode {...props1} />);
+    rerender(<IntersectionNode {...props2} />);
     // Component should re-render when subZone changes
   });
 
@@ -250,8 +254,59 @@ describe('IntersectionNode', () => {
         name: 'A Very Long Intersection Name That Should Be Truncated',
       },
     };
-    const { container } = render(<IntersectionNode zIndex={0} isConnectable={false} xPos={0} yPos={0} {...props} />);
+    const { container } = render(<IntersectionNode {...props} />);
     expect(container).toBeTruthy();
     // Name should be truncated
+  });
+
+  describe('departure marker (#829)', () => {
+    // A map request covers one sub-zone, so an exit into another sub-zone has no node to
+    // connect to and no edge is drawn. Without a marker on the room itself, the only way
+    // into a building like the Sanitarium is invisible and the corner reads as a dead end.
+    it('shows a marker when the room has an exit leaving the area', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />);
+      expect(screen.getByLabelText('Exits to another area: north')).toBeInTheDocument();
+    });
+
+    it('names every departing direction in the label', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north', 'down'] }} />);
+      // One marker per direction, each carrying the full list in its label.
+      expect(screen.getAllByLabelText('Exits to another area: north, down')).toHaveLength(2);
+    });
+
+    it('anchors the marker to the node itself', () => {
+      // The marker is absolutely positioned. Without `relative` on the node it resolves
+      // against some ancestor further up and renders somewhere else on the canvas
+      // entirely - present in the DOM, invisible on the map. Querying by label passes
+      // either way, so the positioning context has to be asserted directly.
+      const { container } = render(
+        <IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />
+      );
+      const marker = screen.getByLabelText('Exits to another area: north');
+      const anchor = marker.closest('.relative');
+      expect(anchor).not.toBeNull();
+      expect(container.contains(anchor)).toBe(true);
+    });
+
+    it('places the marker on the edge facing the way out', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north', 'east'] }} />);
+      expect(screen.getByTestId('departure-north')).toBeInTheDocument();
+      expect(screen.getByTestId('departure-east')).toBeInTheDocument();
+    });
+
+    it('does not intercept clicks meant for the node', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: ['north'] }} />);
+      expect(screen.getByTestId('departure-north').className).toContain('pointer-events-none');
+    });
+
+    it('shows no marker when every exit stays inside the area', () => {
+      render(<IntersectionNode {...defaultProps} data={{ ...defaultData, departures: [] }} />);
+      expect(screen.queryByLabelText(/Exits to another area/)).not.toBeInTheDocument();
+    });
+
+    it('shows no marker when departures are absent entirely', () => {
+      render(<IntersectionNode {...defaultProps} data={defaultData} />);
+      expect(screen.queryByLabelText(/Exits to another area/)).not.toBeInTheDocument();
+    });
   });
 });

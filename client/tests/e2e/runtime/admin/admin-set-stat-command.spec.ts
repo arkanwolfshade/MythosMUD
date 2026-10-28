@@ -6,10 +6,10 @@
  * audit logging. Confirms non-admin rejection flow and validates all stat types.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, getMessages, recoverPlayableSession, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
@@ -83,20 +83,15 @@ async function runAdminSetWithRecovery(awContext: PlayerContext, targetName: str
   }
 }
 
-test.describe('Administrative Set Stat Command', () => {
+test.describe('Administrative Set Stat Command', { tag: '@shared-session' }, () => {
   test.describe.configure({ timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(300_000);
     // Create contexts for both players (AW is admin, Ithaqua is not)
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('AW should be able to set player stats', async ({ browser }) => {

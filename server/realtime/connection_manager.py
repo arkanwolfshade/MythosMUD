@@ -10,7 +10,7 @@ and testability.
 
 import uuid
 from collections import deque
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from anyio import Lock
 from fastapi import WebSocket
@@ -84,6 +84,9 @@ from .player_presence_tracker import (
 from .rate_limiter import RateLimiter
 from .room_subscription_manager import RoomSubscriptionManager
 
+if TYPE_CHECKING:
+    from ..services.instance_flush_service import InstanceFlushService
+
 logger = get_logger(__name__)
 
 # Backward compatibility: Export old private function name
@@ -141,6 +144,8 @@ class ConnectionManager:
         self.game_state_provider: object | None
         self.room_event_handler: object | None
         self.app: object | None
+        # Set by the game bundle; a player really leaving the game flushes their tutorial instance.
+        self.instance_flush_service: InstanceFlushService | None = None
         initialize_connection_state(self, event_publisher)
         initialize_core_components(self)
         initialize_health_monitor(self)

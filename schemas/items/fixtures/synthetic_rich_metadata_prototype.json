@@ -1,0 +1,35 @@
+{
+  "prototype_id": "synthetic_field_knife",
+  "name": "Field Knife",
+  "short_description": "A plain steel field knife.",
+  "long_description": "An anonymized synthetic prototype for public schema validation only.",
+  "item_type": "equipment",
+  "weight": 0.5,
+  "base_value": 12,
+  "durability": null,
+  "flags": [],
+  "wear_slots": ["MAIN_HAND"],
+  "usage_restrictions": {},
+  "stacking_rules": {},
+  "effect_components": [],
+  "metadata": {
+    "weapon": {
+      "min_damage": 2,
+      "max_damage": 5,
+      "modifier": 0,
+      "damage_types": ["slashing", "piercing"],
+      "magical": false,
+      "damage_expr": "1d4+1",
+      "attacks": 1,
+      "skill": "knife",
+      "skill_bonus": 0
+    },
+    "catalog": {
+      "namespace": "era_classic",
+      "canonical_id": "synthetic_field_knife",
+      "era": "1920s",
+      "source_key": "synthetic_public_fixture"
+    }
+  },
+  "tags": ["synthetic", "catalog_fixture"]
+}

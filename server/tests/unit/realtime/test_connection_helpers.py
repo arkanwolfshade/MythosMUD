@@ -5,8 +5,17 @@ Tests the connection helper functions.
 """
 
 import uuid
+from datetime import UTC, date, datetime
+from typing import cast
 
 from server.realtime.connection_helpers import convert_uuids_to_strings
+
+
+def test_convert_uuids_to_strings_datetimes_become_iso():
+    """Nested datetime/date values serialize as ISO strings so send_json cannot choke on them (#906)."""
+    at = datetime(2026, 9, 28, 12, 30, tzinfo=UTC)
+    result = cast(object, convert_uuids_to_strings({"events": [{"at": at}], "day": date(2026, 9, 28)}))
+    assert result == {"events": [{"at": at.isoformat()}], "day": "2026-09-28"}
 
 
 def test_convert_uuids_to_strings_uuid():

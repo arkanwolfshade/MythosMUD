@@ -19,6 +19,12 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
 
   // eslint-disable-next-line react-hooks/preserve-manual-memoization -- stable queue processor for setTimeout
   const processEventQueue = useCallback(() => {
+    // Clear the scheduled-run handle first. handleGameEvent only schedules a drain when this is
+    // null, and the `finally` branch below re-arms it with a timeout that calls this function
+    // directly -- so if that run did not clear the handle, it stayed set forever and every later
+    // event was queued but never projected. The UI then froze silently on whatever state it had
+    // (a player could die server-side and never see the death interstitial).
+    processingTimeout.current = null;
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
       return;
     }
@@ -70,21 +76,5 @@ export const useEventProcessing = ({ setGameState }: UseEventProcessingParams) =
     eventStoreRef.current.clear();
   }, []);
 
-  /** Clear pending follow request in the event log so the dialog stays closed after accept/decline. */
-  const clearPendingFollowRequest = useCallback(
-    (requestId: string) => {
-      const store = eventStoreRef.current;
-      store.append({
-        event_type: 'follow_request_cleared',
-        timestamp: new Date().toISOString(),
-        sequence_number: 0,
-        data: { request_id: requestId },
-      });
-      const derivedState = projectState(store.getLog());
-      setGameState(prev => ({ ...derivedState, commandHistory: prev.commandHistory }));
-    },
-    [setGameState]
-  );
-
-  return { handleGameEvent, clearEventLog, clearPendingFollowRequest };
+  return { handleGameEvent, clearEventLog };
 };

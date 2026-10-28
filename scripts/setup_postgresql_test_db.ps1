@@ -55,7 +55,10 @@ $dbHost = $matches[3]
 $dbPort = $matches[4]
 $dbName = $matches[5]
 
-$allowedDbs = @("mythos_unit", "mythos_e2e", "mythos_dev")
+# mythos_dev is PROTECTED (see .claude/rules/database.md) and deliberately excluded: this
+# script's -Force path drops the database outright, and mythos_dev is provisioned separately
+# via scripts/load_world_seed.py, which has its own explicit CONFIRM_LOAD_WORLD_SEED=1 gate (#811).
+$allowedDbs = @("mythos_unit", "mythos_e2e")
 if ($dbName -notin $allowedDbs) {
     Write-Host "[ERROR] DATABASE_URL database name '$dbName' is not allowed; refusing to create or drop." -ForegroundColor Red
     Write-Host "[INFO] Allowed names: $($allowedDbs -join ', ')" -ForegroundColor Yellow
@@ -114,123 +117,121 @@ try {
     # Check if database exists
     Write-Host "Checking if database '$dbName' exists..." -ForegroundColor Yellow
     $dbCheck = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -t -c "SELECT 1 FROM pg_database WHERE datname = '$dbName';" 2>&1
+    $dbExists = ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1'))
 
-    if ($LASTEXITCODE -eq 0 -and ($dbCheck -match '1')) {
-        if ($Force) {
-            Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
-            if ($dbName -in @("mythos_unit", "mythos_e2e")) {
-                Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
-                $terminateSql = @"
+    # -Force additionally drops+recreates the database object itself -- for a database in a
+    # state db/schema.sql's own --clean/--if-exists can't self-heal (wrong owner, wrong
+    # encoding, a corrupted catalog). Without -Force, an existing database is kept and
+    # schema+seed are still reapplied below unconditionally (see next block) -- this script
+    # no longer exits early just because the database happens to already exist (#811 follow-up:
+    # that early-exit is what let mythos_unit drift silently for an extended period).
+    if ($dbExists -and $Force) {
+        Write-Host "[INFO] Database exists. Dropping (Force mode)..." -ForegroundColor Yellow
+        Write-Host "[INFO] Terminating other sessions on '$dbName' before drop..." -ForegroundColor Yellow
+        $terminateSql = @"
 SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
 WHERE datname = '$dbName' AND pid <> pg_backend_pid();
 "@
-                $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
-                Start-Sleep -Seconds 1
-            }
-            $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
-            if ($LASTEXITCODE -ne 0) {
-                Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
-                exit 1
-            }
-            Write-Host "[OK] Database dropped" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[OK] Database '$dbName' already exists" -ForegroundColor Green
-            Write-Host "[INFO] Use -Force to recreate the database" -ForegroundColor Cyan
-            exit 0
-        }
-    }
-
-    # Create database
-    Write-Host "Creating database '$dbName'..." -ForegroundColor Yellow
-    $createResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "CREATE DATABASE $dbName;" 2>&1
-
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "[OK] Database '$dbName' created successfully" -ForegroundColor Green
-    }
-    else {
-        if ($createResult -match 'already exists') {
-            Write-Host "[WARNING] Database already exists (may have been created concurrently)" -ForegroundColor Yellow
-        }
-        else {
-            Write-Host "[ERROR] Failed to create database: $createResult" -ForegroundColor Red
+        $null = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c $terminateSql 2>&1
+        Start-Sleep -Seconds 1
+        $dropResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "DROP DATABASE $dbName;" 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[ERROR] Failed to drop database: $dropResult" -ForegroundColor Red
             exit 1
         }
+        Write-Host "[OK] Database dropped" -ForegroundColor Green
+        $dbExists = $false
     }
 
-    # Apply environment-specific DDL (db/mythos_<dbname>_ddl.sql)
-    if ($dbName -in $allowedDbs) {
-        $schemaFile = Join-Path -Path (Join-Path -Path $ProjectRoot -ChildPath "db") -ChildPath "${dbName}_ddl.sql"
-        if (Test-Path $schemaFile) {
-            Write-Host "Applying environment DDL ($dbName)..." -ForegroundColor Yellow
-            $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "[OK] DDL applied ($schemaFile)" -ForegroundColor Green
+    if ($dbExists) {
+        Write-Host "[OK] Database '$dbName' already exists; reconverging schema/seed/migrations..." -ForegroundColor Green
+    }
+    else {
+        Write-Host "Creating database '$dbName'..." -ForegroundColor Yellow
+        $createResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d postgres -c "CREATE DATABASE $dbName;" 2>&1
+
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Database '$dbName' created successfully" -ForegroundColor Green
+        }
+        else {
+            if ($createResult -match 'already exists') {
+                Write-Host "[WARNING] Database already exists (may have been created concurrently)" -ForegroundColor Yellow
             }
             else {
-                Write-Host "[WARNING] Failed to apply DDL: $schemaResult" -ForegroundColor Yellow
-                Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
+                Write-Host "[ERROR] Failed to create database: $createResult" -ForegroundColor Red
+                exit 1
             }
         }
+    }
+
+    # The app schema (same name as the database, #811) and pgcrypto -- db/schema.sql no longer
+    # creates either (see db/databases/databases.sql, which does the same for a fresh install).
+    Write-Host "Ensuring schema '$dbName' and pgcrypto exist..." -ForegroundColor Yellow
+    $ensureSchemaSql = "CREATE SCHEMA IF NOT EXISTS $dbName; CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA $dbName;"
+    $ensureResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c $ensureSchemaSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Failed to ensure schema/pgcrypto: $ensureResult" -ForegroundColor Red
+        exit 1
+    }
+
+    # Schema-agnostic baseline (#811): db/schema.sql (DDL) and data/db/seed.sql (world, NPC
+    # definitions, items, etc.) are unqualified, so search_path must be set to $dbName first.
+    # Both are the single source for all three environments -- see db/schema.sql's own header.
+    $schemaFile = Join-Path -Path $ProjectRoot -ChildPath "db\schema.sql"
+    if (Test-Path $schemaFile) {
+        Write-Host "Applying schema ($dbName)..." -ForegroundColor Yellow
+        $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c "SET search_path TO $dbName;" -f $schemaFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Schema applied ($schemaFile)" -ForegroundColor Green
+        }
         else {
-            Write-Host "[INFO] DDL file not found: $schemaFile" -ForegroundColor Cyan
+            Write-Host "[WARNING] Failed to apply schema: $schemaResult" -ForegroundColor Yellow
+            Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
         }
     }
     else {
-        Write-Host "[INFO] Database $dbName not in (mythos_unit, mythos_e2e, mythos_dev); skipping DDL" -ForegroundColor Cyan
+        Write-Host "[INFO] Schema file not found: $schemaFile" -ForegroundColor Cyan
     }
 
-    # Apply container table creation migration (must run before 011)
-    $migration012File = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "012_create_containers_table.sql"
-    if (Test-Path $migration012File) {
-        Write-Host "Applying container table creation migration (012)..." -ForegroundColor Yellow
-        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migration012File 2>&1
+    $seedFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\seed.sql"
+    if (Test-Path $seedFile) {
+        Write-Host "Loading seed ($dbName)..." -ForegroundColor Yellow
+        $seedResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c "SET search_path TO $dbName;" -f $seedFile 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Container table creation migration applied" -ForegroundColor Green
+            Write-Host "[OK] Seed applied ($seedFile)" -ForegroundColor Green
         }
         else {
-            Write-Host "[ERROR] Failed to apply container table creation migration: $migrationResult" -ForegroundColor Red
+            Write-Host "[ERROR] Failed to apply seed: $seedResult" -ForegroundColor Red
             exit 1
         }
     }
     else {
-        Write-Host "[WARNING] Container table creation migration file not found: $migration012File" -ForegroundColor Yellow
+        Write-Host "[INFO] Seed file not found (skipping): $seedFile" -ForegroundColor Cyan
     }
 
-    # Apply container schema normalization migration (adds container_item_instance_id column)
-    $migrationFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "011_add_container_item_instance_id.sql"
-    if (Test-Path $migrationFile) {
-        Write-Host "Applying container schema normalization migration (011)..." -ForegroundColor Yellow
-        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migrationFile 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Container schema normalization migration applied" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[ERROR] Failed to apply container schema normalization migration: $migrationResult" -ForegroundColor Red
-            exit 1
-        }
+    # schema_migrations (dbmate's ledger) is deliberately excluded from db/schema.sql's
+    # DROP/CREATE list (see generate_schema_from_dev.ps1), so reapplying schema.sql above did
+    # NOT touch it -- it still claims every post-baseline migration is already applied, even
+    # though schema.sql just reset the tables those migrations changed back to baseline shape.
+    # Truncating it (not dropping the table) makes scripts/migrate.ps1's next `up` genuinely
+    # replay every migration, so this script's "always reconverge" guarantee stays honest end
+    # to end instead of silently regressing post-baseline schema changes on every second run.
+    Write-Host "Resetting migration ledger (schema_migrations) for a clean dbmate replay..." -ForegroundColor Yellow
+    $resetLedgerSql = @"
+DO `$`$
+BEGIN
+    EXECUTE format('TRUNCATE TABLE %I.schema_migrations', '$dbName');
+EXCEPTION WHEN undefined_table THEN
+    NULL; -- dbmate has never run against this database yet; nothing to reset
+END `$`$;
+"@
+    $resetResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -c $resetLedgerSql 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[ERROR] Failed to reset migration ledger: $resetResult" -ForegroundColor Red
+        exit 1
     }
-    else {
-        Write-Host "[WARNING] Container schema normalization migration file not found: $migrationFile" -ForegroundColor Yellow
-    }
-
-    # Authoritative seed (world, NPC definitions, items, etc.) lives in data/db/<dbname>_dml.sql
-    $dmlFile = Join-Path -Path $ProjectRoot -ChildPath "data\db\${dbName}_dml.sql"
-    if (Test-Path $dmlFile) {
-        Write-Host "Loading environment DML ($dbName)..." -ForegroundColor Yellow
-        $dmlResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $dmlFile 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] DML applied ($dmlFile)" -ForegroundColor Green
-        }
-        else {
-            Write-Host "[ERROR] Failed to apply DML: $dmlResult" -ForegroundColor Red
-            exit 1
-        }
-    }
-    else {
-        Write-Host "[INFO] DML file not found (skipping): $dmlFile" -ForegroundColor Cyan
-    }
+    Write-Host "[OK] Migration ledger reset" -ForegroundColor Green
 
     Write-Host ""
     Write-Host "Setup completed successfully!" -ForegroundColor Green

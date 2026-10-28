@@ -21,6 +21,7 @@ from server.persistence.container_persistence_async import (
     update_container_async,
 )
 from server.persistence.container_query_helpers_async import (
+    get_bank_container_async,
     get_containers_by_entity_id_async,
     get_containers_by_room_id_async,
     get_decayed_containers_async,
@@ -82,6 +83,13 @@ class ContainerRepository:
             results = await get_containers_by_room_id_async(session, room_id)
             return [_container_data_to_dict(r) for r in results]
 
+    async def get_bank_container(self, owner_id: uuid.UUID) -> dict[str, object] | None:
+        """Get a player's bank deposit box (async), or None if they have never opened one."""
+        session_maker = get_session_maker()
+        async with session_maker() as session:
+            result = await get_bank_container_async(session, owner_id)
+            return _container_data_to_dict(result) if result else None
+
     async def get_containers_by_entity_id(self, entity_id: uuid.UUID) -> list[dict[str, Any]]:
         """Get all containers owned by an entity (async)."""
         session_maker = get_session_maker()
@@ -96,6 +104,7 @@ class ContainerRepository:
         items_json: list[dict[str, Any]] | None = None,
         lock_state: str | None = None,
         metadata_json: dict[str, Any] | None = None,
+        capacity_slots: int | None = None,
     ) -> dict[str, Any] | None:
         """Update a container (async)."""
         session_maker = get_session_maker()
@@ -106,6 +115,7 @@ class ContainerRepository:
                 items_json=items_json,
                 lock_state=lock_state,
                 metadata_json=metadata_json,
+                capacity_slots=capacity_slots,
             )
             if not result:
                 return None

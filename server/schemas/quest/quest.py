@@ -24,6 +24,10 @@ class QuestGoalSchema(BaseModel):
         default_factory=dict,
         description="Type-specific config (e.g. count for kill_n / collect_n)",
     )
+    description: str | None = Field(
+        default=None,
+        description="Player-facing text for the journal (e.g. 'Speak with the lamplighter'); shown instead of target",
+    )
 
     model_config = ConfigDict(extra="allow")
 
@@ -31,17 +35,19 @@ class QuestGoalSchema(BaseModel):
 class QuestRewardSchema(BaseModel):
     """Single reward in a quest definition (xp, item, spell)."""
 
-    type: str = Field(..., description="Reward type: xp, item, spell")
-    config: dict[str, Any] = Field(default_factory=dict, description="Type-specific config (amount, item_id, spell_id)")
+    type: str = Field(..., description="Reward type: xp, item, spell, respawn_room")
+    config: dict[str, Any] = Field(
+        default_factory=dict, description="Type-specific config (amount, item_id, spell_id, room_id)"
+    )
 
     model_config = ConfigDict(extra="allow")
 
 
 class QuestTriggerSchema(BaseModel):
-    """Single trigger that can start a quest (room, npc, item)."""
+    """Single trigger that can start a quest (room, npc, item, quest)."""
 
-    type: str = Field(..., description="Trigger type: room, npc, item")
-    entity_id: str = Field(..., description="Entity identifier (room id, npc def id, item id)")
+    type: str = Field(..., description="Trigger type: room, npc, item, quest (starts when that quest completes)")
+    entity_id: str = Field(..., description="Entity identifier (room id, npc def id, item id, quest id)")
 
     model_config = ConfigDict(extra="allow")
 

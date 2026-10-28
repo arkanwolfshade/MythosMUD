@@ -63,11 +63,12 @@ describe('mergePanelMetadataFromDefault', () => {
     expect(out.p1.minHeight).toBe(120);
   });
 
-  it('leaves stored panel unchanged when there is no matching default entry', () => {
-    const stored = { orphan: basePanel('orphan', { opaque: true }) };
-    const defaults = { other: basePanel('other') };
+  it('drops a stored panel id that no longer has a default (a removed panel must not claim a dock slot)', () => {
+    const stored = { chat: basePanel('chat'), settings: basePanel('settings', { isMinimized: true }) };
+    const defaults = { chat: basePanel('chat') };
     const out = mergePanelMetadataFromDefault(stored, defaults);
-    expect(out.orphan).toEqual(stored.orphan);
+    expect(Object.keys(out)).toEqual(['chat']);
+    expect(stored.settings).toBeDefined();
   });
 
   it('does not add metadata when default omits opaque and minHeight', () => {
@@ -76,6 +77,21 @@ describe('mergePanelMetadataFromDefault', () => {
     const out = mergePanelMetadataFromDefault(stored, defaults);
     expect(out.chat.opaque).toBe(false);
     expect(out.chat.minHeight).toBe(50);
+  });
+
+  it('adds a default panel id missing from stored (e.g. a panel added since the user last saved, #711)', () => {
+    const stored = { chat: basePanel('chat') };
+    const defaults = { chat: basePanel('chat'), inventory: basePanel('inventory', { title: 'Inventory' }) };
+    const out = mergePanelMetadataFromDefault(stored, defaults);
+    expect(out.inventory).toEqual(defaults.inventory);
+    expect(Object.keys(out).sort()).toEqual(['chat', 'inventory']);
+  });
+
+  it('does not overwrite a stored panel that already exists, even if defaults also has it', () => {
+    const stored = { chat: basePanel('chat', { position: { x: 42, y: 7 } }) };
+    const defaults = { chat: basePanel('chat', { position: { x: 0, y: 0 } }) };
+    const out = mergePanelMetadataFromDefault(stored, defaults);
+    expect(out.chat.position).toEqual({ x: 42, y: 7 });
   });
 
   it('does not mutate the original stored map', () => {
@@ -112,6 +128,15 @@ describe('resolveInitialPanelLayout', () => {
     expect(out.chat.opaque).toBe(true);
     expect(hoisted.clampPanelLayoutToViewport).not.toHaveBeenCalled();
     expect(hoisted.savePanelLayout).not.toHaveBeenCalled();
+  });
+
+  it('backfills a new default panel id for a returning user whose saved layout predates it', () => {
+    const stored = { chat: basePanel('chat', { opaque: false }) };
+    const defaultsWithInventory = { ...defaults, inventory: basePanel('inventory', { title: 'Inventory' }) };
+    hoisted.loadPanelLayout.mockReturnValue(stored);
+    hoisted.layoutFitsViewport.mockReturnValue(true);
+    const out = resolveInitialPanelLayout(defaultsWithInventory, 800, 600);
+    expect(out.inventory).toEqual(defaultsWithInventory.inventory);
   });
 
   it('clamps, merges, persists, and returns when stored layout does not fit', () => {

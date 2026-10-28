@@ -5,9 +5,10 @@ This package provides help content and command documentation
 for the MythosMUD game system.
 """
 
-from .help_content import COMMANDS, get_help_content
+from .help_content import get_help_content, get_manual, load_help_docs
 
 __all__ = [
-    "COMMANDS",
     "get_help_content",
+    "get_manual",
+    "load_help_docs",
 ]

@@ -641,6 +641,33 @@
         ]
       }
     },
+    "/v1/api/players/characters/tutorial-skip": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Tutorial Skip Eligibility",
+        "description": "Whether a new character may skip the First Exposure tutorial (the client shows the option only then).",
+        "operationId": "tutorial_skip_eligibility_v1_api_players_characters_tutorial_skip_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TutorialSkipEligibilityResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/v1/api/players/roll-stats": {
       "post": {
         "tags": [
@@ -694,7 +721,7 @@
           "players"
         ],
         "summary": "Create Character With Stats",
-        "description": "Create a new character with specific stats.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\nServer applies profession stat_modifiers to rolled stats; if occupation_slots\nand personal_interest are provided, sets player skills.\n\nRate limited to 5 creations per 5 minutes per user.",
+        "description": "Create a new character with specific stats.\n\n``start_in_tutorial: false`` skips First Exposure. The server allows it only once some character on the account\nhas finished the tutorial (403 otherwise), and the new character starts in the state a finished run leaves.\n\nThis endpoint creates a new player character with the provided stats\nand automatically logs the user in with the new character.\nServer applies profession stat_modifiers to rolled stats; if occupation_slots\nand personal_interest are provided, sets player skills.\n\nRate limited to 5 creations per 5 minutes per user.",
         "operationId": "create_character_with_stats_v1_api_players_create_character_post",
         "requestBody": {
           "content": {
@@ -1841,6 +1868,143 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SkillListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/api/item-catalog/": {
+      "get": {
+        "tags": [
+          "item-catalog"
+        ],
+        "summary": "Get Item Catalog",
+        "description": "Return a paginated item prototype catalog with role-based columns.",
+        "operationId": "get_item_catalog_v1_api_item_catalog__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "name": "namespace",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Namespace"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 25,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemCatalogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/help": {
+      "get": {
+        "tags": [
+          "help"
+        ],
+        "summary": "Get Help Docs",
+        "description": "Return every command and guide the caller may see.",
+        "operationId": "get_help_docs_v1_api_help_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpDocs"
                 }
               }
             }
@@ -5066,6 +5230,28 @@
         "title": "AlertsResponse",
         "description": "Response model for system alerts."
       },
+      "ApplyEffectAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "apply_effect",
+            "title": "Type",
+            "default": "apply_effect"
+          },
+          "effect": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Effect"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "effect"
+        ],
+        "title": "ApplyEffectAction",
+        "description": "Add a status effect (any shape the tick loop understands, e.g. heal_over_time) to the player."
+      },
       "AsciiMapResponse": {
         "properties": {
           "map_html": {
@@ -5670,11 +5856,99 @@
         "title": "CloseContainerRequest",
         "description": "Request model for closing a container."
       },
+      "CommandDoc": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "usage": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Usage"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "admin_only": {
+            "type": "boolean",
+            "title": "Admin Only"
+          },
+          "arguments": {
+            "items": {
+              "$ref": "#/components/schemas/HelpArgument"
+            },
+            "type": "array",
+            "title": "Arguments"
+          },
+          "examples": {
+            "items": {
+              "$ref": "#/components/schemas/HelpExample"
+            },
+            "type": "array",
+            "title": "Examples"
+          },
+          "see_also": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "See Also"
+          },
+          "details_html": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Details Html"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "summary",
+          "usage",
+          "aliases",
+          "admin_only",
+          "arguments",
+          "examples",
+          "see_also",
+          "details_html"
+        ],
+        "title": "CommandDoc",
+        "description": "Documentation for one player-facing command. Optional authored fields are always present (empty by default)."
+      },
       "CommandRequest": {
         "properties": {
           "command": {
             "type": "string",
             "title": "Command"
+          },
+          "character_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Id"
           }
         },
         "additionalProperties": false,
@@ -6138,6 +6412,35 @@
           "valid": true
         }
       },
+      "CorruptionAtLeastAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "corruption_at_least",
+            "title": "Type",
+            "default": "corruption_at_least"
+          },
+          "value": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Value"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Reason",
+            "default": "scripted_action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "title": "CorruptionAtLeastAction",
+        "description": "Raise the player's corruption to ``value`` if it is lower; never adds, so it is idempotent."
+      },
       "CorruptionRequest": {
         "properties": {
           "amount": {
@@ -6553,6 +6856,25 @@
         "title": "DatabaseComponent",
         "description": "Database component health status and metrics."
       },
+      "DebriefAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "debrief",
+            "title": "Type",
+            "default": "debrief"
+          },
+          "therapy": {
+            "type": "boolean",
+            "title": "Therapy",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DebriefAction",
+        "description": "Run the player's pending debrief (recap, optional immediate therapy) and clear DEBRIEF_PENDING."
+      },
       "DeleteCharacterResponse": {
         "properties": {
           "success": {
@@ -6704,6 +7026,43 @@
             },
             "type": "array",
             "title": "Options"
+          },
+          "actions": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/NarrateAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ApplyEffectAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CorruptionAtLeastAction"
+                },
+                {
+                  "$ref": "#/components/schemas/StartQuestAction"
+                },
+                {
+                  "$ref": "#/components/schemas/QuestActivityAction"
+                },
+                {
+                  "$ref": "#/components/schemas/DebriefAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "apply_effect": "#/components/schemas/ApplyEffectAction",
+                  "corruption_at_least": "#/components/schemas/CorruptionAtLeastAction",
+                  "debrief": "#/components/schemas/DebriefAction",
+                  "narrate": "#/components/schemas/NarrateAction",
+                  "quest_activity": "#/components/schemas/QuestActivityAction",
+                  "start_quest": "#/components/schemas/StartQuestAction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Actions"
           }
         },
         "additionalProperties": false,
@@ -7167,6 +7526,51 @@
           "server_time": "2025-01-12T15:30:45.123456Z"
         }
       },
+      "GuideDoc": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "see_also": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "See Also"
+          },
+          "details_html": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Details Html"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "group",
+          "summary",
+          "see_also",
+          "details_html"
+        ],
+        "title": "GuideDoc",
+        "description": "A concept guide, reachable as ``help <id>`` and on the Manual page. Optional fields are always present."
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -7347,6 +7751,73 @@
         ],
         "title": "HealthStatus",
         "description": "Health status enumeration for system components."
+      },
+      "HelpArgument": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "required",
+          "description"
+        ],
+        "title": "HelpArgument",
+        "description": "One documented command argument."
+      },
+      "HelpDocs": {
+        "properties": {
+          "commands": {
+            "items": {
+              "$ref": "#/components/schemas/CommandDoc"
+            },
+            "type": "array",
+            "title": "Commands"
+          },
+          "guides": {
+            "items": {
+              "$ref": "#/components/schemas/GuideDoc"
+            },
+            "type": "array",
+            "title": "Guides"
+          }
+        },
+        "type": "object",
+        "required": [
+          "commands",
+          "guides"
+        ],
+        "title": "HelpDocs",
+        "description": "Everything the help system documents."
+      },
+      "HelpExample": {
+        "properties": {
+          "input": {
+            "type": "string",
+            "title": "Input"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input"
+        ],
+        "title": "HelpExample",
+        "description": "One example invocation with an optional explanation."
       },
       "HolidayEntry": {
         "properties": {
@@ -7631,6 +8102,31 @@
               }
             ],
             "description": "Nested container for wearable items"
+          },
+          "condition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Condition",
+            "description": "Item condition, e.g. 'pristine'"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "Ordering position within a container"
           }
         },
         "additionalProperties": false,
@@ -7714,6 +8210,190 @@
           "invite_code": "ABC123DEF456",
           "is_active": true
         }
+      },
+      "ItemCatalogAdminItem": {
+        "properties": {
+          "prototype_id": {
+            "type": "string",
+            "title": "Prototype Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description"
+          },
+          "long_description": {
+            "type": "string",
+            "title": "Long Description"
+          },
+          "item_type": {
+            "type": "string",
+            "title": "Item Type"
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight"
+          },
+          "base_value": {
+            "type": "integer",
+            "title": "Base Value"
+          },
+          "durability": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Durability"
+          },
+          "flags": {
+            "items": {},
+            "type": "array",
+            "title": "Flags"
+          },
+          "wear_slots": {
+            "items": {},
+            "type": "array",
+            "title": "Wear Slots"
+          },
+          "stacking_rules": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Stacking Rules"
+          },
+          "usage_restrictions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Usage Restrictions"
+          },
+          "effect_components": {
+            "items": {},
+            "type": "array",
+            "title": "Effect Components"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          },
+          "tags": {
+            "items": {},
+            "type": "array",
+            "title": "Tags"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "prototype_id",
+          "name",
+          "short_description",
+          "long_description",
+          "item_type",
+          "weight",
+          "base_value"
+        ],
+        "title": "ItemCatalogAdminItem",
+        "description": "Admin catalog row with all stored prototype columns (A3)."
+      },
+      "ItemCatalogPlayerItem": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Display name"
+          },
+          "item_type": {
+            "type": "string",
+            "title": "Item Type",
+            "description": "Prototype item_type"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description",
+            "description": "Short description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "item_type",
+          "short_description"
+        ],
+        "title": "ItemCatalogPlayerItem",
+        "description": "Player-facing catalog row (P1 columns)."
+      },
+      "ItemCatalogResponse": {
+        "properties": {
+          "items": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ItemCatalogPlayerItem"
+                },
+                "type": "array"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ItemCatalogAdminItem"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Items",
+            "description": "Catalog rows (player or admin projection)"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page Size"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "title": "Is Admin",
+            "description": "True when admin/full columns were returned"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "page",
+          "page_size",
+          "total",
+          "is_admin"
+        ],
+        "title": "ItemCatalogResponse",
+        "description": "Paginated item catalog response."
       },
       "LoginGracePeriodResponse": {
         "properties": {
@@ -8474,6 +9154,20 @@
             ],
             "title": "Constitution",
             "description": "Constitution attribute"
+          },
+          "corruption": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Corruption",
+            "description": "Static corruption trait (#815) -- shapes NPC reactions to tainted players"
           }
         },
         "additionalProperties": true,
@@ -9117,6 +9811,28 @@
           }
         }
       },
+      "NarrateAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "narrate",
+            "title": "Type",
+            "default": "narrate"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "NarrateAction",
+        "description": "Send the player a line of system narration."
+      },
       "NewGameSessionResponse": {
         "properties": {
           "success": {
@@ -9486,14 +10202,6 @@
             "title": "Inventory",
             "description": "Player inventory"
           },
-          "status_effects": {
-            "items": {
-              "$ref": "#/components/schemas/StatusEffect"
-            },
-            "type": "array",
-            "title": "Status Effects",
-            "description": "Player status effects"
-          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -9532,7 +10240,6 @@
           "user_id",
           "stats",
           "inventory",
-          "status_effects",
           "created_at",
           "last_active"
         ],
@@ -9540,7 +10247,7 @@
         "description": "Schema for reading player data.",
         "example": {
           "created_at": "2024-01-01T00:00:00Z",
-          "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
+          "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
           "experience_points": 150,
           "id": "123e4567-e89b-12d3-a456-426614174000",
           "inventory": [
@@ -9558,15 +10265,8 @@
           "profession_name": "Tramp",
           "stats": {
             "health": 95,
-            "lucidity": 88,
             "strength": 12
           },
-          "status_effects": [
-            {
-              "duration": 5,
-              "type": "poison"
-            }
-          ],
           "user_id": "123e4567-e89b-12d3-a456-426614174000"
         }
       },
@@ -9908,6 +10608,28 @@
             }
           ]
         }
+      },
+      "QuestActivityAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "quest_activity",
+            "title": "Type",
+            "default": "quest_activity"
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Target"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "target"
+        ],
+        "title": "QuestActivityAction",
+        "description": "Record a complete_activity target for the player's active quests."
       },
       "QuestLogEntryResponse": {
         "properties": {
@@ -10413,7 +11135,19 @@
               }
             ],
             "title": "Environment",
-            "description": "Environment type"
+            "description": "Resolved environment (room's own value, else subzone's, else zone's, else 'outdoors')"
+          },
+          "room_environment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Room Environment",
+            "description": "Room's own environment override; None means it inherits from its subzone/zone"
           },
           "exits": {
             "additionalProperties": {
@@ -10708,7 +11442,7 @@
         "additionalProperties": false,
         "type": "object",
         "title": "RoomUpdateRequest",
-        "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option) -- the CHECK constraint on\nrooms.attributes->>'environment' permits NULL but not an empty string, so the API layer\nis responsible for that translation."
+        "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option, meaning it inherits from its subzone/\nzone) -- the CHECK constraint on rooms.environment permits NULL but not an empty string, so\nthe API layer is responsible for that translation."
       },
       "RoomUpdateResponse": {
         "properties": {
@@ -11018,6 +11752,28 @@
         "title": "SkillListResponse",
         "description": "Response model for skills catalog list."
       },
+      "StartQuestAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "start_quest",
+            "title": "Type",
+            "default": "start_quest"
+          },
+          "quest_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Quest Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quest_id"
+        ],
+        "title": "StartQuestAction",
+        "description": "Start a quest for the player (refused quietly if prerequisites are unmet or it is already active)."
+      },
       "StatRequirement": {
         "properties": {
           "stat": {
@@ -11183,12 +11939,6 @@
             "title": "Luck",
             "description": "Fortune and chance"
           },
-          "lucidity": {
-            "type": "integer",
-            "title": "Lucidity",
-            "description": "Mental clarity (0 = complete delirium)",
-            "default": 100
-          },
           "occult": {
             "type": "integer",
             "title": "Occult",
@@ -11250,76 +12000,6 @@
         ],
         "title": "Stats",
         "description": "Core character statistics with Lovecraftian horror elements."
-      },
-      "StatusEffect": {
-        "properties": {
-          "effect_type": {
-            "$ref": "#/components/schemas/StatusEffectType"
-          },
-          "duration": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Duration",
-            "description": "Duration in game ticks (0 = permanent)"
-          },
-          "intensity": {
-            "type": "integer",
-            "maximum": 10.0,
-            "minimum": 1.0,
-            "title": "Intensity",
-            "description": "Effect intensity from 1-10"
-          },
-          "source": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source",
-            "description": "Source of the effect (item, spell, etc.)"
-          },
-          "applied_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Applied At",
-            "description": "When the effect was applied"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "effect_type",
-          "duration",
-          "intensity"
-        ],
-        "title": "StatusEffect",
-        "description": "Represents a status effect applied to a character."
-      },
-      "StatusEffectType": {
-        "type": "string",
-        "enum": [
-          "stunned",
-          "poisoned",
-          "hallucinating",
-          "paranoid",
-          "trembling",
-          "corrupted",
-          "delirious",
-          "buff",
-          "login_warded",
-          "dominated",
-          "cloud_memory",
-          "fear",
-          "evil_eye",
-          "blinded",
-          "warded",
-          "extinguish_fire"
-        ],
-        "title": "StatusEffectType",
-        "description": "Status effects that can be applied to characters."
       },
       "StatusMessageResponse": {
         "properties": {
@@ -11571,6 +12251,21 @@
         ],
         "title": "TransferContainerRequest",
         "description": "Request model for transferring items to/from container."
+      },
+      "TutorialSkipEligibilityResponse": {
+        "properties": {
+          "eligible": {
+            "type": "boolean",
+            "title": "Eligible",
+            "description": "True once some character on the account (deleted ones included) has finished First Exposure"
+          }
+        },
+        "type": "object",
+        "required": [
+          "eligible"
+        ],
+        "title": "TutorialSkipEligibilityResponse",
+        "description": "Whether a new character on this account may skip the First Exposure tutorial."
       },
       "UserCreate": {
         "properties": {
@@ -12193,6 +12888,14 @@
     {
       "name": "containers",
       "description": "Unified container system: environmental, wearable, corpse storage."
+    },
+    {
+      "name": "item-catalog",
+      "description": "Paginated item prototype catalog for players and admins."
+    },
+    {
+      "name": "help",
+      "description": "Command reference and guides for the Manual page; admin commands admin-only."
     },
     {
       "name": "rooms",

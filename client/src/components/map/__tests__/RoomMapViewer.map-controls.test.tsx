@@ -4,7 +4,7 @@
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import type { MapControlsProps } from '../MapControls';
 import { RoomMapViewer } from '../RoomMapViewer';
 import { useMapLayout } from '../hooks/useMapLayout';

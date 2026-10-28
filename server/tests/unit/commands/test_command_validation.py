@@ -18,7 +18,6 @@ from server.command_handler.catatonia_check import (
     _check_catatonia_database,
     _check_catatonia_registry,
     _fetch_lucidity_record,
-    _is_catatonic,
     _load_player_for_catatonia_check,
     _query_lucidity_record,
     _registry_player_id_value,
@@ -33,6 +32,8 @@ from server.command_handler_unified import (
     _check_rate_limit,
     _validate_command_basics,
 )
+from server.constants.message_category import MessageCategory
+from server.services.catatonia_state import is_catatonic_record
 
 
 class TestCatatoniaChecks:
@@ -49,40 +50,40 @@ class TestCatatoniaChecks:
         assert _registry_player_id_value(1234) == "1234"
 
     def test_is_catatonic_with_tier(self):
-        """Test _is_catatonic() returns True for catatonic tier."""
+        """Test is_catatonic_record() returns True for catatonic tier."""
         mock_record = MagicMock()
         mock_record.current_tier = "catatonic"
         mock_record.current_lcd = 5
-        result = _is_catatonic(mock_record)
+        result = is_catatonic_record(mock_record)
         assert result is True
 
     def test_is_catatonic_with_zero_lcd(self):
-        """Test _is_catatonic() returns True for zero LCD."""
+        """Test is_catatonic_record() returns True for zero LCD."""
         mock_record = MagicMock()
         mock_record.current_tier = "normal"
         mock_record.current_lcd = 0
-        result = _is_catatonic(mock_record)
+        result = is_catatonic_record(mock_record)
         assert result is True
 
     def test_is_catatonic_with_negative_lcd(self):
-        """Test _is_catatonic() returns True for negative LCD."""
+        """Test is_catatonic_record() returns True for negative LCD."""
         mock_record = MagicMock()
         mock_record.current_tier = "normal"
         mock_record.current_lcd = -5
-        result = _is_catatonic(mock_record)
+        result = is_catatonic_record(mock_record)
         assert result is True
 
     def test_is_catatonic_not_catatonic(self):
-        """Test _is_catatonic() returns False for normal player."""
+        """Test is_catatonic_record() returns False for normal player."""
         mock_record = MagicMock()
         mock_record.current_tier = "normal"
         mock_record.current_lcd = 50
-        result = _is_catatonic(mock_record)
+        result = is_catatonic_record(mock_record)
         assert result is False
 
     def test_is_catatonic_none(self):
-        """Test _is_catatonic() returns False for None record."""
-        result = _is_catatonic(None)
+        """Test is_catatonic_record() returns False for None record."""
+        result = is_catatonic_record(None)
         assert result is False
 
     @pytest.mark.asyncio
@@ -224,6 +225,15 @@ class TestCatatoniaChecks:
         assert message is None
 
     @pytest.mark.asyncio
+    @pytest.mark.parametrize("command", ["use", "drink", "quaff"])
+    async def test_check_catatonia_block_lets_use_through_for_the_item_to_judge(self, command: str):
+        """#1148: `use` and its verbs pass the gate; the use command refuses items that don't restore LCD."""
+        request = Mock(spec=Request)
+        blocked, message = await check_catatonia_block("testplayer", command, request)
+        assert blocked is False
+        assert message is None
+
+    @pytest.mark.asyncio
     async def test_check_catatonia_block_no_app_state(self):
         """Test _check_catatonia_block() returns False when no app state."""
         request = Mock(spec=Request)
@@ -313,7 +323,7 @@ class TestValidateCommandBasics:
             patch("server.command_handler_unified.audit_logger.log_security_event") as mock_audit,
         ):
             result = _validate_command_basics("invalid; command", "testplayer")
-            assert result == {"result": "Invalid command format"}
+            assert result == {"result": "Invalid command format", "category": MessageCategory.SYSTEM_ERROR}
             mock_audit.assert_called_once()
 
     def test_validate_command_basics_valid(self):
@@ -377,6 +387,7 @@ class TestCheckGracePeriodBlock:
             message = result["result"]
             assert isinstance(message, str)
             assert "disconnected" in message.lower()
+            assert result["category"] == MessageCategory.SYSTEM_ERROR
 
     @pytest.mark.asyncio
     async def testcheck_grace_period_block_handles_error(self):
@@ -430,6 +441,7 @@ class TestCheckCastingState:
         message = result["result"]
         assert isinstance(message, str)
         assert "casting" in message.lower()
+        assert result["category"] == MessageCategory.SYSTEM_ERROR
 
     @pytest.mark.asyncio
     async def testcheck_casting_state_handles_error(self):
@@ -451,7 +463,7 @@ class TestCheckAllCommandBlocks:
 
         with patch("server.command_handler_unified.check_catatonia_block", return_value=(True, "Catatonic")):
             result = await _check_all_command_blocks("look", "testplayer", mock_request)
-            assert result == {"result": "Catatonic"}
+            assert result == {"result": "Catatonic", "category": MessageCategory.STATUS_LUCIDITY}
 
     @pytest.mark.asyncio
     async def test_check_all_command_blocks_grace_period(self):

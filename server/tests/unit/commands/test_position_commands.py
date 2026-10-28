@@ -4,10 +4,15 @@ Unit tests for position command handlers.
 Tests the sit, stand, lie, and ground commands.
 """
 
+import asyncio
 import uuid
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from fastapi import Request
 
 from server.commands.position_commands import (
     handle_lie_command,
@@ -93,6 +98,90 @@ async def test_handle_stand_already_standing_still_sends_player_update():
     assert result["player_update"] == {"position": "standing", "previous_position": "standing"}
     assert result["changed"] is False
     assert "already standing" in result["result"].lower()
+
+
+@dataclass
+class _RestingSetup:
+    """A request whose connection manager has a live /rest countdown for player_id."""
+
+    player_id: uuid.UUID
+    countdown: asyncio.Task[None]
+    resting_players: dict[uuid.UUID, asyncio.Task[None]]
+    request: Request
+
+
+def _resting_setup() -> _RestingSetup:
+    player_id = uuid.uuid4()
+    countdown = asyncio.create_task(asyncio.sleep(30))
+    resting_players = {player_id: countdown}
+    connection_manager = MagicMock()
+    connection_manager.resting_players = resting_players
+    state = MagicMock()
+    state.container = None
+    state.persistence = MagicMock()
+    state.connection_manager = connection_manager
+    app = MagicMock()
+    app.state = state
+    request = MagicMock()
+    request.app = app
+    return _RestingSetup(player_id, countdown, resting_players, cast(Request, request))
+
+
+def _position_service(player_id: uuid.UUID, position: str, *, success: bool) -> MagicMock:
+    service = MagicMock()
+    service.change_position = AsyncMock(
+        return_value={
+            "success": success,
+            "position": position,
+            "previous_position": "sitting",
+            "message": f"You are now {position}.",
+            "player_id": str(player_id),
+            "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+            "player_display_name": "TestPlayer",
+        }
+    )
+    return service
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("handler", "position"),
+    [(handle_stand_command, "standing"), (handle_lie_command, "lying")],
+)
+async def test_posture_change_interrupts_rest_countdown(
+    handler: Callable[..., Awaitable[dict[str, object]]], position: str
+) -> None:
+    """Standing or lying down breaks the /rest sit: the countdown is cancelled without auto-standing."""
+    setup = _resting_setup()
+    service = _position_service(setup.player_id, position, success=True)
+
+    with (
+        patch("server.commands.position_commands.PlayerPositionService", return_value=service),
+        patch("server.commands.position_commands.emit_posture_change", new_callable=AsyncMock),
+        patch("server.commands.rest_command._stand_after_cancelled_rest", new_callable=AsyncMock) as auto_stand,
+    ):
+        result = await handler({}, {"name": "TestPlayer"}, setup.request, None, "TestPlayer")
+
+    assert setup.countdown.cancelled()
+    assert setup.player_id not in setup.resting_players
+    auto_stand.assert_not_called()
+    assert result["player_update"] == {"position": position, "previous_position": "sitting"}
+    assert "Your rest is interrupted." in str(result["result"])
+
+
+@pytest.mark.asyncio
+async def test_sit_does_not_interrupt_rest_countdown() -> None:
+    """/sit matches the resting posture, so a running countdown is left alone."""
+    setup = _resting_setup()
+    service = _position_service(setup.player_id, "sitting", success=False)
+
+    with patch("server.commands.position_commands.PlayerPositionService", return_value=service):
+        result = await handle_sit_command({}, {"name": "TestPlayer"}, setup.request, None, "TestPlayer")
+
+    assert not setup.countdown.done()
+    assert setup.player_id in setup.resting_players
+    assert "interrupted" not in str(result["result"])
+    _ = setup.countdown.cancel()
 
 
 @pytest.mark.asyncio

@@ -10,6 +10,7 @@ import pytest
 from server.config.models import (
     DatabaseConfig,
     GameConfig,
+    LoggingConfig,
     ServerConfig,
     _default_cors_origins,
     _parse_env_list,
@@ -90,18 +91,15 @@ def test_server_config_validate_port_invalid_high():
         _ = ServerConfig(port=70000)
 
 
-_GAME_CONFIG_ALIASES_DIR = "data/aliases"
-
-
 def test_game_config_default_tick_rate():
     """Test GameConfig server_tick_rate default value still constructs cleanly."""
-    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR)
+    config = GameConfig()
     assert config.server_tick_rate == 0.1
 
 
 def test_game_config_tick_rate_accepts_positive_override():
     """Test GameConfig server_tick_rate accepts a valid positive override."""
-    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=0.5)
+    config = GameConfig(server_tick_rate=0.5)
     assert config.server_tick_rate == 0.5
 
 
@@ -109,14 +107,25 @@ def test_game_config_tick_rate_rejects_zero():
     """Test GameConfig server_tick_rate rejects zero (#622: busy-spins the tick loop and raises
     ZeroDivisionError in login grace period handling)."""
     with pytest.raises(ValueError, match="greater than 0"):
-        _ = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=0)
+        _ = GameConfig(server_tick_rate=0)
 
 
 def test_game_config_tick_rate_rejects_negative():
     """Test GameConfig server_tick_rate rejects negative values (#622: crashes the tick loop via
     asyncio.sleep's non-negative requirement)."""
     with pytest.raises(ValueError, match="greater than 0"):
-        _ = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=-0.1)
+        _ = GameConfig(server_tick_rate=-0.1)
+
+
+def test_game_config_player_registry_keeps_no_idle_players_by_default() -> None:
+    """The registry idle TTL defaults to 0 until every inventory writer goes through it (ADR-029 4a).
+
+    A cached inventory kept between units missed legacy put/get and death writes, and wrote stale copies back.
+    """
+    assert GameConfig().player_registry_idle_ttl_seconds == 0.0
+    assert GameConfig(player_registry_idle_ttl_seconds=60.0).player_registry_idle_ttl_seconds == 60.0
+    with pytest.raises(ValueError, match="greater than or equal to 0"):
+        _ = GameConfig(player_registry_idle_ttl_seconds=-1.0)
 
 
 def _make_game_config(field: str, value: float) -> GameConfig:
@@ -127,25 +136,37 @@ def _make_game_config(field: str, value: float) -> GameConfig:
     against every possible keyword field -- including str-typed ones like default_player_room.
     """
     if field == "disconnect_grace_period_seconds":
-        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, disconnect_grace_period_seconds=value)
+        return GameConfig(disconnect_grace_period_seconds=value)
     if field == "login_grace_period_seconds":
-        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, login_grace_period_seconds=value)
+        return GameConfig(login_grace_period_seconds=value)
     if field == "rest_countdown_seconds":
-        return GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, rest_countdown_seconds=value)
+        return GameConfig(rest_countdown_seconds=value)
+    if field == "ground_channel_seconds":
+        return GameConfig(ground_channel_seconds=value)
+    if field == "catatonia_decay_interval_seconds":
+        return GameConfig(catatonia_decay_interval_seconds=value)
     raise ValueError(f"Unknown grace/countdown field: {field}")
 
 
 def test_game_config_grace_period_defaults() -> None:
     """#297: the three grace/countdown durations default to their prior hardcoded values."""
-    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR)
+    config = GameConfig()
     assert config.disconnect_grace_period_seconds == 30.0
     assert config.login_grace_period_seconds == 10.0
     assert config.rest_countdown_seconds == 10.0
+    assert config.ground_channel_seconds == 10.0  # #713
+    assert config.catatonia_decay_interval_seconds == 2.0  # #1148
 
 
 @pytest.mark.parametrize(
     "field",
-    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+    [
+        "disconnect_grace_period_seconds",
+        "login_grace_period_seconds",
+        "rest_countdown_seconds",
+        "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
+    ],
 )
 def test_game_config_grace_period_accepts_override(field: str) -> None:
     """#297: each grace/countdown duration is independently retunable."""
@@ -155,7 +176,13 @@ def test_game_config_grace_period_accepts_override(field: str) -> None:
 
 @pytest.mark.parametrize(
     "field",
-    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+    [
+        "disconnect_grace_period_seconds",
+        "login_grace_period_seconds",
+        "rest_countdown_seconds",
+        "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
+    ],
 )
 def test_game_config_grace_period_rejects_zero(field: str) -> None:
     """#297: a zero grace/countdown period would silently disable the corresponding feature."""
@@ -165,7 +192,13 @@ def test_game_config_grace_period_rejects_zero(field: str) -> None:
 
 @pytest.mark.parametrize(
     "field",
-    ["disconnect_grace_period_seconds", "login_grace_period_seconds", "rest_countdown_seconds"],
+    [
+        "disconnect_grace_period_seconds",
+        "login_grace_period_seconds",
+        "rest_countdown_seconds",
+        "ground_channel_seconds",
+        "catatonia_decay_interval_seconds",
+    ],
 )
 def test_game_config_grace_period_rejects_over_max(field: str) -> None:
     """#297: an absurdly large grace/countdown period is rejected, matching the other Field
@@ -196,3 +229,20 @@ def test_database_config_validate_pool_config_invalid():
     """Test DatabaseConfig pool config validation with invalid value."""
     with pytest.raises(ValueError, match="Pool configuration values must be at least 1"):
         _ = DatabaseConfig(url=_POSTGRESQL_DATABASE_URL, npc_url=_POSTGRESQL_DATABASE_URL, pool_size=0)
+
+
+def test_logging_config_rotation_backup_count_default() -> None:
+    """Rotation keeps 10 backups per log file.
+
+    With e2e/unit capped at 10MB per file, the previous default of 3 left roughly three
+    minutes of history under load - short enough that investigating an intermittent failure
+    repeatedly found the relevant window already rotated away.
+    """
+    config = LoggingConfig(environment="unit_test")
+    assert config.rotation_backup_count == 10
+
+
+def test_logging_config_rotation_backup_count_override() -> None:
+    """An explicit LOGGING_ROTATION_BACKUP_COUNT still wins over the default."""
+    config = LoggingConfig(environment="unit_test", rotation_backup_count=3)
+    assert config.rotation_backup_count == 3

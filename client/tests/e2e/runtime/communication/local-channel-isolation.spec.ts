@@ -8,10 +8,10 @@
  * works correctly for local communication.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, waitForMessage } from '../fixtures/auth';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -21,8 +21,10 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding, goEastFromFoyer } from '../fixtures/player';
+import { DEFAULT_SPAWN_LOOK_CUE, EASTERN_HALLWAY_LOOK_CUE } from '../fixtures/test-data';
 
 async function returnAwToFoyerIfInHallway(aw: PlayerContext, contexts: PlayerContext[]): Promise<void> {
   const awAlreadyHallway = await aw.page
@@ -37,20 +39,29 @@ async function returnAwToFoyerIfInHallway(aw: PlayerContext, contexts: PlayerCon
   await ensureMultiplayerCoLocated(contexts, { timeoutMs: 45000, coLocateTimeoutMs: 30000 });
 }
 
-/** `look` may land in Location/Room panels or Game Info — accept Eastern Hallway cues. */
+/**
+ * `look` may land in Location/Room panels or Game Info, not a `[data-message-text]` chat
+ * entry -- accept cues for either room these tests ever put a player in: Main Foyer (the
+ * sanitarium spawn, DEFAULT_SPAWN_LOOK_CUE) or Eastern Hallway - Section 1 (one hop east).
+ * A single hardcoded "Eastern Hallway" cue previously made this wait unsatisfiable whenever
+ * called before any player had gone east (e.g. the very first `look` of the whole spec).
+ */
+const _LOOK_REFLECTED_CUE_SOURCE = `${DEFAULT_SPAWN_LOOK_CUE.source}|${EASTERN_HALLWAY_LOOK_CUE.source}`;
+
 async function waitForLookReflected(page: Page): Promise<void> {
   await page.waitForFunction(
-    () => {
+    cueSource => {
+      const cue = new RegExp(cueSource, 'i');
       const body = document.body?.innerText ?? '';
-      if (/Eastern Hallway|hallway, branching|first section of the eastern hallway/i.test(body)) {
+      if (cue.test(body)) {
         return true;
       }
       return Array.from(document.querySelectorAll('[data-message-text]')).some(el => {
         const v = (el.getAttribute('data-message-text') || '').trim();
-        return /Eastern Hallway|hallway, branching|You see/i.test(v);
+        return cue.test(v);
       });
     },
-    undefined,
+    _LOOK_REFLECTED_CUE_SOURCE,
     { timeout: 45000 }
   );
 }
@@ -94,20 +105,20 @@ async function ensureIthaquaInFoyer(ithaqua: PlayerContext): Promise<void> {
   await expect(ithaqua.page.getByText(/Main Foyer/i).first()).toBeVisible({ timeout: 20000 });
 }
 
-test.describe('Local Channel Isolation', () => {
+test.describe('Local Channel Isolation', { tag: '@shared-session' }, () => {
   test.describe.configure({ mode: 'serial', timeout: 300_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
   // Keep beforeAll light — heavy co-locate belongs in tests (default hook timeout is 30s).
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(120_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
   });
 
-  test.afterAll(async () => {
-    test.setTimeout(60_000);
-    await cleanupMultiPlayerContexts(contexts);
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   async function prepareLocalIsolationPair(): Promise<void> {

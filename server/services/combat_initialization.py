@@ -46,6 +46,10 @@ def _build_participant(data: CombatParticipantData) -> CombatParticipant:
         aggression_level=data.aggression_level,
         is_non_damaging=data.is_non_damaging,
         phantom_id=data.phantom_id,
+        corruption=data.corruption,
+        armor_points=data.armor_points,
+        npc_base_stats=data.npc_base_stats,
+        npc_behavior_config=data.npc_behavior_config,
     )
 
 
@@ -77,3 +81,10 @@ class CombatInitializer:  # pylint: disable=too-few-public-methods  # Reason: In
         combat.participants[target.participant_id] = _build_participant(target)
         combat.turn_order = _compute_turn_order(attacker, target)
         return combat
+
+    @staticmethod
+    def add_participant(combat: CombatInstance, data: CombatParticipantData) -> None:
+        """Add a late joiner to a running combat (#833) and rebuild initiative order by dexterity."""
+        combat.participants[data.participant_id] = _build_participant(data)
+        ordered = sorted(combat.participants.values(), key=lambda p: p.dexterity, reverse=True)
+        combat.turn_order = [p.participant_id for p in ordered]

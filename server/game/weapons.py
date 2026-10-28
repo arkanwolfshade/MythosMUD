@@ -42,7 +42,7 @@ def _roll_weapon_attack(weapon: dict[str, object], min_d: int, max_d: int) -> We
     mod_raw = weapon.get("modifier", 0)
     try:
         mod = int(mod_raw) if isinstance(mod_raw, int | float | str) else 0
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         mod = 0
     base_damage = random.randint(min_d, max_d) + mod  # nosec B311  # game damage roll, not crypto
     damage_types = weapon.get("damage_types")

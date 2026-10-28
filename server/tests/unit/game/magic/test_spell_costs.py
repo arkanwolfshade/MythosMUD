@@ -66,13 +66,17 @@ async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_
     player = MagicMock()
     player.get_stats.return_value = {
         "magic_points": 10,
-        "lucidity": 50,
         "corruption": 1,
         "max_magic_points": 10,
         "current_dp": 5,
         "max_dp": 10,
     }
-    player_service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    lucidity_loss = AsyncMock()
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    persistence.apply_lucidity_loss = lucidity_loss
+    persistence.save_player = AsyncMock()
+    player_service.persistence = persistence
     spell = _spell(
         school=SpellSchool.MYTHOS,
         lucidity_cost=10,
@@ -88,7 +92,8 @@ async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_
     ):
         await costs_service.apply_costs(uuid.uuid4(), spell)
     stats = player.get_stats()
-    assert stats["lucidity"] == 40
+    assert "lucidity" not in stats  # lucidity is spent in player_lucidity, through LucidityService
+    lucidity_loss.assert_awaited_once_with(player, 10, f"spell_cast:{spell.spell_id}")
     assert stats["corruption"] == 3
 
 

@@ -134,11 +134,13 @@ async def test_handle_new_connection_setup_room_none_early_return() -> None:
 async def test_handle_new_connection_setup_ends_combat_on_login() -> None:
     manager = _manager(async_persistence=None)
     player_id = uuid.uuid4()
+    combat_id = uuid.uuid4()
     combat = MagicMock()
-    combat.combat_id = uuid.uuid4()
+    combat.combat_id = combat_id
+    remove_participant: AsyncMock = AsyncMock(return_value=True)
     combat_service = MagicMock()
     combat_service.get_combat_by_participant = AsyncMock(return_value=combat)
-    combat_service.end_combat = AsyncMock()
+    combat_service.remove_participant = remove_participant
 
     with (
         patch("server.services.combat_service.get_combat_service", return_value=combat_service),
@@ -154,6 +156,6 @@ async def test_handle_new_connection_setup_ends_combat_on_login() -> None:
     ):
         await pcs.handle_new_connection_setup(player_id, MagicMock(), "room_1", manager)
 
-    combat_service.end_combat.assert_awaited_once()
+    remove_participant.assert_awaited_once_with(combat_id, player_id, "Player logged in - removing from combat")
     manager.room_manager.add_room_occupant.assert_called_once()
     manager._send_initial_game_state.assert_awaited_once()

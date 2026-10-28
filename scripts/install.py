@@ -10,7 +10,7 @@ is_windows = sys.platform.startswith("win")
 try:
     safe_run_static("uv", "--version", check=True, capture_output=True)
     print("[OK] uv is available")
-except (FileNotFoundError, subprocess.CalledProcessError, ValueError):
+except FileNotFoundError, subprocess.CalledProcessError, ValueError:
     print("[ERROR] uv is not available. Please install uv first:")
     print("  curl -LsSf https://astral.sh/uv/install.sh | sh")
     print("  # or on Windows:")

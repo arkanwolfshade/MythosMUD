@@ -4,15 +4,20 @@ Unit tests for NPC database initialization and session management.
 Tests NPC database engine creation, session management, and cleanup.
 """
 
+# pyright: reportPrivateUsage=false
+
 import builtins
 import os
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
+from sqlalchemy.pool import NullPool
 
 from server.exceptions import ValidationError
 from server.npc_database import (
+    _build_npc_connect_args,
+    _build_npc_pool_kwargs,
     close_npc_db,
     ensure_npc_database_directory,
     get_npc_database_path,
@@ -417,3 +422,50 @@ class TestEventLoopHandling:
                         get_npc_engine()
                         # Should recreate because loop ID changed (calls _initialize_npc_database which calls create_async_engine)
                         assert mock_create_engine.call_count >= 1
+
+
+class TestBuildNpcConnectArgs:
+    """_build_npc_connect_args: search_path normalization, extracted from
+    _initialize_npc_database in issue #787 and previously untested in isolation."""
+
+    @patch("server.npc_database.get_postgres_connect_args", return_value={"server_settings": {}})
+    def test_non_env_database_leaves_connect_args_unchanged(self, _mock_base_args: MagicMock):
+        """A database name outside the known dev/unit/e2e set is not touched."""
+        result = _build_npc_connect_args("postgresql+asyncpg://user:pass@host/production_db")
+        assert result == {"server_settings": {}}
+
+    @patch("server.npc_database.get_postgres_connect_args", return_value={"server_settings": {}})
+    def test_known_env_database_sets_search_path_to_db_name(self, _mock_base_args: MagicMock):
+        """mythos_unit's search_path is normalized to the database name itself."""
+        result = _build_npc_connect_args("postgresql+asyncpg://user:pass@host/mythos_unit")
+        assert result == {"server_settings": {"search_path": "mythos_unit"}}
+
+    @patch(
+        "server.npc_database.get_postgres_connect_args",
+        return_value={"server_settings": {"search_path": "mythos_dev"}},
+    )
+    def test_already_correct_search_path_is_left_alone(self, _mock_base_args: MagicMock):
+        """No normalization needed when search_path already matches the database name."""
+        result = _build_npc_connect_args("postgresql+asyncpg://user:pass@host/mythos_dev")
+        assert result == {"server_settings": {"search_path": "mythos_dev"}}
+
+    @patch("server.npc_database.get_postgres_connect_args", return_value={"server_settings": {}})
+    def test_query_string_is_stripped_before_matching_db_name(self, _mock_base_args: MagicMock):
+        """The database name is taken before any '?' query string, e.g. ?sslmode=require."""
+        result = _build_npc_connect_args("postgresql+asyncpg://user:pass@host/mythos_e2e?sslmode=require")
+        assert result == {"server_settings": {"search_path": "mythos_e2e"}}
+
+
+class TestBuildNpcPoolKwargs:
+    """_build_npc_pool_kwargs: NullPool for tests, configured pool for production."""
+
+    def test_test_database_uses_nullpool(self):
+        result = _build_npc_pool_kwargs("postgresql+asyncpg://user:pass@host/mythos_unit_test")
+        assert result == {"poolclass": NullPool}
+
+    @patch("server.config.get_config")
+    def test_production_database_uses_configured_pool_settings(self, mock_get_config: MagicMock):
+        mock_get_config.return_value = MagicMock(database=MagicMock(pool_size=5, max_overflow=10, pool_timeout=30))
+
+        result = _build_npc_pool_kwargs("postgresql+asyncpg://user:pass@host/mythos_prod")
+        assert result == {"pool_size": 5, "max_overflow": 10, "pool_timeout": 30}

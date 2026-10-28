@@ -33,7 +33,6 @@ def test_player_defaults() -> None:
 
     # SQLAlchemy defaults are applied on DB save, not object instantiation
     assert player.inventory == "[]" or player.inventory is None
-    assert player.status_effects == "[]" or player.status_effects is None
     assert player.experience_points == 0 or player.experience_points is None
     assert player.level == 1 or player.level is None
     assert player.is_admin == 0 or player.is_admin is None
@@ -69,6 +68,13 @@ def test_player_get_stats_default() -> None:
     # Should return default stats structure
     assert isinstance(stats, dict)
     assert "strength" in stats or stats == {}
+
+
+def test_player_default_stats_have_no_lucidity() -> None:
+    """Lucidity lives in player_lucidity (ADR-029 step 3a): a new player's stats never carry a copy."""
+    player = Player(player_id=str(uuid4()), user_id=str(uuid4()), name="TestPlayer")
+
+    assert "lucidity" not in player.get_stats()
 
 
 def test_player_set_stats() -> None:
@@ -146,34 +152,6 @@ def test_player_set_inventory_serializes_uuid_values() -> None:
     assert inventory[0]["item_instance_id"] == str(instance_id)
 
 
-def test_player_get_status_effects() -> None:
-    """Test Player.get_status_effects() parses JSON status effects."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        status_effects='[{"type": "poisoned", "duration": 10}]',
-    )
-
-    effects = player.get_status_effects()
-
-    assert effects == [{"type": "poisoned", "duration": 10}]
-
-
-def test_player_set_status_effects() -> None:
-    """Test Player.set_status_effects() serializes to JSON."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(player_id=player_id, user_id=user_id, name="TestPlayer")
-
-    new_effects = [{"type": "stunned", "duration": 5}]
-    player.set_status_effects(new_effects)
-
-    assert player.get_status_effects() == new_effects
-
-
 def test_player_get_equipped_items() -> None:
     """Test Player.get_equipped_items() returns equipped items from _equipped_items attribute."""
     player_id = str(uuid4())
@@ -216,36 +194,11 @@ def test_player_set_equipped_items() -> None:
     assert player.get_equipped_items() == new_equipped
 
 
-def test_player_add_experience() -> None:
-    """Test Player.add_experience() increases experience points."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        experience_points=100,
-    )
-
-    player.add_experience(50)
-
-    assert player.experience_points == 150
-
-
-def test_player_add_experience_zero() -> None:
-    """Test Player.add_experience() handles zero experience."""
-    player_id = str(uuid4())
-    user_id = str(uuid4())
-    player = Player(
-        player_id=player_id,
-        user_id=user_id,
-        name="TestPlayer",
-        experience_points=100,
-    )
-
-    player.add_experience(0)
-
-    assert player.experience_points == 100
+def test_player_has_no_add_experience_method() -> None:
+    """#879: XP awards go through LevelService.grant_xp (SQL-side curve); Player has no
+    add_experience method (it computed level with a naive, since-inverted formula)."""
+    player = Player(player_id=str(uuid4()), user_id=str(uuid4()), name="TestPlayer")
+    assert not hasattr(player, "add_experience")
 
 
 def test_player_is_alive() -> None:

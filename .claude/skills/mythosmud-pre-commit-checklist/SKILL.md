@@ -1,6 +1,6 @@
 ---
 name: mythosmud-pre-commit-checklist
-description: Run MythosMUD pre-commit checks before considering work done: format, mypy, lint (and optionally codacy-tools), then test or test-coverage. Use when finishing a change, before commit, or when the user asks if everything is done.
+description: "Run MythosMUD pre-commit checks before considering work done: format, mypy, lint (and optionally codacy-tools), then test or test-coverage. Use when finishing a change, before commit, or when the user asks if everything is done."
 ---
 
 # MythosMUD Pre-Commit Checklist

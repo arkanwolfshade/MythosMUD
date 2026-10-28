@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 
 export const EldritchEffectsDemo = lazy(() =>
-  import('../components/EldritchEffectsDemo.tsx').then(m => ({ default: m.EldritchEffectsDemo }))
+  import('../components/ui-v2/demos/EldritchEffectsDemo.tsx').then(m => ({ default: m.EldritchEffectsDemo }))
 );
 export const GameClientV2Container = lazy(() =>
   import('../components/ui-v2/GameClientV2Container.tsx').then(m => ({ default: m.GameClientV2Container }))

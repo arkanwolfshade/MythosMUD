@@ -1,11 +1,11 @@
 import React from 'react';
 
-export interface StatRequirement {
+interface StatRequirement {
   stat: string;
   minimum: number;
 }
 
-export interface MechanicalEffect {
+interface MechanicalEffect {
   effect_type: string;
   value: number | string;
   description?: string | null;

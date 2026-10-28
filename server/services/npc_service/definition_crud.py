@@ -2,7 +2,7 @@
 
 import json
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -48,7 +48,8 @@ class NPCDefinitionCRUDMixin:
             if "does not exist" in str(e).lower() or "UndefinedTableError" in type(e).__name__:
                 logger.warning(
                     "Ensure POSTGRES_SEARCH_PATH is set (e.g. mythos_dev in .env.local) and that "
-                    "the schema DDL has been applied (e.g. psql -d mythos_dev -f db/mythos_dev_ddl.sql)",
+                    + 'the schema DDL has been applied (e.g. psql -d mythos_dev -c "SET search_path '
+                    + 'TO mythos_dev;" -f db/schema.sql)',
                 )
             raise DatabaseError(f"Failed to retrieve NPC definitions: {e}") from e
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904
@@ -306,7 +307,7 @@ class NPCDefinitionCRUDMixin:
                 text("SELECT delete_npc_definition(:id)"),
                 {"id": definition_id},
             )
-            deleted = result.scalar()
+            deleted = cast(object, result.scalar())
             if deleted:
                 logger.info("Deleted NPC definition", definition_id=definition_id, name=definition.name)
             return bool(deleted)

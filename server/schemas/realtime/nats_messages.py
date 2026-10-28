@@ -13,6 +13,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from server.constants.message_segments import MessageSegment
+
 
 class BaseMessageSchema(BaseModel):
     """Base schema for all NATS messages."""
@@ -61,6 +63,9 @@ class ChatMessageSchema(BaseMessageSchema):
     # Align with chat_nats_publisher / ChatMessage domain (system/npc/party payloads).
     speaker_kind: str | None = Field(None, description="Speaker kind: player, npc, or system")
     party_id: str | None = Field(None, description="Party ID for party-channel messages")
+    # Styling metadata added by chat_nats_publisher (#1036): the NPC's disposition and pre-split styled spans.
+    speaker_disposition: str | None = Field(None, description="NPC speaker disposition (npc.* category suffix)")
+    content_segments: list[MessageSegment] | None = Field(None, description="Styled spans that join to content")
 
     @field_validator("channel")
     @classmethod
@@ -74,6 +79,7 @@ class ChatMessageSchema(BaseMessageSchema):
             "emote",
             "pose",
             "system",
+            "quest",
             "admin",
             "party",
         }
@@ -120,7 +126,7 @@ def validate_chat_message(data: dict[str, Any]) -> ChatMessageSchema:
     Raises:
         ValueError: If message validation fails
     """
-    return ChatMessageSchema(**data)
+    return ChatMessageSchema.model_validate(data)
 
 
 def validate_event_message(data: dict[str, Any]) -> EventMessageSchema:

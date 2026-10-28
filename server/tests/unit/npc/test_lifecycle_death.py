@@ -59,6 +59,31 @@ def test_handle_npc_died_impl_full_path():
     manager.respawn_npc.assert_called_once()
 
 
+def test_handle_npc_died_impl_instance_room_queues_no_respawn():
+    """An NPC owned by a per-player instance dies for good: respawn would target the shared world."""
+    instance_room = "instance_e4857769-81a3-40dd-bf65-b1811a1904ee_earth_arkhamcity_downtown_001"
+    record = _record("npc_1")
+    npc_instance: MagicMock = MagicMock()
+    npc_instance.room_id = instance_room
+    lifecycle_records: dict[str, NPCLifecycleRecord] = {"npc_1": record}
+    active_npcs: dict[str, MagicMock] = {"npc_1": npc_instance}
+    persistence: MagicMock = MagicMock()
+    persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+    respawn_npc: MagicMock = MagicMock(return_value=True)
+    manager = _manager_stub()
+    manager.lifecycle_records = lifecycle_records
+    manager.active_npcs = active_npcs
+    manager.persistence = persistence
+    manager.respawn_npc = respawn_npc
+    event = NPCDied(npc_id="npc_1", room_id=instance_room, cause="combat")
+
+    handle_npc_died_impl(manager, event)
+
+    assert "npc_1" not in active_npcs
+    assert record.current_state == NPCLifecycleState.DESPAWNED
+    respawn_npc.assert_not_called()
+
+
 def test_remove_active_npc_skips_when_not_active():
     manager = _manager_stub()
     event = NPCDied(npc_id="npc_1", room_id="room_1")

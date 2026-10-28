@@ -4,23 +4,27 @@ from __future__ import annotations
 
 import datetime
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..config import get_config
 from ..constants.spawn_defaults import LIMBO_ROOM_ID
 from ..database import get_async_session
 from ..events.event_types import PlayerDPDecayEvent, PlayerDPUpdated
 from ..models.combat import CombatStatus
 from ..services.combat_messaging_integration import combat_messaging_integration
+from ..services.corpse_lifecycle_service import CorpseLifecycleService, CorpseServiceError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
+from .game_tick_catatonia import process_catatonia_decay
 from .game_tick_protocols import (
     _app_container,
     _online_player_ids,
     _tick_online_players,
     _TickContainer,
+    _TickCorruptionFlux,
     _TickMpRegen,
 )
 
@@ -28,6 +32,7 @@ logger = get_logger("server.game_tick")
 
 if TYPE_CHECKING:
     from ..models.player import Player
+    from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike
 
 __all__ = [
     "_handle_player_death_threshold",
@@ -36,9 +41,11 @@ __all__ = [
     "_process_mortally_wounded_player",
     "_process_mortally_wounded_players",
     "_process_mp_regeneration",
+    "_process_passive_corruption_flux",
     "_process_passive_lucidity_flux",
     "_process_session_dp_decay_and_death",
     "_process_single_player_mp_regeneration",
+    "_process_single_player_room_flux",
     "_validate_mp_regeneration_services",
     "process_dp_decay_and_death",
 ]
@@ -62,6 +69,27 @@ async def _player_in_active_combat(container: _TickContainer, player: Player) ->
     return False
 
 
+async def _create_bleed_out_corpse(container: _TickContainer, player_uuid: uuid.UUID, room_id: str) -> None:
+    """Move a bled-out player's gear onto a corpse in the death room (#917).
+
+    Bleed-out deaths (DP decay to -10, no killing blow) never pass through combat's death handler,
+    which is the only other place a corpse is made, so without this they kept everything.
+    """
+    persistence = container.async_persistence
+    if persistence is None:
+        logger.warning("No persistence available for bleed-out corpse creation", player_id=player_uuid)
+        return
+    corpse_service = CorpseLifecycleService(
+        persistence=persistence,
+        connection_manager=cast("CorpseConnectionManagerLike | None", cast(object, container.connection_manager)),
+    )
+    try:
+        _ = await corpse_service.create_corpse_on_death(player_uuid, room_id)
+    except CorpseServiceError as corpse_error:
+        # A failed corpse must not abort the death sequence (limbo move, DP publish) that follows.
+        logger.error("Error creating bleed-out corpse", player_id=player_uuid, room_id=room_id, error=str(corpse_error))
+
+
 async def _handle_player_death_threshold(
     container: _TickContainer, player: Player, session: AsyncSession, new_dp: int, stats: dict[str, object]
 ) -> None:
@@ -78,8 +106,10 @@ async def _handle_player_death_threshold(
     death_service = container.player_death_service
     respawn_service = container.player_respawn_service
     player_uuid = uuid.UUID(str(player.player_id))
-    _ = await death_service.handle_player_death(player_uuid, str(player.current_room_id), None, session)
-    _ = await respawn_service.move_player_to_limbo(player_uuid, str(player.current_room_id), session)
+    death_room_id = str(player.current_room_id)
+    _ = await death_service.handle_player_death(player_uuid, death_room_id, None, session)
+    await _create_bleed_out_corpse(container, player_uuid, death_room_id)
+    _ = await respawn_service.move_player_to_limbo(player_uuid, death_room_id, session)
 
     if not container.event_bus:
         return
@@ -132,9 +162,19 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
         await _handle_player_death_threshold(container, player, session, new_dp, stats)
 
 
+def is_game_second_tick(tick_count: int) -> bool:
+    """True once per second of game time, regardless of tick rate.
+
+    DP decay is 1 DP/second (#908); the tick loop also uses this to run its DB-backed checks at
+    1 Hz while no player is online.
+    """
+    ticks_per_second = max(1, round(1 / get_config().game.server_tick_rate))
+    return not tick_count % ticks_per_second
+
+
 async def _process_mortally_wounded_players(container: _TickContainer, session: AsyncSession, tick_count: int) -> None:
     """Process all mortally wounded players."""
-    if not container.player_death_service:
+    if not container.player_death_service or not is_game_second_tick(tick_count):
         return
 
     death_service = container.player_death_service
@@ -165,6 +205,48 @@ async def _process_passive_lucidity_flux(container: _TickContainer, session: Asy
         )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as lcd_flux_error:
         logger.error("Error processing passive LCD flux", tick_count=tick_count, error=str(lcd_flux_error))
+
+
+async def _process_single_player_room_flux(
+    flux_service: _TickCorruptionFlux, player_id_str: str, tick_count: int
+) -> bool:
+    """
+    Process passive room corruption flux for a single online player.
+
+    Args:
+        flux_service: Passive corruption flux service instance
+        player_id_str: Player ID as string
+        tick_count: Current game tick count
+
+    Returns:
+        True if corruption changed, False otherwise
+    """
+    try:
+        player_uuid = uuid.UUID(player_id_str)
+        result = await flux_service.process_tick_for_player(player_uuid, tick_count)
+        return bool(coerce_int(result.get("delta", 0), default=0))
+    except (ValueError, AttributeError, TypeError) as e:
+        logger.warning("Error processing room corruption flux for player", player_id=player_id_str, error=str(e))
+        return False
+
+
+async def _process_passive_corruption_flux(container: _TickContainer, _session: AsyncSession, tick_count: int) -> None:
+    """Process passive room corruption flux for online players (#815 PR-5)."""
+    flux_service = container.passive_corruption_flux_service
+    if not flux_service or not container.connection_manager:
+        return
+
+    try:
+        await _tick_online_players(
+            _online_player_ids(container),
+            tick_count,
+            "Processed room corruption flux",
+            lambda player_id_str: _process_single_player_room_flux(flux_service, player_id_str, tick_count),
+        )
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as corruption_flux_error:
+        logger.error(
+            "Error processing passive corruption flux", tick_count=tick_count, error=str(corruption_flux_error)
+        )
 
 
 def _validate_mp_regeneration_services(container: _TickContainer) -> bool:
@@ -254,6 +336,8 @@ async def _process_session_dp_decay_and_death(
     """Process DP decay and death for a single database session."""
     await _process_mortally_wounded_players(container, session, tick_count)
     await _process_passive_lucidity_flux(container, session, tick_count)
+    await process_catatonia_decay(container, session, tick_count)
+    await _process_passive_corruption_flux(container, session, tick_count)
     await _process_mp_regeneration(container, session, tick_count)
     await _process_dead_players(container, session)
 

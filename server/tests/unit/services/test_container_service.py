@@ -16,6 +16,7 @@ from server.services.container_service import (
     ContainerCapacityError,
     ContainerLockedError,
     ContainerNotFoundError,
+    ContainerOpenByAnotherPlayerError,
     ContainerService,
     ContainerServiceError,
     filter_container_data,
@@ -163,6 +164,46 @@ def test_validate_ownership_equipment_mismatch_raises(service: ContainerService)
     container = _container(source_type=ContainerSourceType.EQUIPMENT, entity_id=uuid.uuid4())
     with pytest.raises(ContainerAccessDeniedError):
         service._validate_ownership(container, str(uuid.uuid4()))
+
+
+def _bank_box(owner_id: uuid.UUID | None) -> ContainerComponent:
+    return _container(source_type=ContainerSourceType.BANK, room_id=None, owner_id=owner_id)
+
+
+def test_validate_ownership_bank_owner_passes(service: ContainerService):
+    owner_id = uuid.uuid4()
+    service._validate_ownership(_bank_box(owner_id), str(owner_id))
+
+
+def test_validate_ownership_bank_other_player_raises(service: ContainerService):
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_ownership(_bank_box(uuid.uuid4()), str(uuid.uuid4()))
+
+
+@pytest.mark.parametrize("player_id", [str(uuid.uuid4()), "", "None"])
+def test_validate_ownership_orphaned_bank_box_matches_nobody(service: ContainerService, player_id: str):
+    """owner_id goes NULL when the character is deleted; that box must stay shut, even to a blank id."""
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_ownership(_bank_box(None), player_id)
+
+
+def test_validate_container_access_bank_owner_opens_it_anywhere(service: ContainerService):
+    """A bank box has no room, so proximity does not apply: the owner is the only gate."""
+    owner_id = uuid.uuid4()
+    player = MagicMock(
+        player_id=str(owner_id), current_room_id="earth_arkhamcity_downtown_room_main_st_006", is_admin=False
+    )
+    service._validate_container_access(_bank_box(owner_id), player)
+
+
+def test_validate_container_access_bank_is_closed_to_other_players_and_admins(service: ContainerService):
+    box = _bank_box(uuid.uuid4())
+    stranger = MagicMock(player_id=str(uuid.uuid4()), current_room_id="somewhere", is_admin=False)
+    admin = MagicMock(player_id=str(uuid.uuid4()), current_room_id="somewhere", is_admin=True)
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_container_access(box, stranger)
+    with pytest.raises(ContainerAccessDeniedError):
+        service._validate_container_access(box, admin)
 
 
 def test_validate_role_access_denies_player_without_role(service: ContainerService):
@@ -351,7 +392,9 @@ async def test_open_container_locked_without_key(service: ContainerService):
 
 
 @pytest.mark.asyncio
-async def test_open_container_already_open(service: ContainerService):
+async def test_open_container_already_open_is_idempotent(service: ContainerService):
+    """Reopening a container the player already has open returns their existing token
+    instead of raising, so a text command's stale session never 409s a later GUI open."""
     container_id = uuid.uuid4()
     player_id = uuid.uuid4()
     _ = service.register_open_session(container_id, player_id, "existing")
@@ -363,8 +406,70 @@ async def test_open_container_already_open(service: ContainerService):
     service.persistence.get_container = AsyncMock(return_value=container_data)
     service.persistence.get_player_by_id = AsyncMock(return_value=player)
 
-    with pytest.raises(ContainerServiceError):
-        _ = await service.open_container(container_id, player_id)
+    result = await service.open_container(container_id, player_id)
+
+    assert result["mutation_token"] == "existing"
+
+
+@pytest.mark.asyncio
+async def test_open_container_rejects_second_player_naming_holder(service: ContainerService):
+    """Any number of players may look into a container, but opening it for interaction
+    is exclusive: a second player's open is rejected, naming whoever already holds it."""
+    container_id = uuid.uuid4()
+    holder_id = uuid.uuid4()
+    second_player_id = uuid.uuid4()
+    _ = service.register_open_session(container_id, holder_id, "holder-token")
+    container_data = _container_data(container_id)
+
+    holder = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    holder.name = "ArkanWolfshade"
+
+    second_player = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    second_player.name = "Ithaqua"
+    second_player.current_room_id = "earth_arkham_downtown_001"
+    second_player.is_admin = False
+
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+
+    async def _get_player_by_id(pid: uuid.UUID) -> MagicMock:
+        return holder if pid == holder_id else second_player
+
+    service.persistence.get_player_by_id = AsyncMock(side_effect=_get_player_by_id)
+
+    with pytest.raises(ContainerOpenByAnotherPlayerError, match="ArkanWolfshade"):
+        _ = await service.open_container(container_id, second_player_id)
+
+    # The holder's own session is untouched; the second player never registered.
+    assert service.get_container_token(container_id, holder_id) == "holder-token"
+    assert service.get_container_token(container_id, second_player_id) is None
+
+
+@pytest.mark.asyncio
+async def test_release_player_sessions_frees_containers_for_other_players(service: ContainerService):
+    """#964: a holder who leaves the game must not keep their containers locked for everyone else."""
+    corpse_id, other_corpse_id, bystander_corpse_id = uuid.uuid4(), uuid.uuid4(), uuid.uuid4()
+    holder_id, second_player_id, bystander_id = uuid.uuid4(), uuid.uuid4(), uuid.uuid4()
+    _ = service.register_open_session(corpse_id, holder_id, "holder-token")
+    _ = service.register_open_session(other_corpse_id, holder_id, "holder-token-2")
+    _ = service.register_open_session(bystander_corpse_id, bystander_id, "bystander-token")
+
+    assert service.release_player_sessions(holder_id) == 2
+    assert service.release_player_sessions(holder_id) == 0
+
+    assert service.get_container_token(corpse_id, holder_id) is None
+    assert service.get_container_token(other_corpse_id, holder_id) is None
+    assert service.get_container_token(bystander_corpse_id, bystander_id) == "bystander-token"
+
+    second_player = MagicMock(spec=["name", "current_room_id", "is_admin"])
+    second_player.name = "Ithaqua"
+    second_player.current_room_id = "earth_arkham_downtown_001"
+    second_player.is_admin = False
+    service.persistence.get_container = AsyncMock(return_value=_container_data(corpse_id))
+    service.persistence.get_player_by_id = AsyncMock(return_value=second_player)
+
+    result = await service.open_container(corpse_id, second_player_id)
+
+    assert service.get_container_token(corpse_id, second_player_id) == result["mutation_token"]
 
 
 @pytest.mark.asyncio

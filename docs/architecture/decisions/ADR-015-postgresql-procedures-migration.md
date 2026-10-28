@@ -1,6 +1,6 @@
 # ADR-015: PostgreSQL Procedures and Functions for Data Access
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-09-15
 
 ---
 
@@ -56,7 +56,11 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 
 - **Positive**: Single place for query logic; procedure return shape is a clear contract; fewer round-trips where procedures aggregate data (e.g. get_rooms_with_exits); test and dev DBs get procedures via the same script; integration tests can assert procedure return shape.
 - **Negative**: Procedure definitions must be kept in sync with table schema; DB type mismatches (e.g. json vs jsonb) surface at call sites until fixed in the procedure.
-- **Neutral**: SQLAlchemy ORM mappings remain for now where used by Alembic or other tooling.
+- **Neutral**: SQLAlchemy ORM mappings remain for now where used by `Base.metadata.create_all` in
+  integration test fixtures or other tooling. (The Alembic revisions this line originally referred
+  to were scaffolded but never wired up — no `alembic.ini`/`env.py`, not a dependency — and were
+  removed in #811, which adopted dbmate for versioned migrations on top of a schema-agnostic
+  baseline instead.)
 - **[NOTE]** `postgres_adapter.py` was removed in #630 (2026-08): it had no remaining importer outside its own test.
 
 ## 6. Related ADRs
@@ -82,3 +86,4 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship) per the 2026-08 audit (#721) |
+| 1.2.0 | 2026-09-15 | Correct the §5 Alembic reference: those revisions were never wired up and were removed in #811, which adopted dbmate instead |

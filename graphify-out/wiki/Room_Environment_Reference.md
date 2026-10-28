@@ -1,10 +1,11 @@
 # Room Environment Reference
 
-> 1 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Room Environment Reference** (0 connections) — `docs/ROOM_ENVIRONMENT_REFERENCE.md`
+- **unit/monitoring/__init__.py** (1 connections) — `server/tests/unit/monitoring/__init__.py`
+- **Monitoring unit tests.** (1 connections) — `server/tests/unit/monitoring/__init__.py`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/ROOM_ENVIRONMENT_REFERENCE.md`
+- `server/tests/unit/monitoring/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -9,6 +9,8 @@ import json
 from datetime import datetime
 from typing import Any, cast
 
+from ..constants.npc_disposition import NpcOccupant
+from ..realtime.connection_utils import npc_disposition_from_type, npc_occupant
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -55,7 +57,7 @@ def _parse_npc_stats_dict(npc_stats: Any) -> dict[str, Any]:
     if isinstance(npc_stats, str):
         try:
             return cast(dict[str, Any], json.loads(npc_stats))
-        except (json.JSONDecodeError, TypeError):
+        except json.JSONDecodeError, TypeError:
             return {}
     if isinstance(npc_stats, dict):
         return npc_stats
@@ -126,7 +128,7 @@ def _parse_stat_datetime(dt_value: Any) -> str:
         else:
             dt = datetime.fromisoformat(str(dt_value))
         return dt.strftime("%Y-%m-%d %H:%M:%S")
-    except (ValueError, TypeError, OSError):
+    except ValueError, TypeError, OSError:
         return str(dt_value)
 
 
@@ -239,7 +241,7 @@ def _get_lifecycle_manager() -> Any | None:
             return None
 
         return lifecycle_manager
-    except (AttributeError, TypeError, ValueError):
+    except AttributeError, TypeError, ValueError:
         return None
 
 
@@ -264,23 +266,29 @@ def _should_include_npc(npc_instance: Any) -> bool:
 
 async def _get_npcs_in_room(room_id: str) -> list[str]:
     """Get list of NPC names in a room from lifecycle manager."""
-    npc_names: list[str] = []
+    return [npc["name"] for npc in await _get_npc_occupants_in_room(room_id)]
+
+
+async def _get_npc_occupants_in_room(room_id: str) -> list[NpcOccupant]:
+    """The NPCs in a room as ``{name, disposition}``, from the lifecycle manager (#1036)."""
+    npcs: list[NpcOccupant] = []
     try:
         lifecycle_manager = _get_lifecycle_manager()
         if not lifecycle_manager:
-            return npc_names
+            return npcs
 
         active_npcs_dict = lifecycle_manager.active_npcs
         for _npc_id, npc_instance in active_npcs_dict.items():
             npc_room_id = _get_npc_room_id(npc_instance)
             if npc_room_id == room_id and _should_include_npc(npc_instance):
                 npc_name = getattr(npc_instance, "name", None)
+                npc_type: object = getattr(cast("object", npc_instance), "npc_type", None)
                 if isinstance(npc_name, str):
-                    npc_names.append(npc_name)
+                    npcs.append(npc_occupant(npc_name, npc_disposition_from_type(npc_type, cast("str", _npc_id))))
     except (AttributeError, TypeError, ValueError) as e:
         logger.warning("Error getting NPCs from lifecycle manager for room look", room_id=room_id, error=str(e))
 
-    return npc_names
+    return npcs
 
 
 __all__ = [
@@ -294,4 +302,5 @@ __all__ = [
     "_get_npc_room_id",
     "_should_include_npc",
     "_get_npcs_in_room",
+    "_get_npc_occupants_in_room",
 ]

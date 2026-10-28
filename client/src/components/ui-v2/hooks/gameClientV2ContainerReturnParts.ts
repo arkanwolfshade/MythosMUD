@@ -4,6 +4,16 @@ import type { ActiveEffectDisplay } from '../utils/stateUpdateUtils';
 import type { GameClientV2ContainerProps, GameClientV2MergedSlice } from './gameClientV2ContainerTypes';
 import type { GameClientV2NetworkPhase } from './useGameClientV2ContainerNetworkPhase';
 
+/** Death/delirium display fields, split out so buildSliceAndPropsPublicFields stays under the CCN limit. */
+function buildDeathAndDeliriumFields(slice: GameClientV2MergedSlice) {
+  return {
+    isDead: slice.gameState.isDead ?? false,
+    deathLocation: slice.gameState.deathLocation ?? 'Unknown Location',
+    isDelirious: slice.gameState.isDelirious ?? false,
+    deliriumLocation: slice.gameState.deliriumLocation ?? 'Unknown Location',
+  };
+}
+
 export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps, slice: GameClientV2MergedSlice) {
   return {
     playerName: props.playerName,
@@ -12,12 +22,9 @@ export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps
     gameState: slice.gameState,
     mythosTime: slice.mythosTime,
     healthStatus: slice.healthStatus,
-    lucidityStatus: slice.lucidityStatus,
-    isDead: slice.isDead,
-    deathLocation: slice.deathLocation,
+    lucidityStatus: slice.gameState.lucidityStatus ?? null,
+    ...buildDeathAndDeliriumFields(slice),
     isRespawning: slice.isRespawning,
-    isDelirious: slice.isDelirious,
-    deliriumLocation: slice.deliriumLocation,
     isDeliriumRespawning: slice.isDeliriumRespawning,
     isMainMenuOpen: slice.isMainMenuOpen,
     setIsMainMenuOpen: slice.setIsMainMenuOpen,
@@ -38,7 +45,6 @@ export function buildSliceAndPropsPublicFields(props: GameClientV2ContainerProps
 
 export function buildNetPublicFields(net: GameClientV2NetworkPhase) {
   return {
-    clearPendingFollowRequest: net.clearPendingFollowRequest,
     sendMessage: net.sendMessage,
     isConnected: net.isConnected,
     isConnecting: net.isConnecting,

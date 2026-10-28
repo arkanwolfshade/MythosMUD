@@ -10,6 +10,7 @@ from structlog.stdlib import BoundLogger
 from ..models.player import Player
 from ..services.inventory_service import InventoryStack
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .inventory_item_matching import match_equipped_item_by_name, match_inventory_item_by_name, normalize_slot_name
 from .inventory_service_helpers import get_shared_services
 
@@ -61,7 +62,7 @@ def resolve_equip_item_index(
         )
         return match_index, _equip_stack_from_inventory_index(inventory, match_index)
 
-    return None, {"result": "Usage: equip <inventory-number|item-name> [slot]"}
+    return None, {**command_error("Usage: equip <inventory-number|item-name> [slot]")}
 
 
 def normalize_inventory_slots(inventory: list[dict[str, object]]) -> None:
@@ -174,7 +175,7 @@ def resolve_unequip_slot(
     normalized_slot = normalize_slot_name(slot) if isinstance(slot, str) else None
 
     if _unequip_usage_missing_slot(normalized_slot, search_term):
-        return None, {"result": "Usage: unequip <slot|item-name>"}
+        return None, command_error("Usage: unequip <slot|item-name>")
 
     resolved = _try_resolve_unequip_slot_key(normalized_slot, equipped_mapping)
     if resolved is not None:
@@ -190,10 +191,10 @@ def resolve_unequip_slot(
 
 
 async def handle_wearable_container_on_unequip(
-    request: object, player: Player, unequipped_item: dict[str, object], persistence: object
+    request: object, player: Player, unequipped_item: dict[str, object]
 ) -> None:
     """Handle wearable container preservation when unequipping a container item."""
-    from .inventory_command_helpers import persist_player
+    from .inventory_command_helpers import change_inventory
 
     if unequipped_item.get("inner_container"):
         try:
@@ -203,18 +204,25 @@ async def handle_wearable_container_on_unequip(
                 item_stack=unequipped_item,
             )
             if container_result:
-                inventory_view = player.get_inventory()
-                for inv_item in inventory_view:
-                    if inv_item.get("item_instance_id") == unequipped_item.get("item_instance_id"):
-                        inv_item["inner_container"] = container_result["inner_container"]
-                        player.set_inventory(inventory_view)
-                        _ = await persist_player(persistence, player)
-                        logger.debug(
-                            "Wearable container preserved on unequip",
-                            player_id=player.player_id,
-                            item_id=unequipped_item.get("item_id"),
-                        )
-                        break
+                inner_container = cast(object, container_result["inner_container"])
+                instance_id = unequipped_item.get("item_instance_id")
+
+                async def keep_inner_container() -> Mapping[str, object] | None:
+                    # On the live carried stack, through the registry, or its next inventory write would drop it.
+                    inventory_view = player.get_inventory()
+                    for inv_item in inventory_view:
+                        if inv_item.get("item_instance_id") == instance_id:
+                            inv_item["inner_container"] = inner_container
+                            player.set_inventory(inventory_view)
+                            break
+                    return None
+
+                if await change_inventory(player, keep_inner_container) is None:
+                    logger.debug(
+                        "Wearable container preserved on unequip",
+                        player_id=player.player_id,
+                        item_id=unequipped_item.get("item_id"),
+                    )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container preservation errors unpredictable, not critical
             logger.warning(
                 "Failed to preserve wearable container on unequip",

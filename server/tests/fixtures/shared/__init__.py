@@ -34,7 +34,7 @@ def make_player_dict(
     name: str = "testplayer",
     player_id: str | None = None,
     user_id: str | None = None,
-    room_id: str = "earth_arkhamcity_intersection_derby_high",
+    room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
 ) -> dict[str, Any]:
     """Create a player dictionary for testing."""
     import uuid

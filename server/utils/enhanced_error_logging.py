@@ -115,9 +115,9 @@ def log_and_raise_enhanced(  # pylint: disable=too-many-arguments,too-many-posit
         **kwargs,
     }
 
-    # ValidationError is normally expected user input (e.g. empty local); log as warning.
-    # Use error level when log_as_error=True so command-usage failures go to errors.log.
-    log_level = "error" if (log_as_error or exception_class is not ValidationError) else "warning"
+    # Expected, user-caused outcomes (ValidationError, container rejections, ...) declare log_level
+    # "warning" on the class (#965). log_as_error=True forces error so command-usage failures go to errors.log.
+    log_level = "error" if log_as_error else exception_class.log_level
     log_with_context(error_logger, log_level, "Error logged and exception raised", **log_data)
 
     # Increment exception counter for monitoring

@@ -25,6 +25,7 @@ from server.commands.container_helpers_inventory_ops import (
     validate_get_command_inputs,
     validate_put_command_inputs,
 )
+from server.constants.message_category import MessageCategory
 
 
 def test_coerce_transfer_quantity_int_and_str() -> None:
@@ -77,6 +78,17 @@ def test_extract_items_from_container_dict() -> None:
     )
     assert out_cid == cid
     assert items == [{"item_name": "x"}]
+
+
+def test_extract_items_from_container_persistence_row() -> None:
+    """Room containers come from persistence as dicts with items_json (not items)."""
+    cid = uuid.uuid4()
+    items, out_cid = extract_items_from_container(
+        {"items_json": [{"item_name": "Sling"}], "container_id": str(cid), "source_type": "environment"},
+        None,
+    )
+    assert out_cid == cid
+    assert items == [{"item_name": "Sling"}]
 
 
 def test_extract_items_from_container_items_json_attr() -> None:
@@ -151,8 +163,7 @@ async def test_validate_put_command_inputs_missing_usage() -> None:
     player.name = "hero"
     player.get_inventory = MagicMock(return_value=[])
     cm = MagicMock()
-    req = MagicMock()
-    out = await validate_put_command_inputs({"item": "", "container": "bag"}, req, cm, player)
+    out = await validate_put_command_inputs({"item": "", "container": "bag"}, cm, player, MagicMock())
     assert isinstance(out, dict)
     assert "Usage" in out["result"]
 
@@ -162,21 +173,19 @@ async def test_validate_put_command_inputs_no_container_service() -> None:
     player = MagicMock()
     player.name = "hero"
     player.get_inventory = MagicMock(return_value=[{"item_name": "rock"}])
-    req = MagicMock()
-    app = MagicMock()
-    state = MagicMock()
-    state.container_service = None
-    app.state = state
-    req.app = app
     cm = MagicMock()
     cm.room_manager = MagicMock()
-    out = await validate_put_command_inputs(
-        {"item": "rock", "container": "bag"},
-        req,
-        cm,
-        player,
-    )
-    assert out == {"result": "Container service is unavailable."}
+    with patch(
+        "server.commands.container_helpers_inventory_ops._resolve_container_service",
+        return_value=None,
+    ):
+        out = await validate_put_command_inputs(
+            {"item": "rock", "container": "bag"},
+            cm,
+            player,
+            MagicMock(),
+        )
+    assert out == {"result": "Container service is unavailable.", "category": MessageCategory.SYSTEM_ERROR}
 
 
 @pytest.mark.asyncio
@@ -185,23 +194,21 @@ async def test_validate_put_command_inputs_success_returns_typed_tuple() -> None
     player.name = "hero"
     inventory_rows: list[dict[str, object]] = [{"item_name": "rock", "quantity": 2}]
     player.get_inventory = MagicMock(return_value=inventory_rows)
-    req = MagicMock()
-    app = MagicMock()
-    state = MagicMock()
     container_service = MagicMock()
-    state.container_service = container_service
-    app.state = state
-    req.app = app
     room_manager = MagicMock()
     cm = MagicMock()
     cm.room_manager = room_manager
 
-    out = await validate_put_command_inputs(
-        {"item": "rock", "container": "bag", "quantity": "2"},
-        req,
-        cm,
-        player,
-    )
+    with patch(
+        "server.commands.container_helpers_inventory_ops._resolve_container_service",
+        return_value=container_service,
+    ):
+        out = await validate_put_command_inputs(
+            {"item": "rock", "container": "bag", "quantity": "2"},
+            cm,
+            player,
+            MagicMock(),
+        )
 
     assert isinstance(out, tuple)
     item_name, container_name, quantity, out_container_service, out_room_manager, item_found, item_index = out
@@ -220,8 +227,8 @@ async def test_validate_get_command_inputs_room_keyword() -> None:
     cm = SimpleNamespace(room_manager=room_manager)
     out = await validate_get_command_inputs(
         {"item": "x", "container": "room"},
-        MagicMock(),
         cm,
+        MagicMock(),
     )
     assert isinstance(out, tuple)
     item, cname, _, svc, rm = out
@@ -370,6 +377,88 @@ async def test_transfer_item_to_container_open_container_when_no_token() -> None
     }
     result = await transfer_item_to_container(container_service, MagicMock(), player, cid, item_found, None)
     assert result["success"] is True
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_to_container_closes_session_it_opened() -> None:
+    """A text 'put' that opens a fresh session must close it afterward, so it doesn't
+    leave a stale session blocking a later HTTP /api/containers/open for the same player."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    token = "fresh-token"
+
+    async def open_container(_cid: object, _pid: object) -> dict[str, object]:
+        return {"mutation_token": token}
+
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=None)
+    container_service.open_container = open_container
+    container_service.transfer_to_container = AsyncMock(return_value=None)
+    container_service.close_container = close_container
+
+    item_found: dict[str, object] = {
+        "item_instance_id": uuid.uuid4(),
+        "item_id": uuid.uuid4(),
+    }
+    result = await transfer_item_to_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_awaited_once_with(cid, pid, token)
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_to_container_reused_session_stays_open() -> None:
+    """A text 'put' that reuses an already-open session (e.g. the player has a GUI
+    panel open) must not close it out from under the other consumer."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value="existing-token")
+    container_service.transfer_to_container = AsyncMock(return_value=None)
+    container_service.close_container = close_container
+
+    item_found: dict[str, object] = {
+        "item_instance_id": uuid.uuid4(),
+        "item_id": uuid.uuid4(),
+    }
+    result = await transfer_item_to_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_transfer_item_from_container_closes_session_it_opened() -> None:
+    """A text 'get' that opens a fresh session must close it afterward."""
+    cid = uuid.uuid4()
+    pid = uuid.uuid4()
+    player = _player_with_inventory(pid)
+    token = "fresh-token"
+
+    async def open_container(_cid: object, _pid: object) -> dict[str, object]:
+        return {"mutation_token": token}
+
+    close_container = AsyncMock(return_value=None)
+    container_service = MagicMock()
+    container_service.get_container_token = MagicMock(return_value=None)
+    container_service.open_container = open_container
+    container_service.transfer_from_container = AsyncMock(return_value={"player_inventory": []})
+    container_service.close_container = close_container
+
+    with patch(
+        "server.commands.inventory_command_helpers.persist_player",
+        new_callable=AsyncMock,
+    ) as mock_persist:
+        mock_persist.return_value = None
+        item_found: dict[str, object] = {"item_instance_id": uuid.uuid4(), "item_id": uuid.uuid4()}
+        result = await transfer_item_from_container(container_service, MagicMock(), player, cid, item_found, None)
+
+    assert result["success"] is True
+    close_container.assert_awaited_once_with(cid, pid, token)
 
 
 @pytest.mark.asyncio
@@ -567,3 +656,24 @@ async def test_transfer_item_from_container_inventory_rows_fallback_non_dict_res
     assert result["success"] is True
     set_inv_fb: MagicMock = cast(MagicMock, player.set_inventory)
     set_inv_fb.assert_called_once_with(fallback)
+
+
+def test_resolve_container_service_returns_none_without_persistence() -> None:
+    """No persistence means no service -- callers surface 'Container service is unavailable.'"""
+    from server.commands.container_helpers_inventory_ops import _resolve_container_service
+
+    assert _resolve_container_service(None) is None
+
+
+def test_resolve_container_service_shares_the_http_api_instance() -> None:
+    """#711: text commands must see the same open-container sessions as /api/containers/*.
+
+    There is no app.state.container_service (nothing ever set one); resolving through
+    get_container_service is what keeps get/put and the HTTP endpoints on one instance.
+    """
+    from server.api.container_helpers import get_container_service
+    from server.commands.container_helpers_inventory_ops import _resolve_container_service
+
+    persistence = MagicMock()
+
+    assert _resolve_container_service(persistence) is get_container_service(persistence)

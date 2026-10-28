@@ -2,7 +2,35 @@
 
 from unittest.mock import MagicMock, patch
 
-from server.npc.npc_default_reactions import register_default_reactions_for_npc
+from server.npc.npc_default_reactions import (
+    DEFAULT_FAREWELL_EMOTE,
+    DEFAULT_GREETING_EMOTE,
+    DEFAULT_SILENCE_EMOTE,
+    register_default_reactions_for_npc,
+)
+
+
+def test_register_shopkeeper_greeting_reads_corruption_from_stats():
+    """#815: the greeting reaction is built from the NPC's static base_stats corruption, not
+    behavior_config -- passing stats must reach build_corruption_aware_greeting untouched."""
+    system = MagicMock()
+    with patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as build_greeting:
+        register_default_reactions_for_npc(
+            "npc-6",
+            "shopkeeper",
+            {"greeting_message": "Welcome"},
+            system,
+            stats={"corruption": 75},
+        )
+    build_greeting.assert_called_once_with("npc-6", 75, "Welcome", as_emote=False)
+
+
+def test_register_shopkeeper_greeting_defaults_corruption_to_zero_without_stats():
+    """No stats argument (or no 'corruption' key in it) must not raise -- defaults to 0 (pure)."""
+    system = MagicMock()
+    with patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as build_greeting:
+        register_default_reactions_for_npc("npc-7", "shopkeeper", {"greeting_message": "Welcome"}, system)
+    build_greeting.assert_called_once_with("npc-7", 0, "Welcome", as_emote=False)
 
 
 def test_register_passive_mob_reactions():
@@ -57,10 +85,86 @@ def test_register_shopkeeper_logs_debug(mock_logger):
 
 @patch("server.npc.npc_default_reactions.logger")
 def test_register_handles_import_error(mock_logger):
+    """#815: the greeting branch now builds a corruption-aware reaction
+    (build_corruption_aware_greeting) instead of the plain template -- patch that instead."""
     system = MagicMock()
     with patch(
-        "server.npc.event_reaction_system.NPCEventReactionTemplates.player_entered_room_greeting",
+        "server.npc.corruption_reactions.build_corruption_aware_greeting",
         side_effect=TypeError("broken"),
     ):
         register_default_reactions_for_npc("npc-4", "shopkeeper", {}, system)
     mock_logger.error.assert_called_once()
+
+
+def test_an_npc_with_no_authored_lines_gets_gesture_emotes():
+    """#1103: the generic fallbacks are gestures ("<NPC> offers a wary nod..."), not words put in its mouth."""
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc("npc-8", "passive_mob", {}, system)
+
+    greeting.assert_called_once_with("npc-8", 0, DEFAULT_GREETING_EMOTE, as_emote=True)
+    farewell.assert_called_once_with("npc-8", DEFAULT_FAREWELL_EMOTE, as_emote=True)
+    response.assert_called_once_with("npc-8", DEFAULT_SILENCE_EMOTE, as_emote=True)
+
+
+def test_authored_lines_stay_speech():
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc(
+            "npc-9",
+            "passive_mob",
+            {"greeting_message": "Hi", "farewell_message": "Bye", "response_message": "Ok"},
+            system,
+        )
+
+    greeting.assert_called_once_with("npc-9", 0, "Hi", as_emote=False)
+    farewell.assert_called_once_with("npc-9", "Bye", as_emote=False)
+    response.assert_called_once_with("npc-9", "Ok", as_emote=False)
+
+
+def _registered(behavior_config: dict[str, object]):
+    """Register a passive NPC's default reactions with the three templates and the greeting builder mocked."""
+    system = MagicMock()
+    with (
+        patch("server.npc.corruption_reactions.build_corruption_aware_greeting") as greeting,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_left_room_farewell") as farewell,
+        patch("server.npc.event_reaction_system.NPCEventReactionTemplates.player_spoke_response") as response,
+    ):
+        register_default_reactions_for_npc("npc-10", "passive_mob", behavior_config, system)
+    return greeting, farewell, response
+
+
+def test_the_bare_greeting_farewell_and_response_keys_the_authored_data_uses_are_read():
+    """#1110: every seeded NPC authors `greeting` / `farewell`; they were ignored and replaced by the gestures."""
+    greeting, farewell, response = _registered(
+        {"greeting": "Your box is in order.", "farewell": "Thank you for your confidence.", "response": "Hm."}
+    )
+
+    greeting.assert_called_once_with("npc-10", 0, "Your box is in order.", as_emote=False)
+    farewell.assert_called_once_with("npc-10", "Thank you for your confidence.", as_emote=False)
+    response.assert_called_once_with("npc-10", "Hm.", as_emote=False)
+
+
+def test_the_bare_key_wins_over_the_older_message_key():
+    greeting, farewell, _ = _registered(
+        {"greeting": "New.", "greeting_message": "Old.", "farewell_message": "Old bye."}
+    )
+
+    greeting.assert_called_once_with("npc-10", 0, "New.", as_emote=False)
+    farewell.assert_called_once_with("npc-10", "Old bye.", as_emote=False)  # the older key still works on its own
+
+
+def test_a_blank_authored_line_falls_back_to_the_default_gesture():
+    greeting, farewell, response = _registered({"greeting": "   ", "farewell": "", "response": None})
+
+    greeting.assert_called_once_with("npc-10", 0, DEFAULT_GREETING_EMOTE, as_emote=True)
+    farewell.assert_called_once_with("npc-10", DEFAULT_FAREWELL_EMOTE, as_emote=True)
+    response.assert_called_once_with("npc-10", DEFAULT_SILENCE_EMOTE, as_emote=True)

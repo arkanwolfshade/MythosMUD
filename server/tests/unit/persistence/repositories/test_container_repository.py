@@ -128,6 +128,35 @@ async def test_get_container_not_found(repo: ContainerRepository) -> None:
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("stored", [True, False])
+async def test_get_bank_container(repo: ContainerRepository, stored: bool) -> None:
+    mock_session = AsyncMock()
+    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+    mock_session.__aexit__ = AsyncMock(return_value=None)
+    owner_id = uuid.uuid4()
+
+    with (
+        patch(
+            "server.persistence.repositories.container_repository.get_session_maker",
+            return_value=MagicMock(return_value=mock_session),
+        ),
+        patch(
+            "server.persistence.repositories.container_repository.get_bank_container_async",
+            new_callable=AsyncMock,
+            return_value=_sample_container_data() if stored else None,
+        ) as query,
+    ):
+        result = await repo.get_bank_container(owner_id)
+
+    query.assert_awaited_once_with(mock_session, owner_id)
+    if stored:
+        assert result is not None
+        assert "items_json" in result  # same row shape as every other container lookup
+    else:
+        assert result is None
+
+
+@pytest.mark.asyncio
 async def test_get_containers_by_room_id(repo: ContainerRepository) -> None:
     mock_session = AsyncMock()
     mock_session.__aenter__ = AsyncMock(return_value=mock_session)

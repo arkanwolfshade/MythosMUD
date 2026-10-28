@@ -3,6 +3,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
+import type { NpcOccupant } from '../../../../types/messageCategory';
 import type { Room } from '../../types';
 import { mergeRoomState } from '../roomMergeUtils';
 
@@ -67,24 +68,24 @@ describe('roomMergeUtils', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['old-npc'],
+        npcs: [{ name: 'old-npc', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['new-npc'],
+        npcs: [{ name: 'new-npc', disposition: 'passive_mob' }],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
-      expect(result?.npcs).toEqual(['new-npc']);
+      expect(result?.npcs).toEqual([{ name: 'new-npc', disposition: 'passive_mob' }]);
     });
 
     it('should preserve prev NPCs when updates has no NPCs', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
@@ -93,20 +94,23 @@ describe('roomMergeUtils', () => {
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([{ name: 'npc1', disposition: 'passive_mob' }]);
     });
 
     it('should use empty NPCs when updates explicitly sends empty array (server-authoritative)', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1', 'npc2'],
+        npcs: [
+          { name: 'npc1', disposition: 'passive_mob' },
+          { name: 'npc2', disposition: 'passive_mob' },
+        ],
       } as Room;
 
       const updatesRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: [] as string[],
+        npcs: [] as NpcOccupant[],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
@@ -142,7 +146,7 @@ describe('roomMergeUtils', () => {
         id: 'room1',
         name: 'Room 1',
         players: ['player1'],
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
@@ -175,7 +179,7 @@ describe('roomMergeUtils', () => {
         id: 'room1',
         name: 'Room 1',
         players: ['player1', 'player2'],
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
@@ -207,7 +211,7 @@ describe('roomMergeUtils', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
@@ -244,7 +248,7 @@ describe('roomMergeUtils', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom = {
@@ -255,7 +259,7 @@ describe('roomMergeUtils', () => {
 
       const result = mergeRoomState(updatesRoom, prevRoom);
       // Should preserve prevRoom npcs when updates has invalid data
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([{ name: 'npc1', disposition: 'passive_mob' }]);
     });
 
     it('should handle updates with undefined players and npcs', () => {
@@ -263,7 +267,7 @@ describe('roomMergeUtils', () => {
         id: 'room1',
         name: 'Room 1',
         players: ['player1'],
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
@@ -276,7 +280,7 @@ describe('roomMergeUtils', () => {
 
       const result = mergeRoomState(updatesRoom, prevRoom);
       expect(result?.players).toEqual(['player1']);
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([{ name: 'npc1', disposition: 'passive_mob' }]);
     });
 
     it('should handle room ID change with empty arrays', () => {
@@ -284,7 +288,7 @@ describe('roomMergeUtils', () => {
         id: 'room1',
         name: 'Room 1',
         players: ['player1'],
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
@@ -306,7 +310,7 @@ describe('roomMergeUtils', () => {
       const prevRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const updatesRoom: Room = {
@@ -317,7 +321,7 @@ describe('roomMergeUtils', () => {
 
       const result = mergeRoomState(updatesRoom, prevRoom);
       expect(result?.players).toEqual(['player1']);
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([{ name: 'npc1', disposition: 'passive_mob' }]);
     });
 
     it('should handle updates with only npcs array', () => {
@@ -330,12 +334,12 @@ describe('roomMergeUtils', () => {
       const updatesRoom: Room = {
         id: 'room1',
         name: 'Room 1',
-        npcs: ['npc1'],
+        npcs: [{ name: 'npc1', disposition: 'passive_mob' }],
       } as Room;
 
       const result = mergeRoomState(updatesRoom, prevRoom);
       expect(result?.players).toEqual(['player1']);
-      expect(result?.npcs).toEqual(['npc1']);
+      expect(result?.npcs).toEqual([{ name: 'npc1', disposition: 'passive_mob' }]);
     });
   });
 });

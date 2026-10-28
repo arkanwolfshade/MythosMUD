@@ -175,7 +175,7 @@ def _read_and_parse(file_path: Path) -> tuple[str, ast.AST] | None:
     try:
         with open(file_path, encoding="utf-8") as f:
             content = f.read()
-    except (UnicodeDecodeError, FileNotFoundError):
+    except UnicodeDecodeError, FileNotFoundError:
         return None
     if not content.strip():
         return None

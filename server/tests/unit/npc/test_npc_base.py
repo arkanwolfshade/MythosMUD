@@ -256,6 +256,41 @@ async def test_npc_base_execute_behavior() -> None:
     assert result is True
 
 
+@pytest.mark.asyncio
+async def test_npc_base_execute_behavior_sets_in_combat_context() -> None:
+    """execute_behavior reports the real combat state in context["in_combat"] (#918)."""
+    definition = MagicMock()
+    definition.name = "TestMob"
+    definition.room_id = "room_001"
+    definition.base_stats = "{}"
+    definition.behavior_config = "{}"
+    definition.ai_integration_stub = "{}"
+    definition.npc_type = "passive_mob"
+
+    npc = PassiveMobNPC(definition=definition, npc_id="test-npc-ctx")
+    npc.schedule_idle_movement = MagicMock(return_value=False)
+    context: dict[str, object] = {}
+    with patch.object(npc, "_is_npc_in_combat", return_value=True):
+        _ = await npc.execute_behavior(context)
+    assert context["in_combat"] is True
+
+
+def test_npc_base_is_npc_in_combat_fails_closed_on_lookup_error() -> None:
+    """move_to_room is blocked when the combat lookup raises: the shared gate fails closed (#918)."""
+    definition = MagicMock()
+    definition.name = "TestMob"
+    definition.room_id = "room_001"
+    definition.base_stats = "{}"
+    definition.behavior_config = "{}"
+    definition.ai_integration_stub = "{}"
+    definition.npc_type = "passive_mob"
+
+    npc = PassiveMobNPC(definition=definition, npc_id="test-npc-closed")
+    broken = MagicMock(is_npc_in_combat_sync=MagicMock(side_effect=RuntimeError("hiccup")))
+    with patch("server.services.combat_service.get_combat_service", return_value=broken):
+        assert npc.move_to_room("room_002") is False
+
+
 def test_npc_base_from_dict() -> None:
     from server.models.npc import NPCDefinition
 

@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 
+from server.constants.containers import MAX_CONTAINER_CAPACITY_SLOTS
 from server.schemas.shared.inventory_schema import (
     InventorySchemaValidationError,
     validate_inventory_items,
@@ -71,3 +72,24 @@ def test_validate_inventory_items_invalid_quantity():
 
     with pytest.raises(InventorySchemaValidationError):
         validate_inventory_items(items)
+
+
+@pytest.mark.parametrize(
+    ("capacity", "valid"), [(MAX_CONTAINER_CAPACITY_SLOTS, True), (MAX_CONTAINER_CAPACITY_SLOTS + 1, False)]
+)
+def test_validate_inventory_items_inner_container_capacity_uses_global_cap(capacity: int, valid: bool) -> None:
+    """inner_container capacity follows the global container ceiling, not the old 20-slot limit."""
+    items: list[dict[str, object]] = [
+        {
+            "item_id": "bag_001",
+            "item_name": "Bag",
+            "slot_type": "backpack",
+            "quantity": 1,
+            "inner_container": {"capacity_slots": capacity, "items": []},
+        }
+    ]
+    if valid:
+        validate_inventory_items(items)
+    else:
+        with pytest.raises(InventorySchemaValidationError):
+            validate_inventory_items(items)

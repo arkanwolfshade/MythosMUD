@@ -15,6 +15,7 @@ import {
   ensureFreshMultiPlayerContexts,
   ensurePlayerInGame,
   waitForAllPlayersInGame,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 import { ensureStanding } from '../fixtures/player';
 
@@ -42,6 +43,8 @@ test.describe('Rest Command', () => {
     // /rest there disconnects instantly instead of starting the 10s countdown other rooms use.
     test.setTimeout(300_000);
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
 
     const awContext = contexts[0];
 
@@ -69,6 +72,16 @@ test.describe('Rest Command', () => {
     expect(seesInstantRest).toBe(true);
     const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
     expect(seesCountdown).toBe(false);
+
+    // A typed /rest must end on the login screen and stay there. The regression: the server closed the
+    // socket without telling the client the exit was intentional, so the client reconnected within ~25ms.
+    await awContext.page.getByTestId('username-input').waitFor({ state: 'visible', timeout: 15000 });
+    // Dwell: a wrongful reconnect must stay absent for the whole window, and an auto-waiting assertion
+    // would pass on its first check.
+    // eslint-disable-next-line playwright/no-wait-for-timeout -- negative dwell, nothing to wait on
+    await awContext.page.waitForTimeout(5000);
+    await expect(awContext.page.getByTestId('username-input')).toBeVisible();
+    await expect(awContext.page.getByTestId('command-input')).toHaveCount(0);
   });
 
   test('should still run the 10s countdown for /rest outside a rest location', async ({ browser }) => {
@@ -76,6 +89,8 @@ test.describe('Rest Command', () => {
     // The prior test disconnected AW at the rest location; get a fresh, connected pair and move
     // off the rest location before testing the countdown path.
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
     const awContext = contexts[0];
 
     await ensurePlayerInGame(awContext, 30000);
@@ -100,16 +115,25 @@ test.describe('Rest Command', () => {
     const seesCountdown = messages.some(msg => /disconnect in \d+ second/i.test(msg));
     expect(seesCountdown).toBe(true);
 
-    // Cancel countdown so the suite does not intentional-disconnect AW or leave test 3 stuck in "already resting".
-    await executeCommand(awContext.page, 'go west');
-    await waitForMessage(awContext.page, /interrupted|go west|move west|west/i, 15000).catch(() => {});
-    await executeCommand(awContext.page, 'go east');
-    await waitForMessage(awContext.page, /go east|east|Hallway/i, 15000).catch(() => {});
-    awContext.page = await ensureStanding(awContext.page, 8000);
+    // Standing up breaks the /rest sit and must cancel the countdown (it also keeps the suite from
+    // intentional-disconnecting AW or leaving test 3 stuck in "already resting").
+    await executeCommand(awContext.page, '/stand');
+    await waitForMessage(awContext.page, /rest is interrupted/i, 15000);
+
+    // No further countdown lines may arrive once interrupted, and AW must still be in the game.
+    const countdownLines = async () =>
+      (await getMessages(awContext.page)).filter(msg => /disconnect in \d+ second/i.test(msg)).length;
+    const linesAtInterrupt = await countdownLines();
+    // eslint-disable-next-line playwright/no-wait-for-timeout -- negative dwell: no further countdown line may arrive
+    await awContext.page.waitForTimeout(3000);
+    expect(await countdownLines()).toBe(linesAtInterrupt);
+    await expect(awContext.page.getByTestId('command-input')).toBeVisible();
   });
 
   test('should block /rest during combat', async ({ browser }) => {
     contexts = await ensureFreshMultiPlayerContexts(browser, contexts, ['ArkanWolfshade', 'Ithaqua']);
+    // E2E baseline: start each test in Main Foyer (#956); fresh logins land in the saved room.
+    await resetPlayersToMainFoyer(contexts);
     const awContext = contexts[0];
 
     await ensurePlayerInGame(awContext, 30000);

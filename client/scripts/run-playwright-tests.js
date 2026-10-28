@@ -67,8 +67,13 @@ const playwright = spawn(npxBin, ['playwright', 'test'], {
   env,
 });
 
-playwright.on('close', code => {
-  process.exit(code || 0);
+// A child killed by a signal reports code === null; `code || 0` turned that into success (#950).
+playwright.on('close', (code, signal) => {
+  if (code === null) {
+    console.error(`Playwright was terminated by ${signal ?? 'an unknown cause'} before reporting results.`);
+    process.exit(1);
+  }
+  process.exit(code);
 });
 
 playwright.on('error', error => {

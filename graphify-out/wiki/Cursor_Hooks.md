@@ -1,10 +1,10 @@
 # Cursor Hooks
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Cursor Hooks** (0 connections) — `docs/CURSOR_HOOKS.md`
+- **Click Best-Practices Remediation** (0 connections) — `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CURSOR_HOOKS.md`
+- `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Audit Trail
 

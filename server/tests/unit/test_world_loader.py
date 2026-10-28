@@ -4,7 +4,6 @@ Unit tests for world loader utility functions.
 Tests room ID generation, environment determination, and validation functions.
 """
 
-from typing import Any
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -12,7 +11,6 @@ import pytest
 from server.exceptions import ValidationError
 from server.world_loader import (
     generate_room_id,
-    get_room_environment,
     validate_room_data,
 )
 
@@ -39,75 +37,6 @@ class TestGenerateRoomId:
         """Test generate_room_id() preserves special characters in components."""
         result = generate_room_id("plane-1", "zone-2", "sub-zone", "room_file")
         assert result == "plane-1_zone-2_sub-zone_room_file"
-
-
-class TestGetRoomEnvironment:
-    """Test get_room_environment() function."""
-
-    def test_get_room_environment_from_room_data(self):
-        """Test get_room_environment() returns room-specific environment."""
-        room_data = {"environment": "indoors"}
-        result = get_room_environment(room_data, None, None)
-        assert result == "indoors"
-
-    def test_get_room_environment_from_subzone(self):
-        """Test get_room_environment() returns subzone environment when room doesn't have one."""
-        room_data: dict[str, Any] = {}
-        subzone_config: dict[str, Any] = {"environment": "outdoors"}
-        result = get_room_environment(room_data, subzone_config, None)
-        assert result == "outdoors"
-
-    def test_get_room_environment_from_zone(self):
-        """Test get_room_environment() returns zone environment when room and subzone don't have one."""
-        room_data: dict[str, Any] = {}
-        subzone_config: dict[str, Any] = {}
-        zone_config = {"environment": "underwater"}
-        result = get_room_environment(room_data, subzone_config, zone_config)
-        assert result == "underwater"
-
-    def test_get_room_environment_default(self):
-        """Test get_room_environment() returns default 'outdoors' when no environment specified."""
-        room_data: dict[str, Any] = {}
-        result = get_room_environment(room_data, None, None)
-        assert result == "outdoors"
-
-    def test_get_room_environment_room_takes_priority(self):
-        """Test get_room_environment() prioritizes room environment over subzone and zone."""
-        room_data = {"environment": "indoors"}
-        subzone_config = {"environment": "outdoors"}
-        zone_config = {"environment": "underwater"}
-        result = get_room_environment(room_data, subzone_config, zone_config)
-        assert result == "indoors"
-
-    def test_get_room_environment_subzone_takes_priority_over_zone(self):
-        """Test get_room_environment() prioritizes subzone environment over zone."""
-        room_data: dict[str, Any] = {}
-        subzone_config = {"environment": "outdoors"}
-        zone_config = {"environment": "underwater"}
-        result = get_room_environment(room_data, subzone_config, zone_config)
-        assert result == "outdoors"
-
-    def test_get_room_environment_subzone_none(self):
-        """Test get_room_environment() handles None subzone_config."""
-        room_data: dict[str, Any] = {}
-        zone_config = {"environment": "indoors"}
-        result = get_room_environment(room_data, None, zone_config)
-        assert result == "indoors"
-
-    def test_get_room_environment_zone_none(self):
-        """Test get_room_environment() handles None zone_config."""
-        room_data: dict[str, Any] = {}
-        subzone_config = {"environment": "outdoors"}
-        result = get_room_environment(room_data, subzone_config, None)
-        assert result == "outdoors"
-
-    def test_get_room_environment_empty_string_in_room_data(self):
-        """Test get_room_environment() treats empty string as no environment."""
-        room_data = {"environment": ""}
-        subzone_config = {"environment": "indoors"}
-        result = get_room_environment(room_data, subzone_config, None)
-        # Empty string should be falsy, so should use subzone
-        assert result == "indoors"
 
 
 class TestValidateRoomData:

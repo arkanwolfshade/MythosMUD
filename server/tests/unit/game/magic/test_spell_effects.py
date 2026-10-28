@@ -5,12 +5,14 @@ Tests the SpellEffects class.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.game.instance_manager import TemplateRoomEntryError
 from server.game.magic.spell_effects import SpellEffects, SpellEffectsDeps
-from server.models.spell import SpellEffectType
+from server.models.spell import Spell, SpellEffectType
 from server.schemas.shared import TargetMatch, TargetType
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
@@ -593,3 +595,26 @@ async def test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing(
     call_kw = svc.publish_npc_damage_event.await_args.kwargs
     assert call_kw["room_id"] == combat.room_id
     assert call_kw["current_dp"] == 75
+
+
+@pytest.mark.asyncio
+async def test_process_teleport_into_instance_template_fails_cleanly(
+    spell_effects: SpellEffects, mock_target_match: TargetMatch
+) -> None:
+    """A spell aimed at a template room reports the refusal instead of crashing the cast."""
+    spell = MagicMock()
+    spell.configure_mock(spell_id="spell_test", effect_data={"destination_room_id": "template_room"})
+    player = MagicMock()
+    player.configure_mock(name="Ada")
+    persistence = MagicMock()
+    persistence.configure_mock(get_player_by_id=AsyncMock(return_value=player))
+    refuse = AsyncMock(side_effect=TemplateRoomEntryError("template_room"))
+
+    with (
+        patch.object(spell_effects.player_service, "persistence", persistence),
+        patch.object(spell_effects.player_service, "update_player_location", refuse),
+    ):
+        result = await spell_effects._process_teleport(cast(Spell, spell), mock_target_match, 1.0)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, like this file's other _process_* tests
+
+    assert result["success"] is False
+    assert "instance template" in str(result["message"])

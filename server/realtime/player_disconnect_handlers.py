@@ -7,7 +7,7 @@ player removal from rooms and tracking systems.
 
 import time
 import uuid
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from anyio import sleep
 from structlog.stdlib import BoundLogger
@@ -15,10 +15,12 @@ from structlog.stdlib import BoundLogger
 from ..async_persistence import AsyncPersistenceLayer
 from ..models import Player
 from ..models.room import Room
+from ..services.container_service import get_container_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .player_presence_utils import extract_player_name
 
 if TYPE_CHECKING:
+    from ..services.instance_flush_service import InstanceFlushService
     from .connection_manager import ConnectionManager
 
 logger: BoundLogger = get_logger(__name__)
@@ -154,6 +156,39 @@ def _cleanup_player_references(player_id: uuid.UUID, manager: "ConnectionManager
     # H1 fix: Allow processed_disconnects to shrink so it does not grow unbounded
     if player_id in manager.processed_disconnects:
         manager.processed_disconnects.discard(player_id)
+
+    _release_container_sessions(player_id, manager)
+
+
+class InstanceFlushOwner(Protocol):  # pylint: disable=too-few-public-methods  # Reason: single-attribute structural type
+    """The ConnectionManager's instance flusher, as departure cleanup reads it."""
+
+    @property
+    def instance_flush_service(self) -> "InstanceFlushService | None":
+        """Set by the game bundle; None in tests and early startup."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
+
+
+async def flush_departing_tutorial_instance(player: Player | None, manager: InstanceFlushOwner) -> None:
+    """A player really leaving the game takes their tutorial instance with them.
+
+    Floor items go to the lost-and-found. tutorial_instance_id stays set, so re-entry builds a
+    fresh instance. Grace-period reconnects never get here, so they keep the live instance.
+    """
+    instance_id = cast(object, player.tutorial_instance_id) if player is not None else None
+    flusher = manager.instance_flush_service
+    if not isinstance(instance_id, str) or not instance_id or flusher is None:
+        return
+    _ = await flusher.flush(instance_id)
+
+
+def _release_container_sessions(player_id: uuid.UUID, manager: "ConnectionManager") -> None:
+    """Release containers the departing player still has open, or nobody else can open them (#964)."""
+    persistence = cast(AsyncPersistenceLayer | None, manager.async_persistence)
+    if persistence is None:
+        return
+    # Same shared instance HTTP open/close and the get/put commands use (cached per persistence).
+    _ = get_container_service(persistence).release_player_sessions(player_id)
 
 
 # Referenced here so pyright sees use in-module; player_presence_tracker imports these names.

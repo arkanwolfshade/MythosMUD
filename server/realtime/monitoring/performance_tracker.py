@@ -137,6 +137,70 @@ class PerformanceTracker:
         if len(self.performance_stats[metric_key]) > self.max_samples:  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
             self.performance_stats[metric_key] = self.performance_stats[metric_key][-self.max_samples :]  # type: ignore[literal-required]  # Reason: TypedDict access with variable key, mypy cannot verify key exists or value type, but _trim_samples is only called with known list keys
 
+    @staticmethod
+    def _calculate_stats(times: np.ndarray) -> dict[str, float]:
+        """Calculate statistical measures (avg/max/min) from a NumPy array of times."""
+        if times.size > 0:
+            return {
+                "avg": float(np.mean(times)),
+                # Reason: THIRD_PARTY_UNTYPED:numpy - np.max/np.min return numpy scalar types
+                # that pyright's numpy stubs surface as Any here.
+                # Appropriate because: float() immediately narrows the result to a real float.
+                "max": float(np.max(times)),  # pyright: ignore[reportAny]
+                # Reason: THIRD_PARTY_UNTYPED:numpy - same untyped numpy scalar convention as above.
+                # Appropriate because: float() immediately narrows the result to a real float.
+                "min": float(np.min(times)),  # pyright: ignore[reportAny]
+            }
+        return {"avg": 0.0, "max": 0.0, "min": 0.0}
+
+    def _build_stats_response(
+        self,
+        websocket_times: np.ndarray,
+        websocket_stats: dict[str, float],
+        message_stats: dict[str, float],
+        disconnection_stats: dict[str, float],
+        session_switch_stats: dict[str, float],
+        health_check_stats: dict[str, float],
+        # Reason: SERIALIZATION_BOUNDARY - matches get_stats()'s own established, unsuppressed
+        # dict[str, Any] return type below.
+        # Appropriate because: this is an ad hoc response dict with no fixed schema in this module.
+    ) -> dict[str, Any]:  # pyright: ignore[reportExplicitAny]
+        """Assemble the get_stats() response dict from per-category stat groups."""
+        return {
+            "connection_establishment": {
+                "total_connections": self.performance_stats["total_connections_established"],
+                "websocket_connections": websocket_times.size,
+                "avg_websocket_establishment_ms": websocket_stats["avg"],
+                "max_websocket_establishment_ms": websocket_stats["max"],
+                "min_websocket_establishment_ms": websocket_stats["min"],
+            },
+            "message_delivery": {
+                "total_messages": self.performance_stats["total_messages_delivered"],
+                "avg_delivery_time_ms": message_stats["avg"],
+                "max_delivery_time_ms": message_stats["max"],
+                "min_delivery_time_ms": message_stats["min"],
+            },
+            "disconnections": {
+                "total_disconnections": self.performance_stats["total_disconnections"],
+                "avg_disconnection_time_ms": disconnection_stats["avg"],
+                "max_disconnection_time_ms": disconnection_stats["max"],
+                "min_disconnection_time_ms": disconnection_stats["min"],
+            },
+            "session_management": {
+                "total_session_switches": self.performance_stats["total_session_switches"],
+                "avg_session_switch_time_ms": session_switch_stats["avg"],
+                "max_session_switch_time_ms": session_switch_stats["max"],
+                "min_session_switch_time_ms": session_switch_stats["min"],
+            },
+            "health_monitoring": {
+                "total_health_checks": self.performance_stats["total_health_checks"],
+                "avg_health_check_time_ms": health_check_stats["avg"],
+                "max_health_check_time_ms": health_check_stats["max"],
+                "min_health_check_time_ms": health_check_stats["min"],
+            },
+            "timestamp": time.time(),
+        }
+
     def get_stats(self) -> dict[str, Any]:
         """
         Get comprehensive performance statistics with calculated averages.
@@ -154,74 +218,23 @@ class PerformanceTracker:
                 ],
                 dtype=np.float32,
             )
-
-            # Calculate averages for message delivery times
             message_times = np.array(
                 [duration for msg_type, duration in self.performance_stats["message_delivery_times"]], dtype=np.float32
             )
-
-            # Calculate averages for disconnection times
             disconnection_times = np.array(
                 [duration for conn_type, duration in self.performance_stats["disconnection_times"]], dtype=np.float32
             )
-
-            # Get session switch times
             session_switch_times = np.array(self.performance_stats["session_switch_times"], dtype=np.float32)
-
-            # Get health check times
             health_check_times = np.array(self.performance_stats["health_check_times"], dtype=np.float32)
 
-            # Helper function to safely calculate stats from NumPy array
-            def _calculate_stats(times: np.ndarray) -> dict[str, float]:
-                """Calculate statistical measures from a NumPy array of times."""
-                if times.size > 0:
-                    return {
-                        "avg": float(np.mean(times)),
-                        "max": float(np.max(times)),
-                        "min": float(np.min(times)),
-                    }
-                return {"avg": 0.0, "max": 0.0, "min": 0.0}
-
-            websocket_stats = _calculate_stats(websocket_times)
-            message_stats = _calculate_stats(message_times)
-            disconnection_stats = _calculate_stats(disconnection_times)
-            session_switch_stats = _calculate_stats(session_switch_times)
-            health_check_stats = _calculate_stats(health_check_times)
-
-            return {
-                "connection_establishment": {
-                    "total_connections": self.performance_stats["total_connections_established"],
-                    "websocket_connections": websocket_times.size,
-                    "avg_websocket_establishment_ms": websocket_stats["avg"],
-                    "max_websocket_establishment_ms": websocket_stats["max"],
-                    "min_websocket_establishment_ms": websocket_stats["min"],
-                },
-                "message_delivery": {
-                    "total_messages": self.performance_stats["total_messages_delivered"],
-                    "avg_delivery_time_ms": message_stats["avg"],
-                    "max_delivery_time_ms": message_stats["max"],
-                    "min_delivery_time_ms": message_stats["min"],
-                },
-                "disconnections": {
-                    "total_disconnections": self.performance_stats["total_disconnections"],
-                    "avg_disconnection_time_ms": disconnection_stats["avg"],
-                    "max_disconnection_time_ms": disconnection_stats["max"],
-                    "min_disconnection_time_ms": disconnection_stats["min"],
-                },
-                "session_management": {
-                    "total_session_switches": self.performance_stats["total_session_switches"],
-                    "avg_session_switch_time_ms": session_switch_stats["avg"],
-                    "max_session_switch_time_ms": session_switch_stats["max"],
-                    "min_session_switch_time_ms": session_switch_stats["min"],
-                },
-                "health_monitoring": {
-                    "total_health_checks": self.performance_stats["total_health_checks"],
-                    "avg_health_check_time_ms": health_check_stats["avg"],
-                    "max_health_check_time_ms": health_check_stats["max"],
-                    "min_health_check_time_ms": health_check_stats["min"],
-                },
-                "timestamp": time.time(),
-            }
+            return self._build_stats_response(
+                websocket_times,
+                self._calculate_stats(websocket_times),
+                self._calculate_stats(message_times),
+                self._calculate_stats(disconnection_times),
+                self._calculate_stats(session_switch_times),
+                self._calculate_stats(health_check_times),
+            )
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Performance stats retrieval errors unpredictable, must return error response
             logger.error("Error getting performance stats", error=str(e), exc_info=True)
             return {"error": f"Failed to get performance stats: {e}", "timestamp": time.time()}

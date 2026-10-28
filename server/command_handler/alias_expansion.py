@@ -9,6 +9,7 @@ including cycle detection to prevent infinite loops.
 
 from typing import TYPE_CHECKING, Any
 
+from ..constants.message_category import MessageCategory
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.alias_graph import AliasGraph
 from ..utils.audit_logger import audit_logger
@@ -43,7 +44,7 @@ async def check_alias_safety(
         Tuple of (is_safe, error_message, expansion_depth)
     """
     alias_graph = AliasGraph(alias_storage)
-    alias_graph.build_graph(player_name)
+    await alias_graph.build_graph(player_name)
 
     if not alias_graph.is_safe_to_expand(alias_name):
         cycle = alias_graph.detect_cycle(alias_name)
@@ -190,7 +191,7 @@ async def handle_expanded_command(  # pylint: disable=too-many-arguments,too-man
     # Prevent infinite loops
     if depth > 10:
         logger.warning("Alias expansion depth limit exceeded", player=player_name, depth=depth)
-        return {"result": "Alias expansion too deep - possible loop detected"}
+        return {"result": "Alias expansion too deep - possible loop detected", "category": MessageCategory.SYSTEM_ERROR}
 
     # Initialize alias chain if not provided
     if alias_chain is None:

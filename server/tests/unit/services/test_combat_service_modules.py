@@ -88,9 +88,8 @@ async def test_register_combat_delegates_to_service() -> None:
     service: MagicMock = MagicMock()
     service.register_combat_state = register_combat_state
     combat = _combat_instance()
-    attacker = _participant()
-    await combat_service_start.register_combat(service, combat, attacker, "room_001")
-    register_combat_state.assert_awaited_once_with(combat, attacker.participant_id, attacker.name, "room_001")
+    await combat_service_start.register_combat(service, combat, "room_001")
+    register_combat_state.assert_awaited_once_with(combat, "room_001")
 
 
 @pytest.mark.asyncio
@@ -156,6 +155,22 @@ async def test_apply_target_rest_grace_allows_disconnect_grace_target() -> None:
     ):
         # Must not raise -- a disconnect-grace target is a valid combat target.
         await combat_service_start.apply_target_rest_and_grace_checks(MagicMock(), connection_manager, target, attacker)
+
+
+@pytest.mark.asyncio
+async def test_apply_target_rest_grace_interrupts_ground_channel() -> None:
+    """#713: an attacked target's /ground channel is interrupted (which also ends it for the rescuer)."""
+    target = _participant("Target")
+    connection_manager: MagicMock = MagicMock()
+    with (
+        patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=False),
+        patch("server.commands.rest_command.is_player_resting", return_value=False),
+        patch("server.commands.ground_channel.cancel_ground_channel", new_callable=AsyncMock) as cancel_ground,
+    ):
+        await combat_service_start.apply_target_rest_and_grace_checks(
+            MagicMock(), connection_manager, target, _participant("Attacker")
+        )
+    cancel_ground.assert_awaited_once_with(target.participant_id, connection_manager)
 
 
 @pytest.mark.asyncio
@@ -570,14 +585,23 @@ async def test_apply_damage_and_check_involuntary_flee() -> None:
 
     player = _attack_participant("Player")
     check_involuntary_flee_true: AsyncMock = AsyncMock(return_value=True)
-    end_combat: AsyncMock = AsyncMock()
+    remove_participant: AsyncMock = AsyncMock(return_value=True)
     service.check_involuntary_flee = check_involuntary_flee_true
-    service.end_combat = end_combat
+    service.remove_participant = remove_participant
     died, mw, early = await combat_service_attack.apply_damage_and_check_involuntary_flee(
         service, combat, attacker, player, 5
     )
     assert early is not None
     assert early.combat_ended is True
+    remove_participant.assert_awaited_once()
+
+    # #833: other players remain, so the terror-flee leaves the fight running for them.
+    remove_participant.return_value = False
+    _, _, early = await combat_service_attack.apply_damage_and_check_involuntary_flee(
+        service, combat, attacker, player, 5
+    )
+    assert early is not None
+    assert early.combat_ended is False
 
 
 @pytest.mark.asyncio

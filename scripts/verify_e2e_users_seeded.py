@@ -2,7 +2,7 @@
 """
 Verify canonical E2E users exist in mythos_e2e before Playwright login checks.
 
-Exits 0 when ArkanWolfshade and Ithaqua are present; exits 1 with stderr detail otherwise.
+Exits 0 when ArkanWolfshade, Ithaqua and E2ETutorial are present; exits 1 with stderr detail otherwise.
 Uses DATABASE_URL and POSTGRES_SEARCH_PATH from the environment (same as seed_e2e_users.py).
 """
 
@@ -14,7 +14,7 @@ import sys
 import asyncpg
 from anyio import run
 
-_REQUIRED_USERNAMES = ("ArkanWolfshade", "Ithaqua")
+_REQUIRED_USERNAMES = ("ArkanWolfshade", "Ithaqua", "E2ETutorial")
 
 
 async def _verify() -> None:

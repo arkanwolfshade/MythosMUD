@@ -41,10 +41,9 @@ export function createViteUserConfig(mode: string): UserConfig {
       minify: 'oxc',
       // Target modern browsers
       target: 'es2020',
-      // Chunk size warning threshold (KB, pre-gzip). vendor-icons is lucide-react alone (~610KB+ minified)
-      // because EldritchIcon uses `import * as LucideIcons` (full library for dynamic iconMap lookup).
-      // Raised from 600 when lucide minor updates pushed vendor-icons just over the old limit.
-      chunkSizeWarningLimit: 700,
+      // Chunk size warning threshold: Vite's default (500 KB, pre-gzip). This used to be raised to 700 because
+      // EldritchIcon did `import * as LucideIcons`, pulling the whole lucide-react library (~760 KB) into
+      // vendor-icons. It now imports only the icons it maps, so no chunk needs a raised limit; keep it that way.
       rollupOptions: {
         output: {
           // Manual chunk splitting for optimal bundle sizes

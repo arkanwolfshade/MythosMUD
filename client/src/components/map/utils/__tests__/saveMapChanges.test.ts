@@ -6,6 +6,7 @@ import type { Edge } from 'reactflow';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MapEditingChanges } from '../../hooks/useMapEditing';
 import type { ExitEdgeData } from '../../types';
+import { GRID_PITCH } from '../mapGeometry';
 import {
   recalculateCoordinates,
   saveEdgeChanges,
@@ -50,6 +51,30 @@ describe('saveMapChanges', () => {
           }),
         })
       );
+    });
+
+    it('converts React Flow pixels to grid units before saving (#829)', async () => {
+      // `rooms.map_x`/`map_y` are grid units - the same columns the ASCII renderer reads
+      // via int(map_x). Saving raw pixels here is what used to corrupt the minimap after a
+      // single drag, because a room at grid cell 12 came back as column 1440.
+      const nodePositions = new Map([['room1', { x: 12 * GRID_PITCH, y: 34 * GRID_PITCH }]]);
+
+      await saveNodePositions(nodePositions, { authToken: 'test-token' });
+
+      const [, init] = vi.mocked(fetch).mock.calls[0];
+      expect(JSON.parse(String((init as RequestInit).body))).toEqual({ map_x: 12, map_y: 34 });
+    });
+
+    it('round-trips a coordinate through load and save unchanged', async () => {
+      // load: grid -> pixels (roomToNode/useMapLayout); save: pixels -> grid (here).
+      const gridX = 7;
+      const gridY = -3; // west/north of origin are negative
+      const pixels = { x: gridX * GRID_PITCH, y: gridY * GRID_PITCH };
+
+      await saveNodePositions(new Map([['room1', pixels]]), {});
+
+      const [, init] = vi.mocked(fetch).mock.calls[0];
+      expect(JSON.parse(String((init as RequestInit).body))).toEqual({ map_x: gridX, map_y: gridY });
     });
 
     it('should handle errors when saving positions', async () => {

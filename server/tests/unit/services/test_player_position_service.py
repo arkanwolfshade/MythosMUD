@@ -35,68 +35,73 @@ def test_player_position_service_init_none_values():
     assert service._alias_storage is None
 
 
-def test_ensure_default_aliases_no_storage():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_no_storage():
     """Test ensure_default_aliases does nothing when no alias storage."""
     service = PlayerPositionService(None, None, None)
 
     # Should not raise
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
 
-def test_ensure_default_aliases_creates_missing():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_creates_missing():
     """Test ensure_default_aliases creates missing aliases."""
     alias_storage = MagicMock()
-    alias_storage.get_alias = MagicMock(return_value=None)  # Alias doesn't exist
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=None)  # Alias doesn't exist
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should create 3 aliases: sit, stand, lie
     assert alias_storage.create_alias.call_count == 3
 
 
-def test_ensure_default_aliases_updates_incorrect():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_updates_incorrect():
     """Test ensure_default_aliases updates incorrect aliases."""
     alias_storage = MagicMock()
     existing_alias = MagicMock()
     existing_alias.command = "/wrong_command"  # Incorrect command
-    alias_storage.get_alias = MagicMock(return_value=existing_alias)
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=existing_alias)
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should update 3 aliases
     assert alias_storage.create_alias.call_count == 3
 
 
-def test_ensure_default_aliases_keeps_correct():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_keeps_correct():
     """Test ensure_default_aliases keeps correct aliases."""
     alias_storage = MagicMock()
     existing_alias = MagicMock()
     existing_alias.command = "/sit"  # Correct command
-    alias_storage.get_alias = MagicMock(return_value=existing_alias)
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(return_value=existing_alias)
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
     # Should not create if alias is correct
     # But it will check all 3, so might create others
     alias_storage.create_alias.assert_called()
 
 
-def test_ensure_default_aliases_handles_errors():
+@pytest.mark.asyncio
+async def test_ensure_default_aliases_handles_errors():
     """Test ensure_default_aliases handles errors gracefully."""
     alias_storage = MagicMock()
-    alias_storage.get_alias = MagicMock(side_effect=Exception("Test error"))
-    alias_storage.create_alias = MagicMock()
+    alias_storage.get_alias = AsyncMock(side_effect=Exception("Test error"))
+    alias_storage.create_alias = AsyncMock()
 
     service = PlayerPositionService(None, None, alias_storage)
 
     # Should not raise
-    service.ensure_default_aliases("testplayer")
+    await service.ensure_default_aliases("testplayer")
 
 
 @pytest.mark.asyncio
@@ -269,8 +274,12 @@ async def test_change_position_get_stats_error():
 
 
 @pytest.mark.asyncio
-async def test_change_position_updates_connection_manager():
-    """Test change_position updates connection manager."""
+async def test_change_position_does_not_invent_an_online_entry():
+    """A posture change for a player who is not online must not add one to online_players (#1115).
+
+    online_players is keyed by uuid.UUID and owned by the presence tracker. This service once created a str-keyed
+    entry when it found none; disconnect cleanup never removed it, so the idle server stayed awake forever.
+    """
     player = MagicMock()
     player.player_id = uuid.uuid4()
     player.current_room_id = "test_room"
@@ -278,7 +287,7 @@ async def test_change_position_updates_connection_manager():
     player.get_stats = MagicMock(return_value={"position": "standing"})
     player.set_stats = MagicMock()
 
-    online_players: dict[str, dict[str, Any]] = {}
+    online_players: dict[uuid.UUID, dict[str, object]] = {}
     connection_manager = MagicMock()
     connection_manager.online_players = online_players
     connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
@@ -292,26 +301,23 @@ async def test_change_position_updates_connection_manager():
     result = await service.change_position("testplayer", "sitting")
 
     assert result["success"] is True
-    # Check that connection manager was updated
-    player_key = str(player.player_id)
-    assert player_key in online_players
-    assert online_players[player_key]["position"] == "sitting"
+    assert online_players == {}
 
 
 @pytest.mark.asyncio
 async def test_change_position_updates_existing_connection_info():
     """Test change_position updates existing connection info."""
+    player_id = uuid.uuid4()
     player = MagicMock()
-    player.player_id = uuid.uuid4()
+    player.player_id = player_id
     player.current_room_id = "test_room"
     player.name = "TestPlayer"
     player.get_stats = MagicMock(return_value={"position": "standing"})
     player.set_stats = MagicMock()
 
-    player_key = str(player.player_id)
-    online_players: dict[str, dict[str, Any]] = {
-        player_key: {
-            "player_id": player_key,
+    online_players: dict[uuid.UUID, dict[str, object]] = {
+        player_id: {
+            "player_id": player_id,
             "player_name": "TestPlayer",
             "position": "standing",
             "connection_types": set(),
@@ -331,7 +337,8 @@ async def test_change_position_updates_existing_connection_info():
     result = await service.change_position("testplayer", "sitting")
 
     assert result["success"] is True
-    assert online_players[player_key]["position"] == "sitting"
+    assert online_players[player_id]["position"] == "sitting"
+    assert list(online_players) == [player_id]  # updated in place, no second (str-keyed) entry
 
 
 @pytest.mark.asyncio

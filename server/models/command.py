@@ -20,11 +20,21 @@ from .command_base import BaseCommand, CommandType, Direction
 from .command_channel import ChannelCommand
 
 # Import combat commands
-from .command_combat import AttackCommand, FleeCommand, KickCommand, PunchCommand, StrikeCommand, TauntCommand
+from .command_combat import (
+    AssistCommand,
+    AttackCommand,
+    FleeCommand,
+    KickCommand,
+    ProtectCommand,
+    PunchCommand,
+    StrikeCommand,
+    TauntCommand,
+)
 
 # Import communication commands
 from .command_communication import (
     EmoteCommand,
+    GlobalCommand,
     LocalCommand,
     MeCommand,
     PoseCommand,
@@ -42,17 +52,22 @@ from .command_follow import FollowCommand, FollowingCommand, UnfollowCommand
 
 # Import inventory commands
 from .command_inventory import (
+    BankCommand,
+    DepositCommand,
     DropCommand,
     EquipCommand,
     GetCommand,
     InventoryCommand,
     PickupCommand,
     PutCommand,
+    ReadCommand,
     UnequipCommand,
+    UseCommand,
+    WithdrawCommand,
 )
 
 # Import magic commands
-from .command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand
+from .command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand, StopCommand, TeachCommand
 
 # Import moderation commands
 from .command_moderation import (
@@ -82,6 +97,7 @@ from .command_player_state import (
 
 # Import utility commands
 from .command_utility import (
+    CatalogCommand,
     HelpCommand,
     JournalCommand,
     QuestCommand,
@@ -105,6 +121,7 @@ __all__ = [
     # Communication commands
     "SayCommand",
     "LocalCommand",
+    "GlobalCommand",
     "SystemCommand",
     "EmoteCommand",
     "MeCommand",
@@ -143,6 +160,7 @@ __all__ = [
     "TimeCommand",
     "WhoamiCommand",
     "SkillsCommand",
+    "CatalogCommand",
     "JournalCommand",
     "QuestsCommand",
     "QuestCommand",
@@ -154,8 +172,13 @@ __all__ = [
     "DropCommand",
     "PutCommand",
     "GetCommand",
+    "BankCommand",
+    "DepositCommand",
+    "WithdrawCommand",
     "EquipCommand",
     "UnequipCommand",
+    "UseCommand",
+    "ReadCommand",
     # Player state commands
     "QuitCommand",
     "LogoutCommand",
@@ -174,11 +197,15 @@ __all__ = [
     "KickCommand",
     "StrikeCommand",
     "TauntCommand",
+    "AssistCommand",
+    "ProtectCommand",
     # Magic commands
     "CastCommand",
     "SpellCommand",
     "SpellsCommand",
     "LearnCommand",
+    "StopCommand",
+    "TeachCommand",
     # Union type
     "Command",
 ]
@@ -193,6 +220,7 @@ Command = (
     | PartyCommand
     | SayCommand
     | LocalCommand
+    | GlobalCommand
     | SystemCommand
     | EmoteCommand
     | MeCommand
@@ -212,6 +240,7 @@ Command = (
     | WhoCommand
     | StatusCommand
     | SkillsCommand
+    | CatalogCommand
     | JournalCommand
     | QuestsCommand
     | QuestCommand
@@ -221,8 +250,13 @@ Command = (
     | DropCommand
     | PutCommand
     | GetCommand
+    | BankCommand
+    | DepositCommand
+    | WithdrawCommand
     | EquipCommand
     | UnequipCommand
+    | UseCommand
+    | ReadCommand
     | QuitCommand
     | LogoutCommand
     | SitCommand
@@ -244,6 +278,8 @@ Command = (
     | SpellCommand
     | SpellsCommand
     | LearnCommand
+    | StopCommand
+    | TeachCommand
     | AdminCommand
     | NPCCommand
     | SummonCommand

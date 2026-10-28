@@ -49,6 +49,7 @@ describe('useGameConnection', () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
+        characterId: 'test-character-id',
       })
     );
 
@@ -363,6 +364,7 @@ describe('useGameConnection', () => {
         useGameConnection({
           authToken: 'test-token',
           sessionId: customSessionId,
+          characterId: 'test-character-id',
         })
       );
 
@@ -377,6 +379,7 @@ describe('useGameConnection', () => {
       const calls = (global.WebSocket as unknown as Mock).mock.calls;
       const lastCall = calls[calls.length - 1];
       expect(lastCall[0]).toContain('token=test-token');
+      expect(lastCall[0]).toContain('character_id=test-character-id');
     });
 
     it('should handle session switching with reconnection', async () => {

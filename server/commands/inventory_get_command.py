@@ -10,7 +10,9 @@ from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..models.player import Player
+from ..services.inventory_websocket_events import emit_inventory_updated
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .container_helpers_inventory import (
     find_container_in_room,
     find_item_in_container,
@@ -119,6 +121,7 @@ def _container_transfer_messages(
 async def _get_transfer_out_of_container(
     container_service: object,
     persistence: object,
+    connection_manager: object,
     player: Player,
     container_id: UUID,
     item_found: dict[str, object],
@@ -133,8 +136,9 @@ async def _get_transfer_out_of_container(
         return {"result": transfer_result["error"]}
 
     if not transfer_result.get("success"):
-        return {"result": "Error: Failed to transfer item."}
+        return command_error("Error: Failed to transfer item.")
 
+    await emit_inventory_updated(connection_manager, UUID(str(player.player_id)), player)
     transfer_quantity = transfer_result["transfer_quantity"]
     item_display_name = transfer_result["item_display_name"]
 
@@ -145,7 +149,7 @@ async def _get_transfer_out_of_container(
 async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> CommandResponse:
     """Resolve room container / wearable container and transfer into inventory."""
     room_id = str(spec.player.current_room_id)
-    container_found, container_id = find_container_in_room(rt.room_manager, room_id, spec.container_name)
+    container_found, container_id = await find_container_in_room(rt.persistence, room_id, spec.container_name)
 
     if not container_found:
         container_found, container_id = await find_wearable_container(
@@ -155,21 +159,20 @@ async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> 
     if not container_found:
         return {"result": f"You don't see any '{spec.container_name}' here."}
 
+    # An empty container (or unparseable contents) simply holds nothing to take.
     container_items, container_id = parse_container_items(container_found, container_id, spec.player)
-    if not container_items and container_id:
-        return {"result": "Error: Invalid container data format."}
-
     item_found, _ = find_item_in_container(container_items, spec.item_name, spec.player, container_id)
     if not item_found:
         return {"result": f"You don't see '{spec.item_name}' in {spec.container_name}."}
 
     container_id = resolve_container_id(container_found, container_id)
     if not container_id:
-        return {"result": "Error: Could not determine container ID."}
+        return command_error("Error: Could not determine container ID.")
 
     return await _get_transfer_out_of_container(
         rt.container_service,
         rt.persistence,
+        rt.connection_manager,
         spec.player,
         container_id,
         item_found,
@@ -204,9 +207,9 @@ async def handle_get_command(
 
     persistence, connection_manager, player, error = await resolve_state_and_player(request, current_user, player_name)
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
-    validation_result = await validate_get_command_inputs(command_data, request, connection_manager)
+    validation_result = await validate_get_command_inputs(command_data, connection_manager, persistence)
     if isinstance(validation_result, dict):
         return validation_result
 

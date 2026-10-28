@@ -13,6 +13,7 @@ from structlog.stdlib import BoundLogger
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
+from .command_results import command_error
 from .container_helpers_inventory import get_container_data_for_inventory, update_equipped_with_container_info
 from .inventory_command_contracts import CommandResponse
 from .inventory_command_helpers import resolve_state_and_player
@@ -23,6 +24,7 @@ from .inventory_get_command import handle_get_command
 from .inventory_pickup_command import handle_pickup_command
 from .inventory_put_command import handle_put_command
 from .inventory_unequip_command import handle_unequip_command
+from .inventory_use_command import handle_use_command
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -35,6 +37,7 @@ __all__ = [
     "handle_pickup_command",
     "handle_put_command",
     "handle_unequip_command",
+    "handle_use_command",
 ]
 
 
@@ -51,7 +54,7 @@ async def handle_inventory_command(
         request, current_user, player_name
     )
     if error or not player:
-        return error or {"result": "Player information not found."}
+        return error or command_error("Player information not found.")
 
     inventory_view = player.get_inventory()
     equipped_view = player.get_equipped_items()

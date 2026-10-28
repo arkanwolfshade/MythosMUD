@@ -8,7 +8,8 @@ Loads rooms from PostgreSQL via get_rooms_with_exits() and builds in-memory Room
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, TypedDict, cast
+from decimal import Decimal
+from typing import TYPE_CHECKING, NotRequired, TypedDict, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -43,6 +44,16 @@ class ProcessedRoomData(TypedDict):
     plane: str
     zone: str
     sub_zone: str | None
+    map_x: float | None
+    map_y: float | None
+    # #663: room_environment is the room's own (possibly NULL) rooms.environment column;
+    # resolved_environment is the room -> subzone -> zone -> 'outdoors' cascade, computed in SQL
+    # by get_rooms_with_exits().
+    room_environment: str | None
+    resolved_environment: str
+    # #910: zones.name / subzones.name for display; absent on rows from older procedure shapes.
+    zone_display_name: NotRequired[str | None]
+    subzone_display_name: NotRequired[str | None]
 
 
 class RoomLoadResult(TypedDict):
@@ -61,14 +72,29 @@ class RoomInitPayload(TypedDict, total=False):
     zone: str
     sub_zone: str | None
     resolved_environment: str
+    room_environment: str | None
     rest_location: bool
     exits: dict[str, str]
     attributes: dict[str, object]
+    map_x: float | None
+    map_y: float | None
+    zone_name: str | None
+    sub_zone_name: str | None
 
 
 def _row_optional_str(row: dict[str, object], key: str) -> str | None:
     value = row.get(key)
     return value if isinstance(value, str) else None
+
+
+def _row_optional_float(row: dict[str, object], key: str) -> float | None:
+    """Read a `numeric(10,2)` column, which the driver hands back as `Decimal`."""
+    value = row.get(key)
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int | float | Decimal):
+        return float(value)
+    return None
 
 
 def _attributes_from_row(row: dict[str, object]) -> dict[str, object]:
@@ -184,7 +210,13 @@ class RoomCacheLoader:
                         zone_stable_id,
                         plane,
                         zone,
-                        exits
+                        exits,
+                        map_x,
+                        map_y,
+                        room_environment,
+                        resolved_environment,
+                        zone_display_name,
+                        subzone_display_name
                     FROM get_rooms_with_exits()
                     """
                 )
@@ -281,6 +313,12 @@ class RoomCacheLoader:
                     "plane": plane_name,
                     "zone": zone_name,
                     "sub_zone": subzone_stable_id,
+                    "map_x": _row_optional_float(row, "map_x"),
+                    "map_y": _row_optional_float(row, "map_y"),
+                    "room_environment": _row_optional_str(row, "room_environment"),
+                    "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
+                    "zone_display_name": _row_optional_str(row, "zone_display_name"),
+                    "subzone_display_name": _row_optional_str(row, "subzone_display_name"),
                 }
             )
 
@@ -316,6 +354,12 @@ class RoomCacheLoader:
             "plane": plane_name,
             "zone": zone_name,
             "sub_zone": subzone_stable_id,
+            "map_x": _row_optional_float(row, "map_x"),
+            "map_y": _row_optional_float(row, "map_y"),
+            "room_environment": _row_optional_str(row, "room_environment"),
+            "resolved_environment": _row_optional_str(row, "resolved_environment") or "outdoors",
+            "zone_display_name": _row_optional_str(row, "zone_display_name"),
+            "subzone_display_name": _row_optional_str(row, "subzone_display_name"),
         }
 
     def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:
@@ -458,14 +502,16 @@ class RoomCacheLoader:
 
             if isinstance(attributes_raw, dict):
                 attributes = cast(dict[str, object], attributes_raw)
-                environment = attributes.get("environment", "outdoors")
-                resolved_environment = environment if isinstance(environment, str) else "outdoors"
                 rest_location = attributes.get("rest_location", False) is True
                 attributes_payload = attributes
             else:
-                resolved_environment = "outdoors"
                 rest_location = False
                 attributes_payload = {}
+            # #663: environment now comes straight off the rooms.environment column
+            # (room_environment) / the SQL-resolved cascade (resolved_environment) --
+            # no longer read out of the attributes JSONB blob.
+            resolved_environment = room_data_item["resolved_environment"]
+            room_environment = room_data_item["room_environment"]
 
             room_payload: RoomInitPayload = {
                 "id": room_id,
@@ -475,9 +521,17 @@ class RoomCacheLoader:
                 "zone": zone_name,
                 "sub_zone": subzone_stable_id,
                 "resolved_environment": resolved_environment,
+                "room_environment": room_environment,
                 "rest_location": rest_location,
                 "exits": exits,
                 "attributes": attributes_payload,
+                # #829: carried to Room so GET /api/rooms/list can hand coordinates to the
+                # React Flow map and editor. Selected by get_rooms_with_exits() but dropped
+                # here until now, which is why every zone laid itself out by force layout.
+                "map_x": room_data_item["map_x"],
+                "map_y": room_data_item["map_y"],
+                "zone_name": room_data_item.get("zone_display_name"),
+                "sub_zone_name": room_data_item.get("subzone_display_name"),
             }
 
             result_container["rooms"][room_id] = Room(dict(room_payload), self._event_bus)

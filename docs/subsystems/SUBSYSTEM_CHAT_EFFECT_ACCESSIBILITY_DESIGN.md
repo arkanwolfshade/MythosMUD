@@ -1,6 +1,6 @@
 # Chat Effect Accessibility Floor Design
 
-**Version 1.1.0** · MythosMUD · 2026-09-10
+**Version 1.2.0** · MythosMUD · 2026-10-14
 
 ---
 
@@ -33,10 +33,11 @@ settings surface.
 **[SPEC]**
 
 As of `#804`'s client PR, `ThemeProvider` **is mounted** (`client/src/AppRouter.tsx`, wrapping the
-whole app) and a settings panel **does exist**
-(`client/src/components/ui-v2/panels/SettingsPanel.tsx`). This section originally argued against
+whole app) and a settings surface **does exist** — the **Settings** view of the ESC menu
+(`client/src/components/SettingsToggles.tsx`, opened from `MainMenuModal.tsx`; it began life as a
+dock panel and moved into the menu with `#1018`). This section originally argued against
 building either; §1.1.0 narrows that argument rather than discarding it — the reasoning below still
-holds for every *server-side* effect, and still explains why the panel that got built is
+holds for every *server-side* effect, and still explains why the surface that got built is
 deliberately small.
 
 - **Server-side effects still can't be tuned client-side without a fairness problem.** Garbling,
@@ -44,12 +45,12 @@ deliberately small.
   over them would either do nothing (the client can't undo a decision it never made) or require the
   server to send an *undistorted* copy alongside the distorted one and let the client choose — which
   defeats the entire point of the effects (an opponent with the toggle off reads clean text while
-  yours is garbled). `SettingsPanel.tsx` exposes **no control over any of these**, and never should.
+  yours is garbled). `SettingsToggles.tsx` exposes **no control over any of these**, and never should.
 - **Corruption's grain overlay is the one exception, because it's presentation-only** (per
   [ADR-025](../architecture/decisions/ADR-025-corruption-perceptual-filter.md)): the `chatGrain`
   preference toggles a decorative texture derived from the viewer's own already-delivered corruption
   value, touching no game state and creating no fairness gap between players. That is the single
-  toggle `SettingsPanel.tsx` ships for chat effects; the text-color filter itself
+  toggle `SettingsToggles.tsx` ships for chat effects; the text-color filter itself
   (`--corruption-intensity`, `SUBSYSTEM_CORRUPTION_DESIGN.md` §5) has no toggle, since a player
   darkening their own text tint would still be reading identical characters — there is nothing there
   to gain an advantage from hiding.
@@ -105,10 +106,10 @@ corruption filter (no animation) is exempt — this guarantee is about *motion*,
 
 - It does not add, and never will add, a settings control over any server-side effect (garbling,
   shout blocking, hallucination content) — `chatGrain` (§2) is deliberately the only chat-effect
-  toggle in `SettingsPanel.tsx`, and it governs presentation only.
+  toggle in `SettingsToggles.tsx`, and it governs presentation only.
 - It does not weaken any server-side effect's actual intensity — it bounds what future effects may
   do, and audits that the existing dampening effects already comply (they do, per §3.1 and §3.3).
-- It does not specify `SettingsPanel.tsx`'s design beyond the one row this document is responsible
+- It does not specify `SettingsToggles.tsx`'s design beyond the one row this document is responsible
   for; the panel's other rows (`animations`, `compactMode`, etc.) are `ThemeContext.tsx`'s existing
   preferences getting a control surface, not new accessibility guarantees this document makes.
 
@@ -131,3 +132,4 @@ corruption filter (no animation) is exempt — this guarantee is about *motion*,
 | --- | --- | --- |
 | 1.0.0 | 2026-09-09 | Initial version, filed to close part of `#145`: server-side accessibility guarantees in place of a client intensity slider |
 | 1.1.0 | 2026-09-10 | `#804`'s client PR mounted `ThemeProvider` and built `SettingsPanel.tsx`, taken up in this document's §2 carve-out for corruption's presentation-only filter (`chatGrain`); §5 updated to match. No change to the §3 server-side floor or §4 motion guarantee. |
+| 1.2.0 | 2026-10-14 | `#1018`: the settings toggles moved from a dock panel (`ui-v2/panels/SettingsPanel.tsx`, removed) into the ESC menu's Settings view (`components/SettingsToggles.tsx`); references updated. The toggles and their guarantees are unchanged. |

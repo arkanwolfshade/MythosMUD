@@ -14,6 +14,7 @@ from server.game.chat_nats_publisher import (
     build_nats_subject,
     publish_chat_message_to_nats,
 )
+from server.schemas.realtime.nats_messages import ChatMessageSchema, validate_message
 from server.services.nats_exceptions import NATSPublishError
 
 
@@ -178,3 +179,20 @@ async def test_publish_chat_message_to_nats_handles_publish_error():
     nats.publish = AsyncMock(side_effect=NATSPublishError("fail", subject="chat.say.room"))
     result = await publish_chat_message_to_nats(_message(), "room_1", nats)
     assert result is False
+
+
+def test_every_field_the_publisher_emits_passes_the_real_nats_schema():
+    """Drift guard (#1036): the payload must survive ChatMessageSchema's extra="forbid", not a mocked validator."""
+    message = _message(content="Hello Elder")
+    message.speaker_kind = "npc"
+    message.speaker_disposition = "quest_giver"
+    message.content_segments = [{"text": "Hello "}, {"text": "Elder", "category": "npc.quest_giver"}]
+    message.party_id = "party-1"
+
+    validated = validate_message(_build_nats_message_data(message, "room-1"), message_type="chat")
+
+    assert isinstance(validated, ChatMessageSchema)
+    assert validated.speaker_disposition == "quest_giver"
+    # The schema only gates the payload: str_strip_whitespace trims its copy of the spans, and the handler keeps the
+    # original dict (nats_message_handler_processing), so just check they were accepted.
+    assert validated.content_segments is not None and len(validated.content_segments) == 2

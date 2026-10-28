@@ -7,7 +7,7 @@
 
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Room } from '../../../../stores/gameStore';
+import type { Room } from '../../types';
 import { useRoomMapData } from '../useRoomMapData';
 
 // Mock fetch globally using vi.spyOn for proper cleanup

@@ -12,9 +12,27 @@
 import React from 'react';
 import { Handle, Position, type NodeProps } from 'reactflow';
 import type { RoomNodeData } from '../types';
+import { DepartureMarkers } from './DepartureMarkers';
 
 // Type alias for RoomNode props - extends NodeProps for type safety
 export type RoomNodeProps = NodeProps<RoomNodeData>;
+
+// Scalar fields compared by strict equality; `departures` (an array) is compared separately below.
+const MEMO_COMPARE_FIELDS = [
+  'id',
+  'name',
+  'isCurrentLocation',
+  'hasUnsavedChanges',
+  'environment',
+  'subZone',
+] as const satisfies readonly (keyof RoomNodeData)[];
+
+function arePropsEqual(prevProps: RoomNodeProps, nextProps: RoomNodeProps): boolean {
+  // Only re-render if data has changed
+  const scalarFieldsEqual = MEMO_COMPARE_FIELDS.every(field => prevProps.data[field] === nextProps.data[field]);
+  const departuresEqual = (prevProps.data.departures?.join() ?? '') === (nextProps.data.departures?.join() ?? '');
+  return scalarFieldsEqual && departuresEqual;
+}
 
 /**
  * Get the shape component based on environment/subzone.
@@ -29,7 +47,9 @@ const getNodeShape = (_environment?: string, _subZone?: string): 'circle' | 'squ
  * Get CSS classes for the node based on its state.
  */
 const getNodeClasses = (data: RoomNodeData): string => {
-  const baseClasses = 'flex items-center justify-center border-2 font-mono text-xs';
+  // `relative` is load-bearing: the departure marker is absolutely positioned, and
+  // without a positioned ancestor it escapes the node and lands somewhere in the canvas.
+  const baseClasses = 'relative flex items-center justify-center border-2 font-mono text-xs';
   const shapeClasses = {
     circle: 'rounded-full',
     square: '', // No rounding - true squares
@@ -57,69 +77,48 @@ const getNodeClasses = (data: RoomNodeData): string => {
  *
  * Memoized to prevent unnecessary re-renders when props haven't changed.
  */
-export const RoomNode: React.FC<RoomNodeProps> = React.memo(
-  ({ data }) => {
-    const nodeClasses = getNodeClasses(data);
+export const RoomNode: React.FC<RoomNodeProps> = React.memo(({ data }) => {
+  const nodeClasses = getNodeClasses(data);
 
-    return (
-      <div className={nodeClasses} style={{ width: '80px', height: '80px' }}>
-        {/* Handles for connections - each handle has a unique ID based on position */}
-        <Handle type="target" id="target-top" position={Position.Top} className="w-2 h-2 bg-mythos-terminal-primary" />
-        <Handle
-          type="target"
-          id="target-right"
-          position={Position.Right}
-          className="w-2 h-2 bg-mythos-terminal-primary"
-        />
-        <Handle
-          type="target"
-          id="target-bottom"
-          position={Position.Bottom}
-          className="w-2 h-2 bg-mythos-terminal-primary"
-        />
-        <Handle
-          type="target"
-          id="target-left"
-          position={Position.Left}
-          className="w-2 h-2 bg-mythos-terminal-primary"
-        />
+  return (
+    <div className={nodeClasses} style={{ width: '80px', height: '80px' }}>
+      {/* Handles for connections - each handle has a unique ID based on position */}
+      <Handle type="target" id="target-top" position={Position.Top} className="w-2 h-2 bg-mythos-terminal-primary" />
+      <Handle
+        type="target"
+        id="target-right"
+        position={Position.Right}
+        className="w-2 h-2 bg-mythos-terminal-primary"
+      />
+      <Handle
+        type="target"
+        id="target-bottom"
+        position={Position.Bottom}
+        className="w-2 h-2 bg-mythos-terminal-primary"
+      />
+      <Handle type="target" id="target-left" position={Position.Left} className="w-2 h-2 bg-mythos-terminal-primary" />
 
-        <Handle type="source" id="source-top" position={Position.Top} className="w-2 h-2 bg-mythos-terminal-success" />
-        <Handle
-          type="source"
-          id="source-right"
-          position={Position.Right}
-          className="w-2 h-2 bg-mythos-terminal-success"
-        />
-        <Handle
-          type="source"
-          id="source-bottom"
-          position={Position.Bottom}
-          className="w-2 h-2 bg-mythos-terminal-success"
-        />
-        <Handle
-          type="source"
-          id="source-left"
-          position={Position.Left}
-          className="w-2 h-2 bg-mythos-terminal-success"
-        />
+      <Handle type="source" id="source-top" position={Position.Top} className="w-2 h-2 bg-mythos-terminal-success" />
+      <Handle
+        type="source"
+        id="source-right"
+        position={Position.Right}
+        className="w-2 h-2 bg-mythos-terminal-success"
+      />
+      <Handle
+        type="source"
+        id="source-bottom"
+        position={Position.Bottom}
+        className="w-2 h-2 bg-mythos-terminal-success"
+      />
+      <Handle type="source" id="source-left" position={Position.Left} className="w-2 h-2 bg-mythos-terminal-success" />
+      {/* Ways out of the loaded area; see DepartureMarkers. */}
+      <DepartureMarkers departures={data.departures} />
 
-        {/* Node content */}
-        <div className="text-center px-1 truncate max-w-full" title={data.name}>
-          {data.name}
-        </div>
+      {/* Node content */}
+      <div className="text-center px-1 truncate max-w-full" title={data.name}>
+        {data.name}
       </div>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Only re-render if data has changed
-    return (
-      prevProps.data.id === nextProps.data.id &&
-      prevProps.data.name === nextProps.data.name &&
-      prevProps.data.isCurrentLocation === nextProps.data.isCurrentLocation &&
-      prevProps.data.hasUnsavedChanges === nextProps.data.hasUnsavedChanges &&
-      prevProps.data.environment === nextProps.data.environment &&
-      prevProps.data.subZone === nextProps.data.subZone
-    );
-  }
-);
+    </div>
+  );
+}, arePropsEqual);

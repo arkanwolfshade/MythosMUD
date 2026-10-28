@@ -57,41 +57,49 @@ class WindowsSafeRotatingFileHandler(RotatingFileHandler):
     Size-based rotating file handler that uses copy-then-truncate on Windows.
     """
 
+    @staticmethod
+    def _shift_backup_files(base_filename: str, backup_count: int) -> None:
+        """Shift .1, .2, ... backup files up by one (same scheme as the base class)."""
+        for i in range(backup_count - 1, 0, -1):
+            sfn = f"{base_filename}.{i}"
+            dfn = f"{base_filename}.{i + 1}"
+            if os.path.exists(sfn):
+                try:
+                    if os.path.exists(dfn):
+                        os.remove(dfn)
+                    os.rename(sfn, dfn)
+                except OSError:
+                    # Best-effort; continue rotating the next one
+                    pass
+
+    @staticmethod
+    def _rotate_current_log_to_backup_one(base_filename: str) -> None:
+        """Rotate the active log into `<base_filename>.1`, copy-then-truncate on Windows."""
+        dfn = base_filename + ".1"
+        if os.path.exists(dfn):
+            try:
+                os.remove(dfn)
+            except OSError:
+                pass
+
+        # Windows-safe rollover for the current log file
+        if sys.platform == "win32":
+            copy_then_truncate(base_filename, dfn)
+        else:
+            try:
+                os.rename(base_filename, dfn)
+            except OSError:
+                # Fallback to copy-then-truncate even on non-Windows if needed
+                copy_then_truncate(base_filename, dfn)
+
     @override
     def doRollover(self) -> None:  # noqa: N802  # Reason: Method name matches logging.handlers.RotatingFileHandler API, must use camelCase to override base class method
         if self.stream:
             self.stream.close()
 
-        # Compute destination rotated filename (same scheme as base class)
         if self.backupCount > 0:
-            for i in range(self.backupCount - 1, 0, -1):
-                sfn = f"{self.baseFilename}.{i}"
-                dfn = f"{self.baseFilename}.{i + 1}"
-                if os.path.exists(sfn):
-                    try:
-                        if os.path.exists(dfn):
-                            os.remove(dfn)
-                        os.rename(sfn, dfn)
-                    except OSError:
-                        # Best-effort; continue rotating the next one
-                        pass
-
-            dfn = self.baseFilename + ".1"
-            if os.path.exists(dfn):
-                try:
-                    os.remove(dfn)
-                except OSError:
-                    pass
-
-            # Windows-safe rollover for the current log file
-            if sys.platform == "win32":
-                copy_then_truncate(self.baseFilename, dfn)
-            else:
-                try:
-                    os.rename(self.baseFilename, dfn)
-                except OSError:
-                    # Fallback to copy-then-truncate even on non-Windows if needed
-                    copy_then_truncate(self.baseFilename, dfn)
+            self._shift_backup_files(self.baseFilename, self.backupCount)
+            self._rotate_current_log_to_backup_one(self.baseFilename)
 
         # Reopen the stream (assign to Handler attributes; cannot re-annotate stream on subclass without Liskov errors vs TextIOWrapper).
         self.mode = "a"  # pyright: ignore[reportUnannotatedClassAttribute]

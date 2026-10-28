@@ -12,7 +12,7 @@ instability and must be resolved by the administrator.
 
 from typing import Any
 
-from sqlalchemy import text
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -21,11 +21,7 @@ logger = get_logger(__name__)
 
 # Backed by db/procedures/exploration.sql's get_coordinate_conflicts() and
 # count_coordinated_rooms() (#633).
-_CONFLICTS_QUERY = text(
-    "SELECT room1_id, room1_name, room2_id, room2_name, map_x, map_y " + "FROM get_coordinate_conflicts(:pattern)"
-)
-
-_ROOM_COUNT_QUERY = text("SELECT count_coordinated_rooms(:pattern)")
+_CONFLICT_COLUMNS = ("room1_id", "room1_name", "room2_id", "room2_name", "map_x", "map_y")
 
 
 def _zone_pattern(plane: str, zone: str, sub_zone: str | None) -> str:
@@ -64,11 +60,12 @@ class CoordinateValidator:  # pylint: disable=too-few-public-methods  # Reason: 
         self._session = session
 
     async def _fetch_conflicts(self, pattern: str) -> list[dict[str, Any]]:
-        result = await self._session.execute(_CONFLICTS_QUERY, {"pattern": pattern})
+        conflicts_fn = func.get_coordinate_conflicts(pattern).table_valued(*_CONFLICT_COLUMNS)
+        result = await self._session.execute(select(conflicts_fn))
         return [_conflict_from_row(row) for row in result]
 
     async def _count_coordinated_rooms(self, pattern: str) -> int:
-        count_result = await self._session.execute(_ROOM_COUNT_QUERY, {"pattern": pattern})
+        count_result = await self._session.execute(select(func.count_coordinated_rooms(pattern)))
         return count_result.scalar_one() or 0
 
     async def validate_coordinates(self, plane: str, zone: str, sub_zone: str | None = None) -> dict[str, Any]:

@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from server.constants.npc_disposition import NpcDisposition
 from server.realtime.room_subscription_manager import RoomSubscriptionManager
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members
@@ -55,6 +56,8 @@ def test_add_npc_to_occupants(subscription_manager):
     assert occupants[0]["player_id"] == "npc_001"
     assert occupants[0]["player_name"] == "TestNPC"
     assert occupants[0]["is_npc"] is True
+    # #1025: rows always carry a disposition; an NPC with no live instance is a passive mob.
+    assert occupants[0]["disposition"] == NpcDisposition.PASSIVE_MOB
 
 
 def test_query_npcs_from_lifecycle_manager(subscription_manager):

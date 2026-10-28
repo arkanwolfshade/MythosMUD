@@ -62,7 +62,11 @@ def build_room_dict(row: Any) -> dict[str, Any]:
         "map_origin_zone": bool(row[6]) if row[6] is not None else False,
         "map_symbol": row[7],
         "map_style": row[8],
-        "environment": attrs.get("environment", "outdoors"),
+        # #663: row[9] is the room's own (possibly NULL) environment column; row[10] is the
+        # room -> subzone -> zone -> 'outdoors' cascade, resolved in SQL (get_rooms_by_zone_pattern /
+        # get_room_by_stable_id). "environment" keeps its historical meaning (resolved).
+        "room_environment": row[9],
+        "environment": row[10],
         "exits": {},
     }
 
@@ -131,7 +135,9 @@ async def load_rooms_with_coordinates(
             map_y,
             map_origin_zone,
             map_symbol,
-            map_style
+            map_style,
+            room_environment,
+            resolved_environment
         FROM get_rooms_by_zone_pattern(:pattern)
         """
     )
@@ -161,7 +167,9 @@ async def load_single_room_with_coordinates(session: AsyncSession, stable_id: st
             map_y,
             map_origin_zone,
             map_symbol,
-            map_style
+            map_style,
+            room_environment,
+            resolved_environment
         FROM get_room_by_stable_id(:stable_id)
         """
     )

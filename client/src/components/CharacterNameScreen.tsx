@@ -1,9 +1,10 @@
 /**
  * CharacterNameScreen: final step of character creation (plan 10.6 F5).
  * Name input and POST create-character with rolled stats, profession_id, and skills payload.
+ * Offers to skip the First Exposure tutorial when the server says the account has earned it (#1081).
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Stats } from '../hooks/useStatsRolling.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
@@ -46,13 +47,15 @@ interface CreateCharacterPayload {
   profession_id: number;
   occupation_slots: OccupationSlotPayload[];
   personal_interest: PersonalInterestPayload[];
+  start_in_tutorial: boolean;
 }
 
 function buildCreateCharacterPayload(
   trimmedName: string,
   stats: Stats,
   professionId: number,
-  skillsPayload: SkillsPayload
+  skillsPayload: SkillsPayload,
+  startInTutorial: boolean
 ): CreateCharacterPayload {
   return {
     name: trimmedName,
@@ -60,7 +63,38 @@ function buildCreateCharacterPayload(
     profession_id: professionId,
     occupation_slots: skillsPayload.occupation_slots,
     personal_interest: skillsPayload.personal_interest,
+    start_in_tutorial: startInTutorial,
   };
+}
+
+/**
+ * Whether this account may skip First Exposure. Any failure simply hides the option: the server checks again at
+ * creation and refuses a skip the account has not earned.
+ */
+function useTutorialSkipEligible(baseUrl: string, authToken: string): boolean {
+  const [eligible, setEligible] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/players/characters/tutorial-skip`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        if (!response.ok) return;
+        const data: unknown = await response.json();
+        const isEligible =
+          typeof data === 'object' && data !== null && (data as Record<string, unknown>).eligible === true;
+        if (!cancelled) setEligible(isEligible);
+      } catch {
+        // The option stays hidden.
+      }
+    };
+    void check();
+    return () => {
+      cancelled = true;
+    };
+  }, [baseUrl, authToken]);
+  return eligible;
 }
 
 function getCreateCharacterErrorMessage(rawData: unknown): string | null {
@@ -83,19 +117,13 @@ function getCreateCharacterErrorMessage(rawData: unknown): string | null {
   return null;
 }
 
-export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
-  stats,
-  profession,
-  skillsPayload,
-  baseUrl,
-  authToken,
-  onComplete,
-  onError,
-  onBack,
-}) => {
+export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = props => {
+  const { stats, profession, skillsPayload, baseUrl, authToken, onComplete, onError, onBack } = props;
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [skipTutorial, setSkipTutorial] = useState(false);
+  const canSkipTutorial = useTutorialSkipEligible(baseUrl, authToken);
   const inputId = 'character-name-input';
   const hintId = 'character-name-hint';
   const errorId = 'character-name-error';
@@ -116,7 +144,8 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
     setError(null);
     setIsSubmitting(true);
     try {
-      const payload = buildCreateCharacterPayload(trimmedName, stats, profession.id, skillsPayload);
+      const startInTutorial = !(canSkipTutorial && skipTutorial);
+      const payload = buildCreateCharacterPayload(trimmedName, stats, profession.id, skillsPayload, startInTutorial);
       const response = await fetch(`${baseUrl}/api/players/create-character`, {
         method: 'POST',
         headers: {
@@ -183,6 +212,19 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
           <p id={hintId} className="character-name-hint">
             {PLAYER_NAME_RULES_HINT}
           </p>
+          {canSkipTutorial && (
+            <label className="character-name-skip-tutorial">
+              <input
+                type="checkbox"
+                checked={skipTutorial}
+                onChange={e => {
+                  setSkipTutorial(e.target.checked);
+                }}
+                disabled={isSubmitting}
+              />
+              Skip the First Exposure tutorial (a character on this account has finished it) and begin in the Sanitarium
+            </label>
+          )}
           {displayError && (
             <p id={errorId} className="error-message" role="alert" aria-live="assertive">
               {displayError}

@@ -8,6 +8,7 @@ This is a thin wrapper that imports and re-exports command handlers from separat
 from typing import Any
 
 from ..alias_storage import AliasStorage
+from .command_results import command_error
 
 # Import go command handler
 from .go_command import handle_go_command
@@ -40,7 +41,7 @@ async def handle_explore_command(
     player = await persistence.get_player_by_name(target_name)
 
     if player is None:
-        return {"result": "Player not found for exploration."}
+        return command_error("Player not found for exploration.")
 
     return {"result": f"{target_name} explores the surrounding area."}
 

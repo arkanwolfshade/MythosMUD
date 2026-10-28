@@ -13,6 +13,12 @@ from structlog.stdlib import BoundLogger
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
+from .websocket_initial_state import (
+    check_and_send_death_notification,
+    check_and_send_delirium_notification,
+    send_initial_game_state,
+    send_initial_room_state,
+)
 
 if TYPE_CHECKING:
     from .connection_manager import ConnectionManager
@@ -32,16 +38,41 @@ class AsyncPersistenceRoomLookup(Protocol):  # pylint: disable=too-few-public-me
     def get_room_by_id(self, room_id: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
-class PlayerMuteCleanup(Protocol):  # pylint: disable=too-few-public-methods
-    """Narrow UserManager surface for clearing a disconnected player's mute state."""
+def _is_superseded(connection_id: str | None, player_id: uuid.UUID, connection_manager: "ConnectionManager") -> bool:
+    """True when this handler's socket is no longer registered but the player has a newer live one.
 
-    def cleanup_player_mutes(self, player_id: str) -> bool: ...  # pylint: disable=missing-function-docstring
+    A replaced session's old handler can finish after the new socket has registered (#610). Its teardown
+    is player-scoped, so running it would close the new socket and start a grace period for a player who
+    is connected. Without a connection id (legacy callers) nothing is considered superseded.
+    """
+    if connection_id is None:
+        return False
+    registered = connection_id in connection_manager.player_websockets.get(player_id, [])
+    return not registered and connection_manager.has_websocket_connection(player_id)
 
 
 async def cleanup_websocket_connection(
-    player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
+    player_id: uuid.UUID,
+    _player_id_str: str,
+    connection_manager: "ConnectionManager",
+    connection_id: str | None = None,
 ) -> None:
-    """Clean up connection, follow state, party state, and player mute data on disconnect."""
+    """Clean up connection, follow state, and party state on disconnect.
+
+    ``connection_id`` is the socket whose handler is ending. If a newer session has already replaced it, the
+    player is still live and this stale handler must not tear anything down (see ``_is_superseded``).
+
+    Mutes are deliberately left alone: they are persisted (#681) and indexed for all players,
+    and dropping them on disconnect let a globally muted player reconnect to escape the mute.
+    """
+    if _is_superseded(connection_id, player_id, connection_manager):
+        logger.info(
+            "Skipping disconnect cleanup for superseded connection",
+            player_id=player_id,
+            connection_id=connection_id,
+        )
+        return
+
     try:
         from ..container import get_container
 
@@ -62,18 +93,6 @@ async def cleanup_websocket_connection(
     except (WebSocketDisconnect, RuntimeError) as e:
         logger.error("Error disconnecting WebSocket", player_id=player_id, error=str(e))
 
-    try:
-        from ..container import get_container
-
-        um_container_raw = get_container()
-        um_container: object | None = cast(object | None, um_container_raw)
-        um = cast(object | None, getattr(um_container, "user_manager", None)) if um_container is not None else None
-        if um is not None:
-            _: bool = cast(PlayerMuteCleanup, um).cleanup_player_mutes(player_id_str)
-            logger.info("Cleaned up mute data", player_id=player_id)
-    except (WebSocketDisconnect, RuntimeError, TypeError) as e:
-        logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
-
 
 async def setup_initial_connection_state(
     websocket: WebSocket,
@@ -87,10 +106,8 @@ async def setup_initial_connection_state(
     Returns:
         Tuple of (canonical_room_id, should_exit)
     """
-    from . import websocket_handler as ws_handler
-
     try:
-        canonical_room_id, should_exit = await ws_handler.send_initial_game_state(
+        canonical_room_id, should_exit = await send_initial_game_state(
             websocket, player_id, player_id_str, connection_manager
         )
         if should_exit:
@@ -102,7 +119,7 @@ async def setup_initial_connection_state(
                 ap = cast(AsyncPersistenceRoomLookup, ap_raw)
                 room = ap.get_room_by_id(canonical_room_id)
                 if room is not None:
-                    await ws_handler.check_and_send_death_notification(
+                    await check_and_send_death_notification(
                         websocket,
                         player_id,
                         player_id_str,
@@ -110,7 +127,8 @@ async def setup_initial_connection_state(
                         cast(Room | dict[str, object], room),
                         connection_manager,
                     )
-                    await ws_handler.send_initial_room_state(
+                    await check_and_send_delirium_notification(player_id, player_id_str)
+                    await send_initial_room_state(
                         websocket, player_id, player_id_str, canonical_room_id, connection_manager
                     )
 

@@ -29,6 +29,7 @@ from server.events.event_types import (
 )
 from server.models.npc import NPCDefinition, NPCSpawnRule
 
+from ..constants.instance_rooms import is_instance_room_id
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 from .npc_utils import (
@@ -320,6 +321,9 @@ class NPCPopulationController:  # pylint: disable=too-many-instance-attributes  
         Args:
             room_id: The room identifier
         """
+        if is_instance_room_id(room_id):
+            # An instance room resolves to its template's sub-zone, but it is a private space that owns its NPCs.
+            return
         logger.info("Checking spawn requirements for room", room_id=room_id)
         zone_key = get_zone_key_from_room_id(room_id)
         logger.info("Generated zone key", zone_key=zone_key)

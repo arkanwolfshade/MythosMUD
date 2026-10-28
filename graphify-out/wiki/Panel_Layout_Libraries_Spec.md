@@ -1,25 +1,25 @@
 # Panel Layout Libraries Spec
 
-> 2 nodes
+> 2 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Panel Layout Libraries Spec** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Client Architecture Improvements Plan** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
+- **test_profession_meets_stat_requirements_multiple_not_met()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when multiple requirements are not…** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- `docs/archive/PLANNING_client_architecture_improvements.md`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

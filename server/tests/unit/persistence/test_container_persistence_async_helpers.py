@@ -2,11 +2,13 @@
 
 import json
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import cast
+from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
+from server.constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
 from server.persistence.container_persistence_async import (
     _build_item_dict,
@@ -58,7 +60,7 @@ def test_prepare_container_create_params() -> None:
     [
         ("invalid", 5, "unlocked"),
         ("environment", 0, "unlocked"),
-        ("environment", 21, "unlocked"),
+        ("environment", MAX_CONTAINER_CAPACITY_SLOTS + 1, "unlocked"),
         ("environment", 5, "broken"),
     ],
 )
@@ -69,6 +71,19 @@ def test_validate_container_create_params_rejects_invalid(source_type: str, capa
 
 def test_validate_container_create_params_accepts_valid() -> None:
     _validate_container_create_params("corpse", 10, "sealed")
+    # The async create path is the one the game uses; it must honour the global cap, not 20.
+    _validate_container_create_params("environment", MAX_CONTAINER_CAPACITY_SLOTS, "unlocked")
+
+
+@pytest.mark.parametrize("source_type", CONTAINER_SOURCE_TYPES)
+def test_validate_container_create_params_accepts_every_source_type(source_type: str) -> None:
+    """Includes 'bank': a hardcoded list here once would have refused every deposit box at create time."""
+    _validate_container_create_params(source_type, 100, "unlocked")
+
+
+def test_validate_container_create_params_error_names_the_valid_source_types() -> None:
+    with pytest.raises(ValidationError, match="environment, equipment, corpse, bank"):
+        _validate_container_create_params("vault", 5, "unlocked")
 
 
 def test_row_to_mapping_from_sqlalchemy_row() -> None:
@@ -119,6 +134,26 @@ def test_build_item_dict_success() -> None:
 
 def test_build_item_dict_missing_instance_id() -> None:
     assert _build_item_dict({"item_name": "Ghost Item"}) is None
+
+
+def test_build_item_dict_lifts_inner_container_out_of_metadata() -> None:
+    """A stashed inner_container comes back as a stack field, not as metadata (#917)."""
+    inner = {"capacity_slots": 8, "items": [{"item_id": "coin"}], "lock_state": "unlocked"}
+    raw_metadata = {"color": "red", "inner_container": inner}
+
+    item = _build_item_dict({"item_instance_id": "pack-1", "item_id": "backpack", "metadata": raw_metadata})
+
+    assert item is not None
+    assert item["inner_container"] == inner
+    assert item["metadata"] == {"color": "red"}
+    assert raw_metadata == {"color": "red", "inner_container": inner}  # the source mapping is not mutated
+
+
+def test_build_item_dict_omits_inner_container_when_absent() -> None:
+    item = _build_item_dict({"item_instance_id": "sling-1", "item_id": "sling", "metadata": {}})
+
+    assert item is not None
+    assert "inner_container" not in item
 
 
 @pytest.mark.asyncio
@@ -205,6 +240,41 @@ async def test_populate_container_items_async() -> None:
             [{"item_instance_id": str(item_id), "item_id": "proto-1", "quantity": 2}],
         )
     assert session.execute.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_populate_container_items_stashes_inner_container_in_metadata_and_it_round_trips() -> None:
+    """inner_container has no column, so it rides in item metadata and survives a read (#917)."""
+    inner = {"capacity_slots": 8, "items": [{"item_id": "coin", "quantity": 3}], "lock_state": "unlocked"}
+    session = MagicMock()
+    session.execute = AsyncMock()
+    with patch(
+        "server.persistence.item_instance_persistence_async.ensure_item_instance_async",
+        new_callable=AsyncMock,
+    ) as ensure:
+        await _populate_container_items_async(
+            session,
+            uuid.uuid4(),
+            [
+                {
+                    "item_instance_id": "pack-1",
+                    "item_id": "backpack",
+                    "metadata": {"color": "red"},
+                    "inner_container": inner,
+                },
+                {"item_instance_id": "sling-1", "item_id": "sling"},
+            ],
+        )
+
+    pack_metadata = cast("object", ensure.await_args_list[0].kwargs["options"]["metadata_payload"])
+    sling_metadata = cast("object", ensure.await_args_list[1].kwargs["options"]["metadata_payload"])
+    assert pack_metadata == {"color": "red", "inner_container": inner}
+    assert sling_metadata == {}
+
+    restored = _build_item_dict({"item_instance_id": "pack-1", "item_id": "backpack", "metadata": pack_metadata})
+    assert restored is not None
+    assert restored["inner_container"] == inner
+    assert restored["metadata"] == {"color": "red"}
 
 
 @pytest.mark.asyncio
@@ -344,3 +414,25 @@ async def test_delete_container_async_db_error() -> None:
     with pytest.raises(DatabaseError):
         await delete_container_async(session, uuid.uuid4())
     session.rollback.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_update_container_async_capacity_calls_set_container_capacity() -> None:
+    """capacity_slots goes through its own procedure, leaving update_container's signature alone."""
+    container_id = uuid.uuid4()
+    execute = AsyncMock()
+    commit = AsyncMock()
+    session = MagicMock()
+    session.configure_mock(execute=execute, commit=commit)
+    with patch(
+        "server.persistence.container_persistence_async.get_container_async",
+        new_callable=AsyncMock,
+        return_value=MagicMock(),
+    ):
+        _ = await update_container_async(session, container_id, capacity_slots=200)
+
+    execute.assert_awaited_once_with(ANY, {"cid": str(container_id), "capacity_slots": 200})
+    call = execute.await_args
+    assert call is not None
+    assert "set_container_capacity" in str(cast(object, call.args[0]))
+    commit.assert_awaited_once()

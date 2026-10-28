@@ -272,6 +272,25 @@ class NPCSpoke(BaseEvent):
 
 
 @dataclass
+class NPCOpensDialogue(BaseEvent):
+    """
+    Event fired when an NPC that initiates dialogue notices a player walking into its room.
+
+    Raised by the NPC's reaction (behavior_config.initiates_dialogue); a subscriber that has the
+    services a conversation needs opens it exactly as `talk <npc>` would.
+    """
+
+    npc_id: str
+    npc_name: str
+    room_id: str
+    player_id: str
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self._bind_event_type("NPCOpensDialogue")
+
+
+@dataclass
 class NPCListened(BaseEvent):
     """
     Event fired when an NPC receives a message.
@@ -322,8 +341,8 @@ class PlayerMortallyWoundedEvent(BaseEvent):
     Event fired when a player enters mortally wounded state (DP = 0).
 
     This event is triggered when a player's DP reaches 0 but before they die.
-    The player enters a mortally wounded state where they lose 1 DP per tick
-    until reaching -10 DP (death).
+    The player enters a mortally wounded state where they lose 1 DP per second
+    (once out of combat) until reaching -10 DP (death).
     """
 
     player_id: str
@@ -486,8 +505,8 @@ class QuestCompleted(BaseEvent):
     """
     Event fired when a quest instance is completed (rewards applied, state set to completed).
 
-    Emitted by QuestService after _complete_instance. Subscribers can push updated
-    quest_log to the player's client so the Journal panel refreshes.
+    Emitted by QuestService after _complete_instance. Quest chaining subscribes to it; the
+    Journal panel refresh rides on QuestLogChanged.
     """
 
     player_id: str
@@ -496,3 +515,20 @@ class QuestCompleted(BaseEvent):
     def __post_init__(self) -> None:
         super().__post_init__()
         self._bind_event_type("QuestCompleted")
+
+
+@dataclass
+class QuestLogChanged(BaseEvent):
+    """
+    Event fired when anything in a player's quest log changed: a quest started, progressed,
+    completed or was abandoned.
+
+    Emitted by QuestService. Subscribers push the updated quest_log to the player's client so
+    the Journal panel stays current without the player typing `journal`.
+    """
+
+    player_id: str
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self._bind_event_type("QuestLogChanged")

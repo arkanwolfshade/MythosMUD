@@ -1,0 +1,463 @@
+/*
+ * Semantic message categories: presentation layer.
+ *
+ * a11y notes (read before changing anything here)
+ * ------------------------------------------------
+ * Color is NEVER the only carrier of meaning (WCAG 1.4.1 Use of Color). Every category is shown
+ * through layered, redundant cues, so a player who cannot tell two hues apart (protan, deutan,
+ * tritan, achromatopsia) loses nothing:
+ *   1. COLOR       the --cat-<domain>-<kind> custom properties below. Okabe-Ito colorblind-safe hues,
+ *                  lightened for the dark terminal theme. Never red-vs-green alone.
+ *   2. TYPOGRAPHY  a "register" per category: alert = bold + solid left border; private voice =
+ *                  italic + dashed border; action = italic; meta = small-caps + double border;
+ *                  speech/ambient = plain; heading = accent font (IM Fell English).
+ *                  Underline is reserved for future interactive text. Do not use it here.
+ *   3. GLYPH       a ::before glyph with accessible alt text (content: "g" / "alt"). A plain
+ *                  fallback declaration precedes the alt form for browsers without alt support.
+ *   4. TEXT LABEL  html.text-labels (the "Text labels" setting) swaps each glyph for a bracketed
+ *                  prefix such as [Combat], for players who prefer words to icons.
+ * Contrast: every --cat-* color is >= 4.5:1 against the panel background (#1a1a1a); the
+ * html.high-contrast block is >= 7:1. client/src/components/ui-v2/utils/__tests__/
+ * messageCategoryPalette.test.ts parses this file and fails if a value is lowered.
+ *
+ * Register membership (refined from the design notes: combat.status joins alert because it carries
+ * the mortal-wound warning; room.exits and command.output are ambient/plain):
+ *   alert   system.error system.warning combat.hurt combat.death combat.status status.*
+ *   private chat.whisper
+ *   action  chat.emote combat.hit combat.miss
+ *   meta    system.info quest.info chat.admin
+ *   plain   chat.say/local/global/party/shout room.description room.exits room.movement command.output npc.*
+ *   heading room.name
+ * The TS twin of this table is messageCategoryStyle.ts (CATEGORY_REGISTER); a test keeps them honest.
+ *
+ * #714 / ADR-024: styling is a pure function of the category. A hallucinated message arrives with
+ * the same category as the real one and must be indistinguishable. Add no rule that could tell them apart.
+ */
+
+/* Accent font: IM Fell English, SIL OFL 1.1 (license text beside the files in /fonts). */
+@font-face {
+  font-family: 'IM Fell English';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/im-fell-english-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IM Fell English';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/im-fell-english-latin-400-italic.woff2') format('woff2');
+}
+
+:root {
+  --cat-accent-font: 'IM Fell English', Georgia, 'Times New Roman', serif;
+
+  /* chat */
+  --cat-chat-say: #6fd3a8;
+  --cat-chat-local: #7cc4ee;
+  --cat-chat-global: #e8dc5a;
+  --cat-chat-party: #e29bc1;
+  --cat-chat-whisper: #c9a6f0;
+  --cat-chat-shout: #f2a93b;
+  --cat-chat-emote: #d6e6a0;
+  --cat-chat-admin: #f5c97a;
+  /* combat */
+  --cat-combat-hit: #ff7a1a;
+  --cat-combat-hurt: #ff8a5c;
+  --cat-combat-miss: #a8b0b8;
+  --cat-combat-death: #ff6b6b;
+  --cat-combat-status: #ff4081;
+  /* room */
+  --cat-room-name: #e8d9a8;
+  --cat-room-description: #d8d2c0;
+  --cat-room-exits: #c4b18a;
+  --cat-room-movement: #a6b8aa;
+  /* system */
+  --cat-system-info: #6ea0ff;
+  --cat-system-warning: #ffcd00;
+  --cat-system-error: #ff6b5c;
+  /* quest: aged-parchment amber, apart from the quest giver's brass and the admin gold */
+  --cat-quest-info: #e6b673;
+  /* status */
+  --cat-status-lucidity: #a569ff;
+  --cat-status-health: #ff9e7a;
+  --cat-status-rescue: #ff5fd2;
+  /* command */
+  --cat-command-output: #4ee07a;
+  /* npc disposition: hostile = crimson-magenta (not the orange-red of combat), quest giver = brass, shopkeeper = cyan, passive = muted */
+  --cat-npc-aggressive_mob: #ff5c8a;
+  --cat-npc-quest_giver: #d9b36c;
+  --cat-npc-shopkeeper: #5fd7e0;
+  --cat-npc-passive_mob: #b0b8a8;
+
+  --cat-border-width: 3px;
+}
+
+/* One AAA (>= 7:1) variable block; applied by ThemeContext toggling the class on <html>. */
+html.high-contrast {
+  --cat-chat-say: #a6f0cf;
+  --cat-chat-local: #b0e0ff;
+  --cat-chat-global: #f6ee8c;
+  --cat-chat-party: #f5c4de;
+  --cat-chat-whisper: #e2cffa;
+  --cat-chat-shout: #ffc870;
+  --cat-chat-emote: #e8f4c0;
+  --cat-chat-admin: #ffe0a0;
+  --cat-combat-hit: #ffa05c;
+  --cat-combat-hurt: #ffb090;
+  --cat-combat-miss: #d0d6dc;
+  --cat-combat-death: #ff9c9c;
+  --cat-combat-status: #ff83ad;
+  --cat-room-name: #f6ecc8;
+  --cat-room-description: #ece8dc;
+  --cat-room-exits: #e0d2b0;
+  --cat-room-movement: #cfdcd2;
+  --cat-system-info: #9abcff;
+  --cat-system-warning: #ffdc4c;
+  --cat-system-error: #ff9a8e;
+  --cat-quest-info: #f2cf96;
+  --cat-status-lucidity: #c096ff;
+  --cat-status-health: #ffbfa6;
+  --cat-status-rescue: #ff8fe0;
+  --cat-command-output: #8cf5a8;
+  --cat-npc-aggressive_mob: #ff9bb8;
+  --cat-npc-quest_giver: #f0d49a;
+  --cat-npc-shopkeeper: #a0eef4;
+  --cat-npc-passive_mob: #d4dacc;
+
+  --cat-border-width: 4px;
+}
+
+/* Base: color + glyph. Per-kind classes only set the four --cat-* inputs. */
+.cat {
+  color: var(--cat-ink);
+}
+
+.cat::before {
+  content: var(--cat-glyph);
+  display: inline-block;
+  margin-inline-end: 0.4em;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-decoration: none;
+}
+
+/* Alt text for the glyph; skipped by browsers that cannot parse `content: <str> / <str>`. */
+@supports (content: 'a' / 'b') {
+  .cat::before {
+    content: var(--cat-glyph) / var(--cat-glyph-alt);
+  }
+}
+
+/* "Text labels" setting: words instead of icons. */
+html.text-labels .cat::before {
+  content: var(--cat-text-label);
+  /* The ::before is inline-block, which collapses the label's own trailing space, so the gap must be a margin. */
+  margin-inline-end: 0.5em;
+  font-weight: 700;
+}
+
+/* Domain defaults (unknown future kinds in a known domain degrade to these). */
+.cat-chat {
+  --cat-ink: var(--cat-chat-say);
+  --cat-glyph: '\201C';
+  --cat-glyph-alt: 'chat';
+  --cat-text-label: '[Chat] ';
+}
+.cat-combat {
+  --cat-ink: var(--cat-combat-hit);
+  --cat-glyph: '\2694';
+  --cat-glyph-alt: 'combat';
+  --cat-text-label: '[Combat] ';
+}
+.cat-room {
+  --cat-ink: var(--cat-room-description);
+  --cat-glyph: '\00B6';
+  --cat-glyph-alt: 'room';
+  --cat-text-label: '[Room] ';
+}
+.cat-system {
+  --cat-ink: var(--cat-system-info);
+  --cat-glyph: '\2139';
+  --cat-glyph-alt: 'system';
+  --cat-text-label: '[System] ';
+}
+.cat-quest {
+  --cat-ink: var(--cat-quest-info);
+  --cat-glyph: '\2726';
+  --cat-glyph-alt: 'quest';
+  --cat-text-label: '[Quest] ';
+}
+.cat-status {
+  --cat-ink: var(--cat-status-lucidity);
+  --cat-glyph: '\25D0';
+  --cat-glyph-alt: 'status';
+  --cat-text-label: '[Status] ';
+}
+.cat-command {
+  --cat-ink: var(--cat-command-output);
+  --cat-glyph: '\203A';
+  --cat-glyph-alt: 'command';
+  --cat-text-label: '[Command] ';
+}
+.cat-npc {
+  --cat-ink: var(--cat-npc-passive_mob);
+  --cat-glyph: '\00B7';
+  --cat-glyph-alt: 'npc';
+  --cat-text-label: '[NPC] ';
+}
+
+/* Per-kind overrides */
+.cat-chat-say {
+  --cat-ink: var(--cat-chat-say);
+  --cat-glyph: '\201C';
+  --cat-glyph-alt: 'say';
+  --cat-text-label: '[Say] ';
+}
+.cat-chat-local {
+  --cat-ink: var(--cat-chat-local);
+  --cat-glyph: '\25C7';
+  --cat-glyph-alt: 'local';
+  --cat-text-label: '[Local] ';
+}
+.cat-chat-global {
+  --cat-ink: var(--cat-chat-global);
+  --cat-glyph: '\25CD';
+  --cat-glyph-alt: 'global';
+  --cat-text-label: '[Global] ';
+}
+.cat-chat-party {
+  --cat-ink: var(--cat-chat-party);
+  --cat-glyph: '\2663';
+  --cat-glyph-alt: 'party';
+  --cat-text-label: '[Party] ';
+}
+.cat-chat-whisper {
+  --cat-ink: var(--cat-chat-whisper);
+  --cat-glyph: '\2025';
+  --cat-glyph-alt: 'whisper';
+  --cat-text-label: '[Whisper] ';
+}
+.cat-chat-shout {
+  --cat-ink: var(--cat-chat-shout);
+  --cat-glyph: '\203C';
+  --cat-glyph-alt: 'shout';
+  --cat-text-label: '[Shout] ';
+}
+.cat-chat-emote {
+  --cat-ink: var(--cat-chat-emote);
+  --cat-glyph: '\2726';
+  --cat-glyph-alt: 'emote';
+  --cat-text-label: '[Emote] ';
+}
+.cat-chat-admin {
+  --cat-ink: var(--cat-chat-admin);
+  --cat-glyph: '\00A7';
+  --cat-glyph-alt: 'admin';
+  --cat-text-label: '[Admin] ';
+}
+
+.cat-combat-hit {
+  --cat-ink: var(--cat-combat-hit);
+  --cat-glyph: '\2694';
+  --cat-glyph-alt: 'combat hit';
+  --cat-text-label: '[Combat] ';
+}
+.cat-combat-hurt {
+  --cat-ink: var(--cat-combat-hurt);
+  --cat-glyph: '\2738';
+  --cat-glyph-alt: 'you are hurt';
+  --cat-text-label: '[Hurt] ';
+}
+.cat-combat-miss {
+  --cat-ink: var(--cat-combat-miss);
+  --cat-glyph: '\25CB';
+  --cat-glyph-alt: 'miss';
+  --cat-text-label: '[Miss] ';
+}
+.cat-combat-death {
+  --cat-ink: var(--cat-combat-death);
+  --cat-glyph: '\2620';
+  --cat-glyph-alt: 'death';
+  --cat-text-label: '[Death] ';
+}
+.cat-combat-status {
+  --cat-ink: var(--cat-combat-status);
+  --cat-glyph: '\271C';
+  --cat-glyph-alt: 'combat status';
+  --cat-text-label: '[Wound] ';
+}
+
+.cat-room-name {
+  --cat-ink: var(--cat-room-name);
+  --cat-glyph: '\2302';
+  --cat-glyph-alt: 'location';
+  --cat-text-label: '[Location] ';
+}
+.cat-room-description {
+  --cat-ink: var(--cat-room-description);
+  --cat-glyph: '\00B6';
+  --cat-glyph-alt: 'room description';
+  --cat-text-label: '[Room] ';
+}
+.cat-room-exits {
+  --cat-ink: var(--cat-room-exits);
+  --cat-glyph: '\21C4';
+  --cat-glyph-alt: 'exits';
+  --cat-text-label: '[Exits] ';
+}
+.cat-room-movement {
+  --cat-ink: var(--cat-room-movement);
+  --cat-glyph: '\2192';
+  --cat-glyph-alt: 'movement';
+  --cat-text-label: '[Movement] ';
+}
+
+.cat-system-info {
+  --cat-ink: var(--cat-system-info);
+  --cat-glyph: '\2139';
+  --cat-glyph-alt: 'information';
+  --cat-text-label: '[Info] ';
+}
+.cat-system-warning {
+  --cat-ink: var(--cat-system-warning);
+  --cat-glyph: '\26A0';
+  --cat-glyph-alt: 'warning';
+  --cat-text-label: '[Warning] ';
+}
+.cat-system-error {
+  --cat-ink: var(--cat-system-error);
+  --cat-glyph: '\2716';
+  --cat-glyph-alt: 'error';
+  --cat-text-label: '[Error] ';
+}
+
+.cat-quest-info {
+  --cat-ink: var(--cat-quest-info);
+  --cat-glyph: '\2726';
+  --cat-glyph-alt: 'quest';
+  --cat-text-label: '[Quest] ';
+}
+
+.cat-status-lucidity {
+  --cat-ink: var(--cat-status-lucidity);
+  --cat-glyph: '\25D0';
+  --cat-glyph-alt: 'lucidity';
+  --cat-text-label: '[Lucidity] ';
+}
+.cat-status-health {
+  --cat-ink: var(--cat-status-health);
+  --cat-glyph: '\2665';
+  --cat-glyph-alt: 'health';
+  --cat-text-label: '[Health] ';
+}
+.cat-status-rescue {
+  --cat-ink: var(--cat-status-rescue);
+  --cat-glyph: '\271A';
+  --cat-glyph-alt: 'rescue';
+  --cat-text-label: '[Rescue] ';
+}
+
+.cat-command-output {
+  --cat-ink: var(--cat-command-output);
+  --cat-glyph: '\203A';
+  --cat-glyph-alt: 'command output';
+  --cat-text-label: '[Command] ';
+}
+
+/* NPC disposition (#1025): the glyph/label carry the meaning too, so colour is never the only cue. */
+.cat-npc-aggressive_mob {
+  --cat-ink: var(--cat-npc-aggressive_mob);
+  --cat-glyph: '\2620';
+  --cat-glyph-alt: 'hostile';
+  --cat-text-label: '[Hostile] ';
+}
+
+.cat-npc-quest_giver {
+  --cat-ink: var(--cat-npc-quest_giver);
+  --cat-glyph: '!';
+  --cat-glyph-alt: 'quest giver';
+  --cat-text-label: '[Quest] ';
+}
+
+.cat-npc-shopkeeper {
+  --cat-ink: var(--cat-npc-shopkeeper);
+  --cat-glyph: '\2696';
+  --cat-glyph-alt: 'shopkeeper';
+  --cat-text-label: '[Merchant] ';
+}
+
+.cat-npc-passive_mob {
+  --cat-ink: var(--cat-npc-passive_mob);
+  --cat-glyph: '\00B7';
+  --cat-glyph-alt: 'passive';
+  --cat-text-label: '[Passive] ';
+}
+
+/*
+ * Segments (#1025): a styled span inside one line, i.e. an NPC's name. Colour and weight only. There is
+ * deliberately no ::before here: the line already carries one glyph / Text-labels word, and repeating it on every
+ * name would be noise. Weight is the non-colour cue that says "this is a name".
+ */
+.seg {
+  font-weight: 600;
+}
+.seg-npc-aggressive_mob {
+  color: var(--cat-npc-aggressive_mob);
+}
+.seg-npc-quest_giver {
+  color: var(--cat-npc-quest_giver);
+}
+.seg-npc-shopkeeper {
+  color: var(--cat-npc-shopkeeper);
+}
+.seg-npc-passive_mob {
+  color: var(--cat-npc-passive_mob);
+}
+
+/* Registers (typography). Underline is deliberately absent: reserved for interactive text. */
+.cat-reg-alert {
+  font-weight: 700;
+  border-left: var(--cat-border-width) solid var(--cat-ink);
+  padding-left: 0.5rem;
+}
+
+.cat-reg-private {
+  font-style: italic;
+  border-left: var(--cat-border-width) dashed var(--cat-ink);
+  padding-left: 0.5rem;
+}
+
+.cat-reg-action {
+  font-style: italic;
+}
+
+.cat-reg-meta {
+  font-variant: small-caps;
+  /* `double` needs at least 3px to read as two lines. */
+  border-left: max(var(--cat-border-width), 3px) double var(--cat-ink);
+  padding-left: 0.5rem;
+}
+
+.cat-reg-plain {
+  font-weight: 400;
+}
+
+.cat-reg-heading {
+  font-family: var(--cat-accent-font);
+  letter-spacing: 0.02em;
+}
+
+/* #804 / ADR-025: the corruption tint applies to the plain register only (the caller adds
+   .mythos-corruption-text to plain lines). Retarget it at the category ink so the tint blends
+   from the line's own color; a global filter on the viewer's corruption value, never per-message. */
+.cat.mythos-corruption-text {
+  color: color-mix(
+    in oklab,
+    var(--cat-ink),
+    var(--color-mythos-corruption) calc(var(--corruption-intensity, 0) * 100%)
+  );
+}

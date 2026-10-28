@@ -1,12 +1,10 @@
 # Things and notes to expand on
 
-> 3 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Expansion Backlog (Raw)** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- **Delta Green** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- **Things and Notes to Expand On** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Relationships
 
@@ -14,12 +12,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- `docs/architecture/decisions/ADR-026-item-catalog-metadata-contracts.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -8,7 +8,7 @@ creation, retrieval, validation, and state management.
 # pylint: disable=wrong-import-position,too-many-lines  # Reason: Imports after TYPE_CHECKING block are intentional to avoid circular dependencies. Player service requires 650 lines to implement comprehensive player operations (CRUD, state management, combat integration, search, creation, validation); splitting would reduce cohesion and increase coupling between player-related concerns
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..alias_storage import AliasStorage
 
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
     # Removed: from ..persistence import PersistenceLayer - now using async_persistence parameter
+    from ..async_persistence import AsyncPersistenceLayer
     from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
@@ -23,6 +24,7 @@ from ..models import Stats
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
+from .instance_manager import TemplateRoomEntryError, is_template_room
 from .player_creation_service import PlayerCreationService
 from .player_respawn_wrapper import PlayerRespawnWrapper
 from .player_schema_converter import PlayerSchemaConverter
@@ -41,7 +43,6 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         combat_service: Any = None,
         player_combat_service: Any = None,
         item_prototype_registry: Any = None,
-        instance_manager: Any = None,
     ) -> None:
         """Initialize the player service with a persistence layer and optional combat service and prototype registry."""
         self.persistence = persistence
@@ -51,9 +52,7 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         self._schema_converter = PlayerSchemaConverter(
             persistence, player_combat_service, item_prototype_registry=item_prototype_registry
         )
-        self._creation_service = PlayerCreationService(
-            persistence, self._schema_converter, instance_manager=instance_manager
-        )
+        self._creation_service = PlayerCreationService(persistence, self._schema_converter)
         self._search_service = PlayerSearchService(self)
         self._state_service = PlayerStateService(persistence)
         self._respawn_wrapper = PlayerRespawnWrapper(persistence)
@@ -112,8 +111,12 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
             return default_start_room
         except (ImportError, AttributeError, ValueError) as e:
             logger.error("Error getting default start room config", error=str(e), error_type=type(e).__name__)
-            # Fallback to hardcoded default
-            return "earth_arkhamcity_northside_intersection_derby_high"
+            # Fallback to hardcoded default. This must agree with `default_player_room`
+            # in server/config/models/game.py and DEFAULT_RESPAWN_ROOM in
+            # server/constants/spawn_defaults.py -- it previously named a street
+            # intersection, so a config read failure dropped players somewhere config
+            # never intended (#829).
+            return "earth_arkhamcity_sanitarium_room_foyer_001"
 
     async def create_player_with_stats(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Player creation requires many parameters for stats and configuration
         self,
@@ -299,11 +302,8 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
         player_name = player.name if hasattr(player, "name") else player.get("name", "unknown")
         logger.info("Player deleted successfully", player_id=player_id)
 
-        # Delete player aliases if they exist
-        config = get_config()
-        aliases_dir = config.game.aliases_dir
-        alias_storage = AliasStorage(storage_dir=aliases_dir) if aliases_dir else AliasStorage()
-        alias_storage.delete_player_aliases(player_name)
+        # Players are soft-deleted, so the player_aliases FK cascade never fires
+        _ = await AliasStorage().delete_player_aliases_by_id(str(player_id))
         logger.debug("Player aliases deleted")
 
         return True, f"Player {player_name} has been deleted"
@@ -446,7 +446,19 @@ class PlayerService:  # pylint: disable=too-many-instance-attributes,too-many-pu
 
         Returns:
             bool: True if successful, False otherwise
+
+        Raises:
+            TemplateRoomEntryError: new_room_id is an instance template (teleport/goto/spell callers
+                report its message; only instances cloned from a template may be entered).
         """
+        # persistence is untyped (Any) on this service; narrow it at this boundary.
+        rooms = cast("AsyncPersistenceLayer", self.persistence)
+        destination = rooms.get_room_by_id(new_room_id)
+        if is_template_room(destination):
+            logger.warning(
+                "Refused location update into instance template room", player_name=player_name, room_id=new_room_id
+            )
+            raise TemplateRoomEntryError(new_room_id)
         try:
             # Get the raw SQLAlchemy player object for modification
             player = await self.persistence.get_player_by_name(player_name)

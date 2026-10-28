@@ -14,8 +14,9 @@ from typing import cast
 
 import pytest
 
+from server.constants.message_category import MessageCategory
 from server.realtime.connection_manager import ConnectionManager
-from server.realtime.envelope import UUIDEncoder, build_event, utc_now_z
+from server.realtime.envelope import UUIDEncoder, build_event, next_event_sequence, utc_now_z
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -103,11 +104,16 @@ def test_build_event_with_sequence_number():
 
 
 def test_build_event_with_connection_manager():
-    """Test build_event() uses connection_manager for sequence."""
-    mock_raw = type("MockCM", (), {"sequence_counter": 99})()
-    mock_connection_manager = cast(ConnectionManager, cast(object, mock_raw))
-    event = build_event("test.event", connection_manager=mock_connection_manager)
-    assert event["sequence_number"] == 100
+    """build_event() draws from the process-wide sequence and mirrors it onto the manager ("last issued")."""
+
+    class _FakeManager:
+        sequence_counter: int = 99
+
+    fake = _FakeManager()
+    before = next_event_sequence()
+    event = build_event("test.event", connection_manager=cast(ConnectionManager, cast(object, fake)))
+    assert cast(int, event["sequence_number"]) > before
+    assert fake.sequence_counter == event["sequence_number"]
 
 
 def test_build_event_uses_global_sequence_when_no_manager():
@@ -176,8 +182,8 @@ def test_build_event_optional_parameters_none():
     assert "player_id" not in event
 
 
-def test_get_next_global_sequence_thread_safe():
-    """Test _get_next_global_sequence() is thread-safe."""
+def test_next_event_sequence_thread_safe():
+    """Test next_event_sequence() is thread-safe."""
     import server.realtime.envelope as envelope_module
 
     # Reset counter
@@ -189,7 +195,7 @@ def test_get_next_global_sequence_thread_safe():
 
     def get_sequence():
         try:
-            results.append(envelope_module._get_next_global_sequence())
+            results.append(envelope_module.next_event_sequence())
         except (RuntimeError, AttributeError, OSError) as e:
             # Reason: Threading operations can raise RuntimeError (threading issues),
             # AttributeError (missing lock/attributes), or OSError (system-level issues)
@@ -222,3 +228,20 @@ def test_build_event_json_serializable():
     assert parsed["event_type"] == "test.event"
     assert parsed["data"] == {"key": "value"}
     assert parsed["player_id"] == str(player_id)
+
+
+def test_build_event_defaults_command_response_to_command_output():
+    """Every direct command_response emitter gets a category even if it names none."""
+    payload = {"result": "You begin to follow Armitage."}
+    event = build_event("command_response", payload)
+    assert event["data"] == {**payload, "category": MessageCategory.COMMAND_OUTPUT}
+    assert "category" not in payload  # the caller's dict is not mutated
+
+
+def test_build_event_keeps_an_explicit_command_response_category():
+    event = build_event("command_response", {"result": "Hi", "category": MessageCategory.CHAT_SAY})
+    assert cast(dict[str, object], event["data"])["category"] == MessageCategory.CHAT_SAY
+
+
+def test_build_event_does_not_tag_other_event_types():
+    assert build_event("room_update", {"room": "r1"})["data"] == {"room": "r1"}

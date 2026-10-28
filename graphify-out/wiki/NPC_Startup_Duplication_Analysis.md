@@ -1,30 +1,26 @@
-# Npc Startup Duplication Analysis
+# NPC Startup Duplication Analysis
 
-> 6 nodes
+> 4 nodes · cohesion 0.50
 
 ## Key Concepts
 
-- **NPC Startup Duplication Analysis** (4 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Population Controller** (2 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Lifecycle Manager** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Startup Service** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Duplication Bug Fix Plan** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **NPC Population Field Rename** (1 connections) — `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
+- **🚀 DEPLOYMENT STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Monitoring Post-Deployment** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Pre-Deployment Checklist** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Rollback Plan** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Common Patterns](Common_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
-- `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -62,6 +62,10 @@ class _SpawningServiceProtocol(Protocol):
 
 logger: BoundLogger = get_logger(__name__)
 
+# Spawn reasons that skip zone population limits: "admin_spawn" is explicit user intent, "instance_spawn" is an
+# instance placing its own NPCs (the zone count includes every other player's private copy).
+POPULATION_BYPASS_REASONS: frozenset[str] = frozenset({"admin_spawn", "instance_spawn"})
+
 # Re-export for backward compatibility
 __all__ = [
     "NPCLifecycleManager",
@@ -519,7 +523,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         Args:
             definition: NPC definition
             room_id: Room where NPC should be spawned
-            reason: Spawn reason; "admin_spawn" bypasses population limits
+            reason: Spawn reason; see POPULATION_BYPASS_REASONS for the ones that skip population limits
 
         Returns:
             Tuple of (can_spawn, failure_reason). failure_reason is empty when can_spawn is True.
@@ -527,8 +531,7 @@ class NPCLifecycleManager:  # pylint: disable=too-many-instance-attributes  # Re
         if self.population_controller is None:
             return (True, "")
 
-        # Admin spawns bypass population limits (explicit user intent)
-        if reason == "admin_spawn":
+        if reason in POPULATION_BYPASS_REASONS:
             return (True, "")
 
         # Check population limits

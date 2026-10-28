@@ -102,7 +102,7 @@ def resolve_connection_manager(candidate: object | None = None) -> object | None
         manager = cast(object | None, getattr(container, "connection_manager", None))
         if manager is not None:
             return _ensure_async_compat(_coerce_connection_manager(manager))
-    except (AttributeError, RuntimeError, ImportError):
+    except AttributeError, RuntimeError, ImportError:
         # Container not available or not initialized
         pass
 

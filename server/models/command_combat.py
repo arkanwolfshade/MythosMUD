@@ -88,6 +88,36 @@ class TauntCommand(BaseCommand):
         return validate_combat_target(v)
 
 
+class AssistCommand(BaseCommand):
+    """Command for joining a player's fight (#833). No target means the party leader's fight."""
+
+    command_type: Literal[CommandType.ASSIST] = CommandType.ASSIST
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Player to assist")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["AssistCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
+class ProtectCommand(BaseCommand):
+    """Command for covering an ally so NPC blows aimed at them land on you (#991)."""
+
+    command_type: Literal[CommandType.PROTECT] = CommandType.PROTECT
+    target: str | None = Field(None, min_length=1, max_length=MAX_COMBAT_TARGET_LENGTH, description="Player to protect")
+
+    @field_validator("target")
+    @classmethod
+    def validate_target(cls: type["ProtectCommand"], v: str | None) -> str | None:
+        """Validate combat target name format using centralized validation."""
+        if v is None:
+            return None
+        return validate_combat_target(v)
+
+
 class FleeCommand(BaseCommand):
     """Command for fleeing combat (no target)."""
 

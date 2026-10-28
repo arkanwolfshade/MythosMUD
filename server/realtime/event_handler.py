@@ -36,6 +36,7 @@ from ..services.chat_logger import ChatLogger, chat_logger
 from ..services.phantom_visibility import room_has_hallucinating_viewer
 from ..services.room_sync_service import RoomSyncService, get_room_sync_service
 from ..structured_logging.enhanced_logging_config import get_logger
+from .envelope import next_event_sequence
 from .message_builders import MessageBuilder
 from .npc_event_handlers import NPCEventHandler
 from .player_event_handlers import PlayerEventHandler
@@ -63,7 +64,6 @@ class RealTimeEventHandler:
     event_bus: EventBus
     connection_manager: "ConnectionManager | None"
     _logger: BoundLogger
-    _sequence_counter: int
     task_registry: TaskRegistry | None
     chat_logger: ChatLogger
     room_sync_service: RoomSyncService
@@ -92,7 +92,6 @@ class RealTimeEventHandler:
         self.event_bus = event_bus or EventBus()
         self.connection_manager = connection_manager
         self._logger = get_logger("RealTimeEventHandler")
-        self._sequence_counter = 0
 
         # Task registry for tracking child tasks spawned by event broadcasting
         self.task_registry = task_registry
@@ -143,9 +142,8 @@ class RealTimeEventHandler:
         )
 
     def _get_next_sequence(self) -> int:
-        """Get the next sequence number for events."""
-        self._sequence_counter += 1
-        return self._sequence_counter
+        """Get the next sequence number for events (the process-wide sequence, shared with build_event)."""
+        return next_event_sequence()
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""

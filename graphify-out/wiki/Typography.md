@@ -1,36 +1,35 @@
 # Typography
 
-> 15 nodes
+> 14 nodes · cohesion 0.20
 
 ## Key Concepts
 
-- **Typography** (6 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Classic Typography Principles** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Font Selection & Pairing** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **typography.md** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Modern Web Typography** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Accessibility Considerations** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Choosing Distinctive Fonts** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Fluid Type** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Modular Scale & Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **OpenType Features** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Pairing Principles** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Readability & Measure** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Typography System Architecture** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Vertical Rhythm** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Web Font Loading** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **lint_raw_sql_in_python.py** (7 connections) — `scripts/lint_raw_sql_in_python.py`
+- **scan()** (5 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_find_raw_sql_lines()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_strip_comments()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_collect_python_files()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **main()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_strip_line_comment()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Path** (1 connections)
+- **Guard against raw table CRUD SQL string literals inside Python source. Replaces…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Scan server/ for raw SQL. Returns a list of violation messages.** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Run the raw-SQL guard and return 1 if any raw-SQL site is found.** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return line with a trailing '# ...' comment removed, so prose mentioning SQL…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return content with every '# ...' line comment blanked out, preserving line…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return 1-based line numbers containing a raw-SQL violation. Matches against the…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
 
 ## Relationships
 
-- [Color And Contrast](Color_And_Contrast.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/typography.md`
+- `scripts/lint_raw_sql_in_python.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

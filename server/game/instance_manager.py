@@ -13,8 +13,9 @@ from __future__ import annotations
 import threading
 import uuid
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
+from ..constants.instance_rooms import INSTANCE_ROOM_PREFIX
 from ..constants.spawn_defaults import DEFAULT_EXIT_ROOM_ID
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -27,6 +28,39 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
+def template_id_of(room: Room | None) -> str | None:
+    """instance_template_id of a template room (never of its clones), else None.
+
+    Clones copy the template's attributes (instance_template_id included), so they are told apart
+    by their instance_ room id. attributes is untyped JSONB: only a non-empty string id counts.
+    """
+    if room is None:
+        return None
+    template_id = cast(object, room.attributes.get("instance_template_id"))
+    if not isinstance(template_id, str) or not template_id:
+        return None
+    return None if cast(str, room.id).startswith(INSTANCE_ROOM_PREFIX) else template_id
+
+
+def is_template_room(room: Room | None) -> bool:
+    """True if room is an instance template: only ever cloned, never entered directly."""
+    return template_id_of(room) is not None
+
+
+def template_exit_room_id(room: Room) -> str:
+    """Where a template (or its instances) lets players out, e.g. the Sanitarium Main Foyer."""
+    return str(room.attributes.get("instance_exit_room_id") or DEFAULT_EXIT_ROOM_ID)
+
+
+class TemplateRoomEntryError(ValueError):
+    """Something tried to place a player directly into an instance template room."""
+
+    def __init__(self, room_id: str) -> None:
+        """Record which template room was refused."""
+        super().__init__("That room is an instance template; it cannot be entered directly.")
+        self.room_id: str = room_id
+
+
 @dataclass
 class Instance:
     """An instanced set of rooms, unique per player or group."""
@@ -35,6 +69,22 @@ class Instance:
     template_id: str
     owner_player_id: str
     rooms: dict[str, Room] = field(default_factory=dict)
+
+
+class InstanceContentLifecycle(Protocol):
+    """Fills an instance once it is created and empties it before it is destroyed (InstanceContentService).
+
+    Declared here, import-light, so the app container and the flush service can hold the content
+    service by this type without importing its item and NPC dependencies (an import cycle).
+    """
+
+    async def populate(self, instance: Instance) -> None:
+        """Create the instance rooms' furniture containers, floor items and NPCs."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body
+
+    async def teardown(self, instance: Instance) -> list[dict[str, object]]:
+        """Despawn the instance's NPCs, delete its containers, and return the stacks they held."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body
 
 
 class InstanceManager:
@@ -74,7 +124,7 @@ class InstanceManager:
         Create an instance from room templates with the given template_id.
 
         Args:
-            template_id: Value of instance_template_id in room attributes (e.g. tutorial_sanitarium)
+            template_id: Value of instance_template_id in room attributes (e.g. first_exposure)
             owner_player_id: Owner of the instance (for per-player instancing)
             group_ids: Optional set of player IDs for group instancing (reserved for future use)
 
@@ -185,6 +235,11 @@ class InstanceManager:
             return None
         return target_room_id
 
+    def list_instance_ids(self) -> list[str]:
+        """Ids of every live instance (shutdown flushes them all)."""
+        with self._lock:
+            return list(self._instances)
+
     def get_instance(self, instance_id: str) -> Instance | None:
         """Return the instance if it exists."""
         with self._lock:
@@ -199,14 +254,18 @@ class InstanceManager:
 
     def get_first_room_id(self, instance_id: str) -> str | None:
         """
-        Return the first room ID of the instance (for spawn placement).
+        Return the room ID where players enter the instance (for spawn placement).
 
-        Order is undefined but stable for a given instance.
+        The template's room with ``instance_start: true`` wins. Templates that name none fall back
+        to the first room, whose order is undefined but stable for a given instance.
         """
         with self._lock:
             instance = self._instances.get(instance_id)
             if not instance or not instance.rooms:
                 return None
+            for room_id, room in instance.rooms.items():
+                if room.attributes.get("instance_start") is True:
+                    return room_id
             return next(iter(instance.rooms), None)
 
     def get_exit_room_id(self, instance_id: str) -> str:

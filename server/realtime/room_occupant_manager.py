@@ -8,16 +8,24 @@ As documented in "Dimensional Occupancy Tracking" - Dr. Armitage, 1929
 """
 
 import uuid
-from typing import Any
+from typing import Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from ..constants.npc_disposition import NpcOccupant
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_occupant_processor import NPCOccupantProcessor
 from .occupant_formatter import OccupantFormatter
 from .player_name_utils import PlayerNameExtractor
 from .player_occupant_processor import PlayerOccupantProcessor
 from .room_id_utils import RoomIDUtils
+
+
+class _SubscriberOccupantSource(Protocol):
+    """The ConnectionManager surface used to read subscription-based room membership."""
+
+    # pylint: disable-next=missing-function-docstring  # Reason: PEP 544 Protocol stub
+    async def get_room_occupants(self, room_id: str) -> list[dict[str, object]]: ...
 
 
 class RoomOccupantManager:
@@ -79,6 +87,12 @@ class RoomOccupantManager:
 
             # Get player IDs in the room (returns list[str])
             player_id_strings = room.get_players()
+            # Plus online subscribers not yet in Room._players (respawn/reconnect/mid-move). A
+            # broadcast sends one payload to every subscriber, so omitting them showed a player
+            # alone with NPCs an empty players list (#776).
+            player_id_strings = self._with_online_subscribers(
+                cast(list[str], player_id_strings), await self._online_subscriber_ids(room_id)
+            )
 
             # Process players
             player_occupants = await self.player_processor.process_players_for_occupants(
@@ -96,9 +110,24 @@ class RoomOccupantManager:
 
         return occupants
 
+    async def _online_subscriber_ids(self, room_id: str) -> list[str]:
+        """Player IDs the subscription manager lists for this room (online players only)."""
+        source = cast(_SubscriberOccupantSource, self.connection_manager)
+        subscribers = await source.get_room_occupants(room_id)
+        return [
+            str(occ["player_id"])
+            for occ in subscribers
+            if occ.get("player_id") and not occ.get("is_npc") and "npc_name" not in occ
+        ]
+
+    @staticmethod
+    def _with_online_subscribers(room_player_ids: list[str], subscriber_ids: list[str]) -> list[str]:
+        """Room._players first (existing order), then any online subscriber it is missing."""
+        return list(dict.fromkeys([*room_player_ids, *subscriber_ids]))
+
     def separate_occupants_by_type(
         self, occupants_info: list[dict[str, Any] | str], room_id: str
-    ) -> tuple[list[str], list[str], list[str]]:
+    ) -> tuple[list[str], list[NpcOccupant], list[str]]:
         """
         Separate occupants into players, NPCs, and all occupants lists.
 

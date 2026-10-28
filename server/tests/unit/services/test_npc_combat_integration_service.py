@@ -284,11 +284,11 @@ async def test_end_combat_if_participant_in_combat_ends_combat(
     mock_combat = MagicMock()
     mock_combat.combat_id = combat_id
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=mock_combat)
-    integration_service._combat_service.end_combat = AsyncMock()
+    integration_service._combat_service.remove_participant = AsyncMock()
     await integration_service._end_combat_if_participant_in_combat(player_id, npc_id)
     integration_service._combat_service.get_combat_by_participant.assert_called_once()
-    integration_service._combat_service.end_combat.assert_called_once_with(
-        combat_id, "Invalid combat location - participants not in same room"
+    integration_service._combat_service.remove_participant.assert_called_once_with(
+        combat_id, uuid.UUID(player_id), "Invalid combat location - participants not in same room"
     )
 
 
@@ -298,10 +298,10 @@ async def test_end_combat_if_participant_in_combat_no_combat(integration_service
     player_id = str(uuid.uuid4())
     npc_id = "npc_001"
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=None)
-    integration_service._combat_service.end_combat = AsyncMock()
+    integration_service._combat_service.remove_participant = AsyncMock()
     await integration_service._end_combat_if_participant_in_combat(player_id, npc_id)
     integration_service._combat_service.get_combat_by_participant.assert_called_once()
-    integration_service._combat_service.end_combat.assert_not_called()
+    integration_service._combat_service.remove_participant.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -320,10 +320,10 @@ async def test_handle_player_attack_on_npc_room_mismatch_ends_combat(
     integration_service._combat_service.get_combat_by_participant = AsyncMock(
         return_value=MagicMock(combat_id=uuid.uuid4())
     )
-    integration_service._combat_service.end_combat = AsyncMock()
+    integration_service._combat_service.remove_participant = AsyncMock()
     result = await integration_service.handle_player_attack_on_npc(player_id, npc_id, room_id)
     assert result is False
-    integration_service._combat_service.end_combat.assert_called_once()
+    integration_service._combat_service.remove_participant.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -496,6 +496,7 @@ async def test_process_combat_attack_queues_when_already_in_combat(
     existing = MagicMock()
     existing.combat_id = uuid.uuid4()
     existing.combat_round = 0
+    existing.participants = {tgt: MagicMock()}
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=existing)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=True)
     with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=99):
@@ -523,6 +524,7 @@ async def test_process_combat_attack_queue_fail_falls_back_to_process_attack(
     existing = MagicMock()
     existing.combat_id = uuid.uuid4()
     existing.combat_round = 1
+    existing.participants = {tgt: MagicMock()}
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=existing)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=False)
     integration_service._combat_service.process_attack = AsyncMock(return_value=MagicMock(success=True))

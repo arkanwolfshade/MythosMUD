@@ -70,7 +70,7 @@ def test_get_config_has_game_config():
     config = get_config()
 
     assert config.game is not None
-    assert hasattr(config.game, "aliases_dir")
+    assert hasattr(config.game, "max_aliases_per_player")
 
 
 @pytest.mark.parametrize("env_key", ["CORS_ALLOW_ORIGINS", "CORS_ORIGINS", "CORS_ALLOWED_ORIGINS", "ALLOWED_ORIGINS"])

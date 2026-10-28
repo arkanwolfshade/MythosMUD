@@ -11,7 +11,8 @@ that dimensional shifts are properly tracked.
 """
 
 import uuid
-from typing import Any
+from decimal import Decimal
+from typing import Any, cast
 
 from ..events import EventBus
 from ..events.event_types import (
@@ -23,6 +24,25 @@ from ..events.event_types import (
     PlayerLeftRoom,
 )
 from ..structured_logging.enhanced_logging_config import get_logger
+
+
+def _as_float(value: object) -> float | None:
+    """Coerce a `numeric(10,2)` column to float.
+
+    The driver hands back `Decimal` for numeric columns, but the same field arrives as
+    a float from in-memory fixtures and as a string from JSON payloads, so all three
+    have to survive the trip into `Room.map_x` / `map_y`.
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int | float | Decimal):
+        return float(value)
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return None
+    return None
 
 
 class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requires many fields to capture complete room state
@@ -53,10 +73,22 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         self.plane = room_data.get("plane", "")
         self.zone = room_data.get("zone", "")
         self.sub_zone = room_data.get("sub_zone", "")
+        # #910: display names (zones.name / subzones.name); zone/sub_zone above are stable IDs.
+        self.zone_name: str | None = room_data.get("zone_name")
+        self.sub_zone_name: str | None = room_data.get("sub_zone_name")
         self.environment = room_data.get("resolved_environment", "outdoors")
+        # #663: the room's own (possibly None) rooms.environment column value, distinct from the
+        # resolved cascade above. None means "inherits from subzone/zone" -- the map editor's
+        # "Not Set" state.
+        self.room_environment: str | None = room_data.get("room_environment")
         self.exits = room_data.get("exits", {})
         self.rest_location: bool = room_data.get("rest_location", False)
         self.attributes: dict[str, Any] = dict(room_data.get("attributes", {}) or {})
+        # #829: map coordinates travel with the room so GET /api/rooms/list can hand them
+        # to the React Flow map and editor. They were declared on RoomData all along but
+        # never populated, so every stored-coordinate branch in the client was dead code.
+        self.map_x: float | None = _as_float(room_data.get("map_x"))
+        self.map_y: float | None = _as_float(room_data.get("map_y"))
 
         # Containers in this room (loaded from PostgreSQL)
         self._containers: list[Any] = room_data.get("containers", [])
@@ -155,12 +187,13 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             self._players.remove(player_id_str)
             self._logger.debug("Player removed from room silently", player_id=player_id, room_id=self.id)
 
-    def player_left(self, player_id: uuid.UUID | str) -> None:
+    def player_left(self, player_id: uuid.UUID | str, to_room_id: str | None = None) -> None:
         """
         Remove a player from the room and trigger event.
 
         Args:
             player_id: The ID of the player leaving the room (UUID or string)
+            to_room_id: Where they went; None when they did not go anywhere (e.g. disconnected)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
@@ -178,7 +211,7 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         # Publish event if event bus is available
         # Events still expect string, so convert for event creation
         if self._event_bus:
-            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id)
+            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id, to_room_id=to_room_id)
             self._event_bus.publish(event)
 
     def object_added(self, object_id: str, player_id: str | None = None) -> None:
@@ -369,6 +402,33 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
         """
         return list(self._containers)
 
+    def add_container(self, container: dict[str, object]) -> None:
+        """
+        Register a runtime-created container (e.g. a corpse) so room_state carries it.
+
+        Without this, only players who were subscribed when the container.created broadcast fired
+        ever learn about it -- which excludes the corpse's own owner, who is by definition dead at
+        that moment (#711).
+        """
+        container_id = Room._container_id_of(container)
+        existing = cast("list[object]", self._containers)
+        if container_id and any(Room._container_id_of(c) == container_id for c in existing):
+            return
+        self._containers.append(container)
+
+    def remove_container(self, container_id: str) -> None:
+        """Drop a container from the room (decay/cleanup)."""
+        existing = cast("list[object]", self._containers)
+        self._containers = [c for c in existing if Room._container_id_of(c) != container_id]
+
+    @staticmethod
+    def _container_id_of(container: object) -> str:
+        """Container id as a string, or "" when the entry has none."""
+        if not isinstance(container, dict):
+            return ""
+        raw = cast("dict[str, object]", container).get("container_id")
+        return str(raw) if raw is not None else ""
+
     def to_dict(self) -> dict[str, Any]:
         """
         Convert the room to a dictionary representation.
@@ -387,8 +447,13 @@ class Room:  # pylint: disable=too-many-instance-attributes  # Reason: Room requ
             "plane": self.plane,
             "zone": self.zone,
             "sub_zone": self.sub_zone,
+            "zone_name": self.zone_name,
+            "sub_zone_name": self.sub_zone_name,
             "environment": self.environment,
+            "room_environment": self.room_environment,
             "exits": self.exits,
+            "map_x": self.map_x,
+            "map_y": self.map_y,
             "containers": self.get_containers(),
             "players": self.get_players(),
             "objects": self.get_objects(),

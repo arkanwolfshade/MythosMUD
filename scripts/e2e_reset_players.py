@@ -2,6 +2,10 @@
 """
 E2E test teardown: reset ArkanWolfshade and Ithaqua to starting room and set current_dp to 50.
 
+With --tutorial it also puts E2ETutorial back at the very start of the First Exposure tutorial (see
+_reset_tutorial_character), empties the lost-and-found chest and E2ETutorial's bank deposit box;
+the tutorial specs call that.
+
 Invoked from Playwright global-teardown so that after make test-playwright, both test players
 are returned to DEFAULT_RESPAWN_ROOM (see server/constants/spawn_defaults.py) with
 stats.current_dp = 50, regardless of test pass/fail.
@@ -10,7 +14,10 @@ Uses DATABASE_URL from environment (e.g. from .env.e2e_test); defaults to mythos
 """
 
 import importlib.util
+import json
 import os
+import sys
+import uuid
 
 import asyncpg
 from anyio import run
@@ -33,6 +40,115 @@ def _load_default_respawn_room() -> str:
     if not isinstance(raw, str):
         raise TypeError("DEFAULT_RESPAWN_ROOM must be str")
     return raw
+
+
+TUTORIAL_CHARACTER = "E2ETutorial"
+# server/constants/instance_rooms.PENDING_INSTANCE_ID: "this character has a tutorial but no instance yet".
+PENDING_INSTANCE_ID = "pending"
+TUTORIAL_ITEM_PROTOTYPE = "pack_dark_ages.weapon.sling"
+
+
+async def _reset_tutorial_character(conn: asyncpg.Connection) -> None:
+    """Put E2ETutorial back at the very start of First Exposure, as a character who has not met it yet.
+
+    Saved in the Main Foyer with the pending-instance marker, so the next login goes through the server's tutorial
+    connect path and builds a brand new instance at Independence Square. DP, lucidity and corruption are reset, the
+    character holds one Sling (the generic instance-flush-to-bank tests drop it), status effects are emptied, quest
+    rows deleted (the first quest starts again on spawn) and the debrief flag cleared. Both the shared lost-and-found chest and E2ETutorial's deposit box are emptied as well, so nothing
+    carries over into the next test.
+    """
+    player_id: object = await conn.fetchval("SELECT player_id FROM players WHERE name = $1", TUTORIAL_CHARACTER)
+    if player_id is None:
+        raise RuntimeError(f"{TUTORIAL_CHARACTER} is not seeded; run scripts/seed_e2e_users.py first")
+    room_id = _load_default_respawn_room()
+    sling = {
+        "item_id": TUTORIAL_ITEM_PROTOTYPE,
+        "prototype_id": TUTORIAL_ITEM_PROTOTYPE,
+        "item_instance_id": f"e2e-tutorial-sling-{uuid.uuid4().hex[:12]}",
+        "item_name": "Sling",
+        "slot_type": "backpack",
+        "quantity": 1,
+    }
+    inventory = json.dumps([sling])
+    _ = await conn.execute(
+        """
+        UPDATE players
+        SET
+            current_room_id = $2,
+            respawn_room_id = $2,
+            tutorial_instance_id = $3,
+            inventory = $4,
+            stats = jsonb_set(
+                jsonb_set(
+                    jsonb_set(
+                        COALESCE(stats, '{}'::jsonb),
+                        '{current_dp}',
+                        COALESCE(stats -> 'max_dp', '100'::jsonb)
+                    ),
+                    '{corruption}',
+                    '0'::jsonb
+                ),
+                '{position}',
+                '"standing"'::jsonb
+            )
+        WHERE player_id = $1
+        """,
+        player_id,
+        room_id,
+        PENDING_INSTANCE_ID,
+        inventory,
+    )
+    _ = await conn.execute("DELETE FROM quest_instances WHERE player_id = $1", player_id)
+    # Effects pause while offline (ADR-029 step 3b), so a leftover row would resume at the next login. The login
+    # ward stays: the server clears its in-memory grace only when that row expires, and logging out does not end
+    # the grace, so deleting a running ward left the next login warded for good (NPC attacks blocked forever).
+    _ = await conn.execute(
+        "DELETE FROM player_effects WHERE player_id = $1 AND effect_type <> 'login_warded'", player_id
+    )
+    _ = await conn.execute(
+        """
+        UPDATE player_lucidity
+        SET current_lcd = 100, current_tier = 'lucid', liabilities = '[]'
+        WHERE player_id = $1
+        """,
+        player_id,
+    )
+    _ = await conn.execute("DELETE FROM lucidity_cooldowns WHERE player_id = $1", player_id)
+    # Both inventory copies, as upsert_player writes them: Player.get_inventory() reads the
+    # players.inventory column, while player_inventories.inventory_json is the row joined on load.
+    _ = await conn.execute(
+        """
+        INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
+        VALUES ($1, $2, '{}')
+        ON CONFLICT (player_id) DO UPDATE SET inventory_json = EXCLUDED.inventory_json, equipped_json = '{}'
+        """,
+        player_id,
+        inventory,
+    )
+    _ = await conn.execute(
+        "SELECT clear_container_contents(container_instance_id) FROM containers "
+        "WHERE metadata_json ->> 'role' = 'lost_and_found'"
+    )
+    _ = await conn.execute(
+        "SELECT clear_container_contents(container_instance_id) FROM containers "
+        "WHERE source_type = 'bank' AND owner_id = $1",
+        player_id,
+    )
+
+
+FOLK_TONIC_COOLDOWN_KEY = "folk_tonic"
+
+
+async def _clear_folk_tonic_cooldowns(conn: asyncpg.Connection) -> None:
+    """Forget the folk tonic cooldown (30 min) for the shared E2E players, so reruns can drink again."""
+    _ = await conn.execute(
+        """
+        DELETE FROM lucidity_cooldowns
+        WHERE action_code = $1
+            AND player_id IN (SELECT player_id FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua'))
+        """,
+        FOLK_TONIC_COOLDOWN_KEY,
+    )
 
 
 async def _reset_e2e_players() -> None:
@@ -65,6 +181,10 @@ async def _reset_e2e_players() -> None:
             """,
             room_id,
         )
+        await _clear_folk_tonic_cooldowns(conn)
+        # Opt-in: ordinary resets run on every relog and must not empty the chest mid-test.
+        if "--tutorial" in sys.argv[1:]:
+            await _reset_tutorial_character(conn)
     finally:
         await conn.close()
 

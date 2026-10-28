@@ -5,8 +5,7 @@ import uuid
 import pytest
 
 from server.events.event_serialization import deserialize_event, serialize_event
-from server.events.event_types import PlayerDiedEvent, PlayerEnteredRoom
-from server.services.player_combat_service import PlayerXPAwardEvent
+from server.events.event_types import PlayerDiedEvent, PlayerEnteredRoom, PlayerXPAwardEvent
 
 
 def test_serialize_deserialize_player_entered_room():

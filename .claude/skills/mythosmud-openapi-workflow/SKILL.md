@@ -1,6 +1,6 @@
 ---
 name: mythosmud-openapi-workflow
-description: Regenerate MythosMUD OpenAPI spec from FastAPI app: run generate_openapi_spec.py or make openapi-spec; output docs/openapi/openapi.json. Use when API routes or schemas change, or when the user asks to update the OpenAPI spec.
+description: "Regenerate MythosMUD OpenAPI spec from FastAPI app: run generate_openapi_spec.py or make openapi-spec; output docs/openapi/openapi.json. Use when API routes or schemas change, or when the user asks to update the OpenAPI spec."
 ---
 
 # MythosMUD OpenAPI Workflow

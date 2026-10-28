@@ -3,7 +3,7 @@
  */
 
 import { vi } from 'vitest';
-import type { Room } from '../../../stores/gameStore';
+import type { Room } from '../types';
 import { useMapLayout } from '../hooks/useMapLayout';
 import { useRoomMapData } from '../hooks/useRoomMapData';
 import { createEdgesFromRooms, roomsToNodes } from '../utils/mapUtils';
@@ -66,17 +66,5 @@ export const createMockNodes = (count = 1, overrides = {}) => {
     type: 'room',
     position: { x: 0, y: 0 },
     data: { id: `room${i + 1}`, name: `Room ${i + 1}`, description: `Room ${i + 1} description`, ...overrides },
-  }));
-};
-
-/**
- * Create mock edges for testing.
- */
-export const createMockEdges = (count = 1) => {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `edge${i + 1}`,
-    source: `node${i + 1}`,
-    target: `node${i + 2}`,
-    data: { direction: 'north' },
   }));
 };

@@ -5,17 +5,25 @@ Tests the player_presence_tracker module functions.
 """
 
 import uuid
+from collections.abc import Iterable
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.instance_rooms import PENDING_INSTANCE_ID
 from server.exceptions import DatabaseError
+from server.game.instance_manager import InstanceManager
+from server.game.items.constants import INSTANCE_BOUND_FLAG
+from server.game.player_creation_service import TUTORIAL_TEMPLATE_ID
 from server.models.corruption import CorruptionTier
+from server.models.player import Player
+from server.models.room import Room
 from server.realtime.player_presence_tracker import (
     _acquire_disconnect_lock,
     _build_player_info,
     _resolve_room_id,
+    _resolve_room_id_for_tutorial_reconnect,  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, same as the other private helpers imported here
     _should_skip_disconnect,
     _warm_corruption_tier_cache,  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, same as the other private helpers imported here
     broadcast_connection_message_impl,
@@ -26,7 +34,7 @@ from server.services.corruption_tier_cache import corruption_tier_cache
 
 
 @pytest.fixture(autouse=True)
-def _clear_corruption_tier_cache():  # pyright: ignore[reportUnusedFunction] -- pytest autouse fixture, used implicitly
+def _clear_corruption_tier_cache():  # pytest autouse fixture, used implicitly
     """The tier cache is a module-level singleton (#815) -- reset it around each test."""
     yield
     corruption_tier_cache._tiers.clear()  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
@@ -805,3 +813,220 @@ async def test_track_player_disconnected_impl_finally_cleanup():
 
                 # Even with error, finally block should remove player
                 assert player_id not in mock_manager.disconnecting_players
+
+
+BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
+FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+
+def _template_bedroom() -> Room:
+    return Room(
+        {
+            "id": BEDROOM_ID,
+            "attributes": {"instance_template_id": TUTORIAL_TEMPLATE_ID, "instance_exit_room_id": FOYER_ID},
+        }
+    )
+
+
+def _foyer() -> Room:
+    return Room({"id": FOYER_ID, "attributes": {}})
+
+
+def _manager_with(
+    instance_manager: InstanceManager,
+    rooms: dict[str, Room],
+    save_player: AsyncMock,
+    content: MagicMock | None = None,
+    quests: object | None = None,
+) -> MagicMock:
+    manager = MagicMock()
+    manager.configure_mock(
+        **{
+            "async_persistence.get_room_by_id": MagicMock(side_effect=rooms.get),
+            "async_persistence.save_player": save_player,
+            "app.state.container.instance_manager": instance_manager,
+            "app.state.container.instance_content_service": content,
+            "app.state.container.quest_service": quests,
+        }
+    )
+    return manager
+
+
+@pytest.mark.asyncio
+async def test_tutorial_reentry_gives_stranded_player_a_fresh_instance():
+    """A player saved in the template room with no instance goes back through a fresh tutorial."""
+    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
+    instance_manager = InstanceManager(room_cache=rooms)
+    save_player = AsyncMock()
+    manager = _manager_with(instance_manager, rooms, save_player)
+    player = Player(player_id=str(uuid.uuid4()), name="Stranded", current_room_id=BEDROOM_ID, tutorial_instance_id=None)
+
+    room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+
+    assert room_id is not None
+    assert room_id.startswith("instance_")
+    assert room_id.endswith(BEDROOM_ID)
+    assert player.tutorial_instance_id is not None
+    assert instance_manager.get_instance(player.tutorial_instance_id) is not None
+    assert player.current_room_id == room_id
+    save_player.assert_awaited_once_with(player)
+
+
+START_ID = "earth_demo_zone_room_square_001"
+WALK_ID = "earth_demo_zone_room_walk_001"
+
+
+def _two_room_tutorial() -> dict[str, Room]:
+    """A two-room tutorial template whose entry room (start) is deliberately second in cache order."""
+    attributes: dict[str, object] = {"instance_template_id": TUTORIAL_TEMPLATE_ID, "instance_exit_room_id": FOYER_ID}
+    return {
+        WALK_ID: Room({"id": WALK_ID, "attributes": dict(attributes)}),
+        START_ID: Room({"id": START_ID, "attributes": {**attributes, "instance_start": True}}),
+        FOYER_ID: _foyer(),
+    }
+
+
+class _RecordingQuests:
+    """Records the quest resets a fresh-instance restart asks for."""
+
+    calls: list[list[str]]
+
+    def __init__(self) -> None:
+        self.calls = []
+
+    async def reset_offered_quests(self, _player_id: uuid.UUID, room_ids: Iterable[str]) -> list[str]:
+        self.calls.append(list(room_ids))
+        return []
+
+
+def _content() -> tuple[MagicMock, AsyncMock]:
+    populate: AsyncMock = AsyncMock()
+    content: MagicMock = MagicMock()
+    content.populate = populate
+    return content, populate
+
+
+@pytest.mark.asyncio
+async def test_live_instance_keeps_the_players_room_when_it_is_inside_it():
+    """A grace-period reconnect resumes where the player was, not at the instance start."""
+    rooms = _two_room_tutorial()
+    instance_manager = InstanceManager(room_cache=rooms)
+    instance = instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, uuid.uuid4())
+    walk_room = f"{instance.instance_id}_{WALK_ID}"
+    save_player = AsyncMock()
+    content, populate = _content()
+    manager = _manager_with(instance_manager, rooms, save_player, content)
+    player = Player(
+        player_id=str(uuid.uuid4()), name="Walker", current_room_id=walk_room, tutorial_instance_id=instance.instance_id
+    )
+
+    assert await _resolve_room_id_for_tutorial_reconnect(player, manager) == walk_room
+
+    assert player.current_room_id == walk_room
+    assert player.tutorial_instance_id == instance.instance_id
+    populate.assert_not_awaited()  # the instance is already populated
+    save_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_live_instance_places_a_player_whose_room_is_elsewhere_at_the_instance_start():
+    rooms = _two_room_tutorial()
+    instance_manager = InstanceManager(room_cache=rooms)
+    instance = instance_manager.create_instance(TUTORIAL_TEMPLATE_ID, uuid.uuid4())
+    manager = _manager_with(instance_manager, rooms, AsyncMock())
+    player = Player(
+        player_id=str(uuid.uuid4()), name="Lost", current_room_id=FOYER_ID, tutorial_instance_id=instance.instance_id
+    )
+
+    assert await _resolve_room_id_for_tutorial_reconnect(player, manager) == f"{instance.instance_id}_{START_ID}"
+
+
+@pytest.mark.asyncio
+async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared():
+    """After a restart the old instance is gone: the player gets a fresh, populated one and loses its plot items."""
+    rooms = _two_room_tutorial()
+    instance_manager = InstanceManager(room_cache=rooms)
+    content, populate = _content()
+    quests = _RecordingQuests()
+    manager = _manager_with(instance_manager, rooms, AsyncMock(), content, quests)
+    player = Player(
+        player_id=str(uuid.uuid4()),
+        name="Restarted",
+        current_room_id="instance_gone_" + START_ID,
+        tutorial_instance_id="instance_gone",
+    )
+    player.set_stats({"current_dp": 1, "max_dp": 100, "corruption": 2})
+    player.set_inventory(
+        [
+            {"item_id": "jade_amulet", "flags": [INSTANCE_BOUND_FLAG]},
+            {"item_id": "lantern"},
+        ]
+    )
+
+    with (
+        patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity,
+        patch(
+            "server.realtime.player_presence_tracker.clear_instance_scoped_effects", new=AsyncMock(return_value=1)
+        ) as clear_effects,
+    ):
+        room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+
+    assert room_id is not None and room_id.endswith(START_ID)
+    clear_effects.assert_awaited_once_with(uuid.UUID(str(player.player_id)))  # the lost run's drain goes too
+    assert player.tutorial_instance_id != "instance_gone"
+    fresh = instance_manager.get_instance(cast(str, player.tutorial_instance_id))
+    assert fresh is not None
+    populate.assert_awaited_once_with(fresh)
+    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
+    # The run starts over: full DP, starting lucidity, the template's (stable) rooms' quests reset; corruption stays.
+    assert player.get_stats()["current_dp"] == 100
+    assert player.get_stats()["corruption"] == 2
+    reset_lucidity.assert_awaited_once()
+    assert [set(rooms_reset) for rooms_reset in quests.calls] == [{START_ID, WALK_ID}]
+
+
+@pytest.mark.asyncio
+async def test_new_character_gets_a_populated_instance_and_keeps_their_belongings():
+    """A pending marker means no instance existed yet: nothing to clear, but the new instance is populated."""
+    rooms = _two_room_tutorial()
+    instance_manager = InstanceManager(room_cache=rooms)
+    content, populate = _content()
+    quests = _RecordingQuests()
+    manager = _manager_with(instance_manager, rooms, AsyncMock(), content, quests)
+    player = Player(
+        player_id=str(uuid.uuid4()), name="Newcomer", current_room_id=FOYER_ID, tutorial_instance_id=PENDING_INSTANCE_ID
+    )
+    player.set_stats({"current_dp": 40, "max_dp": 100})
+    player.set_inventory([{"item_id": "jade_amulet", "flags": [INSTANCE_BOUND_FLAG]}])
+
+    room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+
+    assert room_id is not None and room_id.endswith(START_ID)
+    assert player.tutorial_instance_id != PENDING_INSTANCE_ID
+    populate.assert_awaited_once()
+    assert len(player.get_inventory()) == 1  # not a restart: nothing from a previous run to clear
+    assert player.get_stats()["current_dp"] == 40  # ...nor DP, lucidity or quests to reset
+    assert not quests.calls
+
+
+@pytest.mark.asyncio
+async def test_a_fresh_instance_still_works_without_a_content_service():
+    rooms = _two_room_tutorial()
+    manager = _manager_with(InstanceManager(room_cache=rooms), rooms, AsyncMock(), None)
+    player = Player(
+        player_id=str(uuid.uuid4()), name="Plain", current_room_id=FOYER_ID, tutorial_instance_id=PENDING_INSTANCE_ID
+    )
+
+    room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
+
+    assert room_id is not None and room_id.endswith(START_ID)
+
+
+@pytest.mark.asyncio
+async def test_tutorial_reentry_ignores_players_outside_templates():
+    """No instance and an ordinary saved room: normal room resolution applies."""
+    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
+    manager = _manager_with(InstanceManager(room_cache=rooms), rooms, AsyncMock())
+    player = Player(player_id=str(uuid.uuid4()), name="Visitor", current_room_id=FOYER_ID, tutorial_instance_id=None)
+
+    assert await _resolve_room_id_for_tutorial_reconnect(player, manager) is None

@@ -4,8 +4,14 @@
 
 import { vi } from 'vitest';
 
-// Mock localStorage
-export const localStorageMock = {
+// Mock localStorage. Annotated rather than inferred: the inferred mock type reaches into a vitest
+// internal chunk (`Procedure`), which TS2883 rejects as non-portable for an exported declaration.
+export const localStorageMock: {
+  getItem: ReturnType<typeof vi.fn>;
+  setItem: ReturnType<typeof vi.fn>;
+  removeItem: ReturnType<typeof vi.fn>;
+  clear: ReturnType<typeof vi.fn>;
+} = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),

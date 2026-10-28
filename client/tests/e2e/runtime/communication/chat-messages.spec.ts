@@ -7,11 +7,11 @@
  * multiplayer communication.
  */
 
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { ensurePlayableConnection, executeCommand, waitForMessage } from '../fixtures/auth';
 import { ensureE2eRuntimeReady } from '../fixtures/e2e-runtime-ready';
 import {
-  cleanupMultiPlayerContexts,
   createMultiPlayerContexts,
   ensureMultiplayerCoLocated,
   ensurePlayerInGame,
@@ -21,6 +21,7 @@ import {
   waitForAllPlayersInGame,
   waitForCrossPlayerMessage,
   type PlayerContext,
+  resetPlayersToMainFoyer,
 } from '../fixtures/multiplayer';
 
 /**
@@ -77,13 +78,13 @@ async function primeBothForCoLocate(contexts: PlayerContext[]): Promise<void> {
   }
 }
 
-test.describe('Chat Messages Between Players', () => {
+test.describe('Chat Messages Between Players', { tag: '@shared-session' }, () => {
   test.describe.configure({ timeout: 360_000 });
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     test.setTimeout(360_000);
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
@@ -116,9 +117,9 @@ test.describe('Chat Messages Between Players', () => {
     }
   });
 
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
+  test.beforeEach(async () => {
+    // E2E baseline: every test starts with the players in Main Foyer (#956).
+    await resetPlayersToMainFoyer(contexts);
   });
 
   test('Ithaqua should see AW chat message', async () => {

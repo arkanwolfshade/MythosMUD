@@ -1,59 +1,51 @@
-# Players
+# players
 
-> 54 nodes
+> 31 nodes · cohesion 0.09
 
 ## Key Concepts
 
-- **LoggedHTTPException** (62 connections)
-- **players.py** (56 connections) — `server/api/players.py`
-- **User** (20 connections)
-- **get_player_quests()** (17 connections) — `server/api/players.py`
-- **FastAPIRequest** (16 connections)
-- **get_player()** (15 connections) — `server/api/players.py`
-- **select_character()** (15 connections) — `server/api/players.py`
-- **PlayerService** (15 connections)
-- **_start_login_grace_period_body()** (14 connections) — `server/api/players.py`
-- **create_player()** (13 connections) — `server/api/players.py`
-- **_validate_character_access()** (13 connections) — `server/api/players.py`
-- **UUID** (13 connections)
-- **delete_character()** (12 connections) — `server/api/players.py`
-- **get_player_skills()** (12 connections) — `server/api/players.py`
-- **list_players()** (12 connections) — `server/api/players.py`
-- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
-- **get_player_by_name()** (11 connections) — `server/api/players.py`
-- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
-- **_get_connection_manager()** (10 connections) — `server/api/players.py`
-- **get_user_characters()** (10 connections) — `server/api/players.py`
-- **start_login_grace_period_endpoint()** (10 connections) — `server/api/players.py`
-- **_validate_character_id()** (10 connections) — `server/api/players.py`
-- **_require_owner_or_admin()** (7 connections) — `server/api/players.py`
-- **PlayerRead** (7 connections)
-- **get** (7 connections)
-- *... and 29 more nodes in this community*
+- **Prometheus Configuration** (9 connections) — `monitoring/prometheus.yml`
+- **Alertmanager Configuration** (8 connections) — `monitoring/alertmanager.yml`
+- **MythosMUD Prometheus Alert Rules** (8 connections) — `monitoring/mythos_alerts.yml`
+- **MythosMUD Monitoring Stack** (7 connections) — `monitoring/docker-compose.monitoring.yml`
+- **mythos_connection_alerts group** (4 connections) — `monitoring/mythos_alerts.yml`
+- **connection-alerts receiver** (3 connections) — `monitoring/alertmanager.yml`
+- **Alertmanager service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
+- **Prometheus service** (3 connections) — `monitoring/docker-compose.monitoring.yml`
+- **ServiceDown alert** (3 connections) — `monitoring/mythos_alerts.yml`
+- **mythos_system_alerts group** (3 connections) — `monitoring/mythos_alerts.yml`
+- **performance-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
+- **system-alerts receiver** (2 connections) — `monitoring/alertmanager.yml`
+- **Node Exporter** (2 connections) — `monitoring/docker-compose.monitoring.yml`
+- **mythos_memory_leak_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
+- **mythos_performance_alerts group** (2 connections) — `monitoring/mythos_alerts.yml`
+- **/monitoring/dual-connections endpoint** (2 connections) — `monitoring/prometheus.yml`
+- **/monitoring/memory-leaks endpoint** (2 connections) — `monitoring/prometheus.yml`
+- **mythos-server scrape job** (2 connections) — `monitoring/prometheus.yml`
+- **critical-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
+- **Critical inhibits warning alerts** (1 connections) — `monitoring/alertmanager.yml`
+- **maintenance-window time interval** (1 connections) — `monitoring/alertmanager.yml`
+- **warning-alerts receiver** (1 connections) — `monitoring/alertmanager.yml`
+- **Grafana service** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- **PostgreSQL Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- **Redis Exporter** (1 connections) — `monitoring/docker-compose.monitoring.yml`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [Test Players Api Coverage](Test_Players_Api_Coverage.md) (54 shared connections)
-- [Maps](Maps.md) (9 shared connections)
-- [Test Endpoints Register](Test_Endpoints_Register.md) (7 shared connections)
-- [Test Player Requests](Test_Player_Requests.md) (7 shared connections)
-- [Real Time](Real_Time.md) (6 shared connections)
-- [Character Creation API](Character_Creation_API.md) (6 shared connections)
-- [Test Players Quests](Test_Players_Quests.md) (5 shared connections)
-- [Subject Controller](Subject_Controller.md) (5 shared connections)
-- [Test Rooms Write Api](Test_Rooms_Write_Api.md) (5 shared connections)
-- [Game State Provider](Game_State_Provider.md) (4 shared connections)
-- [Rooms](Rooms.md) (4 shared connections)
-- [Npc Admin](Npc_Admin.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/api/players.py`
+- `monitoring/alertmanager.yml`
+- `monitoring/docker-compose.monitoring.yml`
+- `monitoring/mythos_alerts.yml`
+- `monitoring/prometheus.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (80%)
-- INFERRED: 59 (20%)
+- EXTRACTED: 32 (80%)
+- INFERRED: 8 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

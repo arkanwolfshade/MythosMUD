@@ -344,7 +344,6 @@ async def test_send_emote_message_success():
     service = ChatService(mock_persistence, mock_room_service, mock_player_service)
     service.rate_limiter.check_rate_limit = MagicMock(return_value=True)  # type: ignore[method-assign]
     service.rate_limiter.record_message = MagicMock()
-    service.user_manager.load_player_mutes = MagicMock(return_value=True)  # type: ignore[method-assign]
     service.user_manager.is_channel_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
     service.user_manager.is_globally_muted = MagicMock(return_value=False)  # type: ignore[method-assign]
     service.user_manager.can_send_message = MagicMock(return_value=True)  # type: ignore[method-assign]

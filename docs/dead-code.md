@@ -29,7 +29,7 @@ This document describes how MythosMUD defines and manages dead code, and where a
 **[SPEC]**
 Code reachable only from its own test file **is** dead by default (ADR-022, decided 2026-08-26).
 The prior blanket exemption for test-only code was removed: a module kept alive by tests alone
-must carry an explicit comment naming it a stub for future implementation *and* reference a
+must carry an explicit comment naming it a stub for future implementation _and_ reference a
 GitHub Issue tracking that work, or it is removed. This closes the false-negative class where a
 component and its test form a closed reachable loop that neither vulture nor knip's default
 Vitest-integration flags as unused.
@@ -46,8 +46,7 @@ Vitest-integration flags as unused.
 **[NOTE]**
 
 - **Server (Python):** [vulture](https://github.com/jendrikseipp/vulture). Config and paths in
-  `pyproject.toml` under `[tool.vulture]`. Allowlist file: **`vulture_allowlist.py`** at repo root
-  (valid Python that references intentional "unused" names).
+  `pyproject.toml` under `[tool.vulture]` (`paths = ["server"]`; no separate allowlist file).
 - **Client (TypeScript):** [knip](https://github.com/webpro/knip). Run with `npm run knip` in
   `client/`. Config: **`client/knip.json`** (entry, project, ignoreDependencies). The `files` rule
   is `"error"` (was `"off"` until 2026-08-26 — the unused-file check never ran before then).
@@ -62,7 +61,7 @@ Vitest-integration flags as unused.
 
 - **Server:** Side-effect imports (e.g. router registration, `server/models` re-exports), reserved
   stubs (`combat_service`, `command_parser`), FastAPI `_request` convention. See
-  `vulture_allowlist.py` and `pyproject.toml` `[tool.vulture]`.
+  `pyproject.toml` `[tool.vulture]` (`ignore_names`, `min_confidence`).
 - **Client:** `_`-prefixed args/vars. Components only used in tests are **not** on this list by
   default as of 2026-08-26 (see §2) — a test-only module needs a stub comment plus a referenced
   GitHub Issue to be kept, entered in `client/knip.json` as needed.
@@ -86,7 +85,7 @@ Full workflow and phases: `.cursor/plans/dead_code_analysis_and_removal_746bc5c1
 
 **[SPEC]**
 
-| Version | Date | Change |
-| --- | --- | --- |
-| 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
-| 1.1.0 | 2026-08-26 | Test-only code no longer exempt by default (ADR-022); knip `files` rule enabled; removed the never-produced report-file convention. |
+| Version | Date       | Change                                                                                                                              |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                                                                                  |
+| 1.1.0   | 2026-08-26 | Test-only code no longer exempt by default (ADR-022); knip `files` rule enabled; removed the never-produced report-file convention. |

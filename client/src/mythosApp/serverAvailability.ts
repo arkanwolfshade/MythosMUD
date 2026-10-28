@@ -35,7 +35,7 @@ export function isServerUnavailable(error: unknown, response: Response | null): 
 }
 
 /** Patterns used when a string error from a child screen should force return-to-login. */
-export const SERVER_UNAVAILABLE_ERROR_SUBSTRINGS = [
+const SERVER_UNAVAILABLE_ERROR_SUBSTRINGS = [
   'failed to fetch',
   'network error',
   'network request failed',

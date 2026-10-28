@@ -7,7 +7,7 @@ persistence layer to cache frequently accessed data like rooms, NPCs, and profes
 
 # pylint: disable=too-many-lines  # Reason: Cache service requires extensive caching logic for multiple entity types and cache management operations
 
-import asyncio
+import inspect
 from collections.abc import Callable
 from functools import wraps
 from typing import Any, TypeVar, cast
@@ -102,7 +102,7 @@ def cached(
             return result
 
         # Return appropriate wrapper based on function type
-        if asyncio.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func):
             return async_wrapper
         return sync_wrapper
 
@@ -591,7 +591,7 @@ class CacheService:
 
         # Preload starting room (if it exists)
         try:
-            starting_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+            starting_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
             self.room_cache.get_room_sync(starting_room_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Cache preload errors unpredictable, must not fail initialization
             logger.warning("Failed to preload starting room", error=str(e))

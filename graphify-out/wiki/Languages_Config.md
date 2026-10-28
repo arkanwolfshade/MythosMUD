@@ -1,10 +1,10 @@
 # Languages Config
 
-> 1 nodes
+> 1 nodes · cohesion 1.00
 
 ## Key Concepts
 
-- **Languages Config** (0 connections) — `.codacy/tools-configs/languages-config.yaml`
+- **5. Consequences** (0 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/tools-configs/languages-config.yaml`
+- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
 
 ## Audit Trail
 

@@ -298,6 +298,21 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 exc_info=True,
             )
 
+    def _publish_correction_to_event_bus(
+        self, event_bus: EventBus, correction_event: PlayerDPUpdated, player_id: UUID, correct_dp: int
+    ) -> None:
+        """Publish a DP correction event to a (fresh, one-shot) EventBus instance."""
+        try:
+            event_bus.publish(correction_event)
+            logger.info("Published DP correction event to event bus", player_id=player_id, correct_dp=correct_dp)
+        except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+            logger.error(
+                "Failed to publish DP correction event to event bus",
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
+            )
+
     async def _publish_player_dp_correction_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
         player_id: UUID,
@@ -316,8 +331,6 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 error_message=error_message,
             )
 
-            event_bus = EventBus()
-
             correction_event = PlayerDPUpdated(
                 player_id=player_id,
                 old_dp=correct_dp,
@@ -328,29 +341,7 @@ class CombatDPSync:  # pylint: disable=too-few-public-methods  # Reason: DP sync
                 combat_id=combat_id,
                 room_id=room_id,
             )
-
-            if event_bus:
-                try:
-                    event_bus.publish(correction_event)
-                    logger.info(
-                        "Published DP correction event to event bus",
-                        player_id=player_id,
-                        correct_dp=correct_dp,
-                    )
-                except (
-                    AttributeError,
-                    RuntimeError,
-                    ValueError,
-                    TypeError,
-                ) as e:
-                    logger.error(
-                        "Failed to publish DP correction event to event bus",
-                        player_id=player_id,
-                        error=str(e),
-                        exc_info=True,
-                    )
-            else:
-                logger.warning("No event bus available for DP correction event", player_id=player_id)
+            self._publish_correction_to_event_bus(EventBus(), correction_event, player_id, correct_dp)
 
         except (
             DatabaseError,

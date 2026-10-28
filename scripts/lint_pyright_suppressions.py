@@ -212,7 +212,7 @@ def scan_file(path: Path) -> tuple[list[Suppression], list[Failure]]:
     """Parse one file's suppressions and report any that violate the standard."""
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
-    except (OSError, UnicodeDecodeError):
+    except OSError, UnicodeDecodeError:
         return [], []
 
     suppressions: list[Suppression] = []

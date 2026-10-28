@@ -18,8 +18,8 @@ in `data/local/rooms/`)
 ### Player Data Storage
 
 Player data is stored in **PostgreSQL** (primary datastore). The server uses async persistence and
-SQLAlchemy ORM; see [docs/DATABASE_ACCESS_PATTERNS.md](../docs/DATABASE_ACCESS_PATTERNS.md) and
-[docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md](../docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md).
+SQLAlchemy ORM; see
+[docs/architecture/DATABASE_ARCHITECTURE.md](../docs/architecture/DATABASE_ARCHITECTURE.md).
 
 ### Player Stats System
 

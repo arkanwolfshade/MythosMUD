@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../../config/channels';
 import { useChatGrainPreference } from '../../../contexts/hooks/useThemeContext';
-import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
 import { decayMessageText } from '../../../utils/corruptionDecay';
-import { extractChannelFromMessage, isChatContent } from '../../../utils/messageTypeUtils';
 import { SafeHtml } from '../../common/SafeHtml';
-import { ChannelSelector } from '../../ui/ChannelSelector';
-import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
-import { TerminalButton } from '../../ui/TerminalButton';
+import { SegmentedText } from '../components/SegmentedText';
+import { ChannelSelector, EldritchIcon, MythosIcons, TerminalButton } from '../primitives';
 import type { ChatMessage } from '../types';
+import { getMessageCategoryClass, isPlainRegisterCategory } from '../utils/messageCategoryStyle';
 
 interface ChatHistoryPanelProps {
   messages: ChatMessage[];
@@ -22,34 +20,9 @@ interface ChatHistoryPanelProps {
   corruption?: number;
 }
 
-// #714: no 'hallucination' entry here -- under server-authoritative hallucinations, a fake
-// whisper or NPC tell arrives as an ordinary chat message (see ADR-024) and must render
-// indistinguishably from a real one. A distinct color would itself be the truth-leak.
-const TAG_MESSAGE_CLASSES: Record<string, string> = {
-  'command-misfire': 'text-mythos-terminal-warning font-semibold',
-  rescue: 'text-mythos-terminal-primary font-semibold',
-};
-
-const TYPE_MESSAGE_CLASSES: Record<string, string> = {
-  emote: 'text-mythos-terminal-primary italic',
-  system: 'text-mythos-terminal-warning font-bold',
-  error: 'text-mythos-terminal-error font-bold',
-  whisper: 'text-mythos-terminal-secondary italic',
-  party: 'text-mythos-terminal-primary',
-  shout: 'text-mythos-terminal-warning font-bold',
-};
-
-function isExcludedFromChatPanel(message: ChatMessage): boolean {
-  return (
-    message.channel === 'game-log' ||
-    message.messageType === 'system' ||
-    message.messageType === 'combat' ||
-    message.messageType === 'command'
-  );
-}
-
-function isWhisperOrParty(channel: string): boolean {
-  return channel === 'whisper' || channel === 'party';
+/** Category routing: the Chat panel shows chat.* only; every other category lives in Game Info. */
+function isChatCategory(category: string): boolean {
+  return category.startsWith('chat.');
 }
 
 function matchesSelectedChannel(
@@ -58,11 +31,9 @@ function matchesSelectedChannel(
   isAllChannelSelected: boolean
 ): boolean {
   if (isAllChannelSelected) return true;
-  const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-  if (message.messageType === 'error') return messageChannel === normalizedSelectedChannel;
-  if (message.messageType !== 'chat' && !isChatContent(message.text)) return false;
-  if (isWhisperOrParty(messageChannel)) return normalizedSelectedChannel === messageChannel;
-  return messageChannel === normalizedSelectedChannel;
+  // The selector filters on conversation identity (message.channel); the category suffix only supplies a fallback.
+  const categoryChannel = message.channel || message.category.slice('chat.'.length);
+  return categoryChannel === normalizedSelectedChannel;
 }
 
 function filterChatHistoryMessages(
@@ -72,26 +43,26 @@ function filterChatHistoryMessages(
 ): ChatMessage[] {
   return messages.filter(
     message =>
-      !isExcludedFromChatPanel(message) &&
+      isChatCategory(message.category) &&
       matchesSelectedChannel(message, normalizedSelectedChannel, isAllChannelSelected)
   );
 }
 
-function classFromTags(tags: string[] | undefined): string | undefined {
-  for (const tag of tags ?? []) {
-    const tagClass = TAG_MESSAGE_CLASSES[tag];
-    if (tagClass) return tagClass;
-  }
-  return undefined;
+function getCategorizedMessageClass(category: string): string | undefined {
+  const categoryClass = getMessageCategoryClass(category);
+  if (!categoryClass) return undefined;
+  // #804/ADR-025: the corruption tint reaches only the plain (speech/ambient) register; alert,
+  // private, action, meta and heading lines keep their semantic color. The register is a static
+  // property of the category, so this stays a global filter on the viewer's own corruption value.
+  // #714: no branch here may depend on anything but the category -- a hallucinated message carries
+  // the same category as the real one and must not look different.
+  return isPlainRegisterCategory(category) ? `${categoryClass} mythos-corruption-text` : categoryClass;
 }
 
 function getMessageClass(message: ChatMessage): string {
-  // #804: corruption's tint only reaches ordinary chat lines -- a tagged or typed message (error,
-  // warning, whisper, ...) keeps its semantic color untouched, since that color carries meaning
-  // the decorative filter shouldn't dilute. Which messages qualify is a static property of type/
-  // tag, never of the message's own content, so this stays a *global* filter (ADR-025): the same
-  // corruption value affects every default-colored line identically.
-  return classFromTags(message.tags) ?? TYPE_MESSAGE_CLASSES[message.messageType ?? ''] ?? 'mythos-corruption-text';
+  // #714: styling depends on the category alone -- a hallucinated message carries the same category as the
+  // real one and must not look different.
+  return getCategorizedMessageClass(message.category) ?? 'mythos-corruption-text';
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -208,7 +179,7 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = props => {
   );
 
   const historyEligibleMessages = useMemo(
-    () => messages.filter(message => message.messageType !== 'system'),
+    () => messages.filter(message => !message.category.startsWith('system.')),
     [messages]
   );
   const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
@@ -275,12 +246,19 @@ function ChatHistoryMessageBody({
   message: ChatMessage;
   corruption: number;
 }): React.ReactElement {
-  const html = message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text);
-  if (message.isHtml) return <SafeHtml html={html} />;
+  if (message.isHtml) return <SafeHtml html={message.text} />;
   // #804: decay is scoped to plain text only -- corrupting arbitrary sanitized HTML text nodes
   // would need DOM-tree-aware processing, out of proportion for a decorative effect.
   const bodyText = decayMessageText(message.rawText ?? message.text, corruption, message.timestamp);
-  return <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{bodyText}</span>;
+  // #1025: corruption eats the highlighting first. Decay rewrites whole words, so once it has changed the line the
+  // spans no longer line up with it; fall back to the decayed text. Which branch runs depends only on the text and
+  // the viewer's own corruption, never on whether the line is real (#714).
+  const segments = bodyText === message.text ? message.segments : undefined;
+  return (
+    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      {segments ? <SegmentedText segments={segments} /> : bodyText}
+    </span>
+  );
 }
 
 function ChatHistoryMessageRow({

@@ -148,6 +148,19 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
   return playerData;
 }
 
+function buildPlayerStats(parsedData: ParsedPlayerData): PlayerWithProfession['stats'] {
+  return {
+    current_dp: parsedData.health?.current || 100,
+    max_dp: parsedData.health?.max || 100,
+    lucidity: parsedData.lucidity?.current || 100,
+    max_lucidity: parsedData.lucidity?.max || 100,
+    fear: parsedData.fear || 0,
+    corruption: parsedData.corruption || 0,
+    occult_knowledge: parsedData.occult_knowledge || 0,
+    position: parsedData.position,
+  };
+}
+
 /**
  * Converts parsed player data to the format expected by the Player interface
  */
@@ -157,16 +170,7 @@ export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWi
     profession_name: parsedData.profession?.name,
     profession_description: parsedData.profession?.description,
     profession_flavor_text: parsedData.profession?.flavor_text,
-    stats: {
-      current_dp: parsedData.health?.current || 100,
-      max_dp: parsedData.health?.max || 100,
-      lucidity: parsedData.lucidity?.current || 100,
-      max_lucidity: parsedData.lucidity?.max || 100,
-      fear: parsedData.fear || 0,
-      corruption: parsedData.corruption || 0,
-      occult_knowledge: parsedData.occult_knowledge || 0,
-      position: parsedData.position,
-    },
+    stats: buildPlayerStats(parsedData),
     position: parsedData.position,
   };
 

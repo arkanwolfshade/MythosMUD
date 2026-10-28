@@ -37,9 +37,10 @@ This script is executed **after** role creation and **before** schema applicatio
 The correct order is:
 
 1. `db/roles/roles.sql` - Create roles (users)
-2. `db/databases/databases.sql` - Create databases with owners
-3. `db/mythos_<env>_ddl.sql` - Apply environment DDL (e.g. mythos_unit_ddl.sql for unit tests)
-4. `data/db/mythos_<env>_dml.sql` - Load seed data (authoritative DML per environment)
+2. `db/databases/databases.sql` - Create databases, per-environment schema, and pgcrypto
+3. `db/schema.sql` - Apply the schema-agnostic DDL (#811), with `search_path` set to the target
+   environment (e.g. `mythos_unit`)
+4. `data/db/seed.sql` - Load the schema-agnostic seed data, same `search_path` convention
 
 ## Security
 

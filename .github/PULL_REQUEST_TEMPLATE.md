@@ -49,7 +49,12 @@
 - [ ] Enhanced logging used (no f-strings, no deprecated `context=`)
 - [ ] No sensitive data in logs
 
-**Security impact**: [ ] None [ ] Low [ ] Medium [ ] High
+**Security impact**:
+
+- [ ] None
+- [ ] Low
+- [ ] Medium
+- [ ] High
 
 ---
 

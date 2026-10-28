@@ -8,14 +8,9 @@
  * error messages.
  */
 
-import { expect, test } from '@playwright/test';
+import { expect, adoptSharedPlayers, test } from '../fixtures/shared-session';
 import { executeCommand, getMessages, waitForMessage } from '../fixtures/auth';
-import {
-  cleanupMultiPlayerContexts,
-  createMultiPlayerContexts,
-  ensurePlayerInGame,
-  waitForAllPlayersInGame,
-} from '../fixtures/multiplayer';
+import { createMultiPlayerContexts, ensurePlayerInGame, waitForAllPlayersInGame } from '../fixtures/multiplayer';
 
 /**
  * Empty-body whisper can surface `Say what?` (older copy) or `You must provide a message to whisper.`
@@ -24,20 +19,15 @@ import {
 const EMPTY_WHISPER_REJECTION =
   /Say what\??\s*Usage:\s*whisper|You must provide a message to whisper\.?\s*Usage:\s*whisper/i;
 
-test.describe('Whisper Errors', () => {
+test.describe('Whisper Errors', { tag: '@shared-session' }, () => {
   let contexts: Awaited<ReturnType<typeof createMultiPlayerContexts>>;
 
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser, sharedPlayers }) => {
     // Create contexts for both players
-    contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
+    contexts = await adoptSharedPlayers(browser, sharedPlayers);
     await waitForAllPlayersInGame(contexts, 60000);
     await ensurePlayerInGame(contexts[0], 60000);
     await ensurePlayerInGame(contexts[1], 60000);
-  });
-
-  test.afterAll(async () => {
-    // Cleanup contexts
-    await cleanupMultiPlayerContexts(contexts);
   });
 
   test('should reject whisper to non-existent player', async () => {

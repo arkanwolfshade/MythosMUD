@@ -7,7 +7,9 @@ import ast
 from pathlib import Path
 
 
-def compute_python_cross_file_depth(repo_root: Path, changed_python_files: list[str]) -> int:
+# Public entry point called from quality_fragmentation_ai_guardrails.py; the guard's usage count is
+# scoped to the changed-file set, not the repo, so it misreads this as single-use.
+def compute_python_cross_file_depth(repo_root: Path, changed_python_files: list[str]) -> int:  # lizard: allow
     definitions, calls = collect_python_defs_and_calls(repo_root, changed_python_files)
     graph = build_call_graph(definitions, calls)
     return max_path_length(graph)
@@ -24,7 +26,7 @@ def collect_python_defs_and_calls(
             continue
         try:
             tree = ast.parse(abs_path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, ValueError, SyntaxError):
+        except OSError, UnicodeDecodeError, ValueError, SyntaxError:
             continue
         definitions.update(dict.fromkeys(_top_level_definitions(tree), rel_path))
         calls_by_file[rel_path] = _named_calls(tree)

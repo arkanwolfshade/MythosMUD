@@ -1,11 +1,14 @@
 """Unit tests for quest event subscriptions and handlers."""
 
 import uuid
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass, field
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom
+from server.events.event_types import NPCDied, PlayerEnteredRoom, PlayerLeftRoom, QuestCompleted
 from server.game.quest import quest_events
 
 
@@ -45,13 +48,13 @@ def test_subscribe_quest_events_no_op_without_dependencies():
 
 
 def test_subscribe_quest_events_registers_handlers():
-    """All three quest handlers are subscribed when deps present."""
+    """All four quest handlers are subscribed when deps present."""
     container = MagicMock()
     event_bus = MagicMock()
     container.event_bus = event_bus
     container.quest_service = MagicMock()
     quest_events.subscribe_quest_events(container)
-    assert event_bus.subscribe.call_count == 3
+    assert event_bus.subscribe.call_count == 4
 
 
 @pytest.mark.asyncio
@@ -83,9 +86,32 @@ async def test_player_left_records_exit_activity():
     handler = quest_events._make_on_player_left(quest_service)
     player_id = uuid.uuid4()
     stable_room = "earth_arkhamcity_downtown_001"
-    event = PlayerLeftRoom(player_id=str(player_id), room_id=f"instance_{uuid.uuid4()}_{stable_room}")
+    event = PlayerLeftRoom(
+        player_id=str(player_id),
+        room_id=f"instance_{uuid.uuid4()}_{stable_room}",
+        to_room_id="earth_arkhamcity_downtown_002",
+    )
     await handler(event)
     quest_service.record_complete_activity.assert_awaited_once_with(player_id, f"exit_{stable_room}")
+
+
+@pytest.mark.asyncio
+async def test_player_left_without_destination_is_not_an_exit():
+    """A disconnect (or character deletion) leaves the room with no destination: no exit activity.
+
+    Otherwise logging out inside the tutorial bedroom completed leave_the_tutorial.
+    """
+    record = AsyncMock()
+    quest_service = MagicMock()
+    quest_service.configure_mock(record_complete_activity=record)
+    handler = cast(
+        Callable[[PlayerLeftRoom], Awaitable[None]],
+        quest_events._make_on_player_left(quest_service),  # pyright: ignore[reportPrivateUsage] -- unit-tested directly, like this file's other handlers
+    )
+    await handler(
+        PlayerLeftRoom(player_id=str(uuid.uuid4()), room_id="earth_arkhamcity_sanitarium_room_tutorial_bedroom_001")
+    )
+    record.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -107,3 +133,53 @@ async def test_npc_died_no_killer_skips():
     event = NPCDied(npc_id="npc_goblin_1", room_id="room_a", killer_id=None)
     await handler(event)
     quest_service.record_kill.assert_not_awaited()
+
+
+@dataclass
+class FakeChaining:
+    started: list[tuple[uuid.UUID, str, str]] = field(
+        default_factory=lambda: cast(list[tuple[uuid.UUID, str, str]], [])
+    )
+    fail: bool = False
+
+    async def start_quest_by_trigger(self, player_id: uuid.UUID, trigger_type: str, entity_id: str) -> object:
+        if self.fail:
+            raise RuntimeError("quest store down")
+        self.started.append((player_id, trigger_type, entity_id))
+        return []
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_starts_the_quests_that_the_finished_quest_unlocks():
+    """Completing a quest triggers quests offered by entity ("quest", <completed id>): chains need no room entry."""
+    quests = FakeChaining()
+    player_id = uuid.uuid4()
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id=str(player_id), quest_id="act_one")
+    )
+
+    assert quests.started == [(player_id, "quest", "act_one")]
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_with_an_invalid_player_id_skips():
+    quests = FakeChaining()
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id="bad-id", quest_id="act_one")
+    )
+
+    assert quests.started == []
+
+
+@pytest.mark.asyncio
+async def test_quest_completed_chain_failure_does_not_propagate():
+    """A failing follow-up start must not break the completion that published the event."""
+    quests = FakeChaining(fail=True)
+
+    await quest_events._make_on_quest_completed(quests)(  # pyright: ignore[reportPrivateUsage]
+        QuestCompleted(player_id=str(uuid.uuid4()), quest_id="act_one")
+    )
+
+    assert quests.started == []

@@ -140,7 +140,9 @@ test.describe('dialogue trees (#583)', () => {
       timeout: 15000,
     });
 
-    await page.getByRole('button', { name: 'New' }).click();
+    // Same helper as Save/Delete below. Mid-suite, Playwright's click here applied (the form reset
+    // to new_dialogue) but then hung for 30s in its post-click bookkeeping.
+    await clickWithoutStability(page.getByRole('button', { name: 'New' }));
     await page.getByTestId('dialogue-id-input').fill(E2E_DIALOGUE_ID);
     await page.getByTestId('dialogue-npc-id-input').fill('');
     const tree = {

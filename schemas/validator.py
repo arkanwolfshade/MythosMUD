@@ -10,16 +10,7 @@ import re
 from pathlib import Path
 from typing import Any, cast
 
-try:
-    from jsonschema import ValidationError, validate
-
-    JSONSCHEMA_AVAILABLE = True
-except ImportError:
-    JSONSCHEMA_AVAILABLE = False
-    # JUSTIFICATION: This is a fallback definition for ValidationError when the
-    # jsonschema library is unavailable. We catch ImportError explicitly above,
-    # but must provide a base Exception class for the subsequent try/except block.
-    ValidationError = Exception  # type: ignore[misc, assignment] # pylint: disable=broad-exception-caught
+from jsonschema import ValidationError, validate
 
 
 class SchemaValidator:
@@ -50,9 +41,6 @@ class SchemaValidator:
 
     def _load_schema(self) -> None:
         """Load and cache the JSON schema."""
-        if not JSONSCHEMA_AVAILABLE:
-            raise ImportError("jsonschema library is required for schema validation")
-
         try:
             with open(self.schema_path, encoding="utf-8") as f:
                 self.schema = json.load(f)
@@ -72,17 +60,11 @@ class SchemaValidator:
         Returns:
             List of validation error messages (empty if valid)
         """
-        if not JSONSCHEMA_AVAILABLE:
-            return [f"{file_path}: Schema validation not available (jsonschema not installed)"]
-
         errors: list[str] = []
 
         try:
             validate(instance=data, schema=cast(Any, self.schema))
-        except ValidationError as e:  # pylint: disable=broad-exception-caught
-            # JUSTIFICATION: If the 'jsonschema' library is not installed, ValidationError is
-            # aliased to 'Exception' as a fallback. We must catch it here to handle any
-            # unexpected validation errors gracefully without crashing the application.
+        except ValidationError as e:
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
             error_msg = f"Schema validation failed at {path}: {e.message}"
@@ -144,19 +126,6 @@ class SchemaValidator:
                 validation_results[room_id] = errors
 
         return validation_results
-
-    def validate_alias_bundle(self, alias_data: dict[str, Any], file_path: str = "") -> list[str]:
-        """
-        Validate a serialized alias bundle against the alias schema.
-
-        Args:
-            alias_data: Alias bundle data to validate.
-            file_path: Optional file path for error reporting.
-
-        Returns:
-            List of validation error messages (empty if valid).
-        """
-        return self.validate_data(alias_data, file_path)
 
     def validate_emote_file(self, emote_data: dict[str, Any], file_path: str = "") -> list[str]:
         """
@@ -245,7 +214,6 @@ def create_validator(schema_name: str = "unified") -> SchemaValidator:
         "unified": schemas_dir / "unified_room_schema.json",
         "room": schemas_dir / "room_schema.json",
         "intersection": schemas_dir / "intersection_schema.json",
-        "alias": schemas_dir / "alias_schema.json",
         "emote": schemas_dir / "emote_schema.json",
     }
 

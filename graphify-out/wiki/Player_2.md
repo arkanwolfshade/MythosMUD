@@ -1,52 +1,110 @@
 # Player
 
-> 26 nodes
+> God node · 281 connections · `server/models/player.py`
 
-## Key Concepts
+**Community:** [fixtures/auth.ts](fixtures-auth.ts.md)
 
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **_stats_int()** (13 connections) — `server/models/player.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **Get player stats as dictionary. Returns a MutableDict instance that…** (1 connections) — `server/models/player.py`
-- **Set player stats from dictionary. Accepts both plain dict and MutableDict…** (1 connections) — `server/models/player.py`
-- **Check if player is alive (DP > 0).** (1 connections) — `server/models/player.py`
-- **Check if player is mortally wounded (0 >= DP > -10). Returns: True if player…** (1 connections) — `server/models/player.py`
-- **Check if player is dead (DP <= -10). Returns: True if player has -10 DP or below** (1 connections) — `server/models/player.py`
-- **Get player's current health state. Returns: "alive" if DP > 0…** (1 connections) — `server/models/player.py`
-- **Get stats used for combat participant creation. Returns current_dp, max_dp, and…** (1 connections) — `server/models/player.py`
-- **Get player determination points (DP) as percentage.** (1 connections) — `server/models/player.py`
-- **Apply DP decay (e.g. mortally wounded bleeding) with posture updates. Decreases…** (1 connections) — `server/models/player.py`
-- **Restore player to full health (max DP, standing posture). Used on respawn. Sets…** (1 connections) — `server/models/player.py`
-- **Coerce a JSONB stat value to int for DP and combat helpers.** (1 connections) — `server/models/player.py`
-- **Apply a DP change (e.g. from combat sync) with posture updates. Updates…** (1 connections) — `server/models/player.py`
-- *... and 1 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- row_to_player() `EXTRACTED`
+- _exit_hook_setup() `EXTRACTED`
+- _create_player() `EXTRACTED`
+- quest_seed_data() `EXTRACTED`
+- _create_player() `EXTRACTED`
+- test_respawn_room_reward_moves_the_players_respawn() `EXTRACTED`
+- test_respawn_room_reward_without_room_id_changes_nothing() `EXTRACTED`
+- test_player_apply_dp_change_became_dead() `EXTRACTED`
+- test_player_apply_dp_change_became_mortally_wounded() `EXTRACTED`
+- test_player_apply_dp_change_updates_dp() `EXTRACTED`
+- test_player_apply_dp_decay_caps_at_negative_10() `EXTRACTED`
+- test_player_apply_dp_decay_changes_posture_when_crossing_zero() `EXTRACTED`
+- test_player_apply_dp_decay_reduces_dp() `EXTRACTED`
+- test_player_creation() `EXTRACTED`
+- test_player_defaults() `EXTRACTED`
+- test_player_get_combat_stats() `EXTRACTED`
+- test_player_get_combat_stats_defaults() `EXTRACTED`
+- test_player_get_equipped_items() `EXTRACTED`
+- test_player_get_equipped_items_empty() `EXTRACTED`
+- test_player_get_health_percentage() `EXTRACTED`
 
-- [Player Model & Migrations](Player_Model_&_Migrations.md) (12 shared connections)
-- [Test Inventory Command Coercion](Test_Inventory_Command_Coercion.md) (2 shared connections)
-- [Test Websocket Helpers Player](Test_Websocket_Helpers_Player.md) (1 shared connections)
+### contains
+- models/player.py `EXTRACTED`
 
-## Source Files
+### imports
+- async_persistence.py `EXTRACTED`
+- server/models/__init__.py `EXTRACTED`
+- models/user.py `EXTRACTED`
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) `EXTRACTED`
+- [test_movement_service.py](test_movement_service.py.md) `EXTRACTED`
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
+- [player_presence_tracker.py](player_presence_tracker.py.md) `EXTRACTED`
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) `EXTRACTED`
+- [look_command.py](look_command.py.md) `EXTRACTED`
+- [websocket_initial_state.py](websocket_initial_state.py.md) `EXTRACTED`
+- [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
+- lucidity_service.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) `EXTRACTED`
+- [real_time.py](real_time.py.md) `EXTRACTED`
+- player_respawn_service.py `EXTRACTED`
+- inventory_equip_command.py `EXTRACTED`
+- [test_quest_service.py](test_quest_service.py.md) `EXTRACTED`
+- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
+- [game_tick_death.py](game_tick_death.py.md) `EXTRACTED`
 
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
+### inherits
+- Base `EXTRACTED`
 
-## Audit Trail
+### method
+- .get_stats() `EXTRACTED`
+- .set_stats() `EXTRACTED`
+- .apply_dp_decay() `EXTRACTED`
+- .restore_to_full_health() `EXTRACTED`
+- .apply_dp_change() `EXTRACTED`
+- .is_alive() `EXTRACTED`
+- .is_mortally_wounded() `EXTRACTED`
+- .is_dead() `EXTRACTED`
+- .get_health_state() `EXTRACTED`
+- .get_combat_stats() `EXTRACTED`
+- .get_health_percentage() `EXTRACTED`
+- .set_inventory() `EXTRACTED`
+- .set_equipped_items() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__repr__() `EXTRACTED`
+- .get_inventory() `EXTRACTED`
+- .get_status_effects() `EXTRACTED`
+- .set_status_effects() `EXTRACTED`
+- .get_equipped_items() `EXTRACTED`
+- .is_admin_user() `EXTRACTED`
 
-- EXTRACTED: 50 (98%)
-- INFERRED: 1 (2%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Player model for game data. Stores all game-specific data for a user including… `EXTRACTED`
+
+### references
+- _convert_legacy_stats_string() `EXTRACTED`
+
+### uses
+- [User](User.md) `INFERRED`
+- PlayerLucidity `INFERRED`
+- Base `INFERRED`
+- PlayerRepository `INFERRED`
+- HealthRepository `INFERRED`
+- _assist() `INFERRED`
+- [PlayerDeathService](PlayerDeathService.md) `INFERRED`
+- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
+- LucidityCooldown `INFERRED`
+- _protect() `INFERRED`
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
+- LucidityExposureState `INFERRED`
+- LucidityAdjustmentLog `INFERRED`
+- PlayerSpell `INFERRED`
+- PositionState `INFERRED`
+- PlayerSavePreparer `INFERRED`
+- PlayerEffect `INFERRED`
+- PlayerSkill `INFERRED`
+- _bank_world() `INFERRED`
+- CorruptionCooldown `INFERRED`
 
 ---
 

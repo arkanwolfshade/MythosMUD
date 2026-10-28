@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.container.bundles.chat import CHAT_ATTRS, ChatBundle
-from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle
+from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle, make_lucidity_adjuster
 from server.container.bundles.core import CORE_ATTRS, CoreBundle
 from server.container.bundles.game import GAME_ATTRS, GameBundle
 from server.container.bundles.magic import (
@@ -60,6 +60,43 @@ def test_time_bundle_resolve_hourly_holidays() -> None:
     assert names == ["Feast"]
     bundle.holiday_service.refresh_active.side_effect = RuntimeError("calendar offline")
     assert bundle._resolve_hourly_holidays(datetime.now()) == []
+
+
+class _RecordingBus:
+    def __init__(self) -> None:
+        self.published: list[object] = []
+
+    def publish(self, event: object) -> None:
+        self.published.append(event)
+
+
+def test_game_bundle_builds_the_player_registry_from_config() -> None:
+    """ADR-029: the registry takes its tuning from GameConfig and publishes queued events on the event bus."""
+    from server.game.player_registry import PlayerRegistry
+
+    bundle = GameBundle()
+    bus = _RecordingBus()
+    container = MagicMock()
+    container.event_bus = bus
+    game = MagicMock(
+        save_interval=3,
+        player_registry_idle_ttl_seconds=45.0,
+        player_registry_flush_concurrency=2,
+        player_registry_failure_alert_after=7,
+    )
+    with (
+        patch("server.config.get_config", return_value=MagicMock(game=game)),
+        patch("server.database.get_session_maker", return_value=MagicMock()),
+    ):
+        bundle._init_player_registry(container)  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - unit-testing the bundle's private wiring step  # Appropriate because: this file tests each GameBundle wiring helper directly, and initialize() needs the whole app
+
+    registry = bundle.player_registry
+    assert isinstance(registry, PlayerRegistry)
+    settings = registry._settings  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - the wired settings are only held on the private field  # Appropriate because: adding a public accessor only for this assertion would widen the registry's API
+    assert (settings.idle_ttl_seconds, settings.flush_concurrency, settings.failure_alert_after) == (45.0, 2, 7)
+    assert settings.retry_base_seconds == 3.0
+    assert registry._publish == bus.publish  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - as above  # Appropriate because: the publisher is only held on the private field, and asserting it is the point
+    assert "player_registry" in GAME_ATTRS
 
 
 def test_game_bundle_wire_helpers() -> None:
@@ -333,6 +370,32 @@ def test_magic_validate_prerequisites() -> None:
         _validate_magic_prerequisites(container)
 
 
+@pytest.mark.asyncio
+async def test_lucidity_adjuster_applies_through_lucidity_service_with_the_registry() -> None:
+    """ADR-029 step 3a: persistence-layer lucidity changes use LucidityService with the catatonia registry, committed."""
+    observer = MagicMock()
+    commit = AsyncMock()
+    session = MagicMock()
+    session.commit = commit
+
+    async def sessions():
+        yield session
+
+    adjust = AsyncMock()
+    service = MagicMock()
+    service.apply_lucidity_adjustment = adjust
+    player_id = uuid.uuid4()
+    with (
+        patch("server.database.get_async_session", sessions),
+        patch("server.services.lucidity_service.LucidityService", return_value=service) as service_cls,
+    ):
+        await make_lucidity_adjuster(observer)(player_id, -7, "spell_cast:x")
+
+    assert service_cls.call_args.kwargs["catatonia_observer"] is observer
+    adjust.assert_awaited_once_with(player_id, -7, reason_code="spell_cast:x")
+    commit.assert_awaited_once()
+
+
 def test_combat_bundle_validate_nats_prerequisites() -> None:
     bundle = CombatBundle()
     container = MagicMock(config=None)
@@ -482,10 +545,15 @@ async def test_combat_bundle_initialize() -> None:
                         "server.services.passive_lucidity_flux_service.PassiveLucidityFluxService",
                         return_value=MagicMock(),
                     ):
-                        await bundle.initialize(container)
+                        with patch(
+                            "server.services.passive_corruption_flux.service.PassiveCorruptionFluxService",
+                            return_value=MagicMock(),
+                        ):
+                            await bundle.initialize(container)
 
     assert bundle.player_combat_service is not None
     assert bundle.passive_lucidity_flux_service is not None
+    assert bundle.passive_corruption_flux_service is not None
 
 
 @pytest.mark.asyncio
@@ -690,7 +758,10 @@ async def test_game_bundle_initialize_wiring() -> None:
                         with patch("server.game.party_service.PartyService"):
                             with patch("server.game.player_service.PlayerService"):
                                 with patch("server.game.room_service.RoomService"):
-                                    with patch("server.services.user_manager.UserManager"):
+                                    with patch(
+                                        "server.services.user_manager.UserManager",
+                                        MagicMock(return_value=MagicMock(load_all_mutes=AsyncMock(return_value=0))),
+                                    ):
                                         with patch("server.services.container_service.ContainerService"):
                                             with patch("server.game.skill_service.SkillService"):
                                                 with patch("server.game.level_service.LevelService"):

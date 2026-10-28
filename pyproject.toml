@@ -6,16 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "mythosmud"
 version = "0.1.0"
 description = "MythosMUD - A Cthulhu Mythos-themed MUD"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 
 dependencies = [
     "fastapi>=0.128.0",
     "uvicorn[standard]>=0.40.0",
-    "gunicorn>=23.0.0",  # Production process manager with Uvicorn workers
     "pydantic>=2.12.5",
-    "pydantic-settings>=2.14.2",
+    "pydantic-settings>=2.15",
     "argon2-cffi>=25.1.0",
-    "PyJWT>=2.10.1",  # JWT for auth_utils and fastapi-users
+    "PyJWT>=2.14.0",  # JWT for auth_utils and fastapi-users; >=2.14.0 fixes 7 advisories (GHSA-9v7f-9g4p-ffgj et al.)
     "faker>=40.1.0",
     "python-dotenv>=1.2.1",
     "sqlalchemy>=2.0.45",
@@ -49,7 +48,7 @@ dependencies = [
     "aiofiles>=24.1.0", # Async file I/O to prevent blocking the event loop
     "virtualenv>=21.7.1",
     # Security patches for transitive dependencies (Dependabot alerts #11-21)
-    "urllib3>=2.7.0",  # Fixes alerts #15, #16, #18 - CVE-2025-66418, CVE-2025-66471
+    "urllib3>=2.8.0",  # Security floor; 2.8.0 fixes GHSA-8988-9cw3-xx77, GHSA-vxq7-64xx-v4gw, GHSA-gh4c-6fx4-qh6g
     "pyasn1>=0.6.4",  # Dependabot #160/#161; prior #11/#19 CVE-2026-23490
     "starlette>=1.3.1",  # #529/#112 Host-header validation; lock resolves 1.2.x
     "python-multipart>=0.0.27",  # Fixes alert #12 - CVE-2024-53981, CVE-2024-24762
@@ -84,14 +83,14 @@ dev = [
     # Use sqlfluff instead, which provides comprehensive SQL linting
     "asyncpg-stubs>=0.31.0",
     "import-linter>=2.5",  # Enforces ADR-001 layer direction as CI-checked contracts (#757)
-    "basedpyright>=1.38.2",  # #784 gate; CI installs .[dev], not [dependency-groups] dev
+    "basedpyright==1.40.1",  # #784 gate; exact pin: the baseline is checker-version specific. CI installs .[dev], not [dependency-groups] dev
 ]
 
 [tool.setuptools.packages.find]
 include = ["server*"]
 
 [tool.vulture]
-paths = ["server", "vulture_allowlist.py"]
+paths = ["server"]
 # graphify-out/.venv under server/ is a local tool dump, not app code (matches ruff extend-exclude).
 exclude = [
     "server/tests",
@@ -106,7 +105,7 @@ ignore_names = ["_request", "request", "app", "_", "db", "_db"]
 min_confidence = 80
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py314"
 # line-length checks disabled project-wide; formatter may still use this for wrap
 line-length = 120
 # Generated graphify extract/wiki trees (and any nested **/graphify/** dumps).
@@ -126,6 +125,9 @@ select = [
 ignore = [
     "E501",  # line too long - line-length checks disabled globally
     "B008",  # do not perform function calls in argument defaults
+    # py314 (PEP 649/749) modernization deferred from #748 to #988; remove these when it lands.
+    "UP037",  # quoted annotations (420 sites); safe to unquote only with runtime-resolver review
+    "UP043",  # unnecessary default type args
 ]
 # Cyclomatic complexity threshold: 11 (matches Codacy threshold)
 # Functions with complexity > 10 will trigger C901 violation
@@ -141,8 +143,6 @@ max-complexity = 11
 # repo's other 12 generics until that runtime catches up. See #784.
 "server/tests/support.py" = ["UP047"]
 "server/main.py" = ["E402"]  # Reason: Imports must come after load_dotenv() to ensure env vars are loaded before any modules that depend on them are imported
-# Alembic requires exact names revision, down_revision, branch_labels, depends_on; cannot use UPPER_CASE
-"server/alembic/versions/*.py" = ["N816"]
 # ast.NodeVisitor dispatches to visit_<NodeType> (e.g. visit_Import, visit_ImportFrom, visit_Call); names fixed by API
 "scripts/verify_enhanced_logging_compliance.py" = ["N802", "N815"]
 
@@ -227,7 +227,6 @@ asyncio_default_fixture_loop_scope = "function"
 source = ["server"]
 omit = [
     "*/tests/*",
-    "*/alembic/*",
     "*/__pycache__/*",
     "*/stubs/*",
 ]
@@ -247,7 +246,7 @@ exclude_lines = [
 fail_under = 63
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 files = ["server"]
 plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 
@@ -283,8 +282,6 @@ exclude = [
     "^graphify-out/",
     ".*[\\\\/]graphify-out[\\\\/].*",
     ".*[\\\\/]graphify[\\\\/].*",
-    "^server/alembic/",
-    "^alembic/",  # Also exclude root-level alembic if it exists
     "^server/tests/",
     ".*[\\\\/]__tests__[\\\\/].*",
     "^server/time/",  # Exclude server/time to avoid conflict with stdlib time module
@@ -395,7 +392,7 @@ check_untyped_defs = true
 # pyenv-win/.../Lib/*.py, that file is outside the project: close it and set the
 # interpreter to this workspace's .venv.
 [tool.basedpyright]
-pythonVersion = "3.12"
+pythonVersion = "3.14"
 venvPath = "."
 venv = ".venv"
 # Repo root on path so scripts/*.py can import the top-level `server` package (same as runtime sys.path).
@@ -443,7 +440,7 @@ dev = [
     "vulture>=2.11", # Dead code finder (unused functions, classes, variables)
     # sqlint>=0.2.1 - REMOVED: Conflicts with click>=8.1.8 (sqlint requires click==7.0)
     # Use sqlfluff instead, which provides comprehensive SQL linting
-    "basedpyright>=1.38.2",
+    "basedpyright==1.40.1",  # keep in lockstep with [project.optional-dependencies] dev
     "import-linter>=2.5", # Enforces ADR-001 layer direction as CI-checked contracts (#757)
 ]
 

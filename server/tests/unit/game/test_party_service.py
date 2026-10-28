@@ -7,6 +7,7 @@ is_leader, get_party_members, on_player_disconnect.
 """
 
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -376,3 +377,31 @@ async def test_party_invite_event_envelope_shape():
     conn_mgr.send_personal_message.assert_awaited_once()
     event = conn_mgr.send_personal_message.await_args.args[1]
     assert_event_envelope(event, event_type="party_invite")
+
+
+@pytest.mark.asyncio
+async def test_on_player_disconnect_cancels_pending_invite_as_inviter(party_service: PartyService):
+    """Disconnect of the inviter cancels their pending invite to the target."""
+    leader_id = str(uuid.uuid4())
+    target_id = str(uuid.uuid4())
+    create = party_service.create_party(leader_id)
+    created_party_id = cast(str, create["party_id"])
+    _ = await party_service.request_party_invite(leader_id, "Leader", created_party_id, target_id)
+    assert len(party_service._pending_invites) == 1  # pyright: ignore[reportPrivateUsage]
+    party_service.on_player_disconnect(leader_id)
+    assert len(party_service._pending_invites) == 0  # pyright: ignore[reportPrivateUsage]
+
+
+@pytest.mark.asyncio
+async def test_on_player_disconnect_cancels_pending_invite_as_target(party_service: PartyService):
+    """Disconnect of the invite target cancels the pending invite."""
+    leader_id = str(uuid.uuid4())
+    target_id = str(uuid.uuid4())
+    create = party_service.create_party(leader_id)
+    created_party_id = cast(str, create["party_id"])
+    _ = await party_service.request_party_invite(leader_id, "Leader", created_party_id, target_id)
+    assert len(party_service._pending_invites) == 1  # pyright: ignore[reportPrivateUsage]
+    party_service.on_player_disconnect(target_id)
+    assert len(party_service._pending_invites) == 0  # pyright: ignore[reportPrivateUsage]
+    # Leader's own party membership is untouched by the target's disconnect.
+    assert party_service.get_party_for_player(leader_id) is not None
