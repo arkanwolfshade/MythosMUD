@@ -9,6 +9,7 @@ from .game.chat_service import ChatService
 from .game.item_catalog_service import ItemCatalogService
 from .game.level_service import LevelService
 from .game.magic.mp_regeneration_service import MPRegenerationService
+from .game.player_registry import PlayerRegistry
 from .game.player_service import PlayerService
 from .game.profession_service import ProfessionService
 from .game.quest import QuestService
@@ -143,6 +144,14 @@ def get_player_respawn_service(request: Request) -> "PlayerRespawnService":
         raise RuntimeError("PlayerRespawnService not initialized in container")
 
     return cast(PlayerRespawnService, container.player_respawn_service)
+
+
+def get_player_registry(request: Request) -> PlayerRegistry:
+    """Get the authoritative player registry (ADR-029) with dependency injection."""
+    registry = get_container(request).player_registry
+    if registry is None:
+        raise RuntimeError("PlayerRegistry not initialized in container")
+    return registry
 
 
 # Dependency injection type aliases for use in route handlers

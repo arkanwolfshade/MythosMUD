@@ -357,6 +357,7 @@ class TestTransferItems:
     @pytest.mark.asyncio
     async def test_transfer_items_not_authenticated(self, mock_request):
         """Test transfer_items() requires authentication."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -371,19 +372,21 @@ class TestTransferItems:
             quantity=1,
         )
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await transfer_items(
+            _ = await transfer_items(
                 request_data=request_data,
                 request=mock_request,
                 # Reason: Intentionally passing None to test unauthenticated scenario
                 current_user=None,  # type: ignore[arg-type]
                 persistence=AsyncMock(),
                 connection_manager=MagicMock(),
+                player_registry=registry,
             )
         assert exc_info.value.status_code == 401
 
     @pytest.mark.asyncio
     async def test_transfer_items_rate_limit(self, mock_request, mock_user):
         """Test transfer_items() enforces rate limiting."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -400,18 +403,20 @@ class TestTransferItems:
         with patch("server.api.container_helpers.container_rate_limiter") as mock_limiter:
             mock_limiter.enforce_rate_limit.side_effect = RateLimitError("Rate limit exceeded", retry_after=60)
             with pytest.raises(LoggedHTTPException) as exc_info:
-                await transfer_items(
+                _ = await transfer_items(
                     request_data=request_data,
                     request=mock_request,
                     current_user=mock_user,
                     persistence=AsyncMock(),
                     connection_manager=MagicMock(),
+                    player_registry=registry,
                 )
             assert exc_info.value.status_code == 429
 
     @pytest.mark.asyncio
     async def test_transfer_items_to_container(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to container."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -449,13 +454,17 @@ class TestTransferItems:
                         current_user=mock_user,
                         persistence=mock_persistence,
                         connection_manager=MagicMock(),
+                        player_registry=registry,
                     )
                     assert result.container is not None
                 mock_container_service.transfer_to_container.assert_awaited_once()
+                assert mock_container_service.transfer_to_container.await_args is not None
+                assert mock_container_service.transfer_to_container.await_args.kwargs["registry"] is registry
 
     @pytest.mark.asyncio
     async def test_transfer_items_to_player(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() transfers to player."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -493,15 +502,19 @@ class TestTransferItems:
                         current_user=mock_user,
                         persistence=mock_persistence,
                         connection_manager=MagicMock(),
+                        player_registry=registry,
                     )
                     assert result.container is not None
                     mock_container_service.transfer_from_container.assert_awaited_once()
+                    assert mock_container_service.transfer_from_container.await_args is not None
+                    assert mock_container_service.transfer_from_container.await_args.kwargs["registry"] is registry
 
     @pytest.mark.asyncio
     async def test_transfer_items_capacity_error(
         self, mock_request, mock_user, mock_persistence, mock_container_service
     ):
         """Test transfer_items() handles ContainerCapacityError."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -532,18 +545,20 @@ class TestTransferItems:
                 "server.api.container_endpoints_basic.get_container_service", return_value=mock_container_service
             ):
                 with pytest.raises(LoggedHTTPException) as exc_info:
-                    await transfer_items(
+                    _ = await transfer_items(
                         request_data=request_data,
                         request=mock_request,
                         current_user=mock_user,
                         persistence=mock_persistence,
                         connection_manager=MagicMock(),
+                        player_registry=registry,
                     )
                 assert exc_info.value.status_code == 409
 
     @pytest.mark.asyncio
     async def test_transfer_items_stale_token(self, mock_request, mock_user, mock_persistence, mock_container_service):
         """Test transfer_items() handles stale mutation token."""
+        registry = MagicMock()
         # Lazy import to avoid circular import
         from server.api.container_endpoints_basic import transfer_items  # noqa: E402
         from server.api.container_models import (
@@ -574,12 +589,13 @@ class TestTransferItems:
                 "server.api.container_endpoints_basic.get_container_service", return_value=mock_container_service
             ):
                 with pytest.raises(LoggedHTTPException) as exc_info:
-                    await transfer_items(
+                    _ = await transfer_items(
                         request_data=request_data,
                         request=mock_request,
                         current_user=mock_user,
                         persistence=mock_persistence,
                         connection_manager=MagicMock(),
+                        player_registry=registry,
                     )
                 assert exc_info.value.status_code == 412
 
@@ -724,3 +740,60 @@ class TestRequestModels:
                 stack={"item_id": str(uuid.uuid4())},
                 quantity=0,
             )
+
+
+@pytest.mark.asyncio
+async def test_transfer_items_pushes_the_committed_inventory_before_the_container_update(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """ADR-029 step 4b: a REST transfer changes the player too. Their client must hear about it, and first: a transfer
+    pane fed only by container.updated would keep offering a stack the player no longer holds."""
+    from types import SimpleNamespace
+    from typing import cast
+
+    from server.api.container_endpoints_basic import transfer_items
+    from server.api.container_models import TransferContainerRequest
+    from server.async_persistence import AsyncPersistenceLayer
+    from server.game.player_registry import PlayerRegistry
+    from server.realtime.connection_manager import ConnectionManager
+    from server.tests.fixtures.shared.player_registry import FakeDatabase
+
+    player_id = uuid.uuid4()
+    torch: dict[str, object] = {"item_id": "torch", "item_instance_id": "torch-1", "quantity": 1}
+    result: dict[str, object] = {"container": {}, "player_inventory": [torch], "player_equipped": {}}
+    emitted: list[object] = []
+
+    async def player_id_from_user(_user: object, _persistence: object) -> uuid.UUID:
+        return player_id
+
+    async def execute(_service: object, _request_data: object, _pid: object, _registry: object) -> dict[str, object]:
+        return result
+
+    async def snapshot(_cm: object, pid: uuid.UUID, inventory: object, equipped: object) -> None:
+        emitted.append(("inventory", pid, inventory, equipped))
+
+    async def container_updated(*_args: object) -> None:
+        emitted.append("container.updated")
+
+    module = "server.api.container_endpoints_basic"
+    monkeypatch.setattr(f"{module}.get_player_id_from_user", player_id_from_user)
+    monkeypatch.setattr(f"{module}.execute_transfer", execute)
+    monkeypatch.setattr(f"{module}.emit_inventory_snapshot", snapshot)
+    monkeypatch.setattr(f"{module}.emit_transfer_event", container_updated)
+
+    _ = await transfer_items(
+        request_data=TransferContainerRequest(
+            container_id=uuid.uuid4(),
+            mutation_token="token",
+            direction="to_container",
+            stack={"item_id": "torch", "item_instance_id": "torch-1"},
+            quantity=1,
+        ),
+        request=Request({"type": "http", "headers": []}),
+        current_user=cast(User, cast(object, SimpleNamespace(id=uuid.uuid4()))),
+        persistence=cast(AsyncPersistenceLayer, cast(object, None)),
+        connection_manager=cast(ConnectionManager, object()),
+        player_registry=PlayerRegistry(FakeDatabase().session),
+    )
+
+    assert emitted == [("inventory", player_id, [torch], {}), "container.updated"]

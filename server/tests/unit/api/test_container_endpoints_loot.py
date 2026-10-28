@@ -1,418 +1,201 @@
 """
-Unit tests for container loot-all endpoint (core behaviors).
+Unit tests for the loot-all endpoint.
 
-Tests loot_all_items success, validation, rate limiting, and error handling.
-Extended tests (register, items_looted, source types, etc.) live in
-test_container_endpoints_loot_register.py.
+The endpoint hands the whole loot to ContainerService.loot_all, one player-registry unit of work (ADR-029 step 4b;
+the loot itself is tested in tests/unit/services/test_container_transfers.py), then reports the result.
 """
 
+from __future__ import annotations
+
 import uuid
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass, field
+from types import SimpleNamespace
+from typing import cast
 
 import pytest
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.routing import APIRoute
 
-# Ensure module under test is loaded so patch("server.api.container_endpoints_loot.*") can resolve.
-import server.api.container_endpoints_loot  # noqa: F401
-from server.exceptions import LoggedHTTPException, RateLimitError
-from server.models.container import ContainerComponent
+from server.api.container_endpoints_loot import loot_all_items, register_loot_endpoints
+from server.api.container_models import LootAllRequest
+from server.exceptions import LoggedHTTPException
+from server.game.player_registry import PlayerRegistry
+from server.models.container import ContainerComponent, ContainerSourceType
 from server.services.container_service import (
     ContainerCapacityError,
     ContainerLockedError,
     ContainerNotFoundError,
+    LootAllResult,
 )
+from server.tests.fixtures.shared.player_registry import FakeDatabase
 
-# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match
-# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice
+CID = uuid.uuid4()
+PID = uuid.uuid4()
+TORCH: dict[str, object] = {
+    "item_instance_id": "torch-1",
+    "prototype_id": "torch",
+    "item_id": "torch",
+    "item_name": "Torch",
+    "slot_type": "backpack",
+    "quantity": 1,
+}
 
 
-class TestLootAllItems:
-    """Tests for loot_all_items endpoint."""
+@dataclass
+class _User:
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_success(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_container, mock_player
-    ):
-        """Test loot_all_items successfully transfers all items."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
 
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+@dataclass
+class _Service:
+    """ContainerService's loot_all, recording what it was asked."""
 
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-        # Mock container data with all required fields
-        from server.models.container import ContainerSourceType  # noqa: E402
+    outcome: LootAllResult | Exception
+    calls: list[tuple[uuid.UUID, uuid.UUID, str, PlayerRegistry]] = field(default_factory=list)
 
-        container_data = {
-            "container_id": str(container_id),
-            "items": [],
+    async def loot_all(
+        self, container_id: uuid.UUID, player_id: uuid.UUID, mutation_token: str, *, registry: PlayerRegistry
+    ) -> LootAllResult:
+        self.calls.append((container_id, player_id, mutation_token, registry))
+        if isinstance(self.outcome, Exception):
+            raise self.outcome
+        return self.outcome
+
+
+def _request(app: FastAPI | None = None) -> Request:
+    scope: dict[str, object] = {"type": "http", "method": "POST", "path": "/loot-all", "headers": []}
+    if app is not None:
+        scope["app"] = app
+    return Request(scope)
+
+
+def _empty_container() -> ContainerComponent:
+    return ContainerComponent.model_validate(
+        {
+            "container_id": str(CID),
+            "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "source_type": ContainerSourceType.ENVIRONMENT.value,
             "capacity_slots": 10,
-            "room_id": "room_001",
+            "items": [],
         }
-        mock_persistence.get_container = AsyncMock(return_value=container_data)
+    )
 
-        final_container = MagicMock(spec=ContainerComponent)
-        final_container.items = []
-        final_container.model_dump = Mock(return_value=container_data)
-        final_container.source_type = MagicMock()
-        final_container.source_type.value = "room"
-        final_container.room_id = "room_001"
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all") as mock_validate,
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all") as mock_rate_limit,
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.get_container_service") as mock_get_service,
-            patch(
-                "server.api.container_endpoints_loot.get_container_and_player_for_loot_all", new_callable=AsyncMock
-            ) as mock_get_data,
-            patch(
-                "server.api.container_endpoints_loot.transfer_all_items_from_container", new_callable=AsyncMock
-            ) as mock_transfer,
-            patch("server.api.container_endpoints_loot.emit_loot_all_event", new_callable=AsyncMock) as mock_emit,
-        ):
-            mock_validate.return_value = None
-            mock_rate_limit.return_value = None
-            mock_get_player_id.return_value = player_id
-            mock_get_service.return_value = MagicMock()
-            mock_get_data.return_value = (mock_container, mock_player, [])
-            mock_transfer.return_value = (mock_container, [])
-            # Mock container data with all required fields
+def _install(monkeypatch: pytest.MonkeyPatch, service: _Service) -> list[object]:
+    """Route the endpoint's lookups to ``service``; returns what it emits, in order."""
+    emitted: list[object] = []
 
-            container_data = {
-                "container_id": str(container_id),
-                "items": [],
-                "source_type": ContainerSourceType.ENVIRONMENT.value,
-                "capacity_slots": 10,
-                "room_id": "room_001",
-            }
-            mock_persistence.get_container = AsyncMock(return_value=container_data)
+    async def player_id(_user: object, _persistence: object) -> uuid.UUID:
+        return PID
 
-            result = await loot_all_items(
-                request_data=request_data,
-                request=mock_request,
-                current_user=mock_user,
-                persistence=mock_persistence,
-                connection_manager=mock_connection_manager,
-            )
+    async def emit(
+        _cm: object, _request_data: object, container: ContainerComponent, _pid: object, items_removed: int
+    ) -> None:
+        emitted.append((container, items_removed))
 
-            assert result is not None
-            assert "container" in result.model_dump()
-            assert "player_inventory" in result.model_dump()
-            assert "items_looted" in result.model_dump()
-            mock_validate.assert_called_once()
-            mock_rate_limit.assert_called_once()
-            mock_emit.assert_awaited_once()
+    monkeypatch.setattr("server.api.container_endpoints_loot.get_player_id_from_user", player_id)
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_validation_error(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager
-    ):
-        """Test loot_all_items raises error when user validation fails."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
+    def container_service(_persistence: object) -> _Service:
+        return service
 
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+    monkeypatch.setattr("server.api.container_endpoints_loot.get_container_service", container_service)
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all") as mock_validate,
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-        ):
-            mock_validate.side_effect = LoggedHTTPException(status_code=403, detail="Access denied", context=None)
+    async def snapshot(
+        _cm: object, _pid: object, inventory: list[dict[str, object]], equipped: dict[str, object]
+    ) -> None:
+        emitted.append(("inventory", inventory, equipped))
 
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 403
+    monkeypatch.setattr("server.api.container_endpoints_loot.emit_loot_all_event", emit)
+    monkeypatch.setattr("server.api.container_endpoints_loot.emit_inventory_snapshot", snapshot)
+    return emitted
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_rate_limit_error(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager
-    ):
-        """Test loot_all_items raises error when rate limit exceeded."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
 
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+async def test_loot_all_hands_the_whole_loot_to_the_service(monkeypatch: pytest.MonkeyPatch) -> None:
+    container = _empty_container()
+    service = _Service(LootAllResult(container=container, player_inventory=[TORCH], player_equipped={}, items_looted=2))
+    emitted = _install(monkeypatch, service)
+    registry = PlayerRegistry(FakeDatabase().session)
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all") as mock_rate_limit,
-        ):
-            mock_rate_limit.side_effect = RateLimitError("Rate limit exceeded")
+    response = await loot_all_items(
+        LootAllRequest(container_id=CID, mutation_token="token"), _request(), _User(), None, None, registry
+    )
 
-            with pytest.raises(RateLimitError):
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
+    assert service.calls == [(CID, PID, "token", registry)]
+    # The inventory first: the client's transfer pane must never offer a stack the player no longer holds.
+    assert emitted == [("inventory", [TORCH], {}), (container, 2)]
+    assert response.items_looted == 2
+    assert [stack.item_id for stack in response.player_inventory] == ["torch"]
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_player_not_found(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager
-    ):
-        """Test loot_all_items raises error when player not found."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
 
-        container_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+async def test_an_unauthenticated_loot_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    service = _Service(RuntimeError("never called"))
+    _ = _install(monkeypatch, service)
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-        ):
-            mock_get_player_id.side_effect = LoggedHTTPException(
-                status_code=404, detail="Player not found for user", context=None
-            )
+    with pytest.raises(LoggedHTTPException) as refused:
+        _ = await loot_all_items(
+            LootAllRequest(container_id=CID, mutation_token="token"),
+            _request(),
+            None,
+            None,
+            None,
+            PlayerRegistry(FakeDatabase().session),
+        )
 
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 404
+    assert refused.value.status_code == 401
+    assert service.calls == []
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_container_not_found(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_player
-    ):
-        """Test loot_all_items handles container not found error."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
 
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+@pytest.mark.parametrize(
+    ("error", "status_code"),
+    [
+        (ContainerNotFoundError("gone"), 404),
+        (ContainerLockedError("locked"), 423),
+        (ContainerCapacityError("full"), 409),
+        (RuntimeError("boom"), 500),
+    ],
+)
+async def test_a_failed_loot_maps_to_its_status(
+    monkeypatch: pytest.MonkeyPatch, error: Exception, status_code: int
+) -> None:
+    _ = _install(monkeypatch, _Service(error))
 
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
+    with pytest.raises(LoggedHTTPException) as failed:
+        _ = await loot_all_items(
+            LootAllRequest(container_id=CID, mutation_token="token"),
+            _request(),
+            _User(),
+            None,
+            None,
+            PlayerRegistry(FakeDatabase().session),
+        )
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.get_container_service"),
-            patch(
-                "server.api.container_endpoints_loot.get_container_and_player_for_loot_all", new_callable=AsyncMock
-            ) as mock_get_data,
-            patch("server.api.container_endpoints_loot.handle_loot_all_exceptions") as mock_handler,
-        ):
-            mock_get_player_id.return_value = player_id
-            mock_get_data.side_effect = ContainerNotFoundError("Container not found")
+    assert failed.value.status_code == status_code
 
-            # Exception handler should raise
-            mock_handler.side_effect = LoggedHTTPException(status_code=404, detail="Container not found", context=None)
 
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 404
+async def test_the_route_is_post_loot_all_and_passes_the_apps_registry(monkeypatch: pytest.MonkeyPatch) -> None:
+    router = APIRouter()
+    register_loot_endpoints(router)
+    [route] = router.routes
+    assert isinstance(route, APIRoute)
+    assert route.path == "/loot-all" and route.methods == {"POST"}
 
-    @pytest.mark.asyncio
-    async def test_loot_all_items_capacity_error(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_container, mock_player
-    ):
-        """Test loot_all_items handles capacity exceeded error."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
+    registry = PlayerRegistry(FakeDatabase().session)
+    app = FastAPI()
+    app.state.container = SimpleNamespace(player_registry=registry)
+    seen: list[PlayerRegistry] = []
 
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
+    async def loot(*args: object) -> None:
+        seen.append(cast(PlayerRegistry, args[-1]))
 
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
+    monkeypatch.setattr("server.api.container_endpoints_loot.loot_all_items", loot)
+    endpoint = cast(Callable[..., Awaitable[object]], route.endpoint)
+    _ = await endpoint(
+        LootAllRequest(container_id=CID, mutation_token="token"),
+        _request(app),
+        current_user=_User(),
+        persistence=None,
+        connection_manager=None,
+    )
 
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.get_container_service"),
-            patch(
-                "server.api.container_endpoints_loot.get_container_and_player_for_loot_all", new_callable=AsyncMock
-            ) as mock_get_data,
-            patch(
-                "server.api.container_endpoints_loot.transfer_all_items_from_container", new_callable=AsyncMock
-            ) as mock_transfer,
-            patch("server.api.container_endpoints_loot.handle_loot_all_exceptions") as mock_handler,
-        ):
-            mock_get_player_id.return_value = player_id
-            mock_get_data.return_value = (mock_container, mock_player, [])
-            mock_transfer.side_effect = ContainerCapacityError("Capacity exceeded")
-            mock_handler.side_effect = LoggedHTTPException(status_code=409, detail="Capacity exceeded", context=None)
-
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 409
-
-    @pytest.mark.asyncio
-    async def test_loot_all_items_locked_error(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_player
-    ):
-        """Test loot_all_items handles container locked error."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
-
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.get_container_service"),
-            patch(
-                "server.api.container_endpoints_loot.get_container_and_player_for_loot_all", new_callable=AsyncMock
-            ) as mock_get_data,
-            patch("server.api.container_endpoints_loot.handle_loot_all_exceptions") as mock_handler,
-        ):
-            mock_get_player_id.return_value = player_id
-            mock_get_data.side_effect = ContainerLockedError("Container is locked")
-            mock_handler.side_effect = LoggedHTTPException(status_code=423, detail="Container is locked", context=None)
-
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 423
-
-    @pytest.mark.asyncio
-    async def test_loot_all_items_generic_exception(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_player
-    ):
-        """Test loot_all_items handles generic exceptions."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
-
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.handle_loot_all_exceptions") as mock_handler,
-        ):
-            mock_get_player_id.side_effect = RuntimeError("Unexpected error")
-            mock_handler.side_effect = LoggedHTTPException(
-                status_code=500, detail="Internal server error", context=None
-            )
-
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await loot_all_items(
-                    request_data=request_data,
-                    request=mock_request,
-                    current_user=mock_user,
-                    persistence=mock_persistence,
-                    connection_manager=mock_connection_manager,
-                )
-            assert exc_info.value.status_code == 500
-
-    @pytest.mark.asyncio
-    async def test_loot_all_items_final_container_none(
-        self, mock_request, mock_user, mock_persistence, mock_connection_manager, mock_container, mock_player
-    ):
-        """Test loot_all_items handles case when final container is None."""
-        # Lazy import to avoid circular import
-        from server.api.container_endpoints_loot import loot_all_items  # noqa: E402
-        from server.api.container_models import LootAllRequest  # noqa: E402
-
-        container_id = uuid.uuid4()
-        player_id = uuid.uuid4()
-        request_data = LootAllRequest(container_id=container_id, mutation_token="token")
-
-        mock_player.player_id = player_id
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-        mock_persistence.get_container = AsyncMock(return_value=None)  # Container not found after transfer
-
-        with (
-            patch("server.api.container_endpoints_loot.validate_user_for_loot_all"),
-            patch("server.api.container_endpoints_loot.apply_rate_limiting_for_loot_all"),
-            patch(
-                "server.api.container_endpoints_loot.get_player_id_from_user", new_callable=AsyncMock
-            ) as mock_get_player_id,
-            patch("server.api.container_endpoints_loot.get_container_service"),
-            patch(
-                "server.api.container_endpoints_loot.get_container_and_player_for_loot_all", new_callable=AsyncMock
-            ) as mock_get_data,
-            patch(
-                "server.api.container_endpoints_loot.transfer_all_items_from_container", new_callable=AsyncMock
-            ) as mock_transfer,
-            patch("server.api.container_endpoints_loot.emit_loot_all_event", new_callable=AsyncMock) as mock_emit,
-        ):
-            mock_get_player_id.return_value = player_id
-            mock_get_data.return_value = (mock_container, mock_player, [])
-            mock_transfer.return_value = (mock_container, [])
-
-            result = await loot_all_items(
-                request_data=request_data,
-                request=mock_request,
-                current_user=mock_user,
-                persistence=mock_persistence,
-                connection_manager=mock_connection_manager,
-            )
-
-            # Should use original container when final_container is None
-            assert result is not None
-            mock_emit.assert_awaited_once()
+    assert seen == [registry]

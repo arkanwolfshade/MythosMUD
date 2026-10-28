@@ -9,6 +9,7 @@ in container_websocket_events.py.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from typing import Protocol, cast
 from uuid import UUID
 
@@ -61,11 +62,26 @@ async def emit_inventory_updated(
     """
     if connection_manager is None:
         return
+    await emit_inventory_snapshot(connection_manager, player_id, player.get_inventory(), player.get_equipped_items())
+
+
+async def emit_inventory_snapshot(
+    connection_manager: object,
+    player_id: UUID,
+    inventory: Sequence[Mapping[str, object]],
+    equipped: Mapping[str, object],
+) -> None:
+    """
+    Emit inventory_updated with a committed inventory, for callers holding no Player (the REST container
+    transfers, which get the inventory their registry unit committed). Best-effort, like emit_inventory_updated.
+    """
+    if connection_manager is None:
+        return
     try:
         cm = cast(_ConnectionManagerLike, connection_manager)
         event_data: dict[str, object] = {
-            "inventory": player.get_inventory(),
-            "equipped": player.get_equipped_items(),
+            "inventory": [dict(stack) for stack in inventory],
+            "equipped": dict(equipped),
         }
         event = build_event(
             event_type="inventory_updated",

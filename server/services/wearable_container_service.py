@@ -14,7 +14,7 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Protocol, cast
+from typing import Any, Protocol, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
@@ -24,9 +24,6 @@ from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import log_and_raise
-
-if TYPE_CHECKING:
-    from ..models.player import Player
 
 logger = get_logger(__name__)
 
@@ -56,14 +53,6 @@ class _WearablePersistence(Protocol):
         self, container_id: UUID, items_json: list[dict[str, object]] | None = None
     ) -> dict[str, object] | None:
         """Replace a container's items; None if the container is gone."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-    async def get_player_by_id(self, player_id: UUID) -> Player | None:
-        """Load a player."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-    async def save_player(self, player: Player) -> None:
-        """Persist a player."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
@@ -496,117 +485,3 @@ class WearableContainerService:
             "Wearable container items updated",
             items_count=len(items),
         )
-
-    def _split_overflow_items(
-        self, player_inventory: list[Any], overflow_items: list[dict[str, Any]], max_inventory_slots: int
-    ) -> tuple[list[Any], list[Any]]:
-        """Split overflow into inventory spill vs ground drop."""
-        spilled_items: list[Any] = []
-        ground_items: list[Any] = []
-        for item in overflow_items:
-            if len(player_inventory) < max_inventory_slots:
-                player_inventory.append(item)
-                spilled_items.append(item)
-            else:
-                ground_items.append(item)
-        return spilled_items, ground_items
-
-    async def _save_overflow_inventory(
-        self, player: Player, player_id: UUID, player_inventory: list[dict[str, object]], spilled_items: list[object]
-    ) -> None:
-        """Persist inventory after absorbing overflow items."""
-        if not spilled_items:
-            return
-        player.set_inventory(player_inventory)
-        try:
-            await self.persistence.save_player(player)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Save errors unpredictable, must log but continue
-            logger.error(
-                "Error saving player after container overflow",
-                player_id=str(player_id),
-                error=str(e),
-            )
-
-    async def _drop_overflow_to_ground(
-        self, player: Player, player_id: UUID, container_id: UUID, ground_items: list[object]
-    ) -> None:
-        """Create ground container for items that did not fit in inventory."""
-        if not ground_items:
-            return
-        room_id = cast(str | None, getattr(player, "current_room_id", None))
-        if not room_id:
-            return
-        try:
-            # Awaited: unawaited, the ground container was never created and the items vanished (#951).
-            _ = await self.persistence.create_container(
-                "environment",
-                ContainerCreateParams(
-                    room_id=room_id,
-                    capacity_slots=20,
-                    items_json=cast(list[dict[str, object]], ground_items),
-                    metadata_json={"overflow_source": str(container_id), "player_id": str(player_id)},
-                ),
-            )
-            logger.info(
-                "Overflow items dropped to ground",
-                player_id=str(player_id),
-                room_id=room_id,
-                items_count=len(ground_items),
-            )
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Ground container creation errors unpredictable, must log but continue
-            logger.error(
-                "Failed to create ground container for overflow items",
-                error=str(e),
-                player_id=str(player_id),
-                room_id=room_id,
-            )
-
-    async def handle_container_overflow(
-        self, player_id: UUID, container_id: UUID, overflow_items: list[dict[str, Any]]
-    ) -> dict[str, Any]:
-        """
-        Handle container overflow by spilling items to inventory or ground.
-
-        Args:
-            player_id: UUID of the player
-            container_id: UUID of the container
-            overflow_items: Items that don't fit in container
-
-        Returns:
-            dict with spilled_items and ground_items
-        """
-        logger.info(
-            "Handling container overflow",
-            player_id=str(player_id),
-            container_id=str(container_id),
-            overflow_count=len(overflow_items),
-        )
-
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
-            log_and_raise(
-                WearableContainerServiceError,
-                f"Player not found: {player_id}",
-                operation="handle_container_overflow",
-                player_id=str(player_id),
-                container_id=str(container_id),
-                details={"player_id": str(player_id)},
-                user_friendly="Player not found",
-            )
-
-        # get_inventory(), not .inventory: the column holds a JSON string, so spilling appended to a str (#951).
-        player_inventory = list(player.get_inventory())
-        spilled_items, ground_items = self._split_overflow_items(player_inventory, overflow_items, 20)
-
-        await self._save_overflow_inventory(player, player_id, player_inventory, spilled_items)
-        await self._drop_overflow_to_ground(player, player_id, container_id, ground_items)
-
-        logger.info(
-            "Container overflow handled",
-            player_id=str(player_id),
-            container_id=str(container_id),
-            spilled_count=len(spilled_items),
-            ground_count=len(ground_items),
-        )
-
-        return {"spilled_items": spilled_items, "ground_items": ground_items}

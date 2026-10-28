@@ -83,6 +83,10 @@ class LoggedException(Exception):
         return self._already_logged
 
 
+# How loudly an error class logs itself (see MythosMUDError.log_level).
+LogLevel = Literal["error", "warning", "debug"]
+
+
 class MythosMUDError(LoggedException):
     """
     Base exception for all MythosMUD errors.
@@ -92,8 +96,9 @@ class MythosMUDError(LoggedException):
     """
 
     # Subclasses for expected, user-caused outcomes (bad input, a container someone else holds, ...)
-    # set "warning" so they stay out of errors.log, where real failures need to be visible (#965).
-    log_level: ClassVar[Literal["error", "warning"]] = "error"
+    # set "warning" so they stay out of errors.log, where real failures need to be visible (#965);
+    # routine game rejections (ActionRejectedError) go further, to "debug".
+    log_level: ClassVar[LogLevel] = "error"
 
     def __init__(
         self,
@@ -127,7 +132,7 @@ class MythosMUDError(LoggedException):
 
     def _log_error(self) -> None:
         """Log the error with structured context, at the class's log_level."""
-        log = logger.warning if self.log_level == "warning" else logger.error
+        log = {"warning": logger.warning, "debug": logger.debug}.get(self.log_level, logger.error)
         log(
             # Include the specific error message in the log text for coverage tests
             # while still providing structured fields for analysis.
@@ -183,7 +188,7 @@ class DatabaseError(MythosMUDError):
 class ValidationError(MythosMUDError):
     """Data validation errors (e.g. empty local/whisper message). Log at warning, not error."""
 
-    log_level: ClassVar[Literal["error", "warning"]] = "warning"
+    log_level: ClassVar[LogLevel] = "warning"
 
     def __init__(
         self,
@@ -200,6 +205,16 @@ class ValidationError(MythosMUDError):
             self.details["field"] = field_name
         if value is not None:
             self.details["value"] = str(value)
+
+
+class ActionRejectedError(ValidationError):
+    """The game refused a player's action against current state, e.g. moving an item they no longer hold.
+
+    Routine, not a fault (the player sees the message), so it logs at debug. Still a ValidationError: the API
+    answers 400.
+    """
+
+    log_level: ClassVar[LogLevel] = "debug"
 
 
 class GameLogicError(MythosMUDError):

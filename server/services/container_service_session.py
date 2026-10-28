@@ -1,7 +1,7 @@
 """
 Container open/close session and mutation-token helpers.
 
-Mixin host: ContainerService (persistence, mutation_guard, _open_containers).
+Mixin host: ContainerService (persistence, _open_containers).
 """
 
 from __future__ import annotations
@@ -257,7 +257,7 @@ class ContainerSessionMixin(ContainerAccessMixin):
 
     async def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
         """
-        Close a container and release mutation guard.
+        Close a container, ending the player's session (and its mutation token).
 
         Args:
             container_id: Container UUID to close

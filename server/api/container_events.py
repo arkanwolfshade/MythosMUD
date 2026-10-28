@@ -161,7 +161,7 @@ async def emit_loot_all_event(
     request_data: LootAllRequest,
     final_container: ContainerComponent,
     player_id: UUID,
-    container: ContainerComponent,
+    items_removed: int,
 ) -> None:
     """
     Emit WebSocket event for loot_all operation.
@@ -171,7 +171,7 @@ async def emit_loot_all_event(
         request_data: Loot all request data
         final_container: Final container state after looting
         player_id: Player UUID
-        container: Original container component
+        items_removed: How many stacks the loot moved out of the container
 
     AI: Updated to accept connection_manager as parameter instead of accessing app.state.
         This enables proper dependency injection and testability.
@@ -181,7 +181,7 @@ async def emit_loot_all_event(
             logger.info(
                 "Loot-all removed items",
                 container_id=str(request_data.container_id),
-                items_removed=len(container.items) - len(final_container.items),
+                items_removed=items_removed,
             )
             _ = await emit_container_updated(
                 connection_manager=connection_manager,

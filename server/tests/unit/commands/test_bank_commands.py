@@ -140,8 +140,6 @@ async def test_deposit_moves_the_item_into_the_players_own_box() -> None:
             f"{MODULE}.transfer_item_to_container",
             new=AsyncMock(return_value={"success": True, "transfer_quantity": 2}),
         ) as transfer,
-        patch(f"{MODULE}.remove_item_from_inventory") as remove,
-        patch(f"{MODULE}.persist_player", new=AsyncMock(return_value=None)),
         patch(f"{MODULE}.emit_inventory_updated", new=AsyncMock()),
     ):
         result = await _run(handle_deposit_command, {"item": "lamp", "quantity": 2})
@@ -151,7 +149,7 @@ async def test_deposit_moves_the_item_into_the_players_own_box() -> None:
     assert validate.await_args.args[0]["container"] == "deposit box"  # the validators need a container name
     assert transfer.await_args is not None
     assert transfer.await_args.args[3] == world.box_id  # moved into this player's box, no other
-    remove.assert_called_once_with(world.player, 4, 2)
+    assert transfer.await_args.args[4] == item  # the helper's one unit of work takes it out of the inventory
 
 
 @pytest.mark.asyncio
@@ -161,14 +159,12 @@ async def test_deposit_into_a_full_box_leaves_the_inventory_alone() -> None:
         _bank_world(),
         patch(f"{MODULE}.validate_put_command_inputs", new=AsyncMock(return_value=validated)),
         patch(f"{MODULE}.transfer_item_to_container", new=AsyncMock(return_value={"error": "Container is full"})),
-        patch(f"{MODULE}.remove_item_from_inventory") as remove,
-        patch(f"{MODULE}.persist_player", new=AsyncMock()) as persist,
+        patch(f"{MODULE}.emit_inventory_updated", new=AsyncMock()) as emit,
     ):
         result = await _run(handle_deposit_command, {"item": "lamp"})
 
     assert command_result_text(result) == "Container is full"
-    remove.assert_not_called()
-    persist.assert_not_awaited()
+    emit.assert_not_awaited()  # nothing moved, so nothing to announce
 
 
 @pytest.mark.asyncio
@@ -203,8 +199,8 @@ async def test_withdraw_takes_the_named_stack_out_of_the_players_box() -> None:
 
     assert command_result_text(result) == "The clerk returns 1x Oil Lamp from your deposit box."
     assert transfer.await_args is not None
-    assert transfer.await_args.args[3] == world.box_id
-    assert transfer.await_args.args[4] == _lamp(3)  # the lamp stack, not the coin before it
+    assert transfer.await_args.args[2] == world.box_id
+    assert transfer.await_args.args[3] == _lamp(3)  # the lamp stack, not the coin before it
 
 
 @pytest.mark.asyncio

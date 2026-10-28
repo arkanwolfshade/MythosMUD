@@ -204,9 +204,12 @@ class TestExecuteTransfer:
         with patch.object(
             container_service, "transfer_to_container", new_callable=AsyncMock, return_value=expected_result
         ) as mock_transfer:
-            result = await execute_transfer(container_service, request_data, player_id)
+            registry = MagicMock()
+            result = await execute_transfer(container_service, request_data, player_id, registry)
             assert result == expected_result
             mock_transfer.assert_awaited_once()
+            assert mock_transfer.await_args is not None
+            assert mock_transfer.await_args.kwargs["registry"] is registry
 
     @pytest.mark.asyncio
     async def test_execute_transfer_to_player(self, mock_persistence):
@@ -225,9 +228,12 @@ class TestExecuteTransfer:
         with patch.object(
             container_service, "transfer_from_container", new_callable=AsyncMock, return_value=expected_result
         ) as mock_transfer:
-            result = await execute_transfer(container_service, request_data, player_id)
+            registry = MagicMock()
+            result = await execute_transfer(container_service, request_data, player_id, registry)
             assert result == expected_result
             mock_transfer.assert_awaited_once()
+            assert mock_transfer.await_args is not None
+            assert mock_transfer.await_args.kwargs["registry"] is registry
 
 
 class TestHandleContainerServiceError:

@@ -30,7 +30,7 @@ from .container_helpers_inventory import (
     validate_put_command_inputs,
 )
 from .inventory_command_contracts import CommandResponse
-from .inventory_command_helpers import persist_player, remove_item_from_inventory, resolve_state_and_player
+from .inventory_command_helpers import resolve_state_and_player
 
 logger: BoundLogger = get_logger(__name__)
 
@@ -111,7 +111,7 @@ async def handle_deposit_command(
     )
     if isinstance(inputs, dict):
         return inputs
-    _, _, quantity, container_service, _, item_found, item_index = inputs
+    _, _, quantity, container_service, _, item_found, _ = inputs
     item = cast(dict[str, object], item_found)
 
     transfer = await transfer_item_to_container(
@@ -123,10 +123,6 @@ async def handle_deposit_command(
         return command_error("Error: Failed to transfer item.")
 
     deposited = cast(int, transfer["transfer_quantity"])
-    remove_item_from_inventory(visit.player, item_index, deposited)
-    persist_error = await persist_player(visit.persistence, visit.player)
-    if persist_error:
-        return persist_error
     await emit_inventory_updated(visit.connection_manager, UUID(str(visit.player.player_id)), visit.player)
     return {
         "result": f"The clerk files {deposited}x {_display_name(item)} away in your deposit box.",
@@ -158,9 +154,7 @@ async def handle_withdraw_command(
     if not item:
         return {"result": f"You don't have '{item_name}' in your deposit box."}
 
-    transfer = await transfer_item_from_container(
-        container_service, visit.persistence, visit.player, visit.box_id, item, quantity
-    )
+    transfer = await transfer_item_from_container(container_service, visit.player, visit.box_id, item, quantity)
     if "error" in transfer:
         return {"result": str(transfer["error"])}
     if not transfer.get("success"):

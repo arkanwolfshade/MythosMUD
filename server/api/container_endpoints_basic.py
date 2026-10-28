@@ -15,7 +15,8 @@ from pydantic import ValidationError
 
 from ..async_persistence import AsyncPersistenceLayer
 from ..auth.users import get_current_user
-from ..dependencies import get_async_persistence, get_connection_manager
+from ..dependencies import get_async_persistence, get_connection_manager, get_player_registry
+from ..game.player_registry import PlayerRegistry
 from ..models.user import User
 from ..realtime.connection_manager import ConnectionManager
 from ..schemas.containers import (
@@ -25,6 +26,7 @@ from ..schemas.containers import (
 )
 from ..schemas.containers.container_data import ContainerData, InventoryStack
 from ..schemas.game.weapon import weapon_stats_from_metadata
+from ..services.inventory_websocket_events import emit_inventory_snapshot
 from ..structured_logging.enhanced_logging_config import get_logger
 from .container_events import (
     emit_close_container_event,
@@ -259,6 +261,7 @@ async def transfer_items(
     current_user: Annotated[User, Depends(get_current_user)],
     persistence: Annotated[AsyncPersistenceLayer, Depends(get_async_persistence)],
     connection_manager: Annotated[ConnectionManager, Depends(get_connection_manager)],
+    player_registry: Annotated[PlayerRegistry, Depends(get_player_registry)],
 ) -> ContainerTransferResponse:
     """Transfer items between container and player inventory (rate limited; requires mutation_token)."""
     validate_user_for_transfer(current_user, request)
@@ -267,7 +270,15 @@ async def transfer_items(
     try:
         player_id = await get_player_id_from_user(current_user, persistence)
         container_service = get_container_service(persistence)
-        result = await execute_transfer(container_service, request_data, player_id)
+        result = await execute_transfer(container_service, request_data, player_id, player_registry)
+        # The player's inventory changed too: tell their client before the container.updated that follows, so a
+        # transfer pane never offers a stack the player no longer holds.
+        await emit_inventory_snapshot(
+            connection_manager,
+            player_id,
+            _as_inventory_dicts(result.get("player_inventory")),
+            _as_str_object_mapping(result.get("player_equipped")),
+        )
         await emit_transfer_event(connection_manager, request_data, result, player_id)
         logger.info(
             "Items transferred",

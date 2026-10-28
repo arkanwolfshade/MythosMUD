@@ -88,6 +88,19 @@ test.describe('Corpse Looting with Grace Periods', () => {
       // Scoped to the Sling's row: the Codex is listed first, so an unscoped click moves it (#980).
       await clickWithoutStability(containerRow(corpseColumn, 'Sling').getByRole('button', { name: 'Transfer' }));
       await expect(slingRow).not.toBeVisible({ timeout: 15000 });
+
+      // The looted Sling is AW's for real now (a transfer commits since ADR-029 step 4b), so hand it back
+      // through the same modal: the specs after this one expect AW's inventory as this one found it. Not via
+      // corpseColumn: it is filtered on holding the Sling, so it matches nothing until the Sling is back. Only
+      // the modal that made the transfer lists the Sling in its own Inventory column.
+      const inventoryColumn = awContext.page
+        .getByTestId('transfer-column-inventory')
+        .filter({ has: awContext.page.getByText('Sling', { exact: true }) })
+        .first();
+      await clickWithoutStability(
+        containerRow(inventoryColumn, 'Sling').first().getByRole('button', { name: 'Transfer' })
+      );
+      await expect(slingRow).toBeVisible({ timeout: 15000 });
     } finally {
       await despawnSanitariumCultists(awContext.page);
       awContext.page = await ensurePlayableAlive(awContext.page, creds.username, creds.password);

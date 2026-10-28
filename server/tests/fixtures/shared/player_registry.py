@@ -167,5 +167,5 @@ def install_player_registry(monkeypatch: pytest.MonkeyPatch, player: object) -> 
         return aggregate(row)
 
     registry = PlayerRegistry(db.session, loader=load)
-    monkeypatch.setattr("server.commands.inventory_command_helpers._player_registry", lambda: registry)
+    monkeypatch.setattr("server.commands.inventory_command_helpers.player_registry", lambda: registry)
     return RegistryHarness(registry, db)

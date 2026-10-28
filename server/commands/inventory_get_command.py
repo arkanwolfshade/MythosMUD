@@ -120,7 +120,6 @@ def _container_transfer_messages(
 
 async def _get_transfer_out_of_container(
     container_service: object,
-    persistence: object,
     connection_manager: object,
     player: Player,
     container_id: UUID,
@@ -128,9 +127,7 @@ async def _get_transfer_out_of_container(
     quantity: object,
     container_name: str,
 ) -> CommandResponse:
-    transfer_result = await transfer_item_from_container(
-        container_service, persistence, player, container_id, item_found, quantity
-    )
+    transfer_result = await transfer_item_from_container(container_service, player, container_id, item_found, quantity)
 
     if "error" in transfer_result:
         return {"result": transfer_result["error"]}
@@ -171,7 +168,6 @@ async def _get_from_container_path(rt: GetCommandRuntime, spec: GetItemSpec) -> 
 
     return await _get_transfer_out_of_container(
         rt.container_service,
-        rt.persistence,
         rt.connection_manager,
         spec.player,
         container_id,

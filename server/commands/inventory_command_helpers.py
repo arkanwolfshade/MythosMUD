@@ -129,28 +129,6 @@ async def sync_collect_quests_after_inventory_save(player: Player) -> None:
         logger.debug("collect_n quest sync after inventory save skipped", error=str(exc))
 
 
-async def persist_player(persistence: object, player: Player) -> dict[str, str] | None:
-    """Persist player changes, returning error dict on failure.
-
-    Awaits save_player when persistence is async (e.g. AsyncPersistence) so the
-    save completes before return; otherwise inventory would not be persisted.
-    After a successful save, refreshes collect_n quest progress from holdings.
-    """
-    save_player = getattr(persistence, "save_player", None)
-    if not callable(save_player):
-        logger.error("Persistence missing save_player", player=player.name)
-        return command_error("An error occurred while saving your inventory.")
-
-    try:
-        result = save_player(player)
-        if inspect.isawaitable(result):
-            await result
-        await sync_collect_quests_after_inventory_save(player)
-        return None
-    except Exception as exc:  # noqa: B904  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Persistence errors unpredictable, must handle gracefully
-        return _inventory_save_error(player, exc)
-
-
 def _inventory_save_error(player: Player, exc: Exception) -> dict[str, str]:
     """The reply for an inventory change that could not be saved (rejected by validation, or the write failed)."""
     if isinstance(exc, InventorySchemaValidationError):
@@ -163,7 +141,8 @@ def _inventory_save_error(player: Player, exc: Exception) -> dict[str, str]:
 InventoryChange = Callable[[], Awaitable[CommandResponse | None]]
 
 
-def _player_registry() -> PlayerRegistry:
+def player_registry() -> PlayerRegistry:
+    """The application's player registry (ADR-029)."""
     registry = get_container().player_registry
     if registry is None:
         raise RuntimeError("The player registry is not initialised")
@@ -186,7 +165,7 @@ async def change_inventory(player: Player, change: InventoryChange) -> CommandRe
     A failure rolls the aggregate back; the caller undoes anything outside it (a room drop it took).
     """
     try:
-        async with _player_registry().mutate(UUID(str(player.player_id))) as aggregate:
+        async with player_registry().mutate(UUID(str(player.player_id))) as aggregate:
             # Copies: the command edits its working copy, never the aggregate's own stacks.
             player.set_inventory([dict(stack) for stack in aggregate.inventory.carried])
             player.set_equipped_items(_equipped_stacks(aggregate.inventory.equipped))
