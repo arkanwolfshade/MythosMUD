@@ -587,8 +587,9 @@ BEGIN
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,
         stats = EXCLUDED.stats,
-        is_deleted = EXCLUDED.is_deleted,
-        deleted_at = EXCLUDED.deleted_at,
+        -- A soft delete is one-way: a save of a copy loaded before the delete committed must not undo it.
+        is_deleted = players.is_deleted OR EXCLUDED.is_deleted,
+        deleted_at = CASE WHEN players.is_deleted THEN players.deleted_at ELSE EXCLUDED.deleted_at END,
         tutorial_instance_id = EXCLUDED.tutorial_instance_id;
 
     INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
@@ -652,8 +653,9 @@ BEGIN
         profession_id = p_profession_id,
         last_active = p_last_active,
         stats = p_stats,
-        is_deleted = p_is_deleted,
-        deleted_at = p_deleted_at,
+        -- One-way, as in upsert_player: an aggregate loaded before a soft delete must not undo it.
+        is_deleted = is_deleted OR p_is_deleted,
+        deleted_at = CASE WHEN is_deleted THEN deleted_at ELSE p_deleted_at END,
         tutorial_instance_id = p_tutorial_instance_id
     WHERE player_id = p_player_id;
 END;
