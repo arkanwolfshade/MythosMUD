@@ -16,6 +16,7 @@ from structlog.stdlib import BoundLogger
 
 from server.exceptions import ValidationError
 from server.game.instance_manager import TemplateRoomEntryError
+from server.game.items.item_giver import ItemGiver
 from server.game.magic.spell_effect_flee import run_flee_effect
 from server.game.magic.spell_effect_types import (
     NpcSpellDamageTarget,
@@ -57,6 +58,7 @@ class SpellEffectsDeps:
     movement_service: MovementService | None = None
     get_room_by_id: Callable[[str], object] | None = None
     connection_manager: object | None = None
+    item_granter: ItemGiver | None = None
 
 
 class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
@@ -71,6 +73,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self._movement_service: MovementService | None = deps.movement_service
         self._get_room_by_id: Callable[[str], object] | None = deps.get_room_by_id
         self._connection_manager: object | None = deps.connection_manager
+        self.item_granter: ItemGiver | None = deps.item_granter
         logger.info("SpellEffects initialized")
 
     def _spell_player_persistence(self) -> PlayerPersistenceSpellPort:

@@ -9,12 +9,18 @@ from __future__ import annotations
 import uuid
 from typing import Any, cast
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.game.effect_store import SPELL_EFFECT_CATEGORY
+from server.game.items.item_factory import ItemFactoryError
+from server.game.items.item_giver import ItemGiver
 from server.game.magic.spell_effect_types import SpellEffectsEngineEffectPort
 from server.game.magic.spell_effects_stats import apply_stat_modifications
+from server.game.player_registry import PlayerNotFoundError
 from server.models.game import StatusEffectType
 from server.models.spell import Spell
-from server.schemas.shared import TargetMatch, TargetType
+from server.schemas.shared import InventorySchemaValidationError, TargetMatch, TargetType
+from server.services.inventory_service import InventoryCapacityError
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -178,38 +184,32 @@ async def _create_object_for_player(
     prototype_id: str,
     quantity: int,
 ) -> dict[str, Any]:
-    """Create objects in a player's inventory."""
+    """Create a real item (ItemFactory) in a player's inventory, committed through the registry (ADR-029)."""
+    granter = cast(ItemGiver | None, engine.item_granter)
+    if granter is None:
+        return {"success": False, "message": "Object creation is not available", "effect_applied": False}
     try:
-        target_id = uuid.UUID(target.target_id)
-        player = await engine.player_service.persistence.get_player_by_id(target_id)
-        if not player:
-            return {"success": False, "message": "Target player not found", "effect_applied": False}
-
-        inventory = player.get_inventory()
-        new_item = {
-            "item_id": prototype_id,
-            "prototype_id": prototype_id,
-            "quantity": quantity,
-            "item_name": prototype_id,  # Would be resolved from prototype registry
-        }
-        inventory.append(new_item)
-        player.set_inventory(inventory)
-        await engine.player_service.persistence.save_player(player)
-
-        return {
-            "success": True,
-            "message": f"Created {quantity} {prototype_id} in {target.target_name}'s inventory",
-            "effect_applied": True,
-            "prototype_id": prototype_id,
-            "quantity": quantity,
-        }
-    except OSError as e:
+        await granter.grant(
+            uuid.UUID(target.target_id), prototype_id, quantity, origin={"source": "spell_create_object"}
+        )
+    except PlayerNotFoundError:
+        return {"success": False, "message": "Target player not found", "effect_applied": False}
+    except InventoryCapacityError:
+        return {"success": False, "message": f"{target.target_name}'s inventory is full", "effect_applied": False}
+    except (ItemFactoryError, InventorySchemaValidationError, SQLAlchemyError, OSError) as e:
         logger.error("Error creating object in inventory", target_id=target.target_id, error=str(e))
         return {
             "success": False,
             "message": f"Failed to create object: {str(e)}",
             "effect_applied": False,
         }
+    return {
+        "success": True,
+        "message": f"Created {quantity} {prototype_id} in {target.target_name}'s inventory",
+        "effect_applied": True,
+        "prototype_id": prototype_id,
+        "quantity": quantity,
+    }
 
 
 def _create_object_for_room(spell: Spell, target: TargetMatch) -> dict[str, Any]:

@@ -36,6 +36,7 @@ from server.utils.int_coercion import coerce_int
 
 if TYPE_CHECKING:
     from server.game.magic.spell_learning_service import SpellLearningService
+    from server.game.player_registry import PlayerRegistry
     from server.services.combat_service import CombatService
 
 logger = get_logger(__name__)
@@ -71,6 +72,7 @@ class MagicServiceOptionalDeps(TypedDict, total=False):
     combat_service: CombatService | None
     spell_costs_service: SpellCostsService
     spell_materials_service: SpellMaterialsService
+    player_registry: PlayerRegistry | None
 
 
 class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin):  # pylint: disable=too-many-instance-attributes  # Reason: Magic service requires many configuration and state tracking attributes
@@ -121,7 +123,9 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
         self.casting_state_manager = opt.get("casting_state_manager") or CastingStateManager()
         self.combat_service = opt.get("combat_service")
         self.spell_costs_service = opt.get("spell_costs_service") or SpellCostsService(player_service)
-        self.spell_materials_service = opt.get("spell_materials_service") or SpellMaterialsService(player_service)
+        self.spell_materials_service = opt.get("spell_materials_service") or SpellMaterialsService(
+            player_service, opt.get("player_registry")
+        )
         logger.info("MagicService initialized")
 
     def _player_persistence(self) -> _PlayerPersistence:

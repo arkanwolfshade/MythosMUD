@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import cast
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Load
 
 from server.constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from server.game.items.constants import INSTANCE_BOUND_FLAG
@@ -29,7 +27,6 @@ class Rig:
     order: list[str] = field(default_factory=lambda: cast(list[str], []))
     finished: list[tuple[uuid.UUID, str]] = field(default_factory=lambda: cast(list[tuple[uuid.UUID, str]], []))
     finish_fails: bool = False
-    player_load_options: list[object] = field(default_factory=lambda: cast(list[object], []))
 
 
 class FakeSession:
@@ -38,10 +35,8 @@ class FakeSession:
     def __init__(self, rig: Rig) -> None:
         self._rig = rig
 
-    async def get(self, model: type[object], player_id: uuid.UUID, options: Sequence[object] = ()) -> object | None:
+    async def get(self, model: type[object], player_id: uuid.UUID) -> object | None:
         _ = player_id
-        if model is Player:
-            self._rig.player_load_options.extend(options)
         return self._rig.player if model is Player else self._rig.lucidity
 
     async def commit(self) -> None:
@@ -100,17 +95,10 @@ async def test_a_tutorial_delirium_respawn_ends_the_tutorial(rig: Rig) -> None:
     assert rig.player.current_room_id == RECOVERY_WARD_ROOM_ID
     assert rig.lucidity.current_lcd == 70  # not the usual 10
     assert rig.player.tutorial_instance_id is None
-    assert rig.player.get_inventory() == []  # the amulet is gone (the drain row is cleared by the finisher)
+    # In-session the inventory is left alone, so this ORM commit never writes it: the finisher strips the amulet
+    # through the player registry after the commit (ADR-029 step 4c-i), and clears the drain row.
+    assert [stack["item_id"] for stack in rig.player.get_inventory()] == ["jade_amulet"]
     assert rig.player.get_stats()["current_dp"] == rig.player.get_stats()["max_dp"]
-
-
-@pytest.mark.asyncio
-async def test_the_player_is_loaded_with_the_inventory_record_ready(rig: Rig) -> None:
-    """Equipment lives on inventory_record; a lazy load of it fails inside the async session (seen in e2e)."""
-    _ = await _service(rig).respawn_player_from_delirium(_player_id(rig), _session(rig))
-
-    assert len(rig.player_load_options) == 1
-    assert "Player.inventory_record" in str(cast(Load, rig.player_load_options[0]).path)
 
 
 @pytest.mark.asyncio

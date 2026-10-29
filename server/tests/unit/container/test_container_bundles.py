@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import datetime
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -21,6 +22,7 @@ from server.container.bundles.npc import NPC_ATTRS, NPCBundle
 from server.container.bundles.realtime import REALTIME_ATTRS, RealtimeBundle
 from server.container.bundles.time import TIME_ATTRS, TimeBundle
 from server.container.main import _flatten_bundle
+from server.game.magic.spell_effects import SpellEffectsDeps
 
 
 def test_bundle_attr_constants() -> None:
@@ -97,6 +99,16 @@ def test_game_bundle_builds_the_player_registry_from_config() -> None:
     assert settings.retry_base_seconds == 3.0
     assert registry._publish == bus.publish  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - as above  # Appropriate because: the publisher is only held on the private field, and asserting it is the point
     assert "player_registry" in GAME_ATTRS
+
+    # ADR-029 step 4c-i: the item granter shares the registry and reads the item factory when it grants, because
+    # item services load their prototypes later in initialize().
+    granter = bundle.item_granter
+    assert granter is not None and granter.registry is registry
+    assert granter.item_factory() is None
+    factory = object()
+    bundle.item_factory = factory
+    assert granter.item_factory() is factory
+    assert "item_granter" in GAME_ATTRS
 
 
 def test_game_bundle_wire_helpers() -> None:
@@ -711,10 +723,15 @@ async def test_magic_bundle_create_registry_and_targeting() -> None:
             reg_cls.return_value.get_all_spell_ids.return_value = ["spell_a"]
             with patch("server.services.target_resolution_service.TargetResolutionService"):
                 with patch("server.game.magic.spell_targeting.SpellTargetingService"):
-                    with patch("server.game.magic.spell_effects.SpellEffects"):
+                    with patch("server.game.magic.spell_effects.SpellEffects") as effects_cls:
                         registry, player_repo = await _create_registry_and_targeting(bundle, container)
     assert registry is not None
     assert player_repo is not None
+    # ADR-029 step 4c-i: create-object spells give items through the container's item granter.
+    effects_call = cast(MagicMock, effects_cls).call_args
+    assert effects_call is not None
+    deps = cast(SpellEffectsDeps, effects_call.args[1])
+    assert deps.item_granter is cast(object, container.item_granter)
 
 
 def test_magic_create_learning_mp_regen_and_magic() -> None:
@@ -729,9 +746,14 @@ def test_magic_create_learning_mp_regen_and_magic() -> None:
     container.combat_service = MagicMock()
     with patch("server.game.magic.spell_learning_service.SpellLearningService"):
         with patch("server.game.magic.mp_regeneration_service.MPRegenerationService"):
-            with patch("server.game.magic.magic_service.MagicService"):
+            with patch("server.game.magic.magic_service.MagicService") as magic_cls:
                 _create_learning_mp_regen_and_magic(bundle, container, MagicMock())
     assert bundle.magic_service is not None
+    # ADR-029 step 4c-i: reagents are consumed through the player registry.
+    magic_call = cast(MagicMock, magic_cls).call_args
+    assert magic_call is not None
+    options = cast(dict[str, object], magic_call.args[4])
+    assert options["player_registry"] is cast(object, container.player_registry)
 
 
 @pytest.mark.asyncio

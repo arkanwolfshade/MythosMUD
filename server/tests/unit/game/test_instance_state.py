@@ -1,5 +1,6 @@
 """Unit tests for instance_state: clearing what belongs only to a dead instance from a player."""
 
+import json
 import uuid
 from collections.abc import AsyncIterator, Callable, Iterable
 from typing import cast
@@ -10,13 +11,15 @@ import pytest
 from server.constants.lucidity import STARTING_LCD
 from server.game.instance_state import (
     _reset_lucidity,  # pyright: ignore[reportPrivateUsage]
-    reset_instance_scoped_state,
+    clear_lost_instance_items,
     restart_instance_run,
     strip_instance_bound_items,
 )
 from server.game.items.constants import INSTANCE_BOUND_FLAG
+from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
 from server.models.player import Player
 from server.services.lucidity_service import resolve_tier
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
 
 
 def _player() -> Player:
@@ -24,53 +27,114 @@ def _player() -> Player:
 
 
 def _stack(item_id: str, *flags: str) -> dict[str, object]:
-    stack: dict[str, object] = {"item_id": item_id, "prototype_id": item_id, "quantity": 1}
+    stack: dict[str, object] = {
+        "item_id": item_id,
+        "prototype_id": item_id,
+        "item_name": item_id.replace("_", " ").title(),
+        "slot_type": "inventory",
+        "quantity": 1,
+    }
     if flags:
         stack["flags"] = list(flags)
     return stack
 
 
-def test_strips_instance_bound_items_from_the_inventory_and_keeps_the_rest() -> None:
-    player = _player()
-    player.set_inventory([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("tonic", "CONSUMABLE")])
+def _world(
+    carried: list[dict[str, object]] | None, equipped: dict[str, object] | None = None
+) -> tuple[PlayerRegistry, FakeDatabase, uuid.UUID]:
+    """A registry whose one player starts with ``carried`` and ``equipped`` (ADR-029); None: no such player."""
+    db = FakeDatabase()
+    player_id = uuid.uuid4()
 
-    removed = strip_instance_bound_items(player)
+    async def load(_session: DbSession, pid: uuid.UUID) -> PlayerAggregate | None:
+        if carried is None:
+            return None
+        return aggregate(raw_row(pid, inventory=json.dumps(carried), equipped_json=json.dumps(equipped or {})))
 
-    assert removed == 1
-    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern", "tonic"]
+    return PlayerRegistry(db.session, loader=load), db, player_id
 
 
-def test_strips_instance_bound_items_inside_a_carried_container() -> None:
+def _committed(db: FakeDatabase) -> tuple[list[dict[str, object]], dict[str, object]]:
+    write = db.last_inventory_write()
+    assert write is not None, "nothing was committed"
+    return (
+        cast(list[dict[str, object]], json.loads(str(write["inventory_json"]))),
+        cast(dict[str, object], json.loads(str(write["equipped_json"]))),
+    )
+
+
+async def test_strips_instance_bound_items_from_the_inventory_and_keeps_the_rest() -> None:
+    registry, db, player_id = _world(
+        [_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("tonic", "CONSUMABLE")]
+    )
+
+    stripped = await strip_instance_bound_items(registry, player_id)
+
+    assert stripped.removed == 1
+    carried, _equipped = _committed(db)
+    assert [stack["item_id"] for stack in carried] == ["lantern", "tonic"]
+    assert [stack["item_id"] for stack in stripped.carried] == ["lantern", "tonic"]  # what the caller mirrors
+    assert db.commits == 1
+
+
+async def test_strips_instance_bound_items_inside_a_carried_container() -> None:
     backpack = _stack("backpack")
-    backpack["inner_container"] = {"items": [_stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("bandage")]}
-    player = _player()
-    player.set_inventory([backpack])
+    backpack["inner_container"] = {
+        "capacity_slots": 10,
+        "items": [_stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("bandage")],
+    }
+    registry, db, player_id = _world([backpack])
 
-    assert strip_instance_bound_items(player) == 1
+    assert (await strip_instance_bound_items(registry, player_id)).removed == 1
 
-    [kept] = player.get_inventory()
+    [kept], _equipped = _committed(db)
     assert kept["item_id"] == "backpack"
     inner = cast(dict[str, list[dict[str, object]]], kept["inner_container"])
     assert [item["item_id"] for item in inner["items"]] == ["bandage"]
 
 
-def test_strips_instance_bound_items_that_are_equipped() -> None:
-    player = _player()
-    player.set_equipped_items(
-        {"amulet": _stack("jade_amulet", INSTANCE_BOUND_FLAG), "main_hand": _stack("cane")}  # type: ignore[arg-type]
+async def test_strips_instance_bound_items_that_are_equipped() -> None:
+    registry, db, player_id = _world(
+        [], {"amulet": _stack("jade_amulet", INSTANCE_BOUND_FLAG), "main_hand": _stack("cane")}
     )
 
-    assert strip_instance_bound_items(player) == 1
+    assert (await strip_instance_bound_items(registry, player_id)).removed == 1
 
-    assert list(player.get_equipped_items()) == ["main_hand"]
+    _carried, equipped = _committed(db)
+    assert list(equipped) == ["main_hand"]
 
 
-def test_nothing_to_strip_changes_nothing() -> None:
-    player = _player()
-    player.set_inventory([_stack("lantern")])
+async def test_nothing_to_strip_writes_nothing() -> None:
+    registry, db, player_id = _world([_stack("lantern")])
 
-    assert strip_instance_bound_items(player) == 0
-    assert player.get_inventory() == [_stack("lantern")]
+    stripped = await strip_instance_bound_items(registry, player_id)
+
+    assert stripped.removed == 0
+    assert db.executed == []
+
+
+async def test_clearing_lost_instance_items_mirrors_the_commit_onto_the_connections_copy() -> None:
+    registry, db, player_id = _world([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG)])
+    player = Player(player_id=str(player_id), name="Restarted")
+    player.set_inventory([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG)])
+
+    await clear_lost_instance_items(registry, player)
+
+    assert [stack["item_id"] for stack in _committed(db)[0]] == ["lantern"]
+    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
+
+
+async def test_clearing_lost_instance_items_without_a_registry_or_on_failure_keeps_the_player_and_never_raises() -> (
+    None
+):
+    player = Player(player_id=str(uuid.uuid4()), name="Restarted")
+    player.set_inventory([_stack("jade_amulet", INSTANCE_BOUND_FLAG)])
+
+    await clear_lost_instance_items(None, player)
+    failing, _db, _player_id = _world(None)  # no such player: the strip raises inside
+    await clear_lost_instance_items(failing, player)
+
+    assert [stack["item_id"] for stack in player.get_inventory()] == ["jade_amulet"]
 
 
 class _Quests:
@@ -183,13 +247,3 @@ async def test_restart_instance_run_without_a_quest_service_still_restores_dp() 
         await restart_instance_run(player, ["square"], None)
 
     assert player.get_stats()["current_dp"] == 100
-
-
-def test_reset_instance_scoped_state_clears_the_instance_bound_items() -> None:
-    """Instance-scoped effects are player_effects rows now (effect_store.clear_instance_scoped_effects)."""
-    player = _player()
-    player.set_inventory([_stack("jade_amulet", INSTANCE_BOUND_FLAG), _stack("lantern")])
-
-    assert reset_instance_scoped_state(player) == 1
-
-    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]

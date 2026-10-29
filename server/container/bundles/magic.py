@@ -69,7 +69,7 @@ async def _create_registry_and_targeting(bundle: MagicBundle, container: Applica
 
     bundle.spell_effects = SpellEffects(
         container.player_service,
-        SpellEffectsDeps(combat_service=container.combat_service),
+        SpellEffectsDeps(combat_service=container.combat_service, item_granter=container.item_granter),
     )
     logger.info("SpellEffects initialized")
 
@@ -103,6 +103,7 @@ def _create_learning_mp_regen_and_magic(
             "player_spell_repository": player_spell_repository,
             "spell_learning_service": bundle.spell_learning_service,
             "combat_service": container.combat_service,
+            "player_registry": container.player_registry,
         },
     )
 

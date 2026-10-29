@@ -12,12 +12,12 @@ and never blocks quest completion.
 from __future__ import annotations
 
 import uuid
-from collections.abc import Awaitable, Callable
 from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.exceptions import DatabaseError
+from server.game.items.item_giver import ItemGiver
 from server.models.player import Player
 from server.schemas.quest import QuestDefinitionSchema, QuestRewardSchema
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -61,18 +61,12 @@ def _config_value(reward: QuestRewardSchema, *keys: str) -> object:
     return None
 
 
-def _inventory_has_slot(inventory_service: object, player_id: uuid.UUID) -> bool:
-    """True unless the inventory service says the player's inventory is full."""
-    checker = cast(Callable[[uuid.UUID], object] | None, getattr(inventory_service, "has_inventory_slot", None))
-    return True if checker is None else bool(checker(player_id))
-
-
 class QuestRewardsMixin:
     """Applies a completed quest's rewards; the host (QuestService) provides the services."""
 
     _level_service: XpGranter | None
     _spell_learning_service: SpellLearner | None
-    _inventory_service: object | None
+    _item_granter: ItemGiver | None
     _async_persistence: object | None
 
     async def _apply_xp_reward(self, player_id: uuid.UUID, quest_id: str, reward: QuestRewardSchema) -> None:
@@ -104,23 +98,19 @@ class QuestRewardsMixin:
             )
 
     async def _apply_item_reward(self, player_id: uuid.UUID, quest_id: str, reward: QuestRewardSchema) -> None:
-        """Apply a single item reward. Skips if inventory full (per plan)."""
-        if not self._inventory_service:
-            return
-        if not _inventory_has_slot(self._inventory_service, player_id):
-            logger.warning("Quest item reward skipped: inventory full", player_id=str(player_id), quest_id=quest_id)
+        """Give one item reward (config.item_id, a prototype id) through the registry. Skips if inventory full."""
+        if self._item_granter is None:
             return
         item_id = _config_value(reward, "item_id", "item")
         if not isinstance(item_id, str):
             return
-        add = cast(
-            Callable[[uuid.UUID, str, int], Awaitable[object]] | None,
-            getattr(self._inventory_service, "add_item_to_inventory", None),
-        )
-        if add is None:
+        if not await self._item_granter.has_free_slot(player_id):
+            logger.warning("Quest item reward skipped: inventory full", player_id=str(player_id), quest_id=quest_id)
             return
         try:
-            _ = await add(player_id, item_id, 1)
+            await self._item_granter.grant(
+                player_id, item_id, 1, origin={"source": "quest_reward", "quest_id": quest_id}
+            )
         except Exception as e:  # pylint: disable=broad-except  # Reason: Item reward must not crash quest completion; log and continue
             logger.warning(
                 "Failed to grant quest item", player_id=str(player_id), quest_id=quest_id, item_id=item_id, error=str(e)
@@ -162,13 +152,13 @@ class QuestRewardsMixin:
             elif reward.type == "respawn_room":
                 await self._apply_respawn_room_reward(player_id, quest_id, reward)
 
-    def _turn_in_inventory_full_error(
+    async def _turn_in_inventory_full_error(
         self, player_id: uuid.UUID, definition: QuestDefinitionSchema
     ) -> dict[str, object] | None:
         """Return inventory-full error when an item reward needs a free slot."""
-        if not self._inventory_service:
+        if self._item_granter is None:
             return None
         needs_slot = any(reward.type == "item" for reward in definition.rewards)
-        if needs_slot and not _inventory_has_slot(self._inventory_service, player_id):
+        if needs_slot and not await self._item_granter.has_free_slot(player_id):
             return {"success": False, "message": "Your inventory is full. Free a slot before turning in."}
         return None

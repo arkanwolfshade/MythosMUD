@@ -1,10 +1,12 @@
 """Unit tests for QuestRewardsMixin (quest reward application, split out of QuestService)."""
 
 import uuid
+from collections.abc import Mapping
 from typing import final
 
 import pytest
 
+from server.game.items.item_giver import ItemGiver
 from server.game.quest.quest_rewards import QuestRewardsMixin, SpellLearner, XpGranter
 from server.schemas.quest import QuestDefinitionSchema
 
@@ -28,15 +30,22 @@ class _Spells:
 
 
 class _Inventory:
+    """An ItemGiver (the ItemGranter in production) recording what it granted."""
+
     def __init__(self, *, has_slot: bool = True) -> None:
         self.has_slot: bool = has_slot
         self.added: list[tuple[uuid.UUID, str, int]] = []
+        self.origins: list[dict[str, object]] = []
 
-    def has_inventory_slot(self, _player_id: uuid.UUID) -> bool:
+    async def has_free_slot(self, player_id: uuid.UUID) -> bool:
+        _ = player_id
         return self.has_slot
 
-    async def add_item_to_inventory(self, player_id: uuid.UUID, item_id: str, count: int) -> None:
-        self.added.append((player_id, item_id, count))
+    async def grant(
+        self, player_id: uuid.UUID, prototype_id: str, quantity: int = 1, *, origin: Mapping[str, object]
+    ) -> None:
+        self.added.append((player_id, prototype_id, quantity))
+        self.origins.append(dict(origin))
 
 
 @final
@@ -47,11 +56,11 @@ class _Host(QuestRewardsMixin):
         self,
         levels: XpGranter | None = None,
         spells: SpellLearner | None = None,
-        inventory: object | None = None,
+        inventory: ItemGiver | None = None,
     ) -> None:
         self._level_service = levels
         self._spell_learning_service = spells
-        self._inventory_service = inventory
+        self._item_granter = inventory
         self._async_persistence = None
 
 
@@ -87,6 +96,7 @@ async def test_rewards_grant_xp_spell_and_item() -> None:
     assert levels.granted == [(player_id, 10)]
     assert spells.learned == [(player_id, "test_quest", "elder_sign")]
     assert inventory.added == [(player_id, "pack_dark_ages.weapon.sling", 1)]
+    assert inventory.origins == [{"source": "quest_reward", "quest_id": "test_quest"}]
 
 
 @pytest.mark.asyncio
@@ -109,16 +119,17 @@ async def test_malformed_or_unservable_rewards_are_skipped() -> None:
     assert inventory.added == []
 
 
-def test_turn_in_inventory_full_error_only_for_item_rewards() -> None:
+@pytest.mark.asyncio
+async def test_turn_in_inventory_full_error_only_for_item_rewards() -> None:
     player_id = uuid.uuid4()
     item = _definition([{"type": "item", "config": {"item_id": "pack_dark_ages.weapon.sling"}}])
     xp_only = _definition([{"type": "xp", "config": {"amount": 5}}])
 
     full = _Host(inventory=_Inventory(has_slot=False))
-    assert full._turn_in_inventory_full_error(player_id, item) == {  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    assert await full._turn_in_inventory_full_error(player_id, item) == {  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
         "success": False,
         "message": "Your inventory is full. Free a slot before turning in.",
     }
-    assert full._turn_in_inventory_full_error(player_id, xp_only) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-    assert _Host(inventory=_Inventory())._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-    assert _Host()._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    assert await full._turn_in_inventory_full_error(player_id, xp_only) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    assert await _Host(inventory=_Inventory())._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+    assert await _Host()._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly

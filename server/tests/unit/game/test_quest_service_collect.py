@@ -2,12 +2,16 @@
 Unit tests for QuestService collect_n sync, auto-complete, and turn-in consumption.
 """
 
+import json
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
 from server.game.quest.quest_service import QuestService
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
 
 # pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters
 # pylint: disable=protected-access  # Reason: Tests may access protected members for verification
@@ -76,8 +80,10 @@ def _make_inventory_player(inventory: list[dict], equipped: dict | None = None) 
     return player
 
 
-def _quest_service_with_persistence(mock_def_repo, mock_instance_repo, player: MagicMock) -> QuestService:
-    """QuestService wired with async_persistence returning player."""
+def _quest_service_with_persistence(
+    mock_def_repo: object, mock_instance_repo: object, player: MagicMock, player_registry: PlayerRegistry | None = None
+) -> QuestService:
+    """QuestService wired with async_persistence returning player (and the registry turn-in consumes through)."""
     mock_persistence = MagicMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=player)
     mock_persistence.save_player = AsyncMock()
@@ -85,6 +91,7 @@ def _quest_service_with_persistence(mock_def_repo, mock_instance_repo, player: M
         quest_definition_repository=mock_def_repo,
         quest_instance_repository=mock_instance_repo,
         async_persistence=mock_persistence,
+        player_registry=player_registry,
     )
 
 
@@ -199,9 +206,21 @@ async def test_turn_in_collect_n_consumes_items(mock_def_repo, mock_instance_rep
     instance.quest_id = "gather_daisies"
     instance.state = "active"
     instance.progress = {"0": 3}
-    inventory = [{"prototype_id": "misc.herb.sanitarium_daisy", "quantity": 5}]
-    player = _make_inventory_player(inventory)
-    svc = _quest_service_with_persistence(mock_def_repo, mock_instance_repo, player)
+    daisy = {
+        "item_id": "misc.herb.sanitarium_daisy",
+        "prototype_id": "misc.herb.sanitarium_daisy",
+        "item_name": "Sanitarium Daisy",
+        "slot_type": "inventory",
+        "quantity": 5,
+    }
+    player = _make_inventory_player([daisy])
+    db = FakeDatabase()
+
+    async def load(_session: DbSession, pid: uuid.UUID) -> PlayerAggregate:
+        return aggregate(raw_row(pid, inventory=json.dumps([daisy])))
+
+    registry = PlayerRegistry(db.session, loader=load)
+    svc = _quest_service_with_persistence(mock_def_repo, mock_instance_repo, player, registry)
     mock_def_repo.get_by_id = AsyncMock(return_value=row)
     mock_instance_repo.get_by_player_and_quest = AsyncMock(return_value=instance)
     mock_instance_repo.update_state_and_progress = AsyncMock()
@@ -210,9 +229,13 @@ async def test_turn_in_collect_n_consumes_items(mock_def_repo, mock_instance_rep
     result = await svc.turn_in(player_id, "gather_daisies", "npc", "54")
 
     assert result["success"] is True
-    player.set_inventory.assert_called_once()
-    saved = player.set_inventory.call_args[0][0]
-    assert saved[0]["quantity"] == 2
+    # ADR-029 step 4c-i: consumed from the live stacks in one registry unit, not a full-row save.
+    write = db.last_inventory_write()
+    assert write is not None
+    committed = cast(list[dict[str, object]], json.loads(str(write["inventory_json"])))
+    assert committed[0]["quantity"] == 2
+    set_inventory = cast(MagicMock, player.set_inventory)
+    set_inventory.assert_not_called()  # the ORM copy is not how the consumption is written
 
 
 @pytest.mark.asyncio

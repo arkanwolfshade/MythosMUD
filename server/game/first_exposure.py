@@ -2,9 +2,11 @@
 
 Ending the tutorial is two steps, because the respawn commits through its own database session:
 
-* ``apply_first_exposure_end_state`` runs inside that session: the instance-bound items (the amulet) are cleared,
-  lucidity is restored to 70, health is restored, and they wake in the Recovery Ward.
-* ``FirstExposureFinisher.finish`` runs after the commit: it raises corruption to its floor and starts the epilogue
+* ``apply_first_exposure_end_state`` runs inside that session: lucidity is restored to 70, health is restored, and
+  they wake in the Recovery Ward.
+* ``FirstExposureFinisher.finish`` runs after the commit: it clears the instance-bound items (the amulet) through the
+  player registry (a registry write inside the respawn's own session could wait on that session's lock on the
+  players row), raises corruption to its floor and starts the epilogue
   quest (data, run by the scripted-action runner), clears any instance-scoped effects (the drain), then flushes the
   instance. Corruption is written after the commit
   because ``restore_to_full_health`` rewrites the same ``stats`` column, and it must be a floor ("at least 1"), never
@@ -22,7 +24,7 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Awaitable, Callable, Iterable, Mapping, Sequence
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from ..constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from ..models.lucidity import PlayerLucidity
@@ -32,8 +34,11 @@ from ..services.corruption_service import CorruptionPersistenceProtocol
 from ..services.lucidity_service import resolve_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 from .effect_store import clear_instance_scoped_effects
-from .instance_state import reset_instance_scoped_state
+from .instance_state import strip_instance_bound_items
 from .scripted_actions import QuestActionService, ScriptedActionContext, run_scripted_actions
+
+if TYPE_CHECKING:
+    from .player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -120,7 +125,6 @@ def apply_first_exposure_end_state(player: Player, lucidity: PlayerLucidity) -> 
     """Leave a tutorial player whole and in the Recovery Ward; True if they were in the tutorial, else a no-op."""
     if tutorial_instance_of(player) is None:
         return False
-    _ = reset_instance_scoped_state(player)
     lucidity.current_lcd = RESTORED_LCD
     lucidity.current_tier = resolve_tier(RESTORED_LCD)
     _ = player.restore_to_full_health()
@@ -135,16 +139,31 @@ class FirstExposureFinisher:  # pylint: disable=too-few-public-methods  # Reason
     _persistence: FinishPersistence
     _quest_service: QuestActionService | None
     _flush: InstanceFlush
+    _registry: PlayerRegistry | None
 
     def __init__(
-        self, persistence: FinishPersistence, quest_service: QuestActionService | None, flush: InstanceFlush
+        self,
+        persistence: FinishPersistence,
+        quest_service: QuestActionService | None,
+        flush: InstanceFlush,
+        registry: PlayerRegistry | None = None,
     ) -> None:
         self._persistence = persistence
         self._quest_service = quest_service
         self._flush = flush
+        self._registry = registry
 
     async def finish(self, player_id: uuid.UUID, instance_id: str) -> None:
         """Run the finish actions for the player, then flush their instance. Each step is isolated from the other."""
+        if self._registry is None:
+            logger.warning(
+                "First Exposure finish: no player registry, instance-bound items kept", player_id=str(player_id)
+            )
+        else:
+            try:
+                _ = await strip_instance_bound_items(self._registry, player_id)
+            except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the respawn already committed; a failed finish must not undo or hide it
+                logger.error("First Exposure instance-bound item strip failed", player_id=str(player_id), error=str(e))
         try:
             player = cast(Player | None, await self._persistence.get_player_by_id(player_id))
             if player is not None:
@@ -176,6 +195,7 @@ def make_first_exposure_finish(container: object) -> FinishFirstExposure:
             logger.warning("First Exposure finish skipped: persistence or instance flush unavailable")
             return
         quests = cast(QuestActionService | None, getattr(container, "quest_service", None))
-        await FirstExposureFinisher(persistence, quests, flush).finish(player_id, instance_id)
+        registry = cast("PlayerRegistry | None", getattr(container, "player_registry", None))
+        await FirstExposureFinisher(persistence, quests, flush, registry).finish(player_id, instance_id)
 
     return finish

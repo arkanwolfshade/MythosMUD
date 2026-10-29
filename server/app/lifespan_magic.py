@@ -71,6 +71,7 @@ def _initialize_spell_effects(app: FastAPI, container: ApplicationContainer) -> 
             movement_service=getattr(container, "movement_service", None),
             get_room_by_id=get_room,
             connection_manager=getattr(container, "connection_manager", None),
+            item_granter=container.item_granter,
         ),
     )
     app.state.spell_effects = spell_effects
@@ -121,6 +122,7 @@ def _initialize_magic_service(
             "player_spell_repository": player_spell_repository,
             "spell_learning_service": getattr(app.state, "spell_learning_service", None),
             "combat_service": combat_service,
+            "player_registry": container.player_registry,
         },
     )
     app.state.magic_service = magic_service

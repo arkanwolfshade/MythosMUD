@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import uuid
+from dataclasses import dataclass, field
+from types import SimpleNamespace
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.game.items.item_factory import ItemFactoryError
 from server.game.magic import spell_effects_support as support
+from server.game.player_registry import PlayerNotFoundError
 from server.schemas.shared import TargetMatch, TargetType
+from server.services.inventory_service import InventoryCapacityError
 
 
 def _spell(**effect_data: object) -> MagicMock:
@@ -79,18 +85,57 @@ async def test_process_create_object_missing_prototype() -> None:
     assert "prototype" in result["message"].lower()
 
 
+@dataclass
+class _Granter:
+    """ItemGranter.grant, recording what it was asked (or failing with ``error``)."""
+
+    error: Exception | None = None
+    calls: list[tuple[uuid.UUID, str, int, dict[str, object]]] = field(default_factory=list)
+
+    async def grant(self, player_id: uuid.UUID, prototype_id: str, quantity: int = 1, *, origin: object) -> None:
+        self.calls.append((player_id, prototype_id, quantity, dict(cast(dict[str, object], origin))))
+        if self.error is not None:
+            raise self.error
+
+
 @pytest.mark.asyncio
-async def test_process_create_object_for_player() -> None:
-    spell = _spell(prototype_id="torch", quantity=2)
+async def test_create_object_grants_a_real_item_through_the_registry() -> None:
+    """ADR-029 step 4c-i: no hand-built stack and no full-row save; the ItemGranter commits the item."""
+    granter = _Granter()
     target = _target()
-    player = MagicMock()
-    player.get_inventory.return_value = []
-    engine = MagicMock()
-    engine.player_service.persistence.get_player_by_id = AsyncMock(return_value=player)
-    engine.player_service.persistence.save_player = AsyncMock()
-    result = await support.process_create_object_effect(engine, spell, target, 1.0)
-    assert result["success"] is True
-    assert player.set_inventory.called
+
+    result = await support.process_create_object_effect(
+        SimpleNamespace(item_granter=granter), _spell(prototype_id="torch", quantity=2), target, 1.0
+    )
+
+    assert result["success"] is True and result["quantity"] == 2
+    assert granter.calls == [(uuid.UUID(target.target_id), "torch", 2, {"source": "spell_create_object"})]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("error", "message"),
+    [
+        (PlayerNotFoundError("gone"), "Target player not found"),
+        (InventoryCapacityError("full"), "Hero's inventory is full"),
+        (ItemFactoryError("Prototype 'torch' not found."), "Failed to create object: Prototype 'torch' not found."),
+    ],
+)
+async def test_create_object_reports_why_nothing_was_created(error: Exception, message: str) -> None:
+    result = await support.process_create_object_effect(
+        SimpleNamespace(item_granter=_Granter(error)), _spell(prototype_id="torch"), _target(), 1.0
+    )
+
+    assert result == {"success": False, "message": message, "effect_applied": False}
+
+
+@pytest.mark.asyncio
+async def test_create_object_without_an_item_system_creates_nothing() -> None:
+    result = await support.process_create_object_effect(
+        SimpleNamespace(item_granter=None), _spell(prototype_id="torch"), _target(), 1.0
+    )
+
+    assert result["success"] is False
 
 
 def test_create_object_for_room_placeholder() -> None:

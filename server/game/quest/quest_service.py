@@ -10,12 +10,14 @@ applies rewards (XP, item, spell) via injected services.
 from __future__ import annotations
 
 import uuid
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from pydantic import BaseModel, TypeAdapter
 
+from server.game.items.item_giver import ItemGiver
+from server.game.player_registry import PlayerNotFoundError
 from server.game.quest.collect_inventory import (
     collect_player_stacks,
     consume_prototype_from_player,
@@ -35,6 +37,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.events.event_bus import EventBus
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -104,6 +107,33 @@ def _collect_goal_required_count(goal: Any) -> int:
     return int((goal.config or {}).get("count", 1) or 1)
 
 
+class _LiveHoldings:
+    """A player's live carried and equipped stacks, with the Player methods consume_prototype_from_player uses."""
+
+    carried: list[dict[str, object]]
+    equipped: dict[str, object]
+
+    def __init__(self, carried: Sequence[Mapping[str, object]], equipped: Mapping[str, object]) -> None:
+        self.carried = [dict(stack) for stack in carried]
+        self.equipped = dict(equipped)
+
+    def get_inventory(self) -> list[dict[str, object]]:
+        """Carried stacks."""
+        return self.carried
+
+    def get_equipped_items(self) -> dict[str, object]:
+        """Equipped stacks by slot."""
+        return self.equipped
+
+    def set_inventory(self, stacks: Sequence[Mapping[str, object]]) -> None:
+        """Replace the carried stacks."""
+        self.carried = [dict(stack) for stack in stacks]
+
+    def set_equipped_items(self, equipped: Mapping[str, object]) -> None:
+        """Replace the equipped stacks."""
+        self.equipped = dict(equipped)
+
+
 def _consume_collect_goals_from_player(player: Any, collect_goals: list[Any]) -> dict[str, Any] | None:
     """Consume each collect_n goal from player holdings. Return error dict or None."""
     for goal in collect_goals:
@@ -167,15 +197,17 @@ class QuestService(QuestRewardsMixin):
         quest_instance_repository: Any,
         level_service: Any = None,
         spell_learning_service: Any = None,
-        inventory_service: Any = None,
+        item_granter: ItemGiver | None = None,
         event_bus: Any = None,
         async_persistence: Any = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         self._def_repo = quest_definition_repository
         self._instance_repo = quest_instance_repository
         self._level_service = level_service
         self._spell_learning_service = spell_learning_service
-        self._inventory_service = inventory_service
+        self._item_granter: ItemGiver | None = item_granter
+        self._player_registry: PlayerRegistry | None = player_registry
         self._event_bus = event_bus
         self._async_persistence = async_persistence
         logger.info("QuestService initialized")
@@ -434,19 +466,6 @@ class QuestService(QuestRewardsMixin):
         for instance in active:
             await self._sync_collect_for_instance(player_id, instance, stacks)
 
-    async def _save_player_after_consume(self, player: Any) -> None:
-        """Persist player after collect_n consumption when async_persistence is wired."""
-        persistence = self._async_persistence
-        if not persistence:
-            return
-        save = getattr(persistence, "save_player", None)
-        if not callable(save):
-            return
-        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
-        result = save(player)
-        if hasattr(result, "__await__"):
-            await result
-
     async def _consume_collect_n_items(
         self, player_id: uuid.UUID, definition: QuestDefinitionSchema
     ) -> dict[str, Any] | None:
@@ -454,13 +473,20 @@ class QuestService(QuestRewardsMixin):
         collect_goals = [goal for goal in definition.goals if goal.type == "collect_n"]
         if not collect_goals:
             return None
-        player = await self._load_player_for_collect(player_id)
-        if not player:
-            return {"success": False, "message": "Unable to access inventory for turn-in."}
-        error = _consume_collect_goals_from_player(player, collect_goals)
-        if error:
-            return error
-        await self._save_player_after_consume(player)
+        unavailable = {"success": False, "message": "Unable to access inventory for turn-in."}
+        if self._player_registry is None:
+            return unavailable
+        try:
+            # One registry unit (ADR-029 step 4c-i): reads the live stacks, commits before returning. A shortfall
+            # returns before the aggregate is touched, so nothing is written.
+            async with self._player_registry.mutate(player_id) as player:
+                holdings = _LiveHoldings(player.inventory.carried, player.inventory.equipped)
+                error = _consume_collect_goals_from_player(holdings, collect_goals)
+                if error:
+                    return error
+                player.inventory.replace(holdings.carried, holdings.equipped)
+        except PlayerNotFoundError:
+            return unavailable
         return None
 
     async def _complete_instance(
@@ -492,7 +518,7 @@ class QuestService(QuestRewardsMixin):
 
     def _turn_in_validation_error(
         self,
-        player_id: uuid.UUID,
+        _player_id: uuid.UUID,
         definition: QuestDefinitionSchema,
         instance: QuestInstance | None,
         at_entity_id: str,
@@ -512,7 +538,7 @@ class QuestService(QuestRewardsMixin):
             return {"success": False, "message": "You do not have this quest active."}
         if not _goals_met(dict(instance.progress), definition):
             return {"success": False, "message": "Quest objectives not yet complete."}
-        return self._turn_in_inventory_full_error(player_id, definition)
+        return None
 
     async def turn_in(
         self,
@@ -535,6 +561,8 @@ class QuestService(QuestRewardsMixin):
             await self.sync_collect_progress(player_id)
         instance = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
         err = self._turn_in_validation_error(player_id, definition, instance, at_entity_id)
+        if not err:
+            err = await self._turn_in_inventory_full_error(player_id, definition)
         if err:
             return err
         if instance is None:

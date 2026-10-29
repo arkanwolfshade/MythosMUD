@@ -17,7 +17,6 @@ from typing import Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
@@ -485,9 +484,7 @@ class PlayerRespawnService:
             True if respawn was successful, False otherwise
         """
         try:
-            # inventory_record is loaded up front: the end of the tutorial reads equipment, and a lazy load of that
-            # relationship fails inside the async session.
-            player = await session.get(Player, player_id, options=[selectinload(Player.inventory_record)])
+            player = await session.get(Player, player_id)
             if not player:
                 logger.warning("Player not found for delirium respawn", player_id=player_id)
                 return False

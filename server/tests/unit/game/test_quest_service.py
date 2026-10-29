@@ -11,6 +11,7 @@ Covers: resolve_name_to_quest_id, start_quest, abandon, get_quest_log with mocke
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any, cast
 from unittest.mock import AsyncMock, patch
@@ -73,10 +74,16 @@ class _InstanceStub:
 
 
 class _FullInventory:
-    """Inventory stub that always reports no free slot."""
+    """ItemGiver stub that always reports no free slot (and must never be asked to grant)."""
 
-    def has_inventory_slot(self, _slot: object) -> bool:
+    async def has_free_slot(self, player_id: uuid.UUID) -> bool:
+        _ = player_id
         return False
+
+    async def grant(
+        self, player_id: uuid.UUID, prototype_id: str, quantity: int = 1, *, origin: Mapping[str, object]
+    ) -> None:
+        raise AssertionError(f"granted {quantity}x {prototype_id} to {player_id} ({origin}) with no free slot")
 
 
 def _message(result: dict[str, Any]) -> str:
@@ -797,7 +804,7 @@ async def test_turn_in_inventory_full_blocks_item_reward(
     svc = QuestService(
         quest_definition_repository=mock_def_repo,
         quest_instance_repository=mock_instance_repo,
-        inventory_service=_FullInventory(),
+        item_granter=_FullInventory(),
     )
 
     result = await svc.turn_in(player_id, "turn_in_quest", "npc", "npc_quest_giver_001")
