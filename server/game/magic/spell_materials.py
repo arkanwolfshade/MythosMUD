@@ -7,6 +7,7 @@ This module handles checking and consuming spell materials from player inventory
 import uuid
 from typing import Any
 
+from server.game.player_registry import PlayerNotFoundError, PlayerRegistry
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -21,14 +22,16 @@ class SpellMaterialsService:
     Handles checking if players have required materials and consuming them.
     """
 
-    def __init__(self, player_service: PlayerService) -> None:
+    def __init__(self, player_service: PlayerService, player_registry: PlayerRegistry | None = None) -> None:
         """
         Initialize the spell materials service.
 
         Args:
             player_service: Player service for accessing player data
+            player_registry: Commits consumed materials (ADR-029); without it, nothing can be consumed
         """
         self.player_service = player_service
+        self.player_registry: PlayerRegistry | None = player_registry
 
     async def check_materials(self, player_id: uuid.UUID, spell: Spell) -> list[str]:
         """
@@ -137,6 +140,32 @@ class SpellMaterialsService:
 
         return final_inventory
 
+    def _plan_consumption(
+        self, inventory: list[dict[str, object]], spell: Spell
+    ) -> tuple[list[dict[str, object]] | None, list[str], str]:
+        """The inventory once the spell's materials are taken and what was consumed, or (None, [], missing id)."""
+        consumed_items: list[str] = []
+        final_inventory: list[dict[str, object]] = []
+        processed_materials: set[int] = set()
+
+        for material in spell.materials:
+            found, item_index, should_consume = self._process_material_requirement(
+                material, inventory, processed_materials
+            )
+            if not found or item_index is None:
+                return None, [], material.item_id
+
+            processed_materials.add(item_index)
+            updated_item, was_consumed = self._consume_material_item(
+                inventory[item_index], material.item_id, should_consume
+            )
+            if updated_item is not None:
+                final_inventory.append(updated_item)
+            if was_consumed:
+                consumed_items.append(material.item_id)
+
+        return self._build_final_inventory(inventory, processed_materials, final_inventory), consumed_items, ""
+
     async def consume_materials(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:
         """
         Consume spell materials from player inventory.
@@ -150,42 +179,20 @@ class SpellMaterialsService:
         """
         if not spell.materials:
             return {"success": True, "message": ""}
-
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
+        if self.player_registry is None:
             return {"success": False, "message": "Player not found."}
 
-        inventory = player.get_inventory()
-        consumed_items = []
-        final_inventory = []
-        processed_materials: set[int] = set()
-
-        for material in spell.materials:
-            found, item_index, should_consume = self._process_material_requirement(
-                material, inventory, processed_materials
-            )
-
-            if not found or item_index is None:
-                return {
-                    "success": False,
-                    "message": f"Missing required material: {material.item_id}.",
-                }
-
-            processed_materials.add(item_index)
-            item = inventory[item_index]
-            updated_item, was_consumed = self._consume_material_item(item, material.item_id, should_consume)
-
-            if updated_item is not None:
-                final_inventory.append(updated_item)
-
-            if was_consumed:
-                consumed_items.append(material.item_id)
-
-        final_inventory = self._build_final_inventory(inventory, processed_materials, final_inventory)
-
-        # Update player inventory
-        player.set_inventory(final_inventory)
-        await self.player_service.persistence.save_player(player)
+        try:
+            # One registry unit (ADR-029 step 4c-i): the live stacks, committed before the spell goes on.
+            async with self.player_registry.mutate(player_id) as player:
+                final_inventory, consumed_items, missing = self._plan_consumption(
+                    [dict(stack) for stack in player.inventory.carried], spell
+                )
+                if final_inventory is None:
+                    return {"success": False, "message": f"Missing required material: {missing}."}
+                player.inventory.set_carried(final_inventory)
+        except PlayerNotFoundError:
+            return {"success": False, "message": "Player not found."}
 
         if consumed_items:
             logger.info(

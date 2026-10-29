@@ -18,12 +18,15 @@ from server.game.first_exposure import (
     FirstExposureFinisher,
     apply_first_exposure_end_state,
 )
+from server.game.instance_state import StrippedInventory
 from server.game.items.constants import INSTANCE_BOUND_FLAG
+from server.game.player_registry import PlayerRegistry
 from server.game.scripted_actions import QuestActionService, ScriptedActionContext
 from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
 from server.schemas.scripted_actions import CorruptionAtLeastAction, StartQuestAction, parse_scripted_actions
 from server.services.lucidity_service import resolve_tier
+from server.tests.fixtures.shared.player_registry import FakeDatabase
 
 
 def _stack(item_id: str, *flags: str) -> dict[str, object]:
@@ -59,13 +62,14 @@ def test_the_end_state_leaves_a_tutorial_player_whole_and_in_the_ward() -> None:
     assert player.get_stats()["current_dp"] == player.get_stats()["max_dp"]
 
 
-def test_the_end_state_takes_the_amulet_but_keeps_everything_else() -> None:
-    """The drain is a player_effects row; the finisher clears it after the commit."""
+def test_the_end_state_leaves_the_inventory_to_the_finisher() -> None:
+    """The amulet is stripped through the player registry after the respawn commits (FirstExposureFinisher); inside
+    the respawn's own session a registry write of the same players row could wait on that session for ever."""
     player, lucidity = _tutorial_player()
 
     _ = apply_first_exposure_end_state(player, lucidity)
 
-    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
+    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern", "jade_amulet"]
 
 
 def test_the_end_state_does_nothing_for_a_player_who_is_not_in_the_tutorial() -> None:
@@ -113,6 +117,8 @@ class Rig:
     order: list[str] = field(default_factory=lambda: cast(list[str], []))
     actions_fail: bool = False
     clear_fails: bool = False
+    strip_fails: bool = False
+    stripped: list[uuid.UUID] = field(default_factory=lambda: cast(list[uuid.UUID], []))
     cleared: list[uuid.UUID] = field(default_factory=lambda: cast(list[uuid.UUID], []))
 
 
@@ -159,16 +165,25 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
         rig.cleared.append(player_id)
         return 1
 
+    async def fake_strip(_registry: PlayerRegistry, player_id: uuid.UUID) -> StrippedInventory:
+        rig.order.append("strip")
+        if rig.strip_fails:
+            raise RuntimeError("database down")
+        rig.stripped.append(player_id)
+        return StrippedInventory(1, [], {})
+
     monkeypatch.setattr(module, "run_scripted_actions", fake_run)
     monkeypatch.setattr(module, "clear_instance_scoped_effects", fake_clear)
+    monkeypatch.setattr(module, "strip_instance_bound_items", fake_strip)
     return rig
 
 
-def _finisher(rig: Rig) -> FirstExposureFinisher:
+def _finisher(rig: Rig, *, with_registry: bool = True) -> FirstExposureFinisher:
     return FirstExposureFinisher(
         persistence=cast(module.FinishPersistence, FakePersistence(rig)),
         quest_service=cast(QuestActionService, cast(object, SimpleNamespace())),
         flush=cast(module.InstanceFlush, FakeFlush(rig)),
+        registry=PlayerRegistry(FakeDatabase().session) if with_registry else None,
     )
 
 
@@ -181,9 +196,26 @@ async def test_finishing_runs_the_finish_actions_clears_the_drain_then_flushes_t
     assert actions == tuple(FINISH_ACTIONS)
     assert isinstance(ctx, ScriptedActionContext)
     assert ctx.player is rig.player
-    assert rig.order == ["actions", "clear", "flush"]
+    assert rig.order == ["strip", "actions", "clear", "flush"]
+    assert rig.stripped == [player_id]  # the amulet does not leave the tutorial with them
     assert rig.cleared == [player_id]  # the instance-scoped drain row does not follow them out
     assert rig.flushed == ["instance-abc"]
+
+
+@pytest.mark.asyncio
+async def test_a_failing_strip_never_stops_the_rest_of_the_finish(rig: Rig) -> None:
+    rig.strip_fails = True
+
+    await _finisher(rig).finish(uuid.uuid4(), "instance-abc")
+
+    assert rig.order == ["strip", "actions", "clear", "flush"]
+
+
+@pytest.mark.asyncio
+async def test_without_a_registry_the_strip_is_skipped_and_the_finish_goes_on(rig: Rig) -> None:
+    await _finisher(rig, with_registry=False).finish(uuid.uuid4(), "instance-abc")
+
+    assert rig.order == ["actions", "clear", "flush"]
 
 
 @pytest.mark.asyncio
@@ -229,3 +261,20 @@ async def test_the_lazy_finish_resolves_its_services_from_the_container_when_cal
     container.instance_flush_service = FakeFlush(rig)
     await finish(uuid.uuid4(), "instance-abc")  # the same callable now finds them
     assert rig.flushed == ["instance-abc"]
+    assert rig.stripped == []  # no player registry on the container yet: the strip step is skipped
+
+
+@pytest.mark.asyncio
+async def test_the_lazy_finish_hands_the_containers_player_registry_to_the_finisher(rig: Rig) -> None:
+    container = SimpleNamespace(
+        async_persistence=FakePersistence(rig),
+        instance_flush_service=FakeFlush(rig),
+        quest_service=None,
+        player_registry=PlayerRegistry(FakeDatabase().session),
+    )
+    player_id = uuid.uuid4()
+
+    await module.make_first_exposure_finish(container)(player_id, "instance-abc")
+
+    assert rig.stripped == [player_id]
+    assert rig.order[0] == "strip"

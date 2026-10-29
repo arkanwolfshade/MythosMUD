@@ -4,6 +4,7 @@ Unit tests for player presence tracker.
 Tests the player_presence_tracker module functions.
 """
 
+import json
 import uuid
 from collections.abc import Iterable
 from typing import cast
@@ -16,6 +17,7 @@ from server.exceptions import DatabaseError
 from server.game.instance_manager import InstanceManager
 from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.game.player_creation_service import TUTORIAL_TEMPLATE_ID
+from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
 from server.models.corruption import CorruptionTier
 from server.models.player import Player
 from server.models.room import Room
@@ -31,6 +33,7 @@ from server.realtime.player_presence_tracker import (
     track_player_disconnected_impl,
 )
 from server.services.corruption_tier_cache import corruption_tier_cache
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
 
 
 @pytest.fixture(autouse=True)
@@ -838,6 +841,7 @@ def _manager_with(
     save_player: AsyncMock,
     content: MagicMock | None = None,
     quests: object | None = None,
+    player_registry: PlayerRegistry | None = None,
 ) -> MagicMock:
     manager = MagicMock()
     manager.configure_mock(
@@ -847,6 +851,7 @@ def _manager_with(
             "app.state.container.instance_manager": instance_manager,
             "app.state.container.instance_content_service": content,
             "app.state.container.quest_service": quests,
+            "app.state.container.player_registry": player_registry,
         }
     )
     return manager
@@ -948,7 +953,25 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     instance_manager = InstanceManager(room_cache=rooms)
     content, populate = _content()
     quests = _RecordingQuests()
-    manager = _manager_with(instance_manager, rooms, AsyncMock(), content, quests)
+    carried: list[dict[str, object]] = [
+        {
+            "item_id": "jade_amulet",
+            "item_name": "Jade Amulet",
+            "slot_type": "inventory",
+            "quantity": 1,
+            "flags": [INSTANCE_BOUND_FLAG],
+        },
+        {"item_id": "lantern", "item_name": "Lantern", "slot_type": "inventory", "quantity": 1},
+    ]
+    db = FakeDatabase()
+
+    async def load(_session: DbSession, pid: uuid.UUID) -> PlayerAggregate:
+        return aggregate(raw_row(pid, inventory=json.dumps(carried)))
+
+    save_player = AsyncMock()
+    manager = _manager_with(
+        instance_manager, rooms, save_player, content, quests, PlayerRegistry(db.session, loader=load)
+    )
     player = Player(
         player_id=str(uuid.uuid4()),
         name="Restarted",
@@ -956,12 +979,7 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
         tutorial_instance_id="instance_gone",
     )
     player.set_stats({"current_dp": 1, "max_dp": 100, "corruption": 2})
-    player.set_inventory(
-        [
-            {"item_id": "jade_amulet", "flags": [INSTANCE_BOUND_FLAG]},
-            {"item_id": "lantern"},
-        ]
-    )
+    player.set_inventory(carried)
 
     with (
         patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity,
@@ -977,6 +995,12 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     fresh = instance_manager.get_instance(cast(str, player.tutorial_instance_id))
     assert fresh is not None
     populate.assert_awaited_once_with(fresh)
+    # ADR-029 step 4c-i: stripped through the registry after the full-row save, then mirrored onto this copy.
+    save_player.assert_awaited_once()
+    write = db.last_inventory_write()
+    assert write is not None
+    committed = cast(list[dict[str, object]], json.loads(str(write["inventory_json"])))
+    assert [stack["item_id"] for stack in committed] == ["lantern"]
     assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern"]
     # The run starts over: full DP, starting lucidity, the template's (stable) rooms' quests reset; corruption stays.
     assert player.get_stats()["current_dp"] == 100

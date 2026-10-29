@@ -32,6 +32,8 @@ from server.app.lifespan_startup import (
     initialize_npc_startup_spawning,
     setup_connection_manager,
 )
+from server.game.magic.magic_service import MagicService
+from server.game.magic.spell_effects import SpellEffects
 
 
 @dataclass
@@ -226,6 +228,20 @@ async def test_initialize_magic_services(mock_app: FastAPI, mock_container: Magi
     with patch("server.app.lifespan_magic.SpellRegistry.load_spells", new=AsyncMock(return_value=None)):
         await initialize_magic_services(mock_app, mock_container)
     assert hasattr(mock_app.state, "magic_service") or hasattr(mock_app.state, "spell_registry")
+
+
+@pytest.mark.asyncio
+async def test_initialize_magic_services_wires_the_item_granter_and_the_player_registry(
+    mock_app: FastAPI, mock_container: MagicMock
+) -> None:
+    """ADR-029 step 4c-i: create-object spells give items through the granter; reagents go through the registry."""
+    with patch("server.app.lifespan_magic.SpellRegistry.load_spells", new=AsyncMock(return_value=None)):
+        await initialize_magic_services(mock_app, mock_container)
+
+    spell_effects = cast(SpellEffects, mock_app.state.spell_effects)
+    magic_service = cast(MagicService, mock_app.state.magic_service)
+    assert spell_effects.item_granter is cast(object, mock_container.item_granter)
+    assert magic_service.spell_materials_service.player_registry is cast(object, mock_container.player_registry)
 
 
 @pytest.mark.asyncio

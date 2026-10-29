@@ -26,6 +26,8 @@ if TYPE_CHECKING:
     from server.async_persistence import AsyncPersistenceLayer
     from server.container.main import ApplicationContainer
     from server.events.event_bus import EventBus
+    from server.game.items.item_factory import ItemFactory
+    from server.game.items.item_grant import ItemGranter
     from server.game.player_registry import PlayerRegistry
     from server.game.skill_service import SkillService
     from server.realtime.connection_manager import ConnectionManager
@@ -36,6 +38,7 @@ logger = get_logger(__name__)
 
 GAME_ATTRS = (
     "player_registry",
+    "item_granter",
     "instance_manager",
     "instance_flush_service",
     "movement_service",
@@ -66,6 +69,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     """Game services: movement, player, room, user, container, caches, items."""
 
     player_registry: PlayerRegistry | None = None
+    item_granter: ItemGranter | None = None
     instance_manager: Any = None
     instance_flush_service: InstanceFlushService | None = None
     movement_service: Any = None
@@ -166,6 +170,15 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             ),
         )
         # pylint: enable=no-member
+        from server.game.items.item_grant import (
+            ItemGranter,  # pylint: disable=redefined-outer-name  # Reason: runtime import of the TYPE_CHECKING name, kept local like this bundle's other services
+        )
+        from server.services.inventory_service import InventoryService
+
+        # A provider, not the factory: item services load prototypes later in initialize().
+        self.item_granter = ItemGranter(
+            self.player_registry, lambda: cast("ItemFactory | None", self.item_factory), InventoryService()
+        )
 
     def _init_movement_layer(self, container: ApplicationContainer) -> None:
         """Wire exploration, movement, follow, and party services."""
@@ -240,7 +253,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             quest_instance_repository=self.quest_instance_repository,
             level_service=self.level_service,
             spell_learning_service=None,
-            inventory_service=self.container_service,
+            item_granter=self.item_granter,
+            player_registry=self.player_registry,
             event_bus=getattr(container, "event_bus", None),
             async_persistence=container.async_persistence,
         )

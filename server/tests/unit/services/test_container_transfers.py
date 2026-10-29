@@ -208,6 +208,22 @@ async def test_get_keeps_everything_else_the_player_carries(monkeypatch: pytest.
     assert world.db.commits == 1
 
 
+async def test_a_stack_taken_from_a_container_is_carried_in_general_inventory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Like a floor pickup: the container's "backpack" label made `equip` put a sling in a "backpack" slot."""
+    world = _world(monkeypatch, carried=[], container_items=[_stack("torch"), _stack("rope")])
+    assert world.store.items()[0]["slot_type"] == "backpack"
+
+    _ = await world.service.transfer_from_container(
+        CID, PID, world.token, _ref("torch"), None, registry=world.registry
+    )
+    assert [stack["slot_type"] for stack in world.committed_carried()] == ["inventory"]
+
+    _ = await world.service.loot_all(CID, PID, world.token, registry=world.registry)
+    assert [stack["slot_type"] for stack in world.committed_carried()] == ["inventory", "inventory"]
+
+
 async def test_get_part_of_a_stack_leaves_the_rest(monkeypatch: pytest.MonkeyPatch) -> None:
     world = _world(monkeypatch, carried=[], container_items=[_stack("torch", 3)])
 

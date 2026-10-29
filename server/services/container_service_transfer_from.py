@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from typing import cast
 from uuid import UUID
 
+from ..constants.inventory import CARRIED_SLOT_TYPE
 from ..game.player_registry import PlayerRegistry
 from ..models.container import ContainerComponent
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -102,9 +103,15 @@ class ContainerTransferFromMixin(ContainerTransferToMixin):
     def _add_to_carried(
         self, carried: Sequence[Mapping[str, object]], stack: InventoryStack, container_id: UUID, player_id: UUID
     ) -> list[dict[str, object]]:
-        """The player's carried stacks with ``stack`` merged in or appended; ContainerCapacityError when full."""
+        """The player's carried stacks with ``stack`` merged in or appended; ContainerCapacityError when full.
+
+        The stack is carried in general inventory, as a floor pickup is: a container's "backpack" label would
+        otherwise make ``equip`` put it in a "backpack" slot instead of the one its prototype names.
+        """
         try:
-            return items_json_for_persist(self.inventory_service.add_stack(carried, stack))
+            return items_json_for_persist(
+                self.inventory_service.add_stack(carried, {**stack, "slot_type": CARRIED_SLOT_TYPE})
+            )
         except InventoryCapacityError as e:
             log_and_raise(
                 ContainerCapacityError,

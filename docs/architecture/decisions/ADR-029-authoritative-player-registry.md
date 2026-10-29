@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.5** · MythosMUD · 2026-10-28
+**Version 1.0.6** · MythosMUD · 2026-10-29
 
 ---
 
@@ -232,11 +232,18 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      their read-modify-write as one unit of work.
    - 4b: world-container transfers (put, get, the REST transfer and loot-all) commit the player and the container in
      one transaction, under a per-container lock taken after the player locks; plus bank and wearable containers.
-   - 4c: the remaining inventory writers (quest rewards, spells, the instance flush, the corpse transfer, admin),
-     and the container writers that still run outside a unit (the instance flush's bank forward, corpse creation)
-     take the container lock. Then `upsert_player` stops updating the inventory columns, and the lost-update
-     regression test lands. That can't happen earlier, because until then the legacy writers save inventory only
-     through `upsert_player`.
+   - 4c: the remaining inventory writers, in three PRs. Admin and player creation need nothing (creation is an
+     insert).
+     - 4c-i: the spells (create object, consume reagents), the quests (collect_n turn-in consumption, and "item"
+       rewards built for real through one `ItemGranter`), and the tutorial run reset. The run reset strips
+       instance-bound items through the registry after the caller's own save (reconnect) or commit (the First
+       Exposure ending, whose respawn commits through its own ORM session). Stacks taken from a container are
+       carried as general inventory (`slot_type` `inventory`), like a pickup, so `equip` infers their slot.
+     - 4c-ii: death's corpse transfer as one unit (the corpses and the strip in one transaction), with an
+       `inventory_updated` to the player; the instance flush's bank forward under the container lock.
+     - 4c-iii: `upsert_player` stops updating the inventory columns, and the lost-update regression test lands.
+       That can't happen earlier, because until then the legacy writers save inventory only through
+       `upsert_player`.
 5. Quests, lucidity, corruption, cooldowns and debrief.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
@@ -259,5 +266,6 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.6 | 2026-10-29 | §6: step 4c splits into 4c-i (spells, quests, tutorial run reset), 4c-ii (death's corpse transfer, the bank forward) and 4c-iii (the `upsert_player` narrowing); quest "item" rewards, never wired to a working service, are built in 4c-i |
 | 1.0.5 | 2026-10-28 | §3.3: units name the world containers they write, whose locks follow the player locks; container session tokens are not deduplication tokens. §3.4: the container write runs in the unit's transaction and never commits or skips items on its own (4b's integration test found the item upserts committing mid-transfer). §6: 4c also puts the remaining out-of-unit container writers under the container lock |
 | 1.0.4 | 2026-10-27 | §3: each part's procedure writes only its own columns; the idle TTL is 0 until every writer of a part goes through the registry (4a's e2e run showed a cached inventory writing back items a legacy `put` had moved). §6: step 4 splits into 4a (inventory part, player-only commands), 4b (container transfers in one transaction, bank, wearable) and 4c (remaining writers, then `upsert_player` stops writing inventory) |

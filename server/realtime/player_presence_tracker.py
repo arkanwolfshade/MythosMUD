@@ -14,7 +14,8 @@ from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
 from ..game.effect_store import clear_instance_scoped_effects
 from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
-from ..game.instance_state import QuestResetter, reset_instance_scoped_state, restart_instance_run
+from ..game.instance_state import QuestResetter, clear_lost_instance_items, restart_instance_run
+from ..game.player_registry import PlayerRegistry
 from ..models.corruption import compute_tier
 from ..models.player import Player
 from ..models.room import Room
@@ -206,8 +207,9 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if instance is not None and player_obj.current_room_id in instance.rooms:
         # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
         return player_obj.current_room_id
+    restarted = False
     if instance is None:
-        instance = await _start_fresh_instance(
+        instance, restarted = await _start_fresh_instance(
             player_obj, instance_manager, content_service, quest_service, template_id, instance_id
         )
 
@@ -219,6 +221,10 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     setattr(player, "current_room_id", first_room_id)  # noqa: B010  # Reason: SQLAlchemy column
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
+    if restarted:
+        # After that full-row save, which would otherwise write the old inventory back (ADR-029 step 4c-i).
+        container = _container_services(cast(object, manager))
+        await clear_lost_instance_items(container.player_registry if container is not None else None, player_obj)
     return first_room_id
 
 
@@ -248,22 +254,22 @@ async def _start_fresh_instance(
     quests: QuestResetter | None,
     template_id: str,
     lost_instance_id: str | None,
-) -> Instance:
-    """Create and populate a new instance for the player and record it on them.
+) -> tuple[Instance, bool]:
+    """Create and populate a new instance for the player and record it on them; True if the run restarted.
 
     ``lost_instance_id`` is the instance the player had before, if any. A real one that no longer
-    exists means a restart (logout, server restart), so the run starts over: what the old instance
-    handed the player is cleared, and DP, lucidity and the instance's quests are reset (corruption
-    stays). The pending marker (new character) and None (stranded in a template) mean there is
-    nothing to reset.
+    exists means a restart (logout, server restart), so the run starts over: its effects are cleared
+    and DP, lucidity and the instance's quests are reset (corruption stays); the caller clears what
+    the old instance handed the player once its save has committed. The pending marker (new
+    character) and None (stranded in a template) mean there is nothing to reset.
     """
     instance = instance_manager.create_instance(template_id=template_id, owner_player_id=player.player_id)
     if content is not None:
         await content.populate(instance)
     cleared = 0
-    if lost_instance_id and lost_instance_id != PENDING_INSTANCE_ID:
-        cleared = reset_instance_scoped_state(player)
-        cleared += await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
+    restarted = bool(lost_instance_id) and lost_instance_id != PENDING_INSTANCE_ID
+    if restarted:
+        cleared = await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
         # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
         prefix = f"{instance.instance_id}_"
         await restart_instance_run(player, [room_id.removeprefix(prefix) for room_id in instance.rooms], quests)
@@ -273,10 +279,10 @@ async def _start_fresh_instance(
         lost_instance_id=lost_instance_id,
         instance_id=instance.instance_id,
         template_id=template_id,
-        cleared=cleared,
+        effects_cleared=cleared,
     )
     setattr(player, "tutorial_instance_id", instance.instance_id)  # noqa: B010  # Reason: SQLAlchemy column
-    return instance
+    return instance, restarted
 
 
 class _InstanceServices(Protocol):  # pylint: disable=too-few-public-methods  # Reason: attribute-only structural type
@@ -285,6 +291,7 @@ class _InstanceServices(Protocol):  # pylint: disable=too-few-public-methods  # 
     instance_manager: InstanceManager | None
     instance_content_service: InstanceContentLifecycle | None
     quest_service: QuestResetter | None
+    player_registry: PlayerRegistry | None
 
 
 def _container_services(manager: object) -> _InstanceServices | None:
