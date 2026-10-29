@@ -21,6 +21,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 if TYPE_CHECKING:
     from server.events.combat_events import NPCDiedEvent
     from server.events.event_types import PlayerDiedEvent, PlayerMortallyWoundedEvent
+    from server.game.player_registry import PlayerRegistry
 
 
 class _ConnectionManagerLike(Protocol):
@@ -146,15 +147,21 @@ class CombatDeathHandler:
             # typed connection_manager shape (distinct from this file's _ConnectionManagerLike,
             # which only covers room subscriber diagnostics). Same module as
             # CorpseLifecycleService, so this adds no new import edge.
-            from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike, CorpseLifecycleService
+            from ..services.corpse_lifecycle_service import (
+                CorpseConnectionManagerLike,
+                CorpseLifecycleService,
+                CorpseServiceError,
+            )
 
             resolved_connection_manager = self._resolve_connection_manager_for_corpse_creation()
             connection_manager: CorpseConnectionManagerLike | None = None
             persistence: AsyncPersistenceLayer | None = None
+            player_registry: PlayerRegistry | None = None
 
             if resolved_connection_manager is None:
                 try:
                     container = ApplicationContainer.get_instance()
+                    player_registry = container.player_registry
                     connection_manager = cast(
                         "CorpseConnectionManagerLike | None",
                         getattr(container, "connection_manager", None),
@@ -175,13 +182,19 @@ class CombatDeathHandler:
                 logger.warning("Could not get persistence for corpse creation, skipping")
                 return
 
-            corpse_service = CorpseLifecycleService(persistence=persistence, connection_manager=connection_manager)
-            corpse = await corpse_service.create_corpse_on_death(
-                player_id=target.participant_id,
-                room_id=combat.room_id,
-                grace_period_seconds=300,
-                decay_hours=1,
+            corpse_service = CorpseLifecycleService(
+                persistence=persistence, connection_manager=connection_manager, player_registry=player_registry
             )
+            try:
+                corpse = await corpse_service.create_corpse_on_death(
+                    player_id=target.participant_id,
+                    room_id=combat.room_id,
+                    grace_period_seconds=300,
+                    decay_hours=1,
+                )
+            except CorpseServiceError:
+                # Already logged by log_and_raise; the unit rolled back, so the player keeps their gear.
+                return
             logger.info(
                 "Corpse container created on death",
                 container_id=str(corpse.container_id),

@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACITY_SLOTS
 from server.exceptions import DatabaseError, ValidationError
+from server.persistence.container_create_params import ContainerCreateParams
 from server.persistence.container_persistence_async import (
     _build_item_dict,
     _call_create_container_procedure,
@@ -22,7 +23,9 @@ from server.persistence.container_persistence_async import (
     _row_to_mapping,
     _validate_container_create_params,
     create_container_async,
+    create_container_in_transaction_async,
     delete_container_async,
+    delete_container_in_transaction_async,
     fetch_container_items_async,
     get_container_async,
     update_container_async,
@@ -493,4 +496,55 @@ async def test_write_container_items_never_skips_an_item_it_cannot_write() -> No
             cast(AsyncSession, cast(object, session)), uuid.uuid4(), [{"item_id": "torch", "item_instance_id": "t-1"}]
         )
 
+    assert session.commits == 0
+
+
+async def test_create_container_in_transaction_creates_the_row_and_its_items_without_committing() -> None:
+    """ADR-029 deaths: the corpse commits with the emptied player, so the create must never commit itself."""
+    session = _RecordingSession()
+    new_id = uuid.uuid4()
+    params = ContainerCreateParams(
+        owner_id=uuid.uuid4(), room_id="room-1", items_json=[{"item_id": "torch", "item_instance_id": "torch-1"}]
+    )
+
+    with patch(
+        "server.persistence.container_persistence_async._call_create_container_procedure",
+        new_callable=AsyncMock,
+        return_value=(new_id, None, None),
+    ) as create:
+        created = await create_container_in_transaction_async(
+            cast(AsyncSession, cast(object, session)), "corpse", params
+        )
+
+    assert created == new_id
+    call = create.await_args
+    assert call is not None
+    proc_params = cast(dict[str, object], call.args[1])
+    assert proc_params["owner_id"] == str(params.owner_id) and proc_params["room_id"] == "room-1"
+    assert session.calls == [
+        "clear_container_contents",
+        "upsert_item_instance",
+        "add_item_to_container",
+        "update_container",
+    ]
+    assert session.commits == 0
+
+
+async def test_create_container_in_transaction_rejects_bad_params_before_touching_the_database() -> None:
+    session = _RecordingSession()
+
+    with pytest.raises(ValidationError):
+        _ = await create_container_in_transaction_async(
+            cast(AsyncSession, cast(object, session)), "not_a_source", ContainerCreateParams()
+        )
+
+    assert session.calls == []
+
+
+async def test_delete_container_in_transaction_never_commits() -> None:
+    session = _RecordingSession()
+
+    await delete_container_in_transaction_async(cast(AsyncSession, cast(object, session)), uuid.uuid4())
+
+    assert session.calls == ["delete_container"]
     assert session.commits == 0

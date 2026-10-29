@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.6** · MythosMUD · 2026-10-29
+**Version 1.0.7** · MythosMUD · 2026-10-29
 
 ---
 
@@ -154,7 +154,11 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 - **Transfers** with a world container (furniture, corpse) or another player lock every party, mutate in memory, and
   commit everything in one transaction before returning; on failure everything rolls back. The container's new
   contents are a write handed to the unit (`write_container`), applied after the players' parts in the same
-  transaction; that write never commits and never skips an item it cannot write, so a failure moves nothing. Room
+  transaction; that write never commits and never skips an item it cannot write, so a failure moves nothing. A row
+  the unit itself creates (a corpse) is a `write_new` write: it takes no lock, since no other unit can see it before
+  the commit. A death is one such unit: the corpses, the deletes of the worn-container rows folded into them, and
+  the emptied player commit together. A write to a container alone (the bank forward of a flushed instance) is a
+  unit with no players, `mutate_many([], containers=[cid])`. Room
   floor drops are in-memory only (`room_subscription_manager.py`), so a floor pickup or drop is a sync commit on the
   player alone.
 
@@ -266,6 +270,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.7 | 2026-10-29 | §3.4: `write_new` for rows a unit creates (corpses); a death is one unit; a container-only unit for the bank forward (step 4c-ii) |
 | 1.0.6 | 2026-10-29 | §6: step 4c splits into 4c-i (spells, quests, tutorial run reset), 4c-ii (death's corpse transfer, the bank forward) and 4c-iii (the `upsert_player` narrowing); quest "item" rewards, never wired to a working service, are built in 4c-i |
 | 1.0.5 | 2026-10-28 | §3.3: units name the world containers they write, whose locks follow the player locks; container session tokens are not deduplication tokens. §3.4: the container write runs in the unit's transaction and never commits or skips items on its own (4b's integration test found the item upserts committing mid-transfer). §6: 4c also puts the remaining out-of-unit container writers under the container lock |
 | 1.0.4 | 2026-10-27 | §3: each part's procedure writes only its own columns; the idle TTL is 0 until every writer of a part goes through the registry (4a's e2e run showed a cached inventory writing back items a legacy `put` had moved). §6: step 4 splits into 4a (inventory part, player-only commands), 4b (container transfers in one transaction, bank, wearable) and 4c (remaining writers, then `upsert_player` stops writing inventory) |

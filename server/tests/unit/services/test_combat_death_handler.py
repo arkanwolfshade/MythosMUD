@@ -11,6 +11,7 @@ import pytest
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.models.room import Room
 from server.services.combat_death_handler import CombatDeathHandler
+from server.services.corpse_lifecycle_service import CorpseServiceError
 
 
 @pytest.fixture
@@ -112,9 +113,29 @@ async def test_create_corpse_success(mock_container_cls, mock_corpse_cls, handle
     container = MagicMock()
     container.connection_manager = MagicMock()
     container.async_persistence = persistence
+    registry = MagicMock()
+    container.player_registry = registry
     mock_container_cls.return_value = container
     corpse = MagicMock(container_id=uuid.uuid4())
     mock_corpse_cls.return_value.create_corpse_on_death = AsyncMock(return_value=corpse)
+    await handler._create_corpse_on_death(player_target, combat)
+    mock_corpse_cls.return_value.create_corpse_on_death.assert_awaited_once()
+    # The corpse transfer is a registry unit (ADR-029), so the service gets the app's registry.
+    assert mock_corpse_cls.call_args.kwargs["player_registry"] is registry
+
+
+@pytest.mark.asyncio
+@patch("server.services.corpse_lifecycle_service.CorpseLifecycleService")
+@patch("server.container.ApplicationContainer.get_instance")
+async def test_a_failed_corpse_does_not_escape_the_death_handler(
+    mock_container_cls, mock_corpse_cls, handler, player_target, combat
+):
+    """A corpse that could not be written (the unit rolled back; the player keeps their gear) is not fatal."""
+    container = MagicMock()
+    container.connection_manager = None
+    container.async_persistence = MagicMock()
+    mock_container_cls.return_value = container
+    mock_corpse_cls.return_value.create_corpse_on_death = AsyncMock(side_effect=CorpseServiceError("db down"))
     await handler._create_corpse_on_death(player_target, combat)
     mock_corpse_cls.return_value.create_corpse_on_death.assert_awaited_once()
 

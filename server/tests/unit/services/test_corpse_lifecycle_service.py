@@ -5,32 +5,35 @@ Tests the CorpseLifecycleService class.
 """
 # pylint: disable=redefined-outer-name,too-many-lines  # Reason: Pytest fixtures use fixture names as parameters. Comprehensive test file with many test cases.
 # pyright: reportAny=false
-# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (mock_persistence.create_container, clear_player_inventory,
+# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (mock_persistence.get_containers_by_entity_id,
 # .assert_awaited_once, ...) resolve to Any throughout this file.
 
+import json
 import uuid
+from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
 from server.models.container import ContainerComponent, ContainerLockState, ContainerSourceType
+from server.persistence.container_create_params import ContainerCreateParams
 from server.services.corpse_lifecycle_service import (
     CorpseLifecycleService,
     CorpseNotFoundError,
     CorpseServiceError,
     _get_enum_value,
 )
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
 
 
 @pytest.fixture
 def mock_persistence() -> MagicMock:
-    """Create a mock persistence layer: no worn containers, player saves and row deletes succeed."""
+    """Create a mock persistence layer: no worn containers, and row deletes succeed."""
     persistence = MagicMock()
     persistence.get_containers_by_entity_id = AsyncMock(return_value=[])
-    persistence.save_player = AsyncMock()
-    persistence.clear_player_inventory = AsyncMock(return_value=True)
     persistence.delete_container = AsyncMock(return_value=True)
     return persistence
 
@@ -84,23 +87,70 @@ def test_corpse_not_found_error():
     assert str(error) == "Corpse not found"
 
 
-@pytest.mark.asyncio
-async def test_create_corpse_on_death_success(corpse_service, mock_persistence):
-    """Test create_corpse_on_death() successfully creates corpse."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = [{"item_id": "item_001", "quantity": 1}]
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
-    result = await corpse_service.create_corpse_on_death(player_id, room_id)
-    assert isinstance(result, ContainerComponent)
-    assert result.source_type == ContainerSourceType.CORPSE
-    assert result.owner_id == player_id
-    assert result.room_id == room_id
-    mock_persistence.get_player_by_id.assert_awaited_once_with(player_id)
-    mock_persistence.create_container.assert_awaited_once()
+_MODULE = "server.services.corpse_lifecycle_service"
+
+
+@dataclass
+class _Death:
+    """A death against a real PlayerRegistry over the in-memory FakeDatabase; corpse creates and worn deletes are
+    recorded (their SQL is covered by tests/integration/test_registry_corpse_death.py)."""
+
+    service: CorpseLifecycleService
+    registry: PlayerRegistry
+    db: FakeDatabase
+    player_id: uuid.UUID
+    created: list[tuple[uuid.UUID, ContainerCreateParams]] = field(default_factory=list)
+    deleted: list[uuid.UUID] = field(default_factory=list)
+    create_error: Exception | None = None
+
+    def created_items(self, n: int = 0) -> list[dict[str, object]]:
+        return self.created[n][1].items_json or []
+
+    def saved(self) -> tuple[object, object] | None:
+        """(carried, equipped) the death committed for the player, or None if it committed none."""
+        write = self.db.last_inventory_write()
+        if write is None:
+            return None
+        return json.loads(str(write["inventory_json"])), json.loads(str(write["equipped_json"]))
+
+
+def _death(
+    monkeypatch: pytest.MonkeyPatch,
+    persistence: MagicMock,
+    carried: list[dict[str, object]] | None,
+    equipped: dict[str, dict[str, object]] | None = None,
+    *,
+    connection_manager: MagicMock | None = None,
+) -> _Death:
+    """``carried=None`` means there is no such player."""
+    db = FakeDatabase()
+
+    async def load(_session: DbSession, pid: uuid.UUID) -> PlayerAggregate | None:
+        if carried is None:
+            return None
+        row = raw_row(pid, name="Wolfshade", inventory=json.dumps(carried), equipped_json=json.dumps(equipped or {}))
+        return aggregate(row)
+
+    registry = PlayerRegistry(db.session, loader=load)
+    service = CorpseLifecycleService(
+        persistence=persistence, connection_manager=connection_manager, player_registry=registry
+    )
+    death = _Death(service, registry, db, uuid.uuid4())
+
+    async def create(_session: object, source_type: str, params: ContainerCreateParams) -> uuid.UUID:
+        assert source_type == "corpse"
+        if death.create_error is not None:
+            raise death.create_error
+        container_id = uuid.uuid4()
+        death.created.append((container_id, params))
+        return container_id
+
+    async def delete(_session: object, container_id: uuid.UUID) -> None:
+        death.deleted.append(container_id)
+
+    monkeypatch.setattr(f"{_MODULE}.create_container_in_transaction_async", create)
+    monkeypatch.setattr(f"{_MODULE}.delete_container_in_transaction_async", delete)
+    return death
 
 
 def _stack(item_id: str, instance_id: str | None = None, slot_type: str = "inventory") -> dict[str, object]:
@@ -111,16 +161,6 @@ def _stack(item_id: str, instance_id: str | None = None, slot_type: str = "inven
         "quantity": 1,
         "item_instance_id": instance_id or f"inst-{item_id}",
     }
-
-
-def _dying_player(
-    inventory: list[dict[str, object]], equipped: dict[str, dict[str, object]] | None = None
-) -> MagicMock:
-    player = MagicMock()
-    player.name = "Wolfshade"
-    player.get_inventory.return_value = inventory
-    player.get_equipped_items.return_value = equipped or {}
-    return player
 
 
 def _worn_container_row(
@@ -145,236 +185,247 @@ def _worn_container_row(
     }
 
 
-def _created_items(mock_persistence: MagicMock, call: int = 0) -> list[dict[str, object]]:
-    return mock_persistence.create_container.await_args_list[call].kwargs["items_json"]
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_returns_the_corpse_with_the_new_rows_id(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    death = _death(monkeypatch, mock_persistence, [_stack("sling")])
+
+    corpse = await death.service.create_corpse_on_death(death.player_id, "room_001")
+
+    [(created_id, params)] = death.created
+    assert corpse.container_id == created_id  # the procedure's id, not the placeholder the component was built with
+    assert corpse.source_type == ContainerSourceType.CORPSE
+    assert corpse.owner_id == params.owner_id == death.player_id
+    assert corpse.room_id == params.room_id == "room_001"
+    assert corpse.metadata["player_name"] == "Wolfshade"
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_moves_carried_and_equipped_items_off_the_player(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+async def test_create_corpse_on_death_moves_carried_and_equipped_items_off_the_player_in_one_transaction(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
-    """Items are moved, not copied: the player is emptied once the corpse holds everything (#917)."""
-    player_id = uuid.uuid4()
-    player = _dying_player([_stack("sling")], {"head": _stack("hat", slot_type="head")})
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    """Items are moved, not copied: the corpse and the emptied player commit together (#917, ADR-029)."""
+    death = _death(monkeypatch, mock_persistence, [_stack("sling")], {"head": _stack("hat", slot_type="head")})
 
-    _ = await corpse_service.create_corpse_on_death(player_id, "room_001")
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    assert [i["item_id"] for i in _created_items(mock_persistence)] == ["sling", "hat"]
-    mock_persistence.clear_player_inventory.assert_awaited_once_with(player_id)
+    assert [i["item_id"] for i in death.created_items()] == ["sling", "hat"]
+    assert death.saved() == ([], {})
+    assert death.db.commits == 1
     # Never a whole-row save: it rewrote stats from a Player loaded before the death's DP write
     # landed, reviving the dead player and re-triggering death in a loop (#917).
-    mock_persistence.save_player.assert_not_awaited()
+    mock_persistence.save_player.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_create_corpse_on_death_nests_worn_container_contents_and_deletes_its_row(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
-    """A worn backpack's live contents travel inside its stack; its equipment row is then removed (#917)."""
+    """A worn backpack's live contents travel inside its stack; its equipment row is removed in the same unit."""
     row_id = str(uuid.uuid4())
     coins = _stack("coin", slot_type="backpack")
-    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
     mock_persistence.get_containers_by_entity_id = AsyncMock(
         return_value=[_worn_container_row(row_id, "pack-1", [coins])]
     )
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    death = _death(monkeypatch, mock_persistence, [], {"back": _stack("backpack", "pack-1", slot_type="back")})
 
-    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    (backpack,) = _created_items(mock_persistence)
+    (backpack,) = death.created_items()
     assert backpack["inner_container"] == {"capacity_slots": 8, "items": [coins], "lock_state": "unlocked"}
-    mock_persistence.delete_container.assert_awaited_once_with(uuid.UUID(row_id))
+    assert death.deleted == [uuid.UUID(row_id)]
+    assert death.db.commits == 1
 
 
 @pytest.mark.asyncio
 async def test_create_corpse_on_death_ignores_worn_rows_for_other_items_and_non_equipment(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
     other_row = _worn_container_row(str(uuid.uuid4()), "some-other-pack", [])
     chest_row = {**_worn_container_row(str(uuid.uuid4()), "pack-1", []), "source_type": "environment"}
-    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[other_row, chest_row])
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    death = _death(monkeypatch, mock_persistence, [], {"back": _stack("backpack", "pack-1", slot_type="back")})
 
-    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    (backpack,) = _created_items(mock_persistence)
+    (backpack,) = death.created_items()
     assert "inner_container" not in backpack
-    mock_persistence.delete_container.assert_not_awaited()
+    assert death.deleted == []
 
 
 @pytest.mark.asyncio
 async def test_create_corpse_on_death_keeps_an_unreadable_worn_row_instead_of_deleting_it(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
     """If a worn row cannot be read, its contents cannot be nested, so the row must survive (#917)."""
     unreadable = {**_worn_container_row(str(uuid.uuid4()), "pack-1", []), "capacity_slots": 999}
-    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[unreadable])
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    death = _death(monkeypatch, mock_persistence, [], {"back": _stack("backpack", "pack-1", slot_type="back")})
 
-    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    mock_persistence.delete_container.assert_not_awaited()
+    assert death.deleted == []
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_leaves_a_worn_row_it_did_not_lock(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    """A worn row first seen under the player's lock was never locked itself, so the death must not touch it."""
+    late_row = _worn_container_row(str(uuid.uuid4()), "pack-1", [_stack("coin", slot_type="backpack")])
+    mock_persistence.get_containers_by_entity_id = AsyncMock(side_effect=[[], [late_row]])
+    death = _death(monkeypatch, mock_persistence, [], {"back": _stack("backpack", "pack-1", slot_type="back")})
+
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
+
+    (backpack,) = death.created_items()
+    assert "inner_container" not in backpack
+    assert death.deleted == []
 
 
 @pytest.mark.asyncio
 async def test_create_corpse_on_death_spills_past_the_slot_limit_onto_extra_corpses(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
     """A container holds at most 20 stacks, so 25 are split rather than dropped (#917)."""
+    death = _death(monkeypatch, mock_persistence, [_stack(f"item{n}") for n in range(25)])
 
-    def _new_container_row(**_kwargs: object) -> dict[str, str]:
-        return {"container_id": str(uuid.uuid4())}
+    result = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    player = _dying_player([_stack(f"item{n}") for n in range(25)])
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.create_container = AsyncMock(side_effect=_new_container_row)
-
-    result = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
-
-    assert [len(_created_items(mock_persistence, n)) for n in range(2)] == [20, 5]
-    assert mock_persistence.create_container.await_count == 2
-    assert isinstance(result, ContainerComponent)
-    mock_persistence.clear_player_inventory.assert_awaited_once()
+    assert [len(death.created_items(n)) for n in range(2)] == [20, 5]
+    assert result.container_id == death.created[0][0]
+    assert death.saved() == ([], {})
+    assert death.db.commits == 1
 
 
 @pytest.mark.asyncio
 async def test_create_corpse_on_death_empty_handed_player_still_gets_one_corpse(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
-    mock_persistence.get_player_by_id = AsyncMock(return_value=_dying_player([]))
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
+    death = _death(monkeypatch, mock_persistence, [])
 
-    _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
+    _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    mock_persistence.create_container.assert_awaited_once()
-    assert _created_items(mock_persistence) == []
+    assert len(death.created) == 1
+    assert death.created_items() == []
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_leaves_player_untouched_when_corpse_persist_fails(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
+async def test_create_corpse_on_death_leaves_the_player_dressed_when_the_corpse_cannot_be_written(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
 ) -> None:
-    """No corpse means nothing may be taken from the player: an item is never lost (#917)."""
-    player = _dying_player([_stack("sling")])
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-    mock_persistence.create_container = AsyncMock(side_effect=RuntimeError("db down"))
-
-    with pytest.raises(CorpseServiceError):
-        _ = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
-
-    mock_persistence.clear_player_inventory.assert_not_awaited()
-    mock_persistence.delete_container.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_create_corpse_on_death_logs_but_does_not_raise_when_clearing_the_player_fails(
-    corpse_service: CorpseLifecycleService, mock_persistence: MagicMock
-) -> None:
-    """The corpse already exists; a failed clear must not abort the death, and worn rows must survive it."""
+    """No corpse means nothing may be taken from the player: the whole unit rolls back (#917, ADR-029)."""
     row_id = str(uuid.uuid4())
-    player = _dying_player([], {"back": _stack("backpack", "pack-1", slot_type="back")})
-    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
     mock_persistence.get_containers_by_entity_id = AsyncMock(return_value=[_worn_container_row(row_id, "pack-1", [])])
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4())})
-    mock_persistence.clear_player_inventory = AsyncMock(side_effect=RuntimeError("db down"))
-
-    result = await corpse_service.create_corpse_on_death(uuid.uuid4(), "room_001")
-
-    assert isinstance(result, ContainerComponent)
-    mock_persistence.delete_container.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_create_corpse_on_death_emits_container_created(mock_persistence: MagicMock) -> None:
-    """create_corpse_on_death must broadcast container.created so room occupants see the corpse."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory = MagicMock(return_value=[{"item_id": "item_001", "quantity": 1}])
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
     connection_manager = MagicMock()
     connection_manager.broadcast_room_event = AsyncMock(return_value={"sent": 1})
-    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=connection_manager)
+    connection_manager.send_personal_message = AsyncMock()
+    death = _death(
+        monkeypatch,
+        mock_persistence,
+        [_stack("sling")],
+        {"back": _stack("backpack", "pack-1", slot_type="back")},
+        connection_manager=connection_manager,
+    )
+    death.create_error = RuntimeError("db down")
 
-    corpse = await service.create_corpse_on_death(player_id, room_id)
+    with pytest.raises(CorpseServiceError, match="Failed to create corpse container"):
+        _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
-    broadcast: AsyncMock = cast(AsyncMock, connection_manager.broadcast_room_event)
-    broadcast.assert_awaited_once()
-    call_args = broadcast.call_args
-    assert call_args is not None
-    assert call_args.kwargs["event_type"] == "container.created"
-    assert call_args.kwargs["room_id"] == room_id
-    data = cast(dict[str, object], call_args.kwargs["data"])
-    container_payload = cast(dict[str, object], data["container"])
-    # mode="json" so the payload is actually websocket-safe (UUID/datetime -> str); see #711.
-    assert container_payload["container_id"] == str(corpse.container_id)
+    assert death.db.commits == 0 and death.db.rollbacks == 1
+    assert death.deleted == []
+    live = death.registry.peek(death.player_id)
+    assert live is not None and [s["item_id"] for s in live.inventory.carried] == ["sling"]
+    cast(AsyncMock, connection_manager.broadcast_room_event).assert_not_awaited()
+    cast(AsyncMock, connection_manager.send_personal_message).assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_no_connection_manager_skips_emit(mock_persistence: MagicMock) -> None:
-    """No connection_manager configured must not raise; corpse creation still succeeds."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
-    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=None)
+async def test_create_corpse_on_death_announces_the_corpse_and_the_emptied_inventory(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    """container.created reaches the room (#711); inventory_updated tells the dead player their hands are empty."""
+    connection_manager = MagicMock()
+    connection_manager.broadcast_room_event = AsyncMock(return_value={"sent": 1})
+    connection_manager.send_personal_message = AsyncMock()
+    death = _death(monkeypatch, mock_persistence, [_stack("sling")], connection_manager=connection_manager)
 
-    result = await service.create_corpse_on_death(player_id, room_id)
+    corpse = await death.service.create_corpse_on_death(death.player_id, "room_001")
+
+    broadcast = cast(AsyncMock, connection_manager.broadcast_room_event)
+    broadcast.assert_awaited_once()
+    assert broadcast.call_args.kwargs["event_type"] == "container.created"
+    assert broadcast.call_args.kwargs["room_id"] == "room_001"
+    data = cast(dict[str, object], broadcast.call_args.kwargs["data"])
+    # mode="json" so the payload is actually websocket-safe (UUID/datetime -> str); see #711.
+    assert cast(dict[str, object], data["container"])["container_id"] == str(corpse.container_id)
+    personal = cast(AsyncMock, connection_manager.send_personal_message)
+    [(player_id, event)] = [call.args for call in personal.await_args_list]
+    assert player_id == death.player_id
+    assert event["event_type"] == "inventory_updated"
+    assert event["data"] == {"inventory": [], "equipped": {}}
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_no_connection_manager_skips_emit(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    death = _death(monkeypatch, mock_persistence, [])
+
+    result = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
     assert isinstance(result, ContainerComponent)
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_emit_error_does_not_fail_creation(mock_persistence: MagicMock) -> None:
-    """A broken connection_manager must not stop the corpse from being created."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory = MagicMock(return_value=[])
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
+async def test_create_corpse_on_death_emit_error_does_not_fail_creation(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    """A broken connection_manager must not undo or fail a committed death."""
     connection_manager = MagicMock()
     connection_manager.broadcast_room_event = AsyncMock(side_effect=RuntimeError("boom"))
-    service = CorpseLifecycleService(persistence=mock_persistence, connection_manager=connection_manager)
+    connection_manager.send_personal_message = AsyncMock(side_effect=RuntimeError("boom"))
+    death = _death(monkeypatch, mock_persistence, [_stack("sling")], connection_manager=connection_manager)
 
-    result = await service.create_corpse_on_death(player_id, room_id)
+    result = await death.service.create_corpse_on_death(death.player_id, "room_001")
 
     assert isinstance(result, ContainerComponent)
+    assert death.saved() == ([], {})
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_player_not_found(corpse_service, mock_persistence):
-    """Test create_corpse_on_death() raises error when player not found."""
-    player_id = uuid.uuid4()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
+async def test_create_corpse_on_death_player_not_found(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    death = _death(monkeypatch, mock_persistence, None)
+
     with pytest.raises(CorpseServiceError, match="Player not found"):
-        await corpse_service.create_corpse_on_death(player_id, "room_001")
+        _ = await death.service.create_corpse_on_death(death.player_id, "room_001")
+    assert death.created == []
 
 
 @pytest.mark.asyncio
-async def test_create_corpse_on_death_persistence_error(corpse_service, mock_persistence):
-    """Test create_corpse_on_death() handles persistence errors."""
-    player_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(side_effect=Exception("Database error"))
-    with pytest.raises(CorpseServiceError, match="Failed to create corpse container"):
-        await corpse_service.create_corpse_on_death(player_id, "room_001")
+async def test_create_corpse_on_death_without_a_registry_moves_nothing(mock_persistence: MagicMock) -> None:
+    service = CorpseLifecycleService(persistence=mock_persistence)
+
+    with pytest.raises(CorpseServiceError, match="No player registry"):
+        _ = await service.create_corpse_on_death(uuid.uuid4(), "room_001")
+
+
+@pytest.mark.asyncio
+async def test_create_corpse_on_death_custom_grace_period(
+    monkeypatch: pytest.MonkeyPatch, mock_persistence: MagicMock
+) -> None:
+    death = _death(monkeypatch, mock_persistence, [])
+
+    result = await death.service.create_corpse_on_death(
+        death.player_id, "room_001", grace_period_seconds=600, decay_hours=2
+    )
+
+    assert result.metadata.get("grace_period_seconds") == 600
+    assert result.decay_at is not None
+    assert death.created[0][1].metadata_json == result.metadata
 
 
 def test_can_access_corpse_admin(corpse_service):
@@ -583,39 +634,6 @@ def test_can_access_corpse_grace_period_type_error(corpse_service):
     # Should fail open and allow access
     result = corpse_service.can_access_corpse(corpse, uuid.uuid4(), is_admin=False)
     assert result is True
-
-
-@pytest.mark.asyncio
-async def test_create_corpse_on_death_player_no_name(corpse_service, mock_persistence):
-    """Test create_corpse_on_death() handles player without name attribute."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    # Player has no name attribute
-    del mock_player.name
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
-    result = await corpse_service.create_corpse_on_death(player_id, room_id)
-    assert isinstance(result, ContainerComponent)
-    # Should use "Unknown" as default name
-    assert result.metadata.get("player_name") == "Unknown"
-
-
-@pytest.mark.asyncio
-async def test_create_corpse_on_death_custom_grace_period(corpse_service, mock_persistence):
-    """Test create_corpse_on_death() uses custom grace period."""
-    player_id = uuid.uuid4()
-    room_id = "room_001"
-    mock_player = MagicMock()
-    mock_player.get_inventory.return_value = []
-    mock_player.name = "TestPlayer"
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.create_container = AsyncMock(return_value={"container_id": str(uuid.uuid4()), "room_id": room_id})
-    result = await corpse_service.create_corpse_on_death(player_id, room_id, grace_period_seconds=600, decay_hours=2)
-    assert isinstance(result, ContainerComponent)
-    assert result.metadata.get("grace_period_seconds") == 600
-    assert result.decay_at is not None
 
 
 def test_is_corpse_decayed_timezone_aware(corpse_service):

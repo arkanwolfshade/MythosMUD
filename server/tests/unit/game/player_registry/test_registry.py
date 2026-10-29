@@ -361,6 +361,35 @@ async def test_a_container_write_needs_the_container_held() -> None:
             pass
 
 
+async def test_a_new_rows_write_commits_with_the_unit_and_needs_no_container_lock() -> None:
+    """A corpse is created in the death's unit: no lock (nothing can see it yet), but the same transaction."""
+    pid, rows = _one()
+    corpse = uuid.uuid4()
+    registry, db, _events, _clock = _registry(rows)
+
+    with pytest.raises(LockOrderError):
+        registry.write_new(_container_write(corpse))  # no unit at all
+    async with registry.mutate(pid) as player:
+        player.inventory.set_carried([])
+        registry.write_new(_container_write(corpse))
+
+    assert db.commits == 1
+    assert "inventory_json" in (db.executed[0] or {})
+    assert db.executed[-1] == {"container": corpse}
+
+
+async def test_a_failed_unit_never_creates_its_new_rows() -> None:
+    pid, rows = _one()
+    registry, db, _events, _clock = _registry(rows)
+
+    with pytest.raises(ValueError, match="boom"):
+        async with registry.mutate(pid):
+            registry.write_new(_container_write(uuid.uuid4()))
+            raise ValueError("boom")
+
+    assert db.executed == []
+
+
 async def test_two_players_on_one_container_are_serialized() -> None:
     """Two players looting one corpse: the second waits for the first's commit, so it reads what that wrote."""
     a, b = uuid.uuid4(), uuid.uuid4()

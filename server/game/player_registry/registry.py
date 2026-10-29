@@ -8,7 +8,8 @@ PlayerRegistry: the one place player state is read, changed and written (ADR-029
   does not hold raises LockOrderError, since taking a second lock mid-unit could deadlock.
 - ``containers=[cid, ...]`` also takes those world containers' locks, after the players' (sorted), so a unit can move
   items between its players and the containers. ``write_container(cid, write)`` commits a container's write in the
-  unit's transaction, with its players' parts.
+  unit's transaction, with its players' parts. ``write_new(write)`` does the same for rows the write itself creates
+  (a corpse): nothing can see them before the unit commits, so they need no lock.
 - On a successful exit, a unit that needs it (``sync=True``, a sync part changed, or a container write) commits every
   dirty part of its players, and its container writes, in one transaction before returning; on failure everything
   rolls back and the error propagates. Otherwise the changes stay dirty for the lazy sweep. Queued events are
@@ -196,6 +197,17 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
         unit = _held_unit()
         if unit is None or container_id not in unit.containers:
             raise LockOrderError(f"unit of work does not hold container {container_id}")
+        unit.container_writes.append(write)
+        unit.sync = True
+
+    def write_new(self, write: PartWrite) -> None:
+        """Commit ``write``, which only creates rows (a new corpse container), in the current unit's transaction.
+
+        Rows that do not exist until the unit commits cannot be seen by any other unit, so they take no lock.
+        """
+        unit = _held_unit()
+        if unit is None:
+            raise LockOrderError("write_new needs an open unit of work")
         unit.container_writes.append(write)
         unit.sync = True
 

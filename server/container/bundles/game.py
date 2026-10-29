@@ -203,10 +203,13 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         # Floor drops live on the realtime room manager (bundle initialized before this one); the
         # connection manager also flushes a departing player's tutorial instance.
         realtime = cast("ConnectionManager | None", getattr(container, "connection_manager", None))
+        if self.player_registry is None:
+            raise RuntimeError("The player registry must be built before the instance flush service")
         flusher = InstanceFlushService(
             instance_manager,
             realtime.room_manager if realtime else None,
             cast("AsyncPersistenceLayer", async_persistence),
+            self.player_registry,
         )
         self.instance_flush_service = flusher
         if realtime is not None:

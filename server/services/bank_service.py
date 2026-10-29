@@ -9,14 +9,20 @@ can end up over capacity until the player withdraws something: a loss is never m
 
 from __future__ import annotations
 
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 from uuid import UUID
 
 from ..constants.containers import BANK_SOURCE_TYPE
 from ..exceptions import DatabaseError
 from ..models.room import Room
 from ..persistence.container_create_params import ContainerCreateParams
+from ..persistence.container_persistence_async import write_container_items_async
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from ..game.player_registry import DbSession, PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -34,17 +40,6 @@ class BankBoxPersistence(Protocol):
         self, source_type: str, params: ContainerCreateParams | None = None
     ) -> dict[str, object]:
         """Create a container row."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
-
-    async def update_container(
-        self,
-        container_id: UUID,
-        items_json: list[dict[str, object]] | None = None,
-        lock_state: str | None = None,
-        metadata_json: dict[str, object] | None = None,
-        capacity_slots: int | None = None,
-    ) -> dict[str, object] | None:
-        """Update a container; items_json replaces its contents."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
 
 
@@ -75,11 +70,22 @@ async def get_or_create_bank_box(persistence: BankBoxPersistence, owner_id: UUID
         return box
 
 
-async def forward_to_bank_box(persistence: BankBoxPersistence, owner_id: UUID, stacks: list[dict[str, object]]) -> None:
-    """Append stacks to the owner's box (created if needed). Never evicts or refuses: may exceed capacity."""
-    box = await get_or_create_bank_box(persistence, owner_id)
-    held = box.get("items_json")
-    items = [*(cast(list[dict[str, object]], held) if isinstance(held, list) else []), *stacks]
-    # ponytail: read-modify-write without a container lock; a player withdrawing in the same instant can
-    # be overwritten (container writes are last-writer-wins everywhere today, see #976).
-    _ = await persistence.update_container(UUID(str(box["container_id"])), items_json=items)
+async def forward_to_bank_box(
+    persistence: BankBoxPersistence, registry: PlayerRegistry, owner_id: UUID, stacks: list[dict[str, object]]
+) -> None:
+    """Append stacks to the owner's box (created if needed). Never evicts or refuses: may exceed capacity.
+
+    Runs under the box's container lock, as deposits and withdrawals do (ADR-029), so neither can be overwritten.
+    The box is read again under the lock: the copy read to find it may already be stale.
+    """
+    box_id = UUID(str((await get_or_create_bank_box(persistence, owner_id))["container_id"]))
+    async with registry.mutate_many([], containers=[box_id]):  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        box = await persistence.get_bank_container(owner_id)
+        held = box.get("items_json") if box is not None else None
+        items = [*(cast(list[dict[str, object]], held) if isinstance(held, list) else []), *stacks]
+
+        async def write(session: DbSession) -> None:
+            # The registry's sessions come from server.database.get_session_maker(); DbSession is their typed slice.
+            await write_container_items_async(cast("AsyncSession", cast(object, session)), box_id, items)
+
+        registry.write_container(box_id, write)
