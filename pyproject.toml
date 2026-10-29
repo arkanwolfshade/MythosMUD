@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=83.0.0", "wheel"]
+requires = ["setuptools>=84.1.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -20,7 +20,7 @@ dependencies = [
     "sqlalchemy>=2.0.45",
     "structlog>=25.5.0",
     "fastapi-users[sqlalchemy]>=15.0.3",
-    "setuptools>=83.0.0",  # Dependabot #156/#159 - CVE setuptools MANIFEST.in
+    "setuptools>=84.1.0",  # GHSA-xmj3-9gf7-h52w (namespace_packages.txt path escape); earlier: Dependabot #156/#159
     "pre-commit>=4.5.1",
     "pytest>=9.0.3",
     "pytest-cov>=7.0.0",
