@@ -9,7 +9,7 @@ items can no longer be taken by anyone else, and a full box never discards them.
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -19,6 +19,9 @@ from ..game.instance_manager import InstanceContentLifecycle, InstanceManager
 from ..game.items.instance_bound import is_instance_bound_stack
 from ..structured_logging.enhanced_logging_config import get_logger
 from .bank_service import BankBoxPersistence, forward_to_bank_box
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -39,11 +42,13 @@ class InstanceFlushService:
         instance_manager: InstanceManager,
         drops: RoomDropStore | None,
         persistence: BankBoxPersistence,
+        registry: PlayerRegistry,
     ) -> None:
-        """Wire the instance store, the floor-drop store, and bank box persistence."""
+        """Wire the instance store, the floor-drop store, bank box persistence, and the registry (box locks)."""
         self._instance_manager: InstanceManager = instance_manager
         self._drops: RoomDropStore | None = drops
         self._persistence: BankBoxPersistence = persistence
+        self._registry: PlayerRegistry = registry
         self._content: InstanceContentLifecycle | None = None
 
     def attach_content(self, content: InstanceContentLifecycle) -> None:
@@ -72,7 +77,7 @@ class InstanceFlushService:
             )
             return 0
         try:
-            await forward_to_bank_box(self._persistence, UUID(instance.owner_player_id), stacks)
+            await forward_to_bank_box(self._persistence, self._registry, UUID(instance.owner_player_id), stacks)
         except (DatabaseError, SQLAlchemyError, ValueError) as e:
             logger.error(
                 "Bank box deposit failed; floor items lost",

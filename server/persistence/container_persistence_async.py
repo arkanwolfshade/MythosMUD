@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
+from dataclasses import asdict
 from typing import Any, cast
 from uuid import UUID
 
@@ -21,6 +22,7 @@ from ..constants.containers import CONTAINER_SOURCE_TYPES, MAX_CONTAINER_CAPACIT
 from ..exceptions import DatabaseError, ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
+from .container_create_params import ContainerCreateParams
 from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import parse_jsonb_column
 
@@ -492,3 +494,26 @@ async def delete_container_async(session: AsyncSession, container_id: UUID) -> b
             user_friendly="Failed to delete container",
         )
     # log_and_raise always raises; no return needed here.
+
+
+async def create_container_in_transaction_async(
+    session: AsyncSession, source_type: str, params: ContainerCreateParams
+) -> UUID:
+    """Create a container and its items inside the caller's transaction (ADR-029 units of work); never commits.
+
+    Returns the new container's id (the procedure generates it). A failure propagates, so the caller's whole
+    transaction rolls back.
+    """
+    _validate_container_create_params(source_type, params.capacity_slots, params.lock_state)
+    proc_params = _prepare_container_create_params(source_type=source_type, **asdict(params))
+    created = cast(
+        tuple[object, object, object], await _call_create_container_procedure(session, proc_params, source_type)
+    )
+    container_id = UUID(str(created[0]))
+    await write_container_items_async(session, container_id, params.items_json or [])
+    return container_id
+
+
+async def delete_container_in_transaction_async(session: AsyncSession, container_id: UUID) -> None:
+    """Delete a container (its contents rows cascade) inside the caller's transaction; never commits."""
+    _ = await session.execute(text("SELECT delete_container(:cid)"), {"cid": str(container_id)})

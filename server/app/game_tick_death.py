@@ -31,6 +31,7 @@ from .game_tick_protocols import (
 logger = get_logger("server.game_tick")
 
 if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
     from ..models.player import Player
     from ..services.corpse_lifecycle_service import CorpseConnectionManagerLike
 
@@ -82,6 +83,8 @@ async def _create_bleed_out_corpse(container: _TickContainer, player_uuid: uuid.
     corpse_service = CorpseLifecycleService(
         persistence=persistence,
         connection_manager=cast("CorpseConnectionManagerLike | None", cast(object, container.connection_manager)),
+        # The tick container types the registry by the one call the tick makes; the app's is the real PlayerRegistry.
+        player_registry=cast("PlayerRegistry | None", container.player_registry),
     )
     try:
         _ = await corpse_service.create_corpse_on_death(player_uuid, room_id)

@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.exceptions import DatabaseError
+from server.game.player_registry import PlayerRegistry, SessionFactory
 from server.models.player import Player
 from server.models.user import User
 from server.persistence.container_create_params import ContainerCreateParams
@@ -96,8 +97,9 @@ async def test_box_is_created_once_and_stacks_persist_in_order_without_trimming(
 
         # Shrink the box below what we are about to put in: forwarded items must still all be kept.
         _ = await persistence.update_container(UUID(str(box["container_id"])), capacity_slots=2)
-        await forward_to_bank_box(persistence, owner_id, [first])
-        await forward_to_bank_box(persistence, owner_id, [second, third])
+        registry = PlayerRegistry(cast(SessionFactory, session_factory))
+        await forward_to_bank_box(persistence, registry, owner_id, [first])
+        await forward_to_bank_box(persistence, registry, owner_id, [second, third])
 
         stored = await persistence.get_bank_container(owner_id)
         assert stored is not None
@@ -145,7 +147,8 @@ async def test_deleting_the_owner_leaves_an_orphaned_box_nobody_can_look_up(
     persistence = AsyncPersistenceLayer(_skip_room_cache=True)
     box = await get_or_create_bank_box(persistence, player[0])
     try:
-        await forward_to_bank_box(persistence, player[0], [_stack("keepsake")])
+        registry = PlayerRegistry(cast(SessionFactory, session_factory))
+        await forward_to_bank_box(persistence, registry, player[0], [_stack("keepsake")])
         async with session_factory() as session:
             _ = await session.execute(text("DELETE FROM players WHERE player_id = :id"), {"id": str(player[0])})
             await session.commit()

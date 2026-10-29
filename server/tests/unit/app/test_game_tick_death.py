@@ -112,6 +112,7 @@ async def test_process_mortally_wounded_death_threshold() -> None:
     # in the room the player died in, before the limbo move relocates them.
     corpse_service_cls.assert_called_once()
     assert corpse_service_cls.call_args.kwargs["persistence"] is container.async_persistence
+    assert corpse_service_cls.call_args.kwargs["player_registry"] is container.player_registry
     corpse_service.create_corpse_on_death.assert_awaited_once_with(uuid.UUID(player.player_id), "room-1")
     assert order == ["corpse", "limbo"]
 

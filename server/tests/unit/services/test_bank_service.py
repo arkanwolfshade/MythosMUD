@@ -1,11 +1,14 @@
 """Unit tests for bank_service: lazy per-player deposit boxes, over-fill forwarding, bank-room flag."""
 
+import asyncio
 import uuid
+from collections.abc import Mapping, Sequence
 from uuid import UUID
 
 import pytest
 
 from server.exceptions import DatabaseError
+from server.game.player_registry import PlayerRegistry
 from server.models.room import Room
 from server.persistence.container_create_params import ContainerCreateParams
 from server.services.bank_service import (
@@ -14,6 +17,25 @@ from server.services.bank_service import (
     get_or_create_bank_box,
     is_bank_room,
 )
+from server.tests.fixtures.shared.player_registry import FakeDatabase
+
+BoxWrites = list[tuple[UUID, list[dict[str, object]]]]
+
+
+@pytest.fixture
+def box_writes(monkeypatch: pytest.MonkeyPatch) -> BoxWrites:
+    """The bank box writes the registry committed, as (container_id, items), in place of the database's."""
+    writes: BoxWrites = []
+
+    async def record(_session: object, container_id: UUID, items_json: Sequence[Mapping[str, object]]) -> None:
+        writes.append((container_id, [dict(item) for item in items_json]))
+
+    monkeypatch.setattr("server.services.bank_service.write_container_items_async", record)
+    return writes
+
+
+def _registry() -> PlayerRegistry:
+    return PlayerRegistry(FakeDatabase().session)
 
 
 class FakeBankPersistence:
@@ -22,7 +44,6 @@ class FakeBankPersistence:
     def __init__(self, *, race_winner: bool = False, race_leaves_nothing: bool = False) -> None:
         self.boxes: dict[UUID, dict[str, object]] = {}
         self.created: list[ContainerCreateParams] = []
-        self.writes: list[tuple[UUID, list[dict[str, object]] | None]] = []
         self._race_winner: bool = race_winner
         self._race_leaves_nothing: bool = race_leaves_nothing
 
@@ -41,18 +62,6 @@ class FakeBankPersistence:
         box = _box(params.capacity_slots, [], source_type=source_type)
         self.boxes[params.owner_id] = box
         return box
-
-    async def update_container(
-        self,
-        container_id: UUID,
-        items_json: list[dict[str, object]] | None = None,
-        lock_state: str | None = None,
-        metadata_json: dict[str, object] | None = None,
-        capacity_slots: int | None = None,
-    ) -> dict[str, object] | None:
-        _ = (lock_state, metadata_json, capacity_slots)
-        self.writes.append((container_id, items_json))
-        return {}
 
 
 def _box(capacity: int, items: list[dict[str, object]], source_type: str = "bank") -> dict[str, object]:
@@ -125,26 +134,26 @@ async def test_a_create_failure_with_no_box_to_fall_back_on_is_raised() -> None:
 
 
 @pytest.mark.asyncio
-async def test_forward_creates_the_box_when_the_player_has_none() -> None:
+async def test_forward_creates_the_box_when_the_player_has_none(box_writes: BoxWrites) -> None:
     persistence = FakeBankPersistence()
     owner_id = uuid.uuid4()
 
-    await forward_to_bank_box(persistence, owner_id, [_stack("lantern")])
+    await forward_to_bank_box(persistence, _registry(), owner_id, [_stack("lantern")])
 
-    [(container_id, items)] = persistence.writes
+    [(container_id, items)] = box_writes
     assert str(container_id) == persistence.boxes[owner_id]["container_id"]
     assert items == [_stack("lantern")]
 
 
 @pytest.mark.asyncio
-async def test_forward_over_fills_a_full_box_rather_than_evicting() -> None:
+async def test_forward_over_fills_a_full_box_rather_than_evicting(box_writes: BoxWrites) -> None:
     persistence = FakeBankPersistence()
     owner_id = uuid.uuid4()
     persistence.boxes[owner_id] = _box(2, [_stack("a"), _stack("b")])
 
-    await forward_to_bank_box(persistence, owner_id, [_stack("c"), _stack("d")])
+    await forward_to_bank_box(persistence, _registry(), owner_id, [_stack("c"), _stack("d")])
 
-    [(_, items)] = persistence.writes
+    [(_, items)] = box_writes
     assert items == [_stack(name) for name in "abcd"]  # 4 stacks in a 2-slot box: nothing lost
 
 
@@ -165,3 +174,24 @@ def test_is_bank_room_only_for_a_literal_true_flag(attributes: dict[str, object]
 
 def test_is_bank_room_is_false_for_no_room() -> None:
     assert is_bank_room(None) is False
+
+
+@pytest.mark.asyncio
+async def test_forward_waits_for_a_unit_holding_the_box_then_appends_to_what_it_wrote(box_writes: BoxWrites) -> None:
+    """A deposit (a registry unit holding the box's lock) and a forward can never overwrite each other (ADR-029)."""
+    persistence = FakeBankPersistence()
+    owner_id = uuid.uuid4()
+    persistence.boxes[owner_id] = _box(100, [_stack("a")])
+    box_id = UUID(str(persistence.boxes[owner_id]["container_id"]))
+    registry = _registry()
+
+    async with registry.mutate_many([], containers=[box_id]):
+        forward = asyncio.create_task(forward_to_bank_box(persistence, registry, owner_id, [_stack("c")]))
+        for _ in range(5):
+            await asyncio.sleep(0)
+        assert not forward.done()  # waiting for the box's lock
+        persistence.boxes[owner_id] = {**persistence.boxes[owner_id], "items_json": [_stack("a"), _stack("b")]}
+    await forward
+
+    [(_, items)] = box_writes
+    assert items == [_stack(name) for name in "abc"]  # read again under the lock: the deposit's "b" survives

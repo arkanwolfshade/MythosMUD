@@ -12,19 +12,28 @@ of player death, grace periods, decay timers, and item redistribution.
 from __future__ import annotations
 
 import uuid
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, Protocol, cast, runtime_checkable
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
+from ..game.player_registry import DbSession, PartWrite, PlayerNotFoundError, PlayerRegistry
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
+from ..persistence.container_create_params import ContainerCreateParams
+from ..persistence.container_persistence_async import (
+    create_container_in_transaction_async,
+    delete_container_in_transaction_async,
+)
 from ..structured_logging.enhanced_logging_config import get_logger
 
 # Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import log_and_raise
+from .inventory_websocket_events import emit_inventory_snapshot
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from .inventory_service import InventoryStack
 
 logger = get_logger(__name__)
@@ -67,31 +76,11 @@ class _SyncRoomLookup(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
-class _DyingPlayer(Protocol):
-    """The slice of Player that moving a dead player's gear onto a corpse reads (#917)."""
-
-    def get_inventory(self) -> list[dict[str, object]]:
-        """Carried stacks."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-    def get_equipped_items(self) -> dict[str, object]:
-        """Equipped stacks keyed by slot."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-
 class _DeathPersistence(Protocol):
-    """The persistence calls moving a dead player's gear onto a corpse makes (#917)."""
+    """The persistence read moving a dead player's gear onto a corpse makes (#917)."""
 
     async def get_containers_by_entity_id(self, entity_id: UUID) -> list[dict[str, object]]:
         """Containers owned by an entity (a player's worn-container rows)."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-    async def delete_container(self, container_id: UUID) -> bool:
-        """Delete a container row."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
-
-    async def clear_player_inventory(self, player_id: UUID) -> bool:
-        """Empty only the player's carried and equipped items (never stats: no race with the DP write)."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body (not just a docstring) for a non-None Protocol return type
 
 
@@ -157,6 +146,60 @@ def _inner_container_of(worn: ContainerComponent) -> dict[str, object]:
     return inner
 
 
+def _death_items(
+    carried: Sequence[Mapping[str, object]],
+    equipped: Mapping[str, object],
+    worn_rows: Mapping[str, ContainerComponent],
+) -> tuple[list[dict[str, object]], list[UUID]]:
+    """Everything a dying player drops: carried and equipped stacks, worn containers' contents nested (#917).
+
+    Also returns the worn-container rows whose contents were folded into their stacks: the death deletes them.
+    """
+    worn_stacks: list[dict[str, object]] = []
+    claimed: list[UUID] = []
+    for raw in equipped.values():
+        if not isinstance(raw, Mapping):
+            continue
+        stack = dict(cast(Mapping[str, object], raw))
+        worn = worn_rows.get(str(stack.get("item_instance_id")))
+        if worn is not None:
+            stack["inner_container"] = _inner_container_of(worn)
+            claimed.append(worn.container_id)
+        worn_stacks.append(stack)
+    return [dict(stack) for stack in carried] + worn_stacks, claimed
+
+
+def _orm_session(session: DbSession) -> AsyncSession:
+    # The registry's sessions come from server.database.get_session_maker(); DbSession is their typed slice.
+    return cast("AsyncSession", cast(object, session))
+
+
+def _corpse_create_write(corpse: ContainerComponent) -> PartWrite:
+    """Create the corpse's row and items in the death's unit, then set ``corpse.container_id`` to the new row's id."""
+    params = ContainerCreateParams(
+        owner_id=corpse.owner_id,
+        room_id=corpse.room_id,
+        lock_state=_get_enum_value(corpse.lock_state),
+        capacity_slots=corpse.capacity_slots,
+        decay_at=corpse.decay_at,
+        items_json=[dict(item) for item in corpse.items],
+        metadata_json=corpse.metadata,
+    )
+    source_type = _get_enum_value(corpse.source_type)
+
+    async def write(session: DbSession) -> None:
+        corpse.container_id = await create_container_in_transaction_async(_orm_session(session), source_type, params)
+
+    return write
+
+
+def _container_delete_write(container_id: UUID) -> PartWrite:
+    async def write(session: DbSession) -> None:
+        await delete_container_in_transaction_async(_orm_session(session), container_id)
+
+    return write
+
+
 class CorpseServiceError(MythosMUDError):
     """Base exception for corpse service operations."""
 
@@ -178,6 +221,7 @@ class CorpseLifecycleService:
         persistence: Any | None = None,
         connection_manager: CorpseConnectionManagerLike | None = None,
         time_service: Any | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         """
         Initialize the corpse lifecycle service.
@@ -186,18 +230,20 @@ class CorpseLifecycleService:
             persistence: Persistence layer instance (optional, will get if not provided)
             connection_manager: ConnectionManager instance for WebSocket events (optional)
             time_service: Time service instance for decay checks (optional)
+            player_registry: Moves a dying player's gear onto the corpse (required to create corpses)
         """
         if persistence is None:
             raise ValueError("persistence (async_persistence) is required for CorpseLifecycleService")
         self.persistence = persistence
         self.connection_manager = connection_manager
         self.time_service = time_service
+        self.player_registry: PlayerRegistry | None = player_registry
 
     def _build_corpse_component(
         self,
         player_id: UUID,
         room_id: str,
-        player: _DyingPlayer,
+        player_name: str,
         items: list[dict[str, object]],
         grace_period_seconds: int,
         decay_hours: int,
@@ -215,46 +261,10 @@ class CorpseLifecycleService:
             metadata={
                 "grace_period_seconds": grace_period_seconds,
                 "grace_period_start": now.isoformat(),
-                "player_name": getattr(player, "name", "Unknown"),
+                "player_name": player_name,
                 "death_timestamp": now.isoformat(),
             },
         )
-
-    async def _persist_corpse(self, corpse: ContainerComponent, player_id: UUID, room_id: str) -> ContainerComponent:
-        try:
-            items_dicts: list[dict[str, Any]] = [
-                cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
-            ]
-            container_data = await self.persistence.create_container(
-                source_type=_get_enum_value(corpse.source_type),
-                owner_id=corpse.owner_id,
-                room_id=corpse.room_id,
-                capacity_slots=corpse.capacity_slots,
-                decay_at=corpse.decay_at,
-                items_json=items_dicts,
-                metadata_json=corpse.metadata,
-            )
-            corpse.container_id = UUID(container_data["container_id"])
-            logger.info(
-                "Corpse container created",
-                container_id=str(corpse.container_id),
-                player_id=str(player_id),
-                room_id=room_id,
-                items_count=len(corpse.items),
-            )
-            self._register_corpse_on_room(corpse, room_id)
-            await self._emit_corpse_created(corpse, room_id)
-            return corpse
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable
-            log_and_raise(
-                CorpseServiceError,
-                f"Failed to create corpse container: {str(e)}",
-                operation="create_corpse_on_death",
-                player_id=str(player_id),
-                room_id=room_id,
-                details={"player_id": str(player_id), "room_id": room_id},
-                user_friendly="Failed to create corpse container",
-            )
 
     def _register_corpse_on_room(self, corpse: ContainerComponent, room_id: str) -> None:
         """Add the corpse to the in-memory Room so room_state carries it (#711).
@@ -332,10 +342,15 @@ class CorpseLifecycleService:
         grace_period_seconds: int = 300,
         decay_hours: int = 1,
     ) -> ContainerComponent:
-        """Create a corpse container when a player dies."""
+        """Move a dying player's gear onto a corpse container (more than one if it does not fit in one).
+
+        One player-registry unit (ADR-029): the corpses are created, the worn-container rows folded into them are
+        deleted and the player is emptied in one transaction, so an item is moved, never copied or lost (#917).
+        """
         logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
-        player = await self.persistence.get_player_by_id(player_id)
-        if not player:
+        try:
+            corpses = await self._move_gear_onto_corpses(player_id, room_id, grace_period_seconds, decay_hours)
+        except PlayerNotFoundError:
             log_and_raise(
                 CorpseServiceError,
                 f"Player not found: {player_id}",
@@ -345,45 +360,62 @@ class CorpseLifecycleService:
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
-        dying_player = cast(_DyingPlayer, player)
-        stacks, worn_container_ids = await self._collect_death_items(dying_player, player_id)
-        # ponytail: a container holds at most _CORPSE_MAX_SLOTS stacks, so a full pack plus worn gear
-        # spills onto extra corpses rather than dropping items; merge into one if a bigger corpse is ever allowed.
-        chunks = [stacks[i : i + _CORPSE_MAX_SLOTS] for i in range(0, len(stacks), _CORPSE_MAX_SLOTS)] or [[]]
-        corpses = [
-            await self._persist_corpse(
-                self._build_corpse_component(
-                    player_id, room_id, dying_player, chunk, grace_period_seconds, decay_hours
-                ),
-                player_id,
-                room_id,
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Convert to domain exception - corpse creation errors unpredictable
+            log_and_raise(
+                CorpseServiceError,
+                f"Failed to create corpse container: {str(e)}",
+                operation="create_corpse_on_death",
+                player_id=str(player_id),
+                room_id=room_id,
+                details={"player_id": str(player_id), "room_id": room_id},
+                user_friendly="Failed to create corpse container",
             )
-            for chunk in chunks
-        ]
-        await self._strip_player_after_death(player_id, worn_container_ids)
+        for corpse in corpses:
+            logger.info(
+                "Corpse container created",
+                container_id=str(corpse.container_id),
+                player_id=str(player_id),
+                room_id=room_id,
+                items_count=len(corpse.items),
+            )
+            self._register_corpse_on_room(corpse, room_id)
+            await self._emit_corpse_created(corpse, room_id)
+        # The client's inventory (and the transfer modal's Inventory column) is fed only by inventory_updated.
+        await emit_inventory_snapshot(self.connection_manager, player_id, [], {})
         return corpses[0]
 
-    async def _collect_death_items(
-        self, player: _DyingPlayer, player_id: UUID
-    ) -> tuple[list[dict[str, object]], list[UUID]]:
-        """Everything a dying player drops: carried and equipped stacks, worn containers nested (#917).
-
-        Also returns the worn-container rows whose contents were folded into their stacks, so the
-        caller can delete them once the corpse is safely persisted.
-        """
-        worn_rows = await self._worn_container_rows(player_id)
-        equipped: list[dict[str, object]] = []
-        claimed: list[UUID] = []
-        for raw in player.get_equipped_items().values():
-            if not isinstance(raw, Mapping):
-                continue
-            stack = dict(cast(Mapping[str, object], raw))
-            worn = worn_rows.get(str(stack.get("item_instance_id")))
-            if worn is not None:
-                stack["inner_container"] = _inner_container_of(worn)
-                claimed.append(worn.container_id)
-            equipped.append(stack)
-        return [dict(stack) for stack in player.get_inventory()] + equipped, claimed
+    async def _move_gear_onto_corpses(
+        self, player_id: UUID, room_id: str, grace_period_seconds: int, decay_hours: int
+    ) -> list[ContainerComponent]:
+        registry = self.player_registry
+        if registry is None:
+            raise CorpseServiceError("No player registry: a dead player's gear cannot be moved")
+        # Worn-container rows are locked by id, so the ids are read first and the rows again under their locks.
+        # shortcut: a worn row created between the two reads is left alone (its stack goes on the corpse without
+        # its contents); only equipping at the instant of death does that, so revisit if it ever shows up.
+        worn_ids = {row.container_id for row in (await self._worn_container_rows(player_id)).values()}
+        async with registry.mutate(player_id, containers=list(worn_ids)) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            worn_rows = {
+                item_instance_id: row
+                for item_instance_id, row in (await self._worn_container_rows(player_id)).items()
+                if row.container_id in worn_ids
+            }
+            stacks, claimed = _death_items(player.inventory.carried, player.inventory.equipped, worn_rows)
+            # ponytail: a container holds at most _CORPSE_MAX_SLOTS stacks, so a full pack plus worn gear
+            # spills onto extra corpses rather than dropping items; merge into one if a bigger corpse is ever allowed.
+            chunks = [stacks[i : i + _CORPSE_MAX_SLOTS] for i in range(0, len(stacks), _CORPSE_MAX_SLOTS)] or [[]]
+            corpses = [
+                self._build_corpse_component(
+                    player_id, room_id, player.row.name, chunk, grace_period_seconds, decay_hours
+                )
+                for chunk in chunks
+            ]
+            for corpse in corpses:
+                registry.write_new(_corpse_create_write(corpse))
+            for container_id in claimed:
+                registry.write_container(container_id, _container_delete_write(container_id))
+            player.inventory.replace([], {})
+        return corpses
 
     async def _worn_container_rows(self, player_id: UUID) -> dict[str, ContainerComponent]:
         """The player's equipment-container rows (worn backpacks etc.) keyed by their item_instance_id."""
@@ -404,26 +436,6 @@ class CorpseLifecycleService:
             if item_instance_id:
                 rows[str(item_instance_id)] = row
         return rows
-
-    async def _strip_player_after_death(self, player_id: UUID, worn_container_ids: list[UUID]) -> None:
-        """Clear what moved onto the corpse, so items are moved rather than copied (#917).
-
-        Runs only after the corpse is persisted, and logs instead of raising: the worst case is the
-        old duplication (item on corpse and player), never a lost item. Clears the inventory columns
-        only; a whole-row save_player here raced the death's DP write and revived the player.
-        """
-        persistence = cast(_DeathPersistence, self.persistence)
-        try:
-            _ = await persistence.clear_player_inventory(player_id)
-            for container_id in worn_container_ids:
-                _ = await persistence.delete_container(container_id)
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: BLE001  # Reason: corpse already exists; failing the death sequence here would be worse than logging
-            logger.error(
-                "Failed to clear player after corpse creation; items now exist on both corpse and player",
-                player_id=str(player_id),
-                error=str(e),
-                exc_info=True,
-            )
 
     def _grace_period_allows_others(self, corpse: ContainerComponent) -> bool:
         grace_period_seconds = corpse.metadata.get("grace_period_seconds", 300)
