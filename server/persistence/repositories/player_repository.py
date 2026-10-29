@@ -295,9 +295,8 @@ class PlayerRepository:
             params = self._save_preparer.prepare(player)
             session_maker = get_session_maker()
             async with session_maker() as session:
-                # Guard against resurrecting a soft-deleted character (#777): upsert_player's
-                # ON CONFLICT DO UPDATE writes is_deleted/deleted_at from this in-memory Player,
-                # so a stale object loaded before a delete would silently un-delete the row.
+                # Skip saving a soft-deleted character (#777). This check alone races a delete that
+                # commits before the upsert below, so upsert_player itself never clears is_deleted.
                 # NULL (not-yet-inserted player) must fall through to the upsert.
                 deleted = cast(
                     object,
