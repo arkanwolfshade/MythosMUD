@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.7** · MythosMUD · 2026-10-29
+**Version 1.0.8** · MythosMUD · 2026-10-30
 
 ---
 
@@ -144,7 +144,9 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
   commit writes every dirty part, lazy ones included. Each part's procedure writes only that part's columns
   (`update_player_row`, `update_player_inventory`), never the full-row `upsert_player`, so a part write cannot carry
-  a stale copy of a part it did not change.
+  a stale copy of a part it did not change. The reverse holds too: once a player exists, `upsert_player` writes no
+  inventory columns (step 4c-iii), so a legacy full-row save of a copy loaded before an inventory commit keeps its
+  own columns and leaves the stacks alone.
 - **Lazy sweep:** every `save_interval` (repurposed; default 2 s, configurable), the tick loop starts
   `registry.flush_dirty()` as a tracked task. At most K player transactions run concurrently (configurable), and a
   sweep is skipped while the previous one is still running.
@@ -270,6 +272,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.8 | 2026-10-30 | §3.4: `upsert_player` writes the inventory columns only when it inserts a player; after that only the registry writes them (step 4c-iii, which ends step 4) |
 | 1.0.7 | 2026-10-29 | §3.4: `write_new` for rows a unit creates (corpses); a death is one unit; a container-only unit for the bank forward (step 4c-ii) |
 | 1.0.6 | 2026-10-29 | §6: step 4c splits into 4c-i (spells, quests, tutorial run reset), 4c-ii (death's corpse transfer, the bank forward) and 4c-iii (the `upsert_player` narrowing); quest "item" rewards, never wired to a working service, are built in 4c-i |
 | 1.0.5 | 2026-10-28 | §3.3: units name the world containers they write, whose locks follow the player locks; container session tokens are not deduplication tokens. §3.4: the container write runs in the unit's transaction and never commits or skips items on its own (4b's integration test found the item upserts committing mid-transfer). §6: 4c also puts the remaining out-of-unit container writers under the container lock |

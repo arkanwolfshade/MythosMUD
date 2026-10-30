@@ -51,7 +51,8 @@ class PlayerSavePreparer:
     """
     Prepares Player objects for upsert_player procedure calls.
 
-    Handles normalization, inventory validation, and params building.
+    Handles normalization, inventory validation, and params building. upsert_player writes the inventory params only
+    for a new player; an existing player's inventory is the player registry's (ADR-029 step 4c-iii).
     """
 
     def __init__(self, logger: Any) -> None:

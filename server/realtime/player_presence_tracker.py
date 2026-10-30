@@ -222,7 +222,6 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
     if restarted:
-        # After that full-row save, which would otherwise write the old inventory back (ADR-029 step 4c-i).
         container = _container_services(cast(object, manager))
         await clear_lost_instance_items(container.player_registry if container is not None else None, player_obj)
     return first_room_id
