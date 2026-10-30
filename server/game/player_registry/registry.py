@@ -34,6 +34,7 @@ from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
 from .part import DbSession, PartWrite
 from .player_inventory import PlayerInventoryPart
+from .player_quests import LIST_QUEST_INSTANCES_SQL, PlayerQuestsPart
 from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 
 logger = get_logger(__name__)
@@ -52,11 +53,13 @@ class LockOrderError(RuntimeError):
 
 
 async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
-    """The default loader: every part of one player, read in one session (both parts from one row today)."""
+    """The default loader: every part of one player, read in one session (row and inventory share one row)."""
     row = await fetch_player_row(session, player_id)
     if row is None:
         return None
-    return PlayerAggregate(PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row))
+    quest_rows = await session.execute(LIST_QUEST_INSTANCES_SQL, {"id": str(player_id)})
+    quests = PlayerQuestsPart.from_rows(player_id, quest_rows.mappings().all())
+    return PlayerAggregate(PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row), quests)
 
 
 @dataclass(slots=True)

@@ -121,7 +121,6 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
     "quests": [
         "server.game.quest",
         "server.persistence.repositories.quest_definition_repository",
-        "server.persistence.repositories.quest_instance_repository",
         "server.commands.quest_commands",
     ],
     "access": ["access", "uvicorn.access"],

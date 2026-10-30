@@ -1,6 +1,6 @@
 # ADR-010: Quest Subsystem Architecture
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-10-30
 
 ---
 
@@ -39,13 +39,14 @@ provided by the server (game_state.quest_log or GET /v1/api/players/{id}/quests)
    (room or NPC) that offer them. JSONB holds the full definition schema (name, title,
    goals[], rewards[], triggers[], requires_all, requires_any, auto_complete, turn_in_entities).
 
-2. **Repositories**: QuestDefinitionRepository (get_by_id, get_by_name, list_quest_ids_offered_by)
-   and QuestInstanceRepository (create, get_by_player_and_quest, update_state_and_progress,
-   list_active_by_player, list_completed_by_player). Both use get_session_maker() and async
-   sessions per ADR-005.
+2. **Storage**: QuestDefinitionRepository (get_by_id, get_by_name, list_quest_ids_offered_by) uses
+   get_session_maker() and async sessions per ADR-005. A player's quest instances are the player
+   registry's quests part (ADR-029 step 5a): loaded with the player, changed in memory and committed
+   synchronously through `upsert_quest_instance`.
 
-3. **QuestService**: Single domain service (injected with definition and instance repos, optional
-   level/inventory/spell services for rewards). Responsibilities: resolve_name_to_quest_id,
+3. **QuestService**: Single domain service (injected with the definition repository and the player
+   registry, optional level/inventory/spell services for rewards). Each operation is one registry unit,
+   so concurrent events for one player cannot lose each other's progress. Responsibilities: resolve_name_to_quest_id,
    start_quest (prerequisite DAG check), start_quest_by_trigger, record_complete_activity,
    record_kill, turn_in, abandon, get_quest_log. Reward application (XP, item, spell) is
    delegated to existing services; quest layer does not duplicate their logic.
@@ -95,3 +96,4 @@ provided by the server (game_state.quest_log or GET /v1/api/players/{id}/quests)
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance; correct quest log path to `/v1` prefix (#721) |
+| 1.2.0 | 2026-10-30 | Quest instances move from QuestInstanceRepository to the player registry's quests part (ADR-029 step 5a) |

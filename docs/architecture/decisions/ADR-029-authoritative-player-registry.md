@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.8** · MythosMUD · 2026-10-30
+**Version 1.0.9** · MythosMUD · 2026-10-30
 
 ---
 
@@ -137,8 +137,8 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, quest state changes (start, complete, abandon), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
-| Lazy | DP, MP, lucidity, effect counters, position and posture, XP, quest progress counters | Marked dirty; written by the sweep. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Lazy | DP, MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
@@ -250,7 +250,14 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      - 4c-iii: `upsert_player` stops updating the inventory columns, and the lost-update regression test lands.
        That can't happen earlier, because until then the legacy writers save inventory only through
        `upsert_player`.
-5. Quests, lucidity, corruption, cooldowns and debrief.
+5. Quests, lucidity, corruption, cooldowns and debrief, split by area:
+     - 5a: quests. A quests part (every `quest_instances` row of the player, keyed by quest id); each `QuestService`
+       operation is one unit, and `QuestLogChanged` / `QuestCompleted` are published after its commit.
+       `QuestInstanceRepository` is deleted. Quest progress counters are sync too, not lazy: a kill or a pickup
+       that counts commits before it returns.
+     - 5b: lucidity, its exposure state and `lucidity_cooldowns` (including the debrief's `DEBRIEF_PENDING`).
+     - 5c: corruption (`stats` in the row part, `corruption_cooldowns`), and the run restart's quest and lucidity
+       resets.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
@@ -272,6 +279,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.9 | 2026-10-30 | §3.4: every quest change is sync, progress counters included. §6: step 5 splits into 5a (quests), 5b (lucidity, cooldowns, debrief) and 5c (corruption, run restart) |
 | 1.0.8 | 2026-10-30 | §3.4: `upsert_player` writes the inventory columns only when it inserts a player; after that only the registry writes them (step 4c-iii, which ends step 4) |
 | 1.0.7 | 2026-10-29 | §3.4: `write_new` for rows a unit creates (corpses); a death is one unit; a container-only unit for the bank forward (step 4c-ii) |
 | 1.0.6 | 2026-10-29 | §6: step 4c splits into 4c-i (spells, quests, tutorial run reset), 4c-ii (death's corpse transfer, the bank forward) and 4c-iii (the `upsert_player` narrowing); quest "item" rewards, never wired to a working service, are built in 4c-i |

@@ -31,13 +31,12 @@ from server.game.quest.quest_chat_notify import (
     should_notify_quest_progress,
 )
 from server.game.quest.quest_rewards import QuestRewardsMixin
-from server.models.quest import QuestInstance
 from server.schemas.quest import QuestDefinitionSchema
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from server.events.event_bus import EventBus
-    from server.game.player_registry import PlayerRegistry
+    from server.game.player_registry import PlayerAggregate, PlayerQuestsPart, PlayerRegistry, QuestInstanceData
+    from server.models.quest import QuestDefinition
 
 logger = get_logger(__name__)
 
@@ -163,62 +162,56 @@ def _build_collect_n_progress(
     return new_progress
 
 
-class _OfferLookup(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
-    """The slice of QuestDefinitionRepository a run restart reads."""
+class _DefinitionStore(Protocol):
+    """The slice of QuestDefinitionRepository the quest service reads."""
+
+    async def get_by_id(self, quest_id: str) -> QuestDefinition | None:
+        """The definition row of one quest, or None."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    async def get_by_name(self, name: str) -> QuestDefinition | None:
+        """The definition row of the quest with this common name, or None."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
     async def list_quest_ids_offered_by(self, entity_type: str, entity_id: str) -> list[str]:
         """Quest ids offered by one trigger entity."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
-class _InstanceStore(Protocol):
-    """The slice of QuestInstanceRepository a run restart drives."""
-
-    async def get_by_player_and_quest(self, player_id: uuid.UUID, quest_id: str) -> QuestInstance | None:
-        """The player's instance of this quest, in any state."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
-
-    async def update_state_and_progress(
-        self, instance_id: uuid.UUID, state: str | None = None, progress: dict[str, int] | None = None
-    ) -> None:
-        """Change an instance's state and/or progress."""
-
-
 class QuestService(QuestRewardsMixin):
     """
     Core quest logic: start by trigger, progress by events, complete/turn-in, abandon.
+
+    Quest instances are the player registry's quests part (ADR-029 step 5a). Each operation reads and changes them in
+    one registry unit, committed before it returns, so two events for one player (two kills at once) cannot lose
+    each other's progress. QuestLogChanged and QuestCompleted are published only after that commit.
 
     Reward application (XP, item, spell) is delegated to optional injected services.
     """
 
     def __init__(
         self,
-        quest_definition_repository: Any,
-        quest_instance_repository: Any,
+        quest_definition_repository: _DefinitionStore,
+        player_registry: PlayerRegistry,
         level_service: Any = None,
         spell_learning_service: Any = None,
         item_granter: ItemGiver | None = None,
-        event_bus: Any = None,
         async_persistence: Any = None,
-        player_registry: PlayerRegistry | None = None,
     ) -> None:
-        self._def_repo = quest_definition_repository
-        self._instance_repo = quest_instance_repository
+        self._def_repo: _DefinitionStore = quest_definition_repository
+        self._player_registry: PlayerRegistry = player_registry
         self._level_service = level_service
         self._spell_learning_service = spell_learning_service
         self._item_granter: ItemGiver | None = item_granter
-        self._player_registry: PlayerRegistry | None = player_registry
-        self._event_bus = event_bus
         self._async_persistence = async_persistence
         logger.info("QuestService initialized")
 
-    def _publish_log_changed(self, player_id: uuid.UUID) -> None:
-        """Tell subscribers the player's quest log changed, so their Journal panel can refresh."""
-        bus = cast("EventBus | None", self._event_bus)
-        if bus is not None:
-            from server.events.event_types import QuestLogChanged
+    @staticmethod
+    def _log_changed(player: PlayerAggregate) -> None:
+        """Tell subscribers the player's quest log changed (after the commit), so their Journal panel can refresh."""
+        from server.events.event_types import QuestLogChanged
 
-            bus.publish(QuestLogChanged(player_id=str(player_id)))
+        player.emit(QuestLogChanged(player_id=str(player.player_id)))
 
     def set_spell_learning_service(self, service: Any) -> None:
         """Set the spell learning service (e.g. when wired after construction by the container)."""
@@ -229,12 +222,17 @@ class QuestService(QuestRewardsMixin):
         quest_def = await self._def_repo.get_by_name(name)
         return quest_def.id if quest_def else None
 
-    async def _start_quest_validation_error(
+    async def _definition(self, quest_id: str) -> QuestDefinitionSchema | None:
+        """The parsed definition of ``quest_id``, or None if there is no such quest."""
+        definition_row = await self._def_repo.get_by_id(quest_id)
+        return _parse_definition(dict(definition_row.definition)) if definition_row else None
+
+    def _start_quest_validation_error(
         self,
-        player_id: uuid.UUID,
+        quests: PlayerQuestsPart,
         definition: QuestDefinitionSchema,
-        existing: QuestInstance | None,
-    ) -> dict[str, Any] | None:
+        existing: QuestInstanceData | None,
+    ) -> dict[str, object] | None:
         """Return an error dict if the player cannot start this quest; otherwise None."""
         mode_err = _definition_completion_mode_error(definition)
         if mode_err:
@@ -243,7 +241,7 @@ class QuestService(QuestRewardsMixin):
             return {"success": False, "message": "You already have this quest."}
         if existing and existing.state == "completed":
             return {"success": False, "message": "You have already completed this quest."}
-        if not await self._check_prerequisites(player_id, definition):
+        if not self._check_prerequisites(quests, definition):
             return {"success": False, "message": "Prerequisites not met."}
         return None
 
@@ -257,57 +255,47 @@ class QuestService(QuestRewardsMixin):
 
         Returns dict with success (bool), message (str), and optional error key.
         """
-        pid = str(player_id)
-        definition_row = await self._def_repo.get_by_id(quest_id)
-        if not definition_row:
+        definition = await self._definition(quest_id)
+        if definition is None:
             return {"success": False, "message": "Quest not found."}
-        definition = _parse_definition(dict(definition_row.definition))
-        existing = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
-        err = await self._start_quest_validation_error(player_id, definition, existing)
-        if err:
-            return err
-        if existing and existing.state == "abandoned":
-            await self._instance_repo.update_state_and_progress(existing.id, state="active", progress={})
-            logger.info(
-                "Quest re-started (was abandoned)",
-                player_id=pid,
-                quest_id=quest_id,
-                quest_name=definition.name,
-            )
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            existing = player.quests.get(quest_id)
+            err = self._start_quest_validation_error(player.quests, definition, existing)
+            if err:
+                return err
+            # An abandoned instance is re-activated in place (same id), with its progress cleared.
+            _ = player.quests.set(quest_id, state="active", progress={})
+            event = "Quest re-started (was abandoned)" if existing is not None else "Quest started"
+            logger.info(event, player_id=str(player_id), quest_id=quest_id, quest_name=definition.name)
             if _has_collect_n_goals(definition):
-                await self.sync_collect_progress(player_id)
-            notify_quest_started(player_id, definition.title)
-            self._publish_log_changed(player_id)
-            return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
-        await self._instance_repo.create(player_id, quest_id, state="active", progress={})
-        logger.info("Quest started", player_id=pid, quest_id=quest_id, quest_name=definition.name)
-        if _has_collect_n_goals(definition):
-            await self.sync_collect_progress(player_id)
+                await self._sync_collect(player)
+            self._log_changed(player)
         notify_quest_started(player_id, definition.title)
-        self._publish_log_changed(player_id)
         return {"success": True, "message": f"Quest started: {definition.title}", "title": definition.title}
 
-    async def _all_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
+    @staticmethod
+    def _all_required_completed(quests: PlayerQuestsPart, quest_ids: list[str]) -> bool:
         """Return True if the player has completed every quest in quest_ids."""
         for qid in quest_ids:
-            inst = await self._instance_repo.get_by_player_and_quest(player_id, qid)
+            inst = quests.get(qid)
             if not inst or inst.state != "completed":
                 return False
         return True
 
-    async def _any_required_completed(self, player_id: uuid.UUID, quest_ids: list[str]) -> bool:
+    @staticmethod
+    def _any_required_completed(quests: PlayerQuestsPart, quest_ids: list[str]) -> bool:
         """Return True if the player has completed at least one quest in quest_ids."""
         for qid in quest_ids:
-            inst = await self._instance_repo.get_by_player_and_quest(player_id, qid)
+            inst = quests.get(qid)
             if inst and inst.state == "completed":
                 return True
         return False
 
-    async def _check_prerequisites(self, player_id: uuid.UUID, definition: QuestDefinitionSchema) -> bool:
+    def _check_prerequisites(self, quests: PlayerQuestsPart, definition: QuestDefinitionSchema) -> bool:
         """Check DAG: requires_all (all must be completed) and requires_any (at least one)."""
-        if not await self._all_required_completed(player_id, definition.requires_all):
+        if not self._all_required_completed(quests, definition.requires_all):
             return False
-        if definition.requires_any and not await self._any_required_completed(player_id, definition.requires_any):
+        if definition.requires_any and not self._any_required_completed(quests, definition.requires_any):
             return False
         return True
 
@@ -325,36 +313,29 @@ class QuestService(QuestRewardsMixin):
         quest_ids = await self._def_repo.list_quest_ids_offered_by(trigger_type, entity_id)
         results = []
         for quest_id in quest_ids:
-            definition_row = await self._def_repo.get_by_id(quest_id)
-            if not definition_row:
+            definition = await self._definition(quest_id)
+            if definition is None:
                 continue
-            definition = _parse_definition(dict(definition_row.definition))
             if not any(t.type == trigger_type and t.entity_id == entity_id for t in definition.triggers):
                 continue
             result = await self.start_quest(player_id, quest_id)
             results.append(result)
         return results
 
-    def _progress_goal(
-        self,
-        progress: dict[str, Any],
-        goal_index: int,
-        goal_type: str,
-        _config: dict[str, Any],
-    ) -> dict[str, Any]:
+    def _progress_goal(self, progress: dict[str, object], goal_index: int, goal_type: str) -> dict[str, object]:
         """Update progress for one goal; return new progress dict."""
         key = str(goal_index)
         if goal_type == "complete_activity":
             return {**progress, key: 1}
         if goal_type == "kill_n":
-            current = progress.get(key, 0) or 0
+            current = cast(int, progress.get(key, 0)) or 0
             return {**progress, key: current + 1}
         return progress
 
-    async def _apply_activity_progress(
+    async def _apply_activity_progress(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: one goal event: the unit's player, the instance and its definition, and the event's target and type
         self,
-        player_id: uuid.UUID,
-        instance: QuestInstance,
+        player: PlayerAggregate,
+        instance: QuestInstanceData,
         definition: QuestDefinitionSchema,
         activity_target: str,
         goal_type: str,
@@ -365,31 +346,32 @@ class QuestService(QuestRewardsMixin):
                 continue
             if _goal_activity_target(goal, goal_type) != activity_target:
                 continue
-            old_progress = dict(instance.progress or {})
-            new_progress = self._progress_goal(old_progress, i, goal_type, goal.config or {})
-            await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
+            old_progress = dict(instance.progress)
+            new_progress = self._progress_goal(old_progress, i, goal_type)
+            updated = player.quests.set(instance.quest_id, progress=new_progress)
             will_complete = _goals_met(new_progress, definition) and definition.auto_complete
             if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
-                notify_quest_progress(player_id, definition.title)
+                notify_quest_progress(player.player_id, definition.title)
             if will_complete:
-                await self._complete_instance(player_id, instance, definition)  # announces the log itself
+                await self._complete_instance(player, updated, definition)  # announces the log itself
             else:
-                self._publish_log_changed(player_id)
+                self._log_changed(player)
             return True
         return False
 
+    async def _record_goal_event(self, player_id: uuid.UUID, target: str, goal_type: str) -> None:
+        """Advance the first active quest with a matching ``goal_type`` goal, in one unit."""
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            for instance in player.quests.active():
+                definition = await self._definition(instance.quest_id)
+                if definition is None:
+                    continue
+                if await self._apply_activity_progress(player, instance, definition, target, goal_type):
+                    break
+
     async def record_complete_activity(self, player_id: uuid.UUID, activity_target: str) -> None:
         """Record a complete_activity event; update matching active instances and complete if auto_complete."""
-        active = await self._instance_repo.list_active_by_player(player_id)
-        for instance in active:
-            definition_row = await self._def_repo.get_by_id(instance.quest_id)
-            if not definition_row:
-                continue
-            definition = _parse_definition(dict(definition_row.definition))
-            if await self._apply_activity_progress(
-                player_id, instance, definition, activity_target, "complete_activity"
-            ):
-                break
+        await self._record_goal_event(player_id, activity_target, "complete_activity")
 
     async def has_completed_activity(self, player_id: uuid.UUID, activity_target: str) -> bool:
         """Whether any quest of the player's, active or completed, has this complete_activity goal done.
@@ -405,50 +387,34 @@ class QuestService(QuestRewardsMixin):
 
     async def record_kill(self, player_id: uuid.UUID, npc_definition_id: str) -> None:
         """Record a kill for kill_n goals; update matching active instances and complete if auto_complete."""
-        active = await self._instance_repo.list_active_by_player(player_id)
-        for instance in active:
-            definition_row = await self._def_repo.get_by_id(instance.quest_id)
-            if not definition_row:
-                continue
-            definition = _parse_definition(dict(definition_row.definition))
-            if await self._apply_activity_progress(player_id, instance, definition, npc_definition_id, "kill_n"):
-                break
-
-    async def _load_player_for_collect(self, player_id: uuid.UUID) -> Any | None:
-        """Load player via async_persistence for collect_n inventory walks."""
-        persistence = self._async_persistence
-        if not persistence:
-            return None
-        getter = getattr(persistence, "get_player_by_id", None)
-        if not callable(getter):
-            return None
-        # pylint: disable=not-callable  # Reason: narrowed by callable() above; pylint misses getattr narrowing
-        return await getter(player_id)
+        await self._record_goal_event(player_id, npc_definition_id, "kill_n")
 
     async def _sync_collect_for_instance(
         self,
-        player_id: uuid.UUID,
-        instance: QuestInstance,
+        player: PlayerAggregate,
+        instance: QuestInstanceData,
         stacks: list[dict[str, Any]],
     ) -> None:
         """Sync collect_n progress for one active instance; auto-complete if needed."""
-        definition_row = await self._def_repo.get_by_id(instance.quest_id)
-        if not definition_row:
+        definition = await self._definition(instance.quest_id)
+        if definition is None or not _has_collect_n_goals(definition):
             return
-        definition = _parse_definition(dict(definition_row.definition))
-        if not _has_collect_n_goals(definition):
-            return
-        old_progress = dict(instance.progress or {})
+        old_progress = dict(instance.progress)
         new_progress = _build_collect_n_progress(definition, stacks, old_progress)
-        await self._instance_repo.update_state_and_progress(instance.id, progress=new_progress)
-        instance.progress = new_progress
+        updated = player.quests.set(instance.quest_id, progress=new_progress)
         will_complete = _goals_met(new_progress, definition) and definition.auto_complete
         if should_notify_quest_progress(old_progress, new_progress, definition, will_complete=will_complete):
-            notify_quest_progress(player_id, definition.title)
+            notify_quest_progress(player.player_id, definition.title)
         if will_complete:
-            await self._complete_instance(player_id, instance, definition)  # announces the log itself
+            await self._complete_instance(player, updated, definition)  # announces the log itself
         elif new_progress != old_progress:
-            self._publish_log_changed(player_id)
+            self._log_changed(player)
+
+    async def _sync_collect(self, player: PlayerAggregate) -> None:
+        """Recompute collect_n progress from the unit's live holdings for every active quest."""
+        stacks = collect_player_stacks(_LiveHoldings(player.inventory.carried, player.inventory.equipped))
+        for instance in player.quests.active():
+            await self._sync_collect_for_instance(player, instance, stacks)
 
     async def sync_collect_progress(self, player_id: uuid.UUID) -> None:
         """
@@ -457,72 +423,57 @@ class QuestService(QuestRewardsMixin):
         Updates progress JSONB; auto-completes when goals met and auto_complete is true
         (items are not consumed on auto-complete).
         """
-        player = await self._load_player_for_collect(player_id)
-        if not player:
+        try:
+            async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                await self._sync_collect(player)
+        except PlayerNotFoundError:
             logger.debug("sync_collect_progress skipped: player unavailable", player_id=str(player_id))
-            return
-        stacks = collect_player_stacks(player)
-        active = await self._instance_repo.list_active_by_player(player_id)
-        for instance in active:
-            await self._sync_collect_for_instance(player_id, instance, stacks)
 
-    async def _consume_collect_n_items(
-        self, player_id: uuid.UUID, definition: QuestDefinitionSchema
-    ) -> dict[str, Any] | None:
-        """Consume collect_n requirements from inventory. Return error dict or None."""
+    @staticmethod
+    def _consume_collect_n_items(
+        player: PlayerAggregate, definition: QuestDefinitionSchema
+    ) -> dict[str, object] | None:
+        """Consume collect_n requirements from the unit's live inventory. Return error dict or None.
+
+        A shortfall returns before the inventory is touched, so nothing is written.
+        """
         collect_goals = [goal for goal in definition.goals if goal.type == "collect_n"]
         if not collect_goals:
             return None
-        unavailable = {"success": False, "message": "Unable to access inventory for turn-in."}
-        if self._player_registry is None:
-            return unavailable
-        try:
-            # One registry unit (ADR-029 step 4c-i): reads the live stacks, commits before returning. A shortfall
-            # returns before the aggregate is touched, so nothing is written.
-            async with self._player_registry.mutate(player_id) as player:
-                holdings = _LiveHoldings(player.inventory.carried, player.inventory.equipped)
-                error = _consume_collect_goals_from_player(holdings, collect_goals)
-                if error:
-                    return error
-                player.inventory.replace(holdings.carried, holdings.equipped)
-        except PlayerNotFoundError:
-            return unavailable
+        holdings = _LiveHoldings(player.inventory.carried, player.inventory.equipped)
+        error = _consume_collect_goals_from_player(holdings, collect_goals)
+        if error:
+            return error
+        player.inventory.replace(holdings.carried, holdings.equipped)
         return None
 
     async def _complete_instance(
         self,
-        player_id: uuid.UUID,
-        instance: QuestInstance,
+        player: PlayerAggregate,
+        instance: QuestInstanceData,
         definition: QuestDefinitionSchema,
     ) -> None:
         """Apply rewards and set instance to completed."""
-        await self._apply_rewards(player_id, instance.quest_id, definition)
-        now = datetime.now(UTC)
-        await self._instance_repo.update_state_and_progress(
-            instance.id,
-            state="completed",
-            completed_at=now,
-        )
+        from server.events.event_types import QuestCompleted
+
+        await self._apply_rewards(player.player_id, instance.quest_id, definition)
+        _ = player.quests.set(instance.quest_id, state="completed", completed_at=datetime.now(UTC))
         logger.info(
             "Quest completed",
-            player_id=str(player_id),
+            player_id=str(player.player_id),
             quest_id=instance.quest_id,
             quest_name=definition.name,
         )
-        notify_quest_completed(player_id, definition.title)
-        if self._event_bus:
-            from server.events.event_types import QuestCompleted
-
-            self._event_bus.publish(QuestCompleted(player_id=str(player_id), quest_id=instance.quest_id))
-        self._publish_log_changed(player_id)
+        notify_quest_completed(player.player_id, definition.title)
+        player.emit(QuestCompleted(player_id=str(player.player_id), quest_id=instance.quest_id))
+        self._log_changed(player)
 
     def _turn_in_validation_error(
         self,
-        _player_id: uuid.UUID,
         definition: QuestDefinitionSchema,
-        instance: QuestInstance | None,
+        instance: QuestInstanceData | None,
         at_entity_id: str,
-    ) -> dict[str, Any] | None:
+    ) -> dict[str, object] | None:
         """Return an error dict if turn-in is invalid; otherwise None."""
         mode_err = _definition_completion_mode_error(definition)
         if mode_err:
@@ -550,27 +501,27 @@ class QuestService(QuestRewardsMixin):
         """
         Turn in a quest at an entity (when auto_complete is false).
         Validates turn_in_entities and inventory slot for item rewards; then applies rewards.
-        Consumes collect_n items before completion.
+        Consumes collect_n items before completion, in the same unit as the completion.
         """
-        definition_row = await self._def_repo.get_by_id(quest_id)
-        if not definition_row:
+        definition = await self._definition(quest_id)
+        if definition is None:
             return {"success": False, "message": "Quest not found."}
-        definition = _parse_definition(dict(definition_row.definition))
-        # Refresh collect progress from holdings before validating goals.
-        if _has_collect_n_goals(definition):
-            await self.sync_collect_progress(player_id)
-        instance = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
-        err = self._turn_in_validation_error(player_id, definition, instance, at_entity_id)
-        if not err:
-            err = await self._turn_in_inventory_full_error(player_id, definition)
-        if err:
-            return err
-        if instance is None:
-            raise RuntimeError("instance must be set when turn-in validation returns no error")
-        consume_err = await self._consume_collect_n_items(player_id, definition)
-        if consume_err:
-            return consume_err
-        await self._complete_instance(player_id, instance, definition)
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            # Refresh collect progress from holdings before validating goals.
+            if _has_collect_n_goals(definition):
+                await self._sync_collect(player)
+            instance = player.quests.get(quest_id)
+            err = self._turn_in_validation_error(definition, instance, at_entity_id)
+            if not err:
+                err = await self._turn_in_inventory_full_error(player_id, definition)
+            if err:
+                return err
+            if instance is None:
+                raise RuntimeError("instance must be set when turn-in validation returns no error")
+            consume_err = self._consume_collect_n_items(player, definition)
+            if consume_err:
+                return consume_err
+            await self._complete_instance(player, instance, definition)
         return {"success": True, "message": f"Quest completed: {definition.title}", "title": definition.title}
 
     async def turn_in_at_entity(
@@ -581,15 +532,13 @@ class QuestService(QuestRewardsMixin):
     ) -> list[dict[str, Any]]:
         """Attempt turn-in for every active quest listing at_entity_id in turn_in_entities."""
         results: list[dict[str, Any]] = []
-        active = await self._instance_repo.list_active_by_player(player_id)
-        for instance in active:
-            definition_row = await self._def_repo.get_by_id(instance.quest_id)
-            if not definition_row:
-                continue
-            definition = _parse_definition(dict(definition_row.definition))
-            if at_entity_id not in (definition.turn_in_entities or []):
-                continue
-            results.append(await self.turn_in(player_id, instance.quest_id, at_entity_type, at_entity_id))
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            for instance in player.quests.active():
+                definition = await self._definition(instance.quest_id)
+                if definition is None or at_entity_id not in (definition.turn_in_entities or []):
+                    continue
+                # Joins this unit, so every turn-in here commits together.
+                results.append(await self.turn_in(player_id, instance.quest_id, at_entity_type, at_entity_id))
         return results
 
     async def abandon(self, player_id: uuid.UUID, quest_name: str) -> dict[str, Any]:
@@ -597,25 +546,22 @@ class QuestService(QuestRewardsMixin):
         quest_id = await self.resolve_name_to_quest_id(quest_name)
         if not quest_id:
             return {"success": False, "message": f"Unknown quest: {quest_name}."}
-        instance = await self._instance_repo.get_by_player_and_quest(player_id, quest_id)
-        if not instance:
-            return {"success": False, "message": "You do not have this quest."}
-        if instance.state != "active":
-            return {"success": False, "message": "You can only abandon an active quest."}
-        await self._instance_repo.update_state_and_progress(instance.id, state="abandoned")
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            instance = player.quests.get(quest_id)
+            if not instance:
+                return {"success": False, "message": "You do not have this quest."}
+            if instance.state != "active":
+                return {"success": False, "message": "You can only abandon an active quest."}
+            _ = player.quests.set(quest_id, state="abandoned")
+            self._log_changed(player)
         logger.info(
             "Quest abandoned",
             player_id=str(player_id),
             quest_id=quest_id,
             quest_name=quest_name,
         )
-        definition_row = await self._def_repo.get_by_id(quest_id)
-        title = quest_name
-        if definition_row:
-            definition = _parse_definition(dict(definition_row.definition))
-            title = definition.title
-        notify_quest_abandoned(player_id, title)
-        self._publish_log_changed(player_id)
+        definition = await self._definition(quest_id)
+        notify_quest_abandoned(player_id, definition.title if definition else quest_name)
         return {"success": True, "message": "Quest abandoned."}
 
     async def _offered_quest_chain(self, room_ids: Iterable[str]) -> list[str]:
@@ -624,9 +570,7 @@ class QuestService(QuestRewardsMixin):
         pending: list[tuple[str, str]] = [("room", room_id) for room_id in room_ids]
         while pending:
             entity_type, entity_id = pending.pop()
-            for quest_id in await cast("_OfferLookup", self._def_repo).list_quest_ids_offered_by(
-                entity_type, entity_id
-            ):
+            for quest_id in await self._def_repo.list_quest_ids_offered_by(entity_type, entity_id):
                 if quest_id not in found:
                     found.append(quest_id)
                     pending.append(("quest", quest_id))
@@ -640,33 +584,36 @@ class QuestService(QuestRewardsMixin):
         wait to be unlocked again. Returns the quest ids that were reset.
         """
         # shortcut: one offer query per room (rare restart path), batch the lookup if templates grow large
-        instances = cast("_InstanceStore", self._instance_repo)
+        quest_ids = await self._offered_quest_chain(room_ids)
         reset: list[str] = []
-        for quest_id in await self._offered_quest_chain(room_ids):
-            instance = await instances.get_by_player_and_quest(player_id, quest_id)
-            if instance is None or instance.state == "abandoned":
-                continue
-            await instances.update_state_and_progress(instance.id, state="abandoned", progress={})
-            reset.append(quest_id)
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            for quest_id in quest_ids:
+                instance = player.quests.get(quest_id)
+                if instance is None or instance.state == "abandoned":
+                    continue
+                _ = player.quests.set(quest_id, state="abandoned", progress={})
+                reset.append(quest_id)
+            if reset:
+                self._log_changed(player)
         if reset:
             logger.info("Quests reset for a fresh instance", player_id=str(player_id), quest_ids=reset)
-            self._publish_log_changed(player_id)
         return reset
 
     async def get_quest_log(self, player_id: uuid.UUID, include_completed: bool = True) -> list[dict[str, Any]]:
-        """Return quest log entries (active and optionally completed) for API/command."""
-        active = await self._instance_repo.list_active_by_player(player_id)
-        completed = await self._instance_repo.list_completed_by_player(player_id) if include_completed else []
+        """Return quest log entries (active and optionally completed) for API/command. Empty for an unknown player."""
+        view = await self._player_registry.get(player_id)
+        if view is None:
+            return []
+        instances = view.quests.active() + (view.quests.completed() if include_completed else [])
         entries = []
-        for instance in active + completed:
-            definition_row = await self._def_repo.get_by_id(instance.quest_id)
-            if not definition_row:
+        for instance in instances:
+            definition = await self._definition(instance.quest_id)
+            if definition is None:
                 continue
-            definition = _parse_definition(dict(definition_row.definition))
             goals_with_progress = []
             for i, goal in enumerate(definition.goals):
                 key = str(i)
-                current = (instance.progress or {}).get(key, 0)
+                current = cast(int, instance.progress.get(key, 0))
                 required = 1 if goal.type == "complete_activity" else goal.config.get("count", 1)
                 goals_with_progress.append(
                     {

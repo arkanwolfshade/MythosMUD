@@ -102,7 +102,6 @@ class ApplicationContainer:
     spell_learning_service: Any
     mp_regeneration_service: Any
     quest_definition_repository: Any
-    quest_instance_repository: Any
     quest_service: Any
     emote_repository: Any
     emote_service: Any
@@ -179,7 +178,6 @@ class ApplicationContainer:
         self.spell_learning_service = None
         self.mp_regeneration_service = None
         self.quest_definition_repository = None
-        self.quest_instance_repository = None
         self.quest_service = None
         self.emote_repository = None
         self.emote_service = None
