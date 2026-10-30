@@ -1,8 +1,9 @@
 """The authoritative in-memory player registry (ADR-029)."""
 
-from .aggregate import PlayerAggregate, PlayerInventoryView, PlayerRowView, PlayerView
+from .aggregate import PlayerAggregate, PlayerInventoryView, PlayerQuestsView, PlayerRowView, PlayerView
 from .part import DbSession, Part, PartWrite
 from .player_inventory import InventoryData, PlayerInventoryPart
+from .player_quests import PlayerQuestsPart, QuestInstanceData
 from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 from .registry import (
     LockOrderError,
@@ -23,11 +24,14 @@ __all__ = [
     "PlayerInventoryPart",
     "PlayerInventoryView",
     "PlayerNotFoundError",
+    "PlayerQuestsPart",
+    "PlayerQuestsView",
     "PlayerRegistry",
     "PlayerRowData",
     "PlayerRowPart",
     "PlayerRowView",
     "PlayerView",
+    "QuestInstanceData",
     "RegistrySettings",
     "SessionFactory",
     "fetch_player_row",

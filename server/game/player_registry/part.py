@@ -8,15 +8,19 @@ to snapshot itself so a failed unit of work can be rolled back, and how to captu
 
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable, Mapping
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from typing import Protocol
 
 
-class DbResultRows(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+class DbResultRows(Protocol):
     """The row view of a query result that the part mappers read."""
 
     def first(self) -> Mapping[str, object] | None:
         """The first row, or None."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    def all(self) -> Sequence[Mapping[str, object]]:
+        """Every row."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 

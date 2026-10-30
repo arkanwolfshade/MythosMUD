@@ -51,6 +51,13 @@ def test_game_bundle_require_core_services_raises() -> None:
         GameBundle._require_core_services(container)
 
 
+def test_game_bundle_refuses_a_quest_service_without_the_player_registry() -> None:
+    """Quest instances live in the registry (ADR-029 step 5a), so the quest service cannot be built before it."""
+    bundle = GameBundle()
+    with pytest.raises(RuntimeError, match="player registry must be built before the quest service"):
+        bundle._init_quest_service(MagicMock())  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - unit-testing the bundle's private wiring step  # Appropriate because: this file tests each GameBundle wiring helper directly, and initialize() needs the whole app
+
+
 def test_time_bundle_resolve_hourly_holidays() -> None:
     bundle = TimeBundle()
     assert bundle._resolve_hourly_holidays(datetime.now()) == []
@@ -791,19 +798,16 @@ async def test_game_bundle_initialize_wiring() -> None:
                                                         with patch(
                                                             "server.persistence.repositories.quest_definition_repository.QuestDefinitionRepository"
                                                         ):
-                                                            with patch(
-                                                                "server.persistence.repositories.quest_instance_repository.QuestInstanceRepository"
+                                                            with patch.object(
+                                                                bundle,
+                                                                "_initialize_item_services",
+                                                                AsyncMock(),
                                                             ):
                                                                 with patch.object(
                                                                     bundle,
-                                                                    "_initialize_item_services",
-                                                                    AsyncMock(),
+                                                                    "_initialize_caching_services",
                                                                 ):
-                                                                    with patch.object(
-                                                                        bundle,
-                                                                        "_initialize_caching_services",
-                                                                    ):
-                                                                        await bundle.initialize(container)
+                                                                    await bundle.initialize(container)
     assert bundle.player_service is not None
     # #635: temporal services no longer exist on GameBundle at all
     assert not hasattr(bundle, "holiday_service")

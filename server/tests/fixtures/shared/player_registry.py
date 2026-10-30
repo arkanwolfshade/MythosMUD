@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from collections.abc import AsyncGenerator, Callable, Mapping
+from collections.abc import AsyncGenerator, Callable, Mapping, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from typing import cast
@@ -22,9 +22,11 @@ from server.game.player_registry import (
     DbSession,
     PlayerAggregate,
     PlayerInventoryPart,
+    PlayerQuestsPart,
     PlayerRegistry,
     PlayerRowData,
     PlayerRowPart,
+    QuestInstanceData,
 )
 from server.game.player_registry.player_row import json_default
 
@@ -57,9 +59,15 @@ def raw_row(player_id: uuid.UUID | None = None, **overrides: object) -> dict[str
     return row
 
 
-def aggregate(row: Mapping[str, object]) -> PlayerAggregate:
-    """Both parts from one ``get_player_by_id`` row, as load_player_aggregate builds them."""
-    return PlayerAggregate(PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row))
+def aggregate(row: Mapping[str, object], quests: Sequence[QuestInstanceData] = ()) -> PlayerAggregate:
+    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, as load_player_aggregate
+    builds them."""
+    player_id = uuid.UUID(str(row["player_id"]))
+    return PlayerAggregate(
+        PlayerRowPart(PlayerRowData.from_row(row)),
+        PlayerInventoryPart.from_row(row),
+        PlayerQuestsPart(player_id, quests),
+    )
 
 
 class _Rows:
@@ -70,6 +78,9 @@ class _Rows:
 
     def first(self) -> Mapping[str, object] | None:
         return self._row
+
+    def all(self) -> list[Mapping[str, object]]:
+        return []  # no query this fake answers returns several rows (a loaded player has no quests)
 
 
 class _Result:

@@ -58,7 +58,6 @@ GAME_ATTRS = (
     "item_prototype_registry",
     "item_factory",
     "quest_definition_repository",
-    "quest_instance_repository",
     "quest_service",
     "emote_repository",
     "emote_service",
@@ -92,7 +91,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     item_prototype_registry: Any = None
     item_factory: Any = None
     quest_definition_repository: Any = None
-    quest_instance_repository: Any = None
     quest_service: Any = None
     emote_repository: Any = None
     emote_service: Any = None
@@ -247,18 +245,17 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     def _init_quest_service(self, container: ApplicationContainer) -> None:
         from server.game.quest import QuestService
         from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
-        from server.persistence.repositories.quest_instance_repository import QuestInstanceRepository
 
-        self.quest_definition_repository = QuestDefinitionRepository()
-        self.quest_instance_repository = QuestInstanceRepository()
+        if self.player_registry is None:
+            raise RuntimeError("The player registry must be built before the quest service")
+        definition_repository = QuestDefinitionRepository()
+        self.quest_definition_repository = definition_repository
         self.quest_service = QuestService(
-            quest_definition_repository=self.quest_definition_repository,
-            quest_instance_repository=self.quest_instance_repository,
+            quest_definition_repository=definition_repository,
+            player_registry=self.player_registry,
             level_service=self.level_service,
             spell_learning_service=None,
             item_granter=self.item_granter,
-            player_registry=self.player_registry,
-            event_bus=getattr(container, "event_bus", None),
             async_persistence=container.async_persistence,
         )
 

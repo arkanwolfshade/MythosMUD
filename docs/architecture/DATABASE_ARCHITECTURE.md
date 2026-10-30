@@ -189,7 +189,7 @@ removed without a matching update here fails that test.
 | `PlayerSkillRepository`, `SkillRepository`, `SkillUseLogRepository` | Skills catalog, per-character values, use logging | |
 | `PlayerSpellRepository`, `SpellRepository` | Spell catalog, per-character known spells | |
 | `DialogueDefinitionRepository` | NPC dialogue trees | |
-| `QuestDefinitionRepository`, `QuestInstanceRepository` | Quest definitions and per-character state | See [ADR-010](decisions/ADR-010-quest-subsystem.md) |
+| `QuestDefinitionRepository` | Quest definitions (per-character quest state is the player registry's quests part, ADR-029) | See [ADR-010](decisions/ADR-010-quest-subsystem.md) |
 
 **[NOTE]**
 The spell, skill, dialogue and quest repositories are **not exposed on `AsyncPersistenceLayer`**. They
