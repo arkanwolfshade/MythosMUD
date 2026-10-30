@@ -41,8 +41,7 @@ async def strip_instance_bound_items(registry: PlayerRegistry, player_id: uuid.U
     """Remove INSTANCE_BOUND items from the player's live inventory and equipment, as one registry unit (ADR-029
     step 4c-i); returns how many were removed and the inventory now committed.
 
-    The run-reset paths call it after their own save of the player has committed: before it, that full-row save
-    would write the old inventory back. Instance-scoped effects are separate (``clear_instance_scoped_effects``).
+    Instance-scoped effects are separate (``clear_instance_scoped_effects``).
     """
     async with registry.mutate(player_id) as player:
         carried, removed = strip_instance_bound_stacks([dict(stack) for stack in player.inventory.carried])

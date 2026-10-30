@@ -541,6 +541,9 @@ $$;
 
 -- upsert_player: insert or update player and player_inventories
 -- All params required for full upsert; Python prepares data before calling.
+-- The inventory params (p_inventory, p_inventory_json, p_equipped_json) are written only when the player is new:
+-- after that only the player registry writes them (update_player_inventory, ADR-029 step 4c-iii), so a save of a
+-- copy loaded before a registry inventory commit cannot write the old stacks back.
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -578,7 +581,6 @@ BEGIN
     ON CONFLICT (player_id) DO UPDATE SET
         user_id = EXCLUDED.user_id,
         name = EXCLUDED.name,
-        inventory = EXCLUDED.inventory,
         current_room_id = EXCLUDED.current_room_id,
         respawn_room_id = EXCLUDED.respawn_room_id,
         experience_points = EXCLUDED.experience_points,
@@ -593,15 +595,14 @@ BEGIN
 
     INSERT INTO player_inventories (player_id, inventory_json, equipped_json)
     VALUES (p_player_id, p_inventory_json, p_equipped_json)
-    ON CONFLICT (player_id) DO UPDATE SET
-        inventory_json = EXCLUDED.inventory_json,
-        equipped_json = EXCLUDED.equipped_json;
+    ON CONFLICT (player_id) DO NOTHING;
 END;
 $$;
 
--- update_player_inventory: the player registry's inventory write (ADR-029 step 4). Sets only the carried and
--- equipped stacks: both copies of the carried stacks (players.inventory and player_inventories.inventory_json, as
--- upsert_player writes them) and equipped_json, so a write never touches stats or any other column.
+-- update_player_inventory: the player registry's inventory write (ADR-029 step 4), and the only one once a player
+-- exists. Sets only the carried and equipped stacks: both copies of the carried stacks (players.inventory and
+-- player_inventories.inventory_json, as upsert_player inserts them) and equipped_json, so a write never touches stats
+-- or any other column.
 CREATE OR REPLACE PROCEDURE :schema_name.update_player_inventory(
     p_player_id UUID,
     p_inventory TEXT,
