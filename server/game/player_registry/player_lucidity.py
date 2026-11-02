@@ -21,13 +21,18 @@ from ...constants.lucidity import STARTING_LCD
 from .part import DbSession, Part, PartWrite
 
 LOAD_LUCIDITY_SQL = text(
-    "SELECT current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at"
-    + " FROM get_player_lucidity(:id)"
+    """
+    SELECT current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at
+    FROM get_player_lucidity(:id)
+    """
 )
 
 UPSERT_LUCIDITY_SQL = text(
-    "CALL upsert_player_lucidity(:player_id, :current_lcd, :current_tier, :liabilities, :last_updated_at,"
-    + " :catatonia_entered_at)"
+    """
+    CALL upsert_player_lucidity(
+        :player_id, :current_lcd, :current_tier, :liabilities, :last_updated_at, :catatonia_entered_at
+    )
+    """
 )
 
 ADD_ADJUSTMENT_LOG_SQL = text(
