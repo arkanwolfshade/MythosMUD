@@ -54,9 +54,19 @@ async function prepCoLocatedContexts(
  * tick (game_tick_death._process_mortally_wounded_players), so the target is dead within about a
  * second -- long before any message assertion finishes. Restoring DP afterwards is not enough; the
  * target must be respawned, or the next test starts with a dead player. Run from `finally`.
+ *
+ * The restore can also be lost: a decay tick that loaded the target at DP 0 just before it saves its
+ * stale copy (0 - 1) over the 20, and the target dies ~10s later, inside the next test (a lost update
+ * until ADR-029 step 6 moves the tick into the player registry). So the admin re-heals until the DP
+ * still reads 20 after a full tick. The target cannot heal itself: they are not an admin.
  */
 async function restoreTarget(aw: PlayerContext, target: PlayerContext, targetCharName: string): Promise<void> {
-  await executeCommand(aw.page, `admin set DP ${targetCharName} 20`).catch(() => {});
+  const targetDp = target.page.getByTestId('health-meter').getByRole('meter');
+  await expect(async () => {
+    await executeCommand(aw.page, `admin set DP ${targetCharName} 20`);
+    await new Promise(resolve => setTimeout(resolve, 1500)); // longer than one death tick (~1.1s)
+    await expect(targetDp).toHaveAttribute('aria-valuenow', '20', { timeout: 1000 });
+  }).toPass({ timeout: 20000 });
   target.page = await ensurePlayableAlive(target.page, target.player.username, target.player.password);
 }
 
