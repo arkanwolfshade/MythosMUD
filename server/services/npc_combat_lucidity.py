@@ -7,13 +7,16 @@ applying appropriate lucidity loss based on NPC type and characteristics.
 
 # pylint: disable=too-few-public-methods  # Reason: Lucidity effects class with focused responsibility, minimal public interface
 
-from typing import Any, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..database import get_async_session
 from ..structured_logging.enhanced_logging_config import get_logger
 from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -32,6 +35,9 @@ class _EncounterCtx(NamedTuple):
 
 class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lucidity effects class with focused responsibility, minimal public interface
     """Manages lucidity effects for NPC encounters."""
+
+    def __init__(self, player_registry: PlayerRegistry | None = None) -> None:
+        self._player_registry: PlayerRegistry | None = player_registry
 
     @staticmethod
     def _archetype_from_definition(npc_definition: Any | None, npc_id: str) -> str:
@@ -122,8 +128,11 @@ class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lu
             category=self._resolve_lucidity_category(npc_definition),
             room_id=room_id,
         )
+        if self._player_registry is None:
+            logger.warning("Encounter lucidity loss skipped: no player registry", npc_id=npc_id, player_id=player_id)
+            return
         async for session in get_async_session():
-            await self._apply_loss_with_fallback(ActiveLucidityService(session), session, ctx)
+            await self._apply_loss_with_fallback(ActiveLucidityService(session, self._player_registry), session, ctx)
             break
 
     def _resolve_lucidity_category(self, npc_definition: Any | None) -> str:

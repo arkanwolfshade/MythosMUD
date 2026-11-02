@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
+from typing import TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...constants.message_segments import message_with_segments, npc_name_segment
 from ...constants.npc_disposition import NpcDisposition
 from ...structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ...game.player_registry import LucidityData
 
 logger = get_logger(__name__)
 
@@ -142,7 +147,7 @@ async def handle_hallucination_triggers(
     player_id_uuid: uuid.UUID,
     player_id_str: str,
     room_id: str,
-    lucidity_records: dict[str, object],
+    lucidity_records: Mapping[str, LucidityData],
     session: AsyncSession,
 ) -> None:
     """Check and handle time-based hallucination triggers."""
@@ -153,10 +158,10 @@ async def handle_hallucination_triggers(
     lucidity_record = lucidity_records.get(player_id_str)
     if not lucidity_record:
         return
-    tier = getattr(lucidity_record, "current_tier", None)
+    tier = lucidity_record.tier
     if tier not in ("fractured", "deranged"):
         return
-    current_lcd = getattr(lucidity_record, "current_lcd", 0)
+    current_lcd = lucidity_record.lcd
     should_trigger = await frequency_service.check_time_based_hallucination(player_id_uuid, current_lcd, session)
     if not should_trigger:
         return

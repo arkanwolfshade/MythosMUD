@@ -23,6 +23,7 @@ from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .communication_commands_support import AsyncPersistenceForPose, app_from_request, get_pose_persistence
+from .inventory_command_helpers import player_registry
 
 logger = get_logger(__name__)
 
@@ -73,7 +74,10 @@ async def handle_debrief_command(
     if context_error or player is None:
         return context_error or {"result": "Your identity wavers in the void."}
     outcome = await perform_debrief(
-        player, wants_therapy=_wants_therapy(command_data), catatonia_observer=_get_catatonia_registry_from_app(app)
+        player,
+        player_registry(),
+        wants_therapy=_wants_therapy(command_data),
+        catatonia_observer=_get_catatonia_registry_from_app(app),
     )
     return {"result": outcome.message}
 

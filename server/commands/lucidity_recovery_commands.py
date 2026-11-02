@@ -30,6 +30,7 @@ from ..services.active_lucidity_service import (
 )
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .inventory_command_helpers import player_registry
 
 logger = get_logger(__name__)
 
@@ -171,7 +172,7 @@ async def _run_recovery_session(
     catatonia_observer = _resolve_catatonia_observer(app)
 
     async for session in get_async_session():
-        service = ActiveLucidityService(session, catatonia_observer=catatonia_observer)
+        service = ActiveLucidityService(session, player_registry(), catatonia_observer=catatonia_observer)
         try:
             result = await service.perform_recovery_action(
                 player_id=str(player.player_id),

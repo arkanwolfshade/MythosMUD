@@ -8,7 +8,7 @@ import pytest
 
 from server.services import lucidity_trigger_handlers as handlers
 from server.services.lucidity_trigger_handlers import (
-    handle_catatonia_transitions,
+    announce_catatonia_transition,
     handle_delirium_and_sanitarium_triggers,
     handle_delirium_trigger,
     handle_sanitarium_trigger,
@@ -20,26 +20,17 @@ def player_id() -> uuid.UUID:
     return uuid.uuid4()
 
 
-@pytest.fixture
-def lucidity_record() -> MagicMock:
-    record = MagicMock()
-    record.catatonia_entered_at = None
-    return record
-
-
 @pytest.mark.asyncio
-async def test_handle_catatonia_transitions_enters_catatonia(lucidity_record: MagicMock, player_id: uuid.UUID) -> None:
+async def test_entering_catatonia_tells_the_observer_and_the_player(player_id: uuid.UUID) -> None:
     observer = MagicMock()
     with patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=AsyncMock()) as send_event:
-        await handle_catatonia_transitions(
-            record=lucidity_record,
+        await announce_catatonia_transition(
+            transition="entered",
             player_id=player_id,
-            new_tier="catatonic",
-            previous_tier="disturbed",
+            at=datetime.now(UTC),
             new_lcd=0,
             catatonia_observer=observer,
         )
-    assert lucidity_record.catatonia_entered_at is not None
     observer.on_catatonia_entered.assert_called_once()
     send_event.assert_awaited_once()
     # #1148: the line must not tell a player only allies can help; a restorative item can too.
@@ -61,20 +52,17 @@ class _RecordingLogger:
 
 
 @pytest.mark.asyncio
-async def test_entering_catatonia_is_logged_at_debug_not_warning(
-    lucidity_record: MagicMock, player_id: uuid.UUID
-) -> None:
+async def test_entering_catatonia_is_logged_at_debug_not_warning(player_id: uuid.UUID) -> None:
     """Routine gameplay transitions must not reach warnings.log (the e2e run fails on a non-clean log)."""
     recorder = _RecordingLogger()
     with (
         patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=AsyncMock()),
         patch.object(handlers, "logger", recorder),
     ):
-        await handle_catatonia_transitions(
-            record=lucidity_record,
+        await announce_catatonia_transition(
+            transition="entered",
             player_id=player_id,
-            new_tier="catatonic",
-            previous_tier="disturbed",
+            at=datetime.now(UTC),
             new_lcd=0,
             catatonia_observer=MagicMock(),
         )
@@ -93,21 +81,16 @@ async def test_the_delirium_threshold_is_logged_at_debug_not_warning(player_id: 
 
 
 @pytest.mark.asyncio
-async def test_handle_catatonia_transitions_resolves_catatonia(
-    lucidity_record: MagicMock, player_id: uuid.UUID
-) -> None:
-    lucidity_record.catatonia_entered_at = datetime.now(UTC)
+async def test_leaving_catatonia_tells_the_observer_and_announces_success(player_id: uuid.UUID) -> None:
     observer = MagicMock()
     with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
-        await handle_catatonia_transitions(
-            record=lucidity_record,
+        await announce_catatonia_transition(
+            transition="cleared",
             player_id=player_id,
-            new_tier="lucid",
-            previous_tier="catatonic",
+            at=datetime.now(UTC),
             new_lcd=20,
             catatonia_observer=observer,
         )
-    assert lucidity_record.catatonia_entered_at is None
     observer.on_catatonia_cleared.assert_called_once()
     send_event.assert_awaited_once_with(
         player_id=player_id, status="success", role="target", current_lcd=20, message="Consciousness steadies."
@@ -116,17 +99,13 @@ async def test_handle_catatonia_transitions_resolves_catatonia(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("reason_code", ["ground_rescue", "rescue_command"])
-async def test_handle_catatonia_transitions_command_owned_exit_sends_no_success(
-    lucidity_record: MagicMock, player_id: uuid.UUID, reason_code: str
-) -> None:
+async def test_a_command_owned_exit_sends_no_success(player_id: uuid.UUID, reason_code: str) -> None:
     """The rescue command sends the target's success itself, so the trigger must not duplicate it (#713)."""
-    lucidity_record.catatonia_entered_at = datetime.now(UTC)
     with patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=AsyncMock()) as send_event:
-        await handle_catatonia_transitions(
-            record=lucidity_record,
+        await announce_catatonia_transition(
+            transition="cleared",
             player_id=player_id,
-            new_tier="lucid",
-            previous_tier="catatonic",
+            at=datetime.now(UTC),
             new_lcd=1,
             catatonia_observer=MagicMock(),
             reason_code=reason_code,

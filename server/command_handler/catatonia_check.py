@@ -14,12 +14,11 @@ from __future__ import annotations
 import uuid
 from typing import Protocol, cast
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from structlog.stdlib import BoundLogger
 
-from ..database import get_async_session
-from ..models.lucidity import PlayerLucidity
-from ..services.catatonia_state import CATATONIA_BLOCK_MESSAGE, is_catatonic_record
+from ..commands.inventory_command_helpers import player_registry
+from ..game.player_registry import LucidityData
+from ..services.catatonia_state import CATATONIA_BLOCK_MESSAGE, is_catatonic_lucidity
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import USE_ALIASES
 from ..utils.player_cache import cache_player, get_cached_player
@@ -90,55 +89,39 @@ def _check_catatonia_registry(state: object, player_id: uuid.UUID | str, player_
     return False, None
 
 
-async def _fetch_lucidity_record(
-    session: AsyncSession, player_id_uuid: uuid.UUID, player_name: str
-) -> PlayerLucidity | None:
-    """Fetch lucidity record from database session."""
-    lucidity_record: PlayerLucidity | None = await session.get(PlayerLucidity, player_id_uuid)
+async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str) -> LucidityData | None:
+    """The player's lucidity from the player registry, or None if it cannot be read."""
+    try:
+        player = await player_registry().get(player_id_uuid)
+    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
+        logger.warning(
+            "Failed to check catatonia status",
+            player=player_name,
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        return None
+    lucidity = player.lucidity.data if player is not None else None
     logger.debug(
         "Lucidity record retrieved",
         player=player_name,
         player_id=player_id_uuid,
-        lucidity_record_exists=bool(lucidity_record),
-        current_lcd=lucidity_record.current_lcd if lucidity_record else None,
-        current_tier=lucidity_record.current_tier if lucidity_record else None,
+        lucidity_record_exists=lucidity is not None,
+        current_lcd=lucidity.lcd if lucidity else None,
+        current_tier=lucidity.tier if lucidity else None,
     )
-    return lucidity_record
-
-
-async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str) -> PlayerLucidity | None:
-    """Query lucidity record from database with error handling."""
-    try:
-        async for session in get_async_session():
-            try:
-                return await _fetch_lucidity_record(session, player_id_uuid, player_name)
-            except (ImportError, AttributeError, TypeError, RuntimeError) as e:
-                logger.warning(
-                    "Failed to check catatonia status in database",
-                    player=player_name,
-                    error=str(e),
-                    error_type=type(e).__name__,
-                )
-                return None
-    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
-        logger.debug(
-            "Database session unavailable for catatonia check",
-            player=player_name,
-            error=str(e),
-        )
-        return None
-    return None
+    return lucidity
 
 
 async def _check_catatonia_database(player_id_uuid: uuid.UUID, player_name: str) -> tuple[bool, str | None]:
     """Check catatonia status via database."""
     lucidity_record = await _query_lucidity_record(player_id_uuid, player_name)
-    if lucidity_record and is_catatonic_record(lucidity_record):
+    if lucidity_record and is_catatonic_lucidity(lucidity_record):
         logger.info(
             "Catatonic player command blocked",
             player=player_name,
-            lucidity=lucidity_record.current_lcd,
-            tier=lucidity_record.current_tier,
+            lucidity=lucidity_record.lcd,
+            tier=lucidity_record.tier,
         )
         return True, CATATONIA_BLOCK_MESSAGE
     return False, None

@@ -15,7 +15,6 @@ from typing import cast
 from fastapi import Request
 
 from ..alias_storage import AliasStorage
-from ..database import get_async_session
 from ..services.lucidity_service import resolve_tier
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -134,10 +133,11 @@ async def resolve_hallucinate_target(app: object, player_name: str, target_playe
 
 
 async def get_current_lcd_or_error(target_player_id: uuid.UUID) -> int:
-    """Resolve the target's current LCD via a fresh DB session; raises if none is available."""
-    async for session in get_async_session():
-        return await get_current_lcd(session, target_player_id)
-    raise HallucinateCommandError(command_error("Database session could not be established. Please try again."))
+    """Resolve the target's current LCD from the player registry; raises if it cannot be read."""
+    try:
+        return await get_current_lcd(target_player_id)
+    except RuntimeError as error:
+        raise HallucinateCommandError(command_error("Lucidity could not be read. Please try again.")) from error
 
 
 def _log_hallucinate_command(player_name: str, target_player: str, hallucination_type: str, tier: str) -> None:

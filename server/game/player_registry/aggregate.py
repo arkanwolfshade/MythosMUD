@@ -1,8 +1,8 @@
 """
 PlayerAggregate: everything the server knows about one player, held once in memory (ADR-029 §3.2).
 
-The aggregate is a set of parts. Today that is the ``players`` row, the inventory and the quests; later ADR-029
-steps add lucidity, effects and the rest as their subsystems move onto the registry. Callers only ever reach it through
+The aggregate is a set of parts. Today that is the ``players`` row, the inventory, the quests and lucidity; later
+ADR-029 steps add effects, cooldowns and the rest as their subsystems move onto the registry. Callers only ever reach it through
 PlayerRegistry: ``mutate()`` hands out the aggregate itself, ``peek()`` hands out a PlayerView.
 """
 
@@ -15,6 +15,7 @@ from typing import Protocol
 from ...events.event_types import BaseEvent
 from .part import Part, PartWrite
 from .player_inventory import PlayerInventoryPart
+from .player_lucidity import LucidityData, PlayerLucidityPart
 from .player_quests import PlayerQuestsPart, QuestInstanceData
 from .player_row import PlayerRowPart
 
@@ -113,6 +114,25 @@ class PlayerQuestsView(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
+class PlayerLucidityView(Protocol):
+    """Read-only access to the lucidity part."""
+
+    @property
+    def data(self) -> LucidityData:
+        """The current lucidity."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    @property
+    def lcd(self) -> int:
+        """Current lucidity (LCD)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    @property
+    def tier(self) -> str:
+        """Current tier."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
 class PlayerView(Protocol):
     """What ``PlayerRegistry.peek()`` returns: the live aggregate, typed read-only."""
 
@@ -136,23 +156,34 @@ class PlayerView(Protocol):
         """Quest instances."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
+    @property
+    def lucidity(self) -> PlayerLucidityView:
+        """Lucidity (LCD, tier, liabilities)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
 
 class PlayerAggregate:
     """One player's in-memory state: its parts and the domain events its current unit of work has queued."""
 
-    __slots__: tuple[str, ...] = ("_events", "_inventory", "_quests", "_row")
+    __slots__: tuple[str, ...] = ("_events", "_inventory", "_lucidity", "_quests", "_row")
 
     _row: PlayerRowPart
     _inventory: PlayerInventoryPart
     _quests: PlayerQuestsPart
+    _lucidity: PlayerLucidityPart
     _events: list[BaseEvent]
 
     def __init__(
-        self, row: PlayerRowPart, inventory: PlayerInventoryPart, quests: PlayerQuestsPart | None = None
+        self,
+        row: PlayerRowPart,
+        inventory: PlayerInventoryPart,
+        quests: PlayerQuestsPart | None = None,
+        lucidity: PlayerLucidityPart | None = None,
     ) -> None:
         self._row = row
         self._inventory = inventory
         self._quests = quests if quests is not None else PlayerQuestsPart(row.player_id)
+        self._lucidity = lucidity if lucidity is not None else PlayerLucidityPart(row.player_id)
         self._events = []
 
     @property
@@ -175,9 +206,14 @@ class PlayerAggregate:
         """Quest instances."""
         return self._quests
 
+    @property
+    def lucidity(self) -> PlayerLucidityPart:
+        """Lucidity (LCD, tier, liabilities)."""
+        return self._lucidity
+
     def parts(self) -> tuple[Part, ...]:
         """Every part, in write order."""
-        return (self._row, self._inventory, self._quests)
+        return (self._row, self._inventory, self._quests, self._lucidity)
 
     def emit(self, event: BaseEvent) -> None:
         """Queue a domain event; it is published only if the unit of work commits."""

@@ -9,18 +9,16 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any, NamedTuple, Protocol, cast
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from ..alias_storage import AliasStorage
-from ..database import get_async_session
-from ..models.lucidity import PlayerLucidity
 from ..services.lucidity_event_dispatcher import send_rescue_update_event
 from ..services.lucidity_helpers import CatatoniaObserverProtocol, LucidityUpdateResult
+from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import LucidityService
-from ..services.rescue_service import RescueService
+from ..services.rescue_service import RescueService, rescue_lift
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .ground_channel import FinishOutcome, start_ground_channel
+from .inventory_command_helpers import player_registry
 from .rest_command import check_player_in_combat
 
 logger = get_logger(__name__)
@@ -106,23 +104,20 @@ def _as_uuid(value: uuid.UUID | str) -> uuid.UUID:
     return value if isinstance(value, uuid.UUID) else uuid.UUID(str(value))
 
 
-async def _apply_grounding_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Rescue command requires many parameters for context and adjustment logic
-    session: AsyncSession,
+def _lucidity_service(observer: CatatoniaObserverProtocol | None) -> LucidityService:
+    return LucidityService(player_registry(), catatonia_observer=observer)
+
+
+async def _apply_grounding_adjustment(
     target_player_id: uuid.UUID,
-    lucidity_record: PlayerLucidity,
     rescuer_username: str,
     rescuer_room: str,
     registry: CatatoniaObserverProtocol | None,
 ) -> LucidityUpdateResult:
     """Apply lucidity adjustment for grounding. Returns result."""
-    delta = 1 - lucidity_record.current_lcd
-    if delta <= 0:
-        delta = 1
-
-    service = LucidityService(session, catatonia_observer=registry)
-    result = await service.apply_lucidity_adjustment(
+    result = await _lucidity_service(registry).apply_lucidity_adjustment(
         target_player_id,
-        delta,
+        rescue_lift,
         reason_code="ground_rescue",
         metadata={
             "rescuer": rescuer_username,
@@ -131,7 +126,6 @@ async def _apply_grounding_adjustment(  # pylint: disable=too-many-arguments,too
         },
         location_id=str(rescuer_room),
     )
-    await session.commit()
     return result
 
 
@@ -205,7 +199,7 @@ async def handle_rescue_command(
 
     service = RescueService(
         persistence=persistence,
-        session_factory=get_async_session,
+        player_registry=player_registry(),
         catatonia_registry=registry,
     )
 
@@ -233,15 +227,14 @@ class _GroundContext:
 
 async def _check_ground_target_ready(ctx: _GroundContext) -> dict[str, str] | None:
     """Up-front feedback for the rescuer: is the target catatonic? Returns an error dict if not."""
-    async for session in get_async_session():
-        lucidity_record = await session.get(PlayerLucidity, str(ctx.target_player_id))
-        if lucidity_record is None:
-            logger.warning("Ground command missing lucidity record", target_id=ctx.target_player_id)
-            return {"result": "The target's aura cannot be located among the ledgers of the mind."}
-        if lucidity_record.current_tier != "catatonic":
-            return {"result": f"{ctx.target_name} isn't catatonic and needs no grounding."}
-        return None
-    return {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
+    try:
+        lucidity = await _lucidity_service(ctx.registry).get_lucidity(ctx.target_player_id)
+    except PlayerGoneError:
+        logger.warning("Ground command missing lucidity record", target_id=ctx.target_player_id)
+        return {"result": "The target's aura cannot be located among the ledgers of the mind."}
+    if lucidity.tier != "catatonic":
+        return {"result": f"{ctx.target_name} isn't catatonic and needs no grounding."}
+    return None
 
 
 async def _participants_still_together(ctx: _GroundContext) -> bool:
@@ -258,38 +251,30 @@ async def _finish_ground(ctx: _GroundContext) -> FinishOutcome:
     if not await _participants_still_together(ctx):
         return "interrupted"
 
-    async for session in get_async_session():
-        lucidity_record = await session.get(PlayerLucidity, str(ctx.target_player_id))
-        if lucidity_record is None or lucidity_record.current_tier != "catatonic":
+    service = _lucidity_service(ctx.registry)
+    try:
+        if (await service.get_lucidity(ctx.target_player_id)).tier != "catatonic":
             return "interrupted"
-
-        try:
-            result = await _apply_grounding_adjustment(
-                session,
-                ctx.target_player_id,
-                lucidity_record,
-                ctx.rescuer_username,
-                ctx.rescuer_room or "",
-                ctx.registry,
-            )
-        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database errors unpredictable, must rollback
-            await session.rollback()
-            logger.error("Ground command failed", rescuer=ctx.rescuer_username, target=ctx.target_name, error=str(exc))
-            await _send_grounding_failure_events(
-                ctx.target_player_id, ctx.rescuer_player_id, ctx.rescuer_username, ctx.target_name
-            )
-            return "done"
-
-        logger.info(
-            "Ground command succeeded", rescuer=ctx.rescuer_username, target=ctx.target_name, new_lcd=result.new_lcd
+        result = await _apply_grounding_adjustment(
+            ctx.target_player_id,
+            ctx.rescuer_username,
+            ctx.rescuer_room or "",
+            ctx.registry,
         )
-        await _send_grounding_success_events(
-            ctx.target_player_id, ctx.rescuer_player_id, ctx.rescuer_username, ctx.target_name, result.new_lcd
+    except PlayerGoneError:
+        return "interrupted"
+    except Exception as exc:  # noqa: B904  # pragma: no cover - defensive  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: lucidity errors are unpredictable; the ritual must report failure, not crash
+        logger.error("Ground command failed", rescuer=ctx.rescuer_username, target=ctx.target_name, error=str(exc))
+        await _send_grounding_failure_events(
+            ctx.target_player_id, ctx.rescuer_player_id, ctx.rescuer_username, ctx.target_name
         )
         return "done"
 
-    await _send_grounding_failure_events(
-        ctx.target_player_id, ctx.rescuer_player_id, ctx.rescuer_username, ctx.target_name
+    logger.info(
+        "Ground command succeeded", rescuer=ctx.rescuer_username, target=ctx.target_name, new_lcd=result.new_lcd
+    )
+    await _send_grounding_success_events(
+        ctx.target_player_id, ctx.rescuer_player_id, ctx.rescuer_username, ctx.target_name, result.new_lcd
     )
     return "done"
 

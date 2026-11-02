@@ -90,30 +90,36 @@ class QuestResetter(Protocol):  # pylint: disable=too-few-public-methods  # Reas
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
-async def _reset_lucidity(player_id: uuid.UUID) -> None:
-    """Set the player's lucidity back to what a new character starts with."""
-    # Imported here: the database module pulls in the app's engine setup, which this module must not need to import.
-    from ..database import get_async_session
-    from ..services.lucidity_repository import LucidityRepository
-    from ..services.lucidity_service import resolve_tier
+async def _reset_lucidity(registry: PlayerRegistry, player_id: uuid.UUID) -> None:
+    """Set the player's lucidity back to what a new character starts with, as one registry unit."""
+    from ..services.lucidity_helpers import resolve_tier
+    from ..services.lucidity_tier_cache import lucidity_tier_cache
 
-    async for session in get_async_session():
-        lucidity = await LucidityRepository(session).get_or_create_player_lucidity(player_id)
-        lucidity.current_lcd = STARTING_LCD
-        lucidity.current_tier = resolve_tier(STARTING_LCD)
-        await session.commit()
+    tier = resolve_tier(STARTING_LCD)
+    async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        _ = player.lucidity.set(lcd=STARTING_LCD, tier=tier)
+    lucidity_tier_cache.set_tier(player_id, tier)
 
 
-async def restart_instance_run(player: Player, stable_room_ids: Iterable[str], quests: QuestResetter | None) -> None:
+async def restart_instance_run(
+    player: Player,
+    stable_room_ids: Iterable[str],
+    quests: QuestResetter | None,
+    registry: PlayerRegistry | None,
+) -> None:
     """Start the player's run over: full DP, starting lucidity, and the instance's quests back to not started.
 
     The instance-bound items (``strip_instance_bound_items``) and effects are separate. Corruption is a floor that survives a
-    restart, so it is untouched. Each step is isolated: a failure is logged and never blocks the reconnect.
+    restart, so it is untouched. Lucidity lives in ``registry`` (ADR-029 step 5b-i). Each step is isolated: a failure
+    is logged and never blocks the reconnect.
     """
     _ = player.restore_to_full_health()
     player_id = uuid.UUID(str(player.player_id))
     try:
-        await _reset_lucidity(player_id)
+        if registry is None:
+            logger.warning("Run restart: no player registry, lucidity kept", player_id=str(player_id))
+        else:
+            await _reset_lucidity(registry, player_id)
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: a failed reset must not block the reconnect
         logger.error("Run restart: lucidity reset failed", player_id=str(player_id), error=str(e))
     if quests is None:

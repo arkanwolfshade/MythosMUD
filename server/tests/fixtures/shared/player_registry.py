@@ -4,7 +4,8 @@ A real PlayerRegistry over an in-memory database, for tests (ADR-029).
 ``FakeDatabase`` records every statement's parameters and can fail commits; ``raw_row`` and ``aggregate`` build a
 player the way ``get_player_by_id`` and ``load_player_aggregate`` do. ``install_player_registry`` puts a registry in
 front of a command test's player: the aggregate starts from that player's own inventory, so a command runs through the
-real unit of work, validation and commit, and the test reads back what was written.
+real unit of work, validation and commit, and the test reads back what was written. ``lucidity_registry`` seeds
+players' lucidity for lucidity service tests (ADR-029 step 5b-i).
 """
 
 from __future__ import annotations
@@ -20,8 +21,10 @@ import pytest
 
 from server.game.player_registry import (
     DbSession,
+    LucidityData,
     PlayerAggregate,
     PlayerInventoryPart,
+    PlayerLucidityPart,
     PlayerQuestsPart,
     PlayerRegistry,
     PlayerRowData,
@@ -59,14 +62,17 @@ def raw_row(player_id: uuid.UUID | None = None, **overrides: object) -> dict[str
     return row
 
 
-def aggregate(row: Mapping[str, object], quests: Sequence[QuestInstanceData] = ()) -> PlayerAggregate:
-    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, as load_player_aggregate
-    builds them."""
+def aggregate(
+    row: Mapping[str, object], quests: Sequence[QuestInstanceData] = (), lucidity: LucidityData | None = None
+) -> PlayerAggregate:
+    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests`` and ``lucidity``, as
+    load_player_aggregate builds them."""
     player_id = uuid.UUID(str(row["player_id"]))
     return PlayerAggregate(
         PlayerRowPart(PlayerRowData.from_row(row)),
         PlayerInventoryPart.from_row(row),
         PlayerQuestsPart(player_id, quests),
+        PlayerLucidityPart(player_id, lucidity),
     )
 
 
@@ -180,3 +186,40 @@ def install_player_registry(monkeypatch: pytest.MonkeyPatch, player: object) -> 
     registry = PlayerRegistry(db.session, loader=load)
     monkeypatch.setattr("server.commands.inventory_command_helpers.player_registry", lambda: registry)
     return RegistryHarness(registry, db)
+
+
+@dataclass
+class LucidityHarness:
+    """A real registry holding seeded players' lucidity, and the database its flushes write to."""
+
+    registry: PlayerRegistry
+    db: FakeDatabase
+
+    def lucidity(self, player_id: uuid.UUID) -> LucidityData:
+        """The player's live lucidity (what the registry holds, flushed or not)."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.lucidity.data
+
+    def ledger(self) -> list[Mapping[str, object]]:
+        """Every ``lucidity_adjustment_log`` row written so far (flush first: lucidity is lazy)."""
+        return [params for params in self.db.executed if params is not None and "reason_code" in params]
+
+    async def flush(self) -> int:
+        """Run the lazy sweep once."""
+        return await self.registry.flush_dirty()
+
+
+def lucidity_registry(
+    players: Mapping[uuid.UUID, LucidityData | None], *, stats: Mapping[str, object] | None = None
+) -> LucidityHarness:
+    """A registry with these players (lucidity None = the starting values); any other id is no such player."""
+    db = FakeDatabase()
+
+    async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
+        if player_id not in players:
+            return None
+        row = raw_row(player_id, stats=dict(stats) if stats is not None else {"current_dp": 20, "max_dp": 20})
+        return aggregate(row, lucidity=players[player_id])
+
+    return LucidityHarness(PlayerRegistry(db.session, loader=load), db)

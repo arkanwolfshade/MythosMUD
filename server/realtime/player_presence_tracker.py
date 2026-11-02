@@ -208,9 +208,11 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
         # Live instance and the player is inside it (a grace-period reconnect): resume where they were.
         return player_obj.current_room_id
     restarted = False
+    container = _container_services(cast(object, manager))
+    registry = container.player_registry if container is not None else None
     if instance is None:
         instance, restarted = await _start_fresh_instance(
-            player_obj, instance_manager, content_service, quest_service, template_id, instance_id
+            player_obj, instance_manager, content_service, quest_service, template_id, instance_id, registry
         )
 
     first_room_id = instance_manager.get_first_room_id(instance.instance_id)
@@ -222,8 +224,7 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
     if manager.async_persistence:
         await manager.async_persistence.save_player(player)
     if restarted:
-        container = _container_services(cast(object, manager))
-        await clear_lost_instance_items(container.player_registry if container is not None else None, player_obj)
+        await clear_lost_instance_items(registry, player_obj)
     return first_room_id
 
 
@@ -253,6 +254,7 @@ async def _start_fresh_instance(
     quests: QuestResetter | None,
     template_id: str,
     lost_instance_id: str | None,
+    registry: PlayerRegistry | None,
 ) -> tuple[Instance, bool]:
     """Create and populate a new instance for the player and record it on them; True if the run restarted.
 
@@ -270,8 +272,8 @@ async def _start_fresh_instance(
     if restarted:
         cleared = await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
         # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
-        prefix = f"{instance.instance_id}_"
-        await restart_instance_run(player, [room_id.removeprefix(prefix) for room_id in instance.rooms], quests)
+        stable_room_ids = [room_id.removeprefix(f"{instance.instance_id}_") for room_id in instance.rooms]
+        await restart_instance_run(player, stable_room_ids, quests, registry)
     logger.info(
         "Tutorial instance missing on (re)entry, created a fresh one",
         player_id=player.player_id,

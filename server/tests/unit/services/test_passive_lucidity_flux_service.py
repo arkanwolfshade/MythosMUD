@@ -8,14 +8,16 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 
 from server.config import get_config
+from server.game.player_registry import LucidityData, PlayerRegistry
 from server.services.lucidity_repository import PlayerGoneError
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
 from server.services.passive_lucidity_flux.service import PassiveLucidityFluxService, PlayerFluxCtx
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
-def _make_service(**kwargs: object) -> PassiveLucidityFluxService:
+def _make_service(player_registry: PlayerRegistry | None = None, **kwargs: object) -> PassiveLucidityFluxService:
     config = FluxServiceConfig(
         # Every 2 ticks, whatever the configured tick rate.
         process_interval_seconds=2 * get_config().game.server_tick_rate,
@@ -23,7 +25,7 @@ def _make_service(**kwargs: object) -> PassiveLucidityFluxService:
         lucidity_rate_overrides={"earth|arkham|downtown": -0.5},
         **kwargs,
     )
-    return PassiveLucidityFluxService(config=config)
+    return PassiveLucidityFluxService(config=config, player_registry=player_registry)
 
 
 @pytest.mark.parametrize(("tick_rate", "expected_ticks"), [(0.1, 600), (1.0, 60)])
@@ -107,8 +109,8 @@ def test_companion_modifier_with_lucid_and_destabilizing() -> None:
     companion_lucid = MagicMock(player_id="p2", current_room_id="room-a")
     companion_deranged = MagicMock(player_id="p3", current_room_id="room-a")
     records = {
-        "p2": MagicMock(current_tier="lucid"),
-        "p3": MagicMock(current_tier="deranged"),
+        "p2": LucidityData(50, "lucid"),
+        "p3": LucidityData(50, "deranged"),
     }
     flux = svc._companion_modifier(player, [player, companion_lucid, companion_deranged], records)
     assert flux == pytest.approx(-0.1)
@@ -175,10 +177,9 @@ async def test_process_tick_applies_adjustment() -> None:
     session = AsyncMock()
     players_result = MagicMock()
     players_result.scalars.return_value.all.return_value = [player]
-    lucidity_result = MagicMock()
-    lucidity_result.scalars.return_value.all.return_value = []
-    session.execute = AsyncMock(side_effect=[players_result, lucidity_result])
+    session.execute = AsyncMock(return_value=players_result)  # the players; their lucidity comes from the registry
     session.commit = AsyncMock()
+    harness = lucidity_registry({player_id: LucidityData(50, "lucid")})
 
     adjustment = LucidityUpdateResult(
         player_id=player_id,
@@ -191,6 +192,7 @@ async def test_process_tick_applies_adjustment() -> None:
     )
 
     svc = _make_service(
+        harness.registry,
         context_resolver=lambda _p, _t: PassiveFluxContext(base_flux=-1.2, source="test"),
     )
 
@@ -240,7 +242,7 @@ def test_lookup_world_override_flux() -> None:
 def test_count_companion_tiers() -> None:
     svc = _make_service()
     companion = MagicMock(player_id="p2")
-    records = {"p2": MagicMock(current_tier="deranged")}
+    records = {"p2": LucidityData(50, "deranged")}
     lucid_count, has_destabilizing = svc._count_companion_tiers([companion], records)
     assert lucid_count == 0
     assert has_destabilizing is True
@@ -371,3 +373,35 @@ async def test_process_single_player_skips_missing_player_fk(missing_player_erro
     assert result is None
     assert player_id_str == str(player_id)
     begin_nested.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_process_tick_reads_each_active_players_lucidity_from_the_registry_and_refreshes_the_tier_cache() -> None:
+    player_id = uuid.uuid4()
+    player = MagicMock(player_id=str(player_id), current_room_id="room-a", last_active=None, created_at=None)
+    session = AsyncMock()
+    harness = lucidity_registry({player_id: LucidityData(30, "fractured")})
+    svc = _make_service(harness.registry)
+    seen: list[dict[str, LucidityData]] = []
+
+    async def process(ctx: PlayerFluxCtx) -> tuple[str, None]:
+        seen.append(dict(ctx.lucidity_records))
+        return str(player_id), None
+
+    with (
+        patch.object(svc, "_load_players", AsyncMock(return_value=[player])),
+        patch.object(svc, "_filter_active_players", return_value=[player]),
+        patch.object(svc, "_process_single_player", side_effect=process),
+        patch("server.services.passive_lucidity_flux.service.lucidity_tier_cache.set_tier") as set_tier,
+    ):
+        _ = await svc.process_tick(session, tick_count=2)
+
+    assert seen == [{str(player_id): LucidityData(30, "fractured")}]
+    set_tier.assert_called_once_with(str(player_id), "fractured")
+
+
+@pytest.mark.asyncio
+async def test_process_tick_without_a_player_registry_is_skipped() -> None:
+    result = await _make_service().process_tick(AsyncMock(), tick_count=2)
+
+    assert result == {"evaluated": 0, "adjustments": 0, "skipped": True}

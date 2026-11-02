@@ -1,8 +1,16 @@
 """The authoritative in-memory player registry (ADR-029)."""
 
-from .aggregate import PlayerAggregate, PlayerInventoryView, PlayerQuestsView, PlayerRowView, PlayerView
+from .aggregate import (
+    PlayerAggregate,
+    PlayerInventoryView,
+    PlayerLucidityView,
+    PlayerQuestsView,
+    PlayerRowView,
+    PlayerView,
+)
 from .part import DbSession, Part, PartWrite
 from .player_inventory import InventoryData, PlayerInventoryPart
+from .player_lucidity import LucidityData, PlayerLucidityPart
 from .player_quests import PlayerQuestsPart, QuestInstanceData
 from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 from .registry import (
@@ -18,11 +26,14 @@ __all__ = [
     "DbSession",
     "InventoryData",
     "LockOrderError",
+    "LucidityData",
     "Part",
     "PartWrite",
     "PlayerAggregate",
     "PlayerInventoryPart",
     "PlayerInventoryView",
+    "PlayerLucidityPart",
+    "PlayerLucidityView",
     "PlayerNotFoundError",
     "PlayerQuestsPart",
     "PlayerQuestsView",

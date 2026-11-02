@@ -2,18 +2,20 @@
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import final
+from typing import cast, final
 from unittest.mock import AsyncMock
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from server.game.player_registry import PlayerRegistry
 from server.models.lucidity import LucidityCooldown
 from server.services.active_lucidity_service import (
     ActiveLucidityService,
     LucidityActionOnCooldownError,
     UnknownLucidityActionError,
 )
+from server.services.lucidity_repository import LucidityRepository
 from server.services.lucidity_service import LucidityService, LucidityUpdateResult
 
 NOW = datetime(2026, 10, 5, 12, 0, tzinfo=UTC)
@@ -21,7 +23,7 @@ NOW = datetime(2026, 10, 5, 12, 0, tzinfo=UTC)
 
 @final
 class Ledger:
-    """Stands in for LucidityService's persistence calls and records what the service did."""
+    """Stands in for the lucidity and cooldown persistence calls and records what the service did."""
 
     def __init__(self, cooldown_expires_at: datetime | None) -> None:
         self.existing_expiry = cooldown_expires_at
@@ -55,9 +57,11 @@ class Ledger:
 
 
 def _service(monkeypatch: pytest.MonkeyPatch, ledger: Ledger) -> ActiveLucidityService:
-    """A real ActiveLucidityService whose underlying LucidityService calls land in the ledger."""
+    """A real ActiveLucidityService whose LucidityService and cooldown repository calls land in the ledger."""
 
-    async def get_cooldown(_self: LucidityService, player_id: uuid.UUID, action_code: str) -> LucidityCooldown | None:
+    async def get_cooldown(
+        _self: LucidityRepository, player_id: uuid.UUID, action_code: str
+    ) -> LucidityCooldown | None:
         return await ledger.get_cooldown(player_id, action_code)
 
     async def apply_lucidity_adjustment(
@@ -75,14 +79,14 @@ def _service(monkeypatch: pytest.MonkeyPatch, ledger: Ledger) -> ActiveLucidityS
         )
 
     async def set_cooldown(
-        _self: LucidityService, player_id: uuid.UUID, action_code: str, expires_at: datetime
+        _self: LucidityRepository, player_id: uuid.UUID, action_code: str, expires_at: datetime
     ) -> LucidityCooldown:
         return await ledger.set_cooldown(player_id, action_code, expires_at)
 
-    monkeypatch.setattr(LucidityService, "get_cooldown", get_cooldown)
+    monkeypatch.setattr(LucidityRepository, "get_cooldown", get_cooldown)
     monkeypatch.setattr(LucidityService, "apply_lucidity_adjustment", apply_lucidity_adjustment)
-    monkeypatch.setattr(LucidityService, "set_cooldown", set_cooldown)
-    return ActiveLucidityService(AsyncMock(spec=AsyncSession), now_provider=lambda: NOW)
+    monkeypatch.setattr(LucidityRepository, "set_cooldown", set_cooldown)
+    return ActiveLucidityService(AsyncMock(spec=AsyncSession), cast(PlayerRegistry, object()), now_provider=lambda: NOW)
 
 
 @pytest.mark.asyncio

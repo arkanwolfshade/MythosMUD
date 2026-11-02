@@ -9,7 +9,7 @@ Tests the GameStateProvider class.
 # pyright: reportPrivateUsage=false
 
 import uuid
-from collections.abc import AsyncIterator
+from types import SimpleNamespace
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -17,6 +17,12 @@ import pytest
 
 from server.constants.npc_disposition import NpcDisposition
 from server.realtime.integration.game_state_provider import GameStateProvider
+
+
+def _container_with_lucidity(record: object | None) -> SimpleNamespace:
+    """An app container whose player registry serves ``record`` as the player's lucidity (None: no such player)."""
+    player = None if record is None else SimpleNamespace(lucidity=record)
+    return SimpleNamespace(player_registry=MagicMock(get=AsyncMock(return_value=player)))
 
 
 @pytest.fixture
@@ -181,15 +187,10 @@ async def test_get_lucidity_for_client_found(game_state_provider: GameStateProvi
     """Test _get_lucidity_for_client() returns (tier, current_lcd) when a PlayerLucidity row exists."""
     player_id = uuid.uuid4()
     mock_record = MagicMock()
-    mock_record.current_tier = "fractured"
-    mock_record.current_lcd = -25
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_record)
+    mock_record.tier = "fractured"
+    mock_record.lcd = -25
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(mock_record)):
         tier, current_lcd = await game_state_provider._get_lucidity_for_client(player_id)
     assert tier == "fractured"
     assert current_lcd == -25
@@ -199,13 +200,8 @@ async def test_get_lucidity_for_client_found(game_state_provider: GameStateProvi
 async def test_get_lucidity_for_client_no_row(game_state_provider: GameStateProvider):
     """Test _get_lucidity_for_client() returns (None, None) for a new character with no row yet."""
     player_id = uuid.uuid4()
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=None)
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(None)):
         tier, current_lcd = await game_state_provider._get_lucidity_for_client(player_id)
     assert tier is None
     assert current_lcd is None
@@ -224,15 +220,10 @@ async def test_send_initial_game_state_includes_lucidity_tier(
     online_players: dict[uuid.UUID, dict[str, object]] = {}
 
     mock_record = MagicMock()
-    mock_record.current_tier = "uneasy"
-    mock_record.current_lcd = 40
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_record)
+    mock_record.tier = "uneasy"
+    mock_record.lcd = 40
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(mock_record)):
         await game_state_provider.send_initial_game_state(player_id, mock_player, room_id, online_players)
 
     assert mock_send_personal_message.call_args is not None

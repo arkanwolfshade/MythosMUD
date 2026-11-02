@@ -11,7 +11,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import cast
+from typing import TYPE_CHECKING, cast
 from uuid import UUID
 
 from pydantic import ValidationError as PydanticValidationError
@@ -22,6 +22,9 @@ from server.game.items.models import ItemPrototypeModel
 from server.services.active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
 from server.services.lucidity_service import CatatoniaObserverProtocol
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -60,6 +63,12 @@ def _catatonia_observer(app: object | None) -> CatatoniaObserverProtocol | None:
     return cast(CatatoniaObserverProtocol | None, getattr(source, "catatonia_registry", None))
 
 
+def _player_registry(app: object | None) -> PlayerRegistry | None:
+    """The player registry from the app container (lucidity lives there, ADR-029 step 5b-i)."""
+    container: object = getattr(getattr(app, "state", None), "container", None)
+    return cast("PlayerRegistry | None", getattr(container, "player_registry", None))
+
+
 async def _lucidity_recovery(ctx: ItemUseContext) -> ItemEffectResult:
     """Restore LCD under the item's named cooldown (see ``LucidityRecoveryMetadata``)."""
     try:
@@ -72,8 +81,14 @@ async def _lucidity_recovery(ctx: ItemUseContext) -> ItemEffectResult:
         )
         return ItemEffectResult(ok=False, message=_INERT_MESSAGE)
 
+    registry = _player_registry(ctx.app)
+    if registry is None:
+        logger.error(
+            "Consumable lucidity recovery skipped: no player registry", prototype_id=ctx.prototype.prototype_id
+        )
+        return ItemEffectResult(ok=False, message=_INERT_MESSAGE)
     async for session in get_async_session():
-        service = ActiveLucidityService(session, catatonia_observer=_catatonia_observer(ctx.app))
+        service = ActiveLucidityService(session, registry, catatonia_observer=_catatonia_observer(ctx.app))
         try:
             result = await service.apply_timed_recovery(
                 ctx.player_id,

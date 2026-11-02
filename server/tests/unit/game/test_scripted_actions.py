@@ -10,6 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 from server.game import scripted_actions as runner
+from server.game.player_registry import PlayerRegistry
 from server.game.scripted_actions import ScriptedActionContext, run_scripted_actions
 from server.models.player import Player
 from server.schemas.scripted_actions import (
@@ -105,8 +106,9 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     debriefs: list[tuple[Player, bool, object | None]] = []
 
     async def fake_debrief(
-        player: Player, *, wants_therapy: bool = False, catatonia_observer: object | None = None
+        player: Player, registry: object, *, wants_therapy: bool = False, catatonia_observer: object | None = None
     ) -> DebriefOutcome:
+        _ = registry
         debriefs.append((player, wants_therapy, catatonia_observer))
         return DebriefOutcome("The staff recap.", completed=True)
 
@@ -283,9 +285,20 @@ async def test_debrief_runs_the_service_and_narrates_its_message(rig: Rig) -> No
         persistence=rig.persistence,
         quest_service=rig.quests,
         catatonia_observer=cast(CatatoniaObserverProtocol, observer),
+        player_registry=cast(PlayerRegistry, object()),
     )
 
     await run_scripted_actions([DebriefAction(therapy=True)], ctx)
 
     assert rig.debriefs == [(rig.player, True, observer)]
     assert rig.narrated == ["The staff recap."]
+
+
+@pytest.mark.asyncio
+async def test_debrief_without_a_player_registry_is_skipped(rig: Rig) -> None:
+    """Therapy changes lucidity, which lives in the player registry: without one the debrief does not run."""
+    ctx = ScriptedActionContext(player=rig.player, persistence=rig.persistence, quest_service=rig.quests)
+
+    await run_scripted_actions([DebriefAction(therapy=True)], ctx)
+
+    assert rig.debriefs == [] and rig.narrated == []

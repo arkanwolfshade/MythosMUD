@@ -107,6 +107,10 @@ class Part:
         self._sync_required = False
         return write
 
+    def write_failed(self) -> None:
+        """A lazy flush of this part's captured write failed; it is retried, so the part is dirty again."""
+        self.mark_dirty()
+
     def _copy_state(self) -> object:
         raise NotImplementedError
 

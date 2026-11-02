@@ -81,6 +81,7 @@ async def test_the_respawn_service_gets_a_finisher_that_resolves_services_from_t
         async_persistence=FakePersistence(),
         quest_service=None,
         instance_flush_service=None,  # not built yet when the respawn service is constructed
+        player_registry=None,  # built by the game bundle; unused by this wiring check
     )
     bundle = CombatBundle()
 

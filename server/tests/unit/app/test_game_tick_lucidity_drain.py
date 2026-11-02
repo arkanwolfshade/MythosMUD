@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import AsyncIterator, Awaitable, Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
@@ -22,17 +22,8 @@ EFFECT_TYPE = "lucidity_drain_over_time"
 
 
 @dataclass
-class FakeSession:
-    commits: int = 0
-
-    async def commit(self) -> None:
-        self.commits += 1
-
-
-@dataclass
 class Rig:
     lcd: int
-    session: FakeSession = field(default_factory=FakeSession)
     deltas: list[int] = field(default_factory=lambda: cast(list[int], []))
     narrated: list[str] = field(default_factory=lambda: cast(list[str], []))
     picker_kwargs: list[object] = field(default_factory=lambda: cast(list[object], []))
@@ -48,35 +39,35 @@ class Rig:
 def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     rig = Rig(lcd=100)
 
-    async def fake_sessions() -> AsyncIterator[FakeSession]:
-        yield rig.session
-
     class FakeLucidityService:
         def __init__(
             self,
-            session: FakeSession,
+            registry: object,
             liability_picker: Callable[..., str | None] | None = None,
             *,
             catatonia_observer: object | None = None,
         ) -> None:
-            _ = session, catatonia_observer
+            _ = registry, catatonia_observer
             rig.picker_kwargs.append(liability_picker)
 
-        async def get_player_lucidity(self, player_id: uuid.UUID) -> SimpleNamespace:
-            _ = player_id
+        async def apply_lucidity_adjustment(
+            self,
+            player_id: uuid.UUID,
+            delta: int | Callable[[int], int],
+            *,
+            reason_code: str,
+            location_id: str | None = None,
+        ) -> SimpleNamespace:
+            _ = reason_code, location_id
             if rig.fail:
                 raise SQLAlchemyError("database unavailable")
             if rig.gone:
                 raise PlayerGoneError(str(player_id))
-            return SimpleNamespace(current_lcd=rig.lcd)
-
-        async def apply_lucidity_adjustment(
-            self, player_id: uuid.UUID, delta: int, *, reason_code: str, location_id: str | None = None
-        ) -> SimpleNamespace:
-            _ = player_id, reason_code, location_id
-            rig.deltas.append(delta)
-            rig.lcd += delta
-            return SimpleNamespace(new_lcd=rig.lcd)
+            step = delta(rig.lcd) if callable(delta) else delta  # evaluated on the live value, as the registry does
+            if step:
+                rig.deltas.append(step)
+                rig.lcd += step
+            return SimpleNamespace(new_lcd=rig.lcd, delta=step)
 
     async def fake_deliver(player_id: uuid.UUID | str, message: str) -> dict[str, object]:
         _ = player_id
@@ -97,7 +88,6 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
         f"{hallucinations}.handle_room_text_overlay_hallucination", fake_hallucination("room_text_overlay")
     )
     monkeypatch.setattr(f"{hallucinations}.handle_phantom_hostile_hallucination", fake_hallucination("phantom_hostile"))
-    monkeypatch.setattr(drain, "get_async_session", fake_sessions)
     monkeypatch.setattr(drain, "LucidityService", FakeLucidityService)
     # Authored drain narration is quest content: it goes out on the quest channel.
     monkeypatch.setattr("server.game.chat_npc_system.deliver_personal_quest", fake_deliver)
@@ -112,8 +102,8 @@ def _player_in_room() -> Player:
     return Player(player_id=str(uuid.uuid4()), name="Tester", current_room_id="room-1")
 
 
-def _container() -> _TickContainer:
-    return cast(_TickContainer, cast(object, SimpleNamespace()))
+def _container(registry: object | None = None) -> _TickContainer:
+    return cast(_TickContainer, cast(object, SimpleNamespace(player_registry=registry or object())))
 
 
 def _effect(**params: object) -> dict[str, object]:
@@ -128,7 +118,6 @@ async def test_each_second_drains_the_rate_and_counts_the_second(rig: Rig) -> No
     assert applied is True
     assert updated is not None
     assert updated["elapsed"] == 1
-    assert rig.session.commits == 1
 
 
 @pytest.mark.asyncio
@@ -171,7 +160,7 @@ async def test_a_player_already_at_the_floor_just_loses_the_effect(rig: Rig) -> 
 
 @pytest.mark.asyncio
 async def test_a_deleted_player_is_a_quiet_no_op(rig: Rig) -> None:
-    """#1147: the player vanished mid-drain; no write, no commit, and the effect is left for the tick to discard."""
+    """#1147: the player vanished mid-drain; no write, and the effect is left for the tick to discard."""
     rig.gone = True
     effect = _effect(rate=3)
 
@@ -179,7 +168,17 @@ async def test_a_deleted_player_is_a_quiet_no_op(rig: Rig) -> None:
 
     assert (updated, applied) == (effect, False)
     assert rig.deltas == []
-    assert rig.session.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_without_a_player_registry_the_effect_waits_for_the_next_second(rig: Rig) -> None:
+    effect = _effect(rate=3)
+
+    updated, applied = await drain.process_lucidity_drain(
+        cast(_TickContainer, cast(object, SimpleNamespace(player_registry=None))), _player(), effect
+    )
+
+    assert (updated, applied, rig.deltas) == (effect, False, [])
 
 
 @pytest.mark.asyncio

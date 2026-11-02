@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from collections.abc import AsyncIterator
+from types import SimpleNamespace
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -20,6 +20,13 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHandler
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
+
+
+def _container_with_lucidity(record: object | None) -> SimpleNamespace:
+    """An app container whose player registry serves ``record`` as the player's lucidity (None: no such player)."""
+    player = None if record is None else SimpleNamespace(lucidity=record)
+    return SimpleNamespace(player_registry=MagicMock(get=AsyncMock(return_value=player)))
+
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names
@@ -326,14 +333,9 @@ async def test_get_current_lucidity_found(player_respawn_event_handler: PlayerRe
     """Test get_current_lucidity() returns lucidity from database."""
     player_id = uuid.uuid4()
     mock_lucidity_record = MagicMock()
-    mock_lucidity_record.current_lcd = 75
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
+    mock_lucidity_record.lcd = 75
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(mock_lucidity_record)):
         result = await player_respawn_event_handler.get_current_lucidity(player_id, 100)
         assert result == 75
 
@@ -342,13 +344,8 @@ async def test_get_current_lucidity_found(player_respawn_event_handler: PlayerRe
 async def test_get_current_lucidity_not_found(player_respawn_event_handler: PlayerRespawnEventHandler) -> None:
     """Test get_current_lucidity() returns default when record not found."""
     player_id = uuid.uuid4()
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=None)
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(None)):
         result = await player_respawn_event_handler.get_current_lucidity(player_id, 100)
         assert result == 100
 
@@ -369,15 +366,10 @@ async def test_get_player_data_for_delirium_respawn_success(
     async_persistence = _async_persistence(mock_connection_manager)
     async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_connection_manager.online_players = {player_id: {}}
-    mock_session = MagicMock()
     mock_lucidity_record = MagicMock()
-    mock_lucidity_record.current_lcd = 80
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
+    mock_lucidity_record.lcd = 80
 
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
-    with patch("server.database.get_async_session", return_value=async_gen()):
+    with patch("server.container.get_container", return_value=_container_with_lucidity(mock_lucidity_record)):
         result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(player_id_str)
         assert result is not None
         assert "lucidity" not in result["stats"]  # not a stat: the event carries current_lcd top-level
@@ -449,20 +441,15 @@ async def test_handle_player_delirium_respawned_success(
         mock_connection_manager,
         return_value={"websocket_delivered": 1, "active_connections": 1},
     )
-    mock_session = MagicMock()
     mock_lucidity_record = MagicMock()
-    mock_lucidity_record.current_lcd = 72
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
+    mock_lucidity_record.lcd = 72
 
     mock_persistence = MagicMock()
     mock_persistence.get_room_by_id = MagicMock(return_value=None)
 
     with (
         patch("server.realtime.envelope.build_event") as mock_build_event,
-        patch("server.database.get_async_session", side_effect=lambda: async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(mock_lucidity_record)),
         patch(
             "server.container.async_persistence_access.get_container_async_persistence", return_value=mock_persistence
         ),
@@ -502,18 +489,13 @@ async def test_handle_player_delirium_respawned_includes_room_data(
         mock_connection_manager, return_value={"websocket_delivered": 1, "active_connections": 1}
     )
 
-    mock_session = MagicMock()
     mock_lucidity_record = MagicMock()
-    mock_lucidity_record.current_lcd = 100
-    mock_session.get = AsyncMock(return_value=mock_lucidity_record)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
+    mock_lucidity_record.lcd = 100
 
     expected_room_data: dict[str, object] = {"id": "room_001", "name": "Sanitarium"}
 
     with (
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(mock_lucidity_record)),
         patch.object(
             player_respawn_event_handler,
             "_prepare_room_data_for_respawn",

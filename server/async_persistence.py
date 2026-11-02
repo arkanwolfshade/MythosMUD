@@ -37,10 +37,7 @@ from .async_persistence_types import (
     InstanceRoomLookup,
     PlayerEffectOptions,
 )
-from .constants.lucidity import STARTING_LCD
-from .database import get_async_session
 from .events import EventBus
-from .models.lucidity import PlayerLucidity
 from .models.player import Player
 from .models.player_effect import PlayerEffect
 from .models.profession import Profession
@@ -65,6 +62,8 @@ if TYPE_CHECKING:
 
 # (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
 LucidityAdjuster = Callable[[uuid.UUID, int, str], Awaitable[None]]
+# Reads a player's LCD from the player registry (ADR-029 step 5b-i).
+LucidityReader = Callable[[uuid.UUID], Awaitable[int]]
 
 logger = get_logger(__name__)
 
@@ -98,6 +97,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _player_effect_repo: PlayerEffectRepository
     _instance_manager: InstanceRoomLookup | None
     _lucidity_adjuster: LucidityAdjuster | None
+    _lucidity_reader: LucidityReader | None
     _room_loader: RoomCacheLoader
 
     def __init__(
@@ -143,6 +143,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._player_effect_repo = PlayerEffectRepository()
         self._instance_manager = None
         self._lucidity_adjuster = None
+        self._lucidity_reader = None
         self._room_loader = RoomCacheLoader(self._room_cache, self._room_mappings, self._logger, event_bus)
 
     def set_instance_manager(self, instance_manager: InstanceRoomLookup) -> None:
@@ -156,6 +157,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         realtime and container layers, which import this module.
         """
         self._lucidity_adjuster = adjuster
+
+    def set_lucidity_reader(self, reader: LucidityReader | None) -> None:
+        """Set how this layer reads a player's LCD: from the player registry. Injected like the adjuster."""
+        self._lucidity_reader = reader
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -321,11 +326,11 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         return self._player_repo.validate_and_fix_player_room(player)
 
     async def get_current_lcd(self, player_id: uuid.UUID) -> int:
-        """The player's lucidity (player_lucidity.current_lcd), or the starting 100 if they have no record yet."""
-        async for session in get_async_session():
-            record = await session.get(PlayerLucidity, player_id)
-            return record.current_lcd if record is not None else STARTING_LCD
-        return STARTING_LCD
+        """The player's lucidity from the player registry, or the starting 100 if they have never had a change."""
+        if self._lucidity_reader is None:
+            # Wiring is missing (the combat bundle sets it at startup): never read a store the registry may be ahead of.
+            raise RuntimeError("Lucidity reader not wired; cannot read lucidity")
+        return await self._lucidity_reader(player_id)
 
     async def apply_lucidity_loss(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Lower a player's lucidity through LucidityService (tiers, catatonia, delirium, the adjustment log)."""

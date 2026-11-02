@@ -10,29 +10,20 @@ including container initialization, service setup, and dependency wiring.
 
 import asyncio
 import logging as stdlib_logging
-import uuid as uuid_lib
 from collections.abc import Iterable, Sized
 from typing import cast
 
-from anyio import sleep
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..game.chat_service import ChatService
-from ..game.first_exposure import make_first_exposure_finish
 from ..npc.lifecycle_manager import NPCLifecycleManager
 from ..npc.population_control import NPCPopulationController, _PopulationLifecycleManager
 from ..npc.spawning_service import NPCSpawningService
 from ..npc_database import get_npc_session
-from ..services.catatonia_registry import CatatoniaRegistry
-from ..services.lucidity_service import LucidityService
 from ..services.nats_subject_manager import nats_subject_manager
 from ..services.npc_instance_service import initialize_npc_instance_service
 from ..services.npc_service import NPCService
-from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
-from ..services.player_combat_service import PlayerCombatService
-from ..services.player_death_service import PlayerDeathService
-from ..services.player_respawn_service import PlayerRespawnService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
@@ -254,96 +245,6 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
     await _load_npc_definitions_and_rules(app)
     logger.info("NPC services initialized and added to app.state")
     await _start_npc_thread_manager_and_pending(app)
-
-
-async def initialize_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
-    """
-    Initialize combat-related services.
-
-    DEPRECATED: This function is no longer called. Combat services are now initialized
-    in ApplicationContainer.initialize() via _initialize_combat_services().
-    This function is kept for backward compatibility but should not be used.
-    """
-    app.state.player_combat_service = PlayerCombatService(
-        cast(object, container.persistence),
-        cast(object, container.event_bus),
-        level_service=cast(object, container.level_service),
-    )
-    if container.connection_manager is not None:
-        container.connection_manager.set_player_combat_service(app.state.player_combat_service)
-    # Update MovementService with combat service if it exists
-    if hasattr(container, "movement_service") and container.movement_service is not None:
-        container.movement_service.set_player_combat_service(app.state.player_combat_service)
-        logger.info("MovementService updated with player_combat_service")
-    logger.info("Player combat service initialized")
-
-    app.state.player_death_service = PlayerDeathService(
-        event_bus=container.event_bus, player_combat_service=app.state.player_combat_service
-    )
-    logger.info("Player death service initialized")
-
-    app.state.player_respawn_service = PlayerRespawnService(
-        event_bus=container.event_bus,
-        player_combat_service=app.state.player_combat_service,
-        room_lookup=container.async_persistence.get_room_by_id if container.async_persistence else None,
-        first_exposure_finish=make_first_exposure_finish(container),
-    )
-    logger.info("Player respawn service initialized")
-
-    async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
-        """Failover callback that relocates catatonic players to the sanitarium."""
-        # 10-second fade before transport per spec
-        await sleep(10.0)
-
-        if container.database_manager is None:
-            logger.error("Database manager not available for catatonia failover", player_id=player_id)
-            return
-
-        try:
-            session_maker = container.database_manager.get_session_maker()
-        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
-            logger.error(
-                "Failed to get session maker for catatonia failover",
-                player_id=player_id,
-                error=str(exc),
-                exc_info=True,
-            )
-            return
-
-        async with session_maker() as session:
-            try:
-                # Clear all active hallucination timers per spec requirement
-                player_id_uuid = uuid_lib.UUID(player_id)
-                lucidity_service = LucidityService(session)
-                timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
-                logger.debug(
-                    "Hallucination timers cleared in failover",
-                    player_id=player_id,
-                    timers_cleared=timers_cleared,
-                )
-
-                await app.state.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
-                await app.state.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
-                logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
-            except (
-                ValueError,
-                TypeError,
-                AttributeError,
-                KeyError,
-                RuntimeError,
-            ) as exc:  # pragma: no cover - defensive
-                logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
-                await session.rollback()
-
-    app.state.catatonia_registry = CatatoniaRegistry(failover_callback=_sanitarium_failover)
-    logger.info("Catatonia registry initialized")
-
-    app.state.passive_lucidity_flux_service = PassiveLucidityFluxService(
-        persistence=container.async_persistence,
-        performance_monitor=container.performance_monitor,
-        catatonia_observer=app.state.catatonia_registry,
-    )
-    logger.info("Passive lucidity flux service initialized")
 
 
 async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationContainer) -> None:

@@ -24,7 +24,6 @@ from server.app.lifespan_startup import (
     _log_npc_startup_errors,
     _validate_npc_services_prerequisites,
     initialize_chat_service,
-    initialize_combat_services,
     initialize_container_and_legacy_services,
     initialize_mythos_time_consumer,
     initialize_nats_and_combat_services,
@@ -185,13 +184,6 @@ async def test_initialize_npc_services(mock_app: FastAPI, mock_container: MagicM
     assert hasattr(mock_app.state, "npc_spawning_service")
     assert hasattr(mock_app.state, "npc_lifecycle_manager")
     assert hasattr(mock_app.state, "npc_population_controller")
-
-
-@pytest.mark.asyncio
-async def test_initialize_combat_services(mock_app: FastAPI, mock_container: MagicMock) -> None:
-    """Test initialize_combat_services() initializes combat services."""
-    await initialize_combat_services(mock_app, mock_container)
-    assert hasattr(mock_app.state, "combat_service") or hasattr(mock_app.state, "combat_configuration_service")
 
 
 @pytest.mark.asyncio

@@ -10,17 +10,22 @@ LCD loss, and it stacks with ``lucidity_drain_over_time`` (both clamp at the flo
 
 from __future__ import annotations
 
-import uuid
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..config import get_config
+from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer
+
+if TYPE_CHECKING:
+    import uuid
+
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger("server.game_tick")
 
@@ -37,31 +42,37 @@ def is_catatonia_decay_tick(tick_count: int) -> bool:
     return not tick_count % max(1, ticks_per_step)
 
 
-async def _decay_one(service: LucidityService, player_id: uuid.UUID) -> None:
-    """Take one LCD from the player, re-reading it first: a tonic, ``/ground`` or a drain may have moved it."""
-    current = (await service.get_player_lucidity(player_id)).current_lcd
-    if current > 0 or current <= DELIRIUM_LCD:
-        return
-    _ = await service.apply_lucidity_adjustment(player_id, -1, reason_code=CATATONIA_DECAY_REASON_CODE)
+def catatonia_step(current_lcd: int) -> int:
+    """One LCD while the player is inside the countdown, else nothing: a tonic, ``/ground`` or a drain may have moved
+    them since the catatonic ids were read. Evaluated inside the adjustment's unit, so it sees the live value."""
+    return -1 if DELIRIUM_LCD < current_lcd <= 0 else 0
 
 
 async def process_catatonia_decay(container: _TickContainer, session: AsyncSession, tick_count: int) -> None:
     """Run one decay step for every catatonic player when the tick is due.
 
-    A database failure rolls the shared tick session back (an aborted transaction would fail every later query this
-    tick) and the next due tick retries.
+    The ids come from the database, so a change the sweep has not written yet shows up a sweep late; the step itself
+    reads the registry's live value. A failure of the id query rolls the shared tick session back (an aborted
+    transaction would fail every later query this tick) and the next due tick retries.
     """
     if not is_catatonia_decay_tick(tick_count):
+        return
+    registry = cast("PlayerRegistry | None", container.player_registry)
+    if registry is None:
         return
     try:
         ids = cast("list[uuid.UUID]", (await session.execute(_CATATONIC_IDS_SQL)).scalars().all())
         if not ids:
             return
         observer = cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None))
-        service = LucidityService(session, catatonia_observer=observer)
+        service = LucidityService(registry, catatonia_observer=observer)
         for player_id in ids:
-            await _decay_one(service, player_id)
-        await session.commit()
+            try:
+                _ = await service.apply_lucidity_adjustment(
+                    player_id, catatonia_step, reason_code=CATATONIA_DECAY_REASON_CODE
+                )
+            except PlayerGoneError:
+                logger.debug("Catatonia decay skipped: player no longer exists", player_id=str(player_id))
     except (SQLAlchemyError, ValueError, RuntimeError, OSError) as e:
         logger.warning("Catatonia decay failed; will retry next interval", tick_count=tick_count, error=str(e))
         await session.rollback()

@@ -414,25 +414,20 @@ class PlayerRespawnEventHandler(PlayerEventHandlerBase):
 
     async def get_current_lucidity(self, player_uuid: uuid.UUID, default_lucidity: int) -> int:
         """
-        Get current lucidity from PlayerLucidity table.
+        Get current lucidity from the player registry (ADR-029 step 5b-i).
 
         Args:
             player_uuid: The player's UUID
-            default_lucidity: Default lucidity value if record not found
+            default_lucidity: Default lucidity value if the player cannot be read
 
         Returns:
             Current lucidity value
         """
-        from ..database import get_async_session
-        from ..models.lucidity import PlayerLucidity
+        from ..container import get_container
 
-        current_lucidity = default_lucidity
-        async for session in get_async_session():
-            lucidity_record = await session.get(PlayerLucidity, player_uuid)
-            if lucidity_record:
-                current_lucidity = lucidity_record.current_lcd
-            break
-        return current_lucidity
+        registry = get_container().player_registry
+        player = await registry.get(player_uuid) if registry is not None else None
+        return player.lucidity.lcd if player is not None else default_lucidity
 
     async def _fetch_delirium_respawn_player_snapshot(
         self, player_id_str: str

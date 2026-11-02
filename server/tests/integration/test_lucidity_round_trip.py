@@ -1,17 +1,20 @@
 """
-Integration test for lucidity service round-trip.
+Integration test for lucidity on the player registry (ADR-029 step 5b-i), against real PostgreSQL.
 
-Tests that LucidityService can find or create a lucidity record,
-apply adjustments, and persist changes correctly.
+A LucidityService change lands in the registry's lucidity part and stays there (lazy) until a flush, which writes
+``upsert_player_lucidity`` and the ``lucidity_adjustment_log`` row in one transaction. A fresh registry then reads it
+back through ``get_player_lucidity``, catatonia timestamp included.
 """
 
 import uuid
+from typing import cast
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from server.models.lucidity import PlayerLucidity
+from server.game.player_registry import PlayerRegistry, RegistrySettings, SessionFactory
 from server.models.player import Player
 from server.models.user import User
 from server.services.lucidity_service import LucidityService
@@ -29,96 +32,91 @@ async def cleanup_test_user(session_factory: async_sessionmaker[AsyncSession]):
         await session.commit()
 
 
+async def _create_player(session_factory: async_sessionmaker[AsyncSession], user_id: uuid.UUID) -> uuid.UUID:
+    player_id = uuid.uuid4()
+    async with session_factory() as session:
+        session.add(
+            User(
+                id=str(user_id),
+                email=f"test_{user_id}@example.com",
+                username=f"testuser_{str(user_id)[:8]}",
+                display_name=f"Test User {str(user_id)[:8]}",
+                hashed_password="hashed",
+                is_active=True,
+                is_superuser=False,
+                is_verified=True,
+            )
+        )
+        await session.flush()
+        session.add(
+            Player(
+                player_id=str(player_id),
+                user_id=str(user_id),
+                name=f"testplayer_{str(player_id)[:8]}",
+                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+            )
+        )
+        await session.commit()
+    return player_id
+
+
+async def _stored(session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID) -> tuple[object, ...] | None:
+    async with session_factory() as session:
+        row = (
+            await session.execute(
+                text(
+                    "SELECT current_lcd, current_tier, catatonia_entered_at FROM player_lucidity WHERE player_id = :id"
+                ),
+                {"id": str(player_id)},
+            )
+        ).first()
+    return tuple(row) if row is not None else None
+
+
+async def _ledger(session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID) -> list[tuple[object, ...]]:
+    async with session_factory() as session:
+        rows = await session.execute(
+            text("SELECT delta, reason_code FROM lucidity_adjustment_log WHERE player_id = :id ORDER BY id"),
+            {"id": str(player_id)},
+        )
+    return [tuple(row) for row in rows]
+
+
 @pytest.mark.asyncio
 async def test_lucidity_adjustment_round_trip(
     session_factory: async_sessionmaker[AsyncSession], cleanup_test_user: uuid.UUID
 ):
-    """
-    Test that LucidityService can adjust lucidity and persist changes.
+    player_id = await _create_player(session_factory, cleanup_test_user)
+    registry = PlayerRegistry(cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0))
+    service = LucidityService(registry)
 
-    This test verifies the full round-trip:
-    1. Create prerequisites (user, player) in a single transaction
-    2. Service creates the lucidity record (defaults to 100 LCD, "lucid" tier)
-    3. Service adjusts the lucidity
-    4. Changes are persisted and verified
+    with patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()):
+        result = await service.apply_lucidity_adjustment(player_id, -60, reason_code="test_adjustment")
 
-    CRITICAL: All database operations happen within a single session/transaction
-    to avoid foreign key constraint violations with NullPool connections.
-    """
-    async with session_factory() as session:
-        # Create user and player - prerequisites for lucidity record
-        # These must be committed before the service can create PlayerLucidity
-        user_id = cleanup_test_user
-        player_id = uuid.uuid4()
+    # A new character has no row yet: the registry starts from 100 / lucid.
+    assert (result.previous_lcd, result.previous_tier, result.new_lcd, result.new_tier) == (100, "lucid", 40, "uneasy")
+    assert await _stored(session_factory, player_id) is None  # lazy: nothing written before the sweep
+    assert registry.is_loaded(player_id)  # a dirty player stays in memory even with no idle TTL
 
-        user = User(
-            id=str(user_id),
-            email=f"test_{user_id}@example.com",
-            username=f"testuser_{str(user_id)[:8]}",
-            display_name=f"Test User {str(user_id)[:8]}",
-            hashed_password="hashed",
-            is_active=True,
-            is_superuser=False,
-            is_verified=True,
-        )
-        # Player model expects player_id as string (Mapped[str]) even though DB stores UUID
-        player = Player(
-            player_id=str(player_id),
-            user_id=str(user_id),
-            name=f"testplayer_{str(player_id)[:8]}",
-            current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
-        )
+    assert await registry.flush_dirty() == 1
 
-        # CRITICAL: With NullPool and pytest-xdist parallel execution, committing
-        # the player separately can cause visibility issues. The service's
-        # get_or_create_player_lucidity() does a flush() which requires the player
-        # to exist for the foreign key constraint.
-        #
-        # Strategy: Keep user and player in the same transaction context as the
-        # service operations. We flush them to ensure they're in the database,
-        # but don't commit until after the service operations complete.
-        # This ensures the foreign key constraint is satisfied because everything
-        # happens in one transaction.
-        session.add_all([user, player])
-        await session.flush()  # Flush to ensure objects are in the database for FK checks
-        # DO NOT commit here - keep everything in the same transaction
+    assert await _stored(session_factory, player_id) == (40, "uneasy", None)
+    assert await _ledger(session_factory, player_id) == [(-60, "test_adjustment")]
+    assert not registry.is_loaded(player_id)  # clean again, so evicted
 
-        # Now use the service - it will create the lucidity record if it doesn't exist
-        # Default initial state: current_lcd=100, current_tier="lucid"
-        # The player is now committed and in the session, so the foreign key constraint will be satisfied
-        service = LucidityService(session)
-        delta = -60  # Adjust from 100 to 40, which should change tier from "lucid" to "uneasy"
-        expected_new_lcd = 100 + delta  # 40
+    # A fresh registry reads the written row back, and catatonia's timestamp survives the round trip.
+    fresh_registry = PlayerRegistry(
+        cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0)
+    )
+    fresh = LucidityService(fresh_registry)
+    with (
+        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
+        patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=AsyncMock()),
+    ):
+        catatonic = await fresh.apply_lucidity_adjustment(player_id, -45, reason_code="shock")
+    assert (catatonic.previous_lcd, catatonic.new_lcd, catatonic.new_tier) == (40, -5, "catatonic")
+    assert await fresh_registry.flush_dirty() == 1
 
-        result = await service.apply_lucidity_adjustment(
-            player_id=player_id,
-            delta=delta,
-            reason_code="test_adjustment",
-        )
-
-        # Verify the service result
-        # Service creates record with defaults: previous_lcd=100, previous_tier="lucid"
-        assert result.previous_lcd == 100
-        assert result.previous_tier == "lucid"
-        assert result.new_lcd == expected_new_lcd
-        assert result.new_tier == "uneasy"  # 40 LCD is in the "uneasy" tier range
-
-        # Verify the record exists in the session (confirms service created it)
-        # This validates the service logic without requiring database persistence verification
-        from sqlalchemy import select
-
-        stmt = select(PlayerLucidity).where(PlayerLucidity.player_id == player_id)
-        result_query = await session.execute(stmt)
-        record = result_query.scalar_one_or_none()
-        assert record is not None, "PlayerLucidity should exist in session after service call"
-        assert record.current_lcd == expected_new_lcd
-        assert record.current_tier == result.new_tier
-
-        # Commit the service's modifications (creates PlayerLucidity record and adjustment log)
-        # All operations (user, player, lucidity record) are in the same transaction
-        # The service has already done flush(), so commit() will persist everything
-        await session.commit()
-
-        # Note: We don't verify database persistence here to avoid environment-specific
-        # issues with NullPool and pytest-xdist. The service logic is verified above,
-        # and persistence is tested at the database layer in other tests.
+    stored = await _stored(session_factory, player_id)
+    assert stored is not None and stored[:2] == (-5, "catatonic") and stored[2] is not None
+    assert await _ledger(session_factory, player_id) == [(-60, "test_adjustment"), (-45, "shock")]

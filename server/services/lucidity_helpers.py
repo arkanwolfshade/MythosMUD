@@ -6,10 +6,9 @@ import json
 import uuid
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Protocol, cast
 
-from ..models.lucidity import PlayerLucidity
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import LiabilityStackEntry
 
@@ -24,11 +23,6 @@ LIABILITY_CATALOG: tuple[str, ...] = (
 Tier = str
 
 TIER_ORDER: tuple[Tier, ...] = ("lucid", "uneasy", "fractured", "deranged", "catatonic")
-
-
-def utc_now() -> datetime:
-    """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
-    return datetime.now(UTC).replace(tzinfo=None)
 
 
 def resolve_tier(lucidity_value: int) -> Tier:
@@ -123,36 +117,6 @@ class LucidityUpdateResult:
     new_tier: Tier
     delta: int
     liabilities_added: list[str]
-
-
-@dataclass(frozen=True)
-class LucidityChangeEventContext:
-    """Context for sending a lucidity change event (reduces parameter count)."""
-
-    record: PlayerLucidity
-    delta: int
-    previous_tier: str
-    new_tier: str
-    new_lcd: int
-    reason_code: str
-    metadata_map: dict[str, object]
-    location_id: str | None
-
-
-@dataclass(frozen=True)
-class LucidityAdjustmentFinalizeContext:
-    """Context for persisting logs, liabilities, and events after an LCD change."""
-
-    player_id: uuid.UUID
-    record: PlayerLucidity
-    delta: int
-    reason_code: str
-    previous_lcd: int
-    previous_tier: str
-    new_lcd: int
-    new_tier: str
-    metadata: Mapping[str, object] | str | None
-    location_id: str | None
 
 
 def normalize_metadata(metadata: Mapping[str, object] | str | None) -> str:

@@ -6,8 +6,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLucidity
-from server.services import lucidity_repository
+from server.models.lucidity import LucidityCooldown, LucidityExposureState
 from server.services.lucidity_repository import LucidityRepository, _utc_now
 
 
@@ -48,61 +47,6 @@ def test_utc_now_is_naive():
     """_utc_now returns naive UTC datetime."""
     ts = _utc_now()
     assert ts.tzinfo is None
-
-
-@pytest.mark.asyncio
-async def test_get_player_lucidity_returns_record(repo: LucidityRepository, mock_session: _MockAsyncSession):
-    """get_player_lucidity returns scalar result."""
-    player_id = uuid.uuid4()
-    record = MagicMock(spec=PlayerLucidity)
-    mock_session.execute.return_value = _scalar_result(record)
-    got = await repo.get_player_lucidity(player_id)
-    assert got is record
-    mock_session.execute.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_get_or_create_player_lucidity_existing(repo: LucidityRepository, mock_session: _MockAsyncSession):
-    """get_or_create returns existing record without add."""
-    player_id = uuid.uuid4()
-    existing = MagicMock(spec=PlayerLucidity)
-    mock_session.execute.return_value = _scalar_result(existing)
-    got = await repo.get_or_create_player_lucidity(player_id)
-    assert got is existing
-    mock_session.add.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_get_or_create_player_lucidity_creates(repo: LucidityRepository, mock_session: _MockAsyncSession):
-    """get_or_create inserts new PlayerLucidity when missing."""
-    player_id = uuid.uuid4()
-    # First execute: no lucidity row; second: the player-exists check.
-    mock_session.execute.side_effect = [_scalar_result(None), _scalar_result(player_id)]
-    got = await repo.get_or_create_player_lucidity(player_id)
-    assert got.player_id == player_id
-    mock_session.add.assert_called_once()
-    mock_session.flush.assert_awaited()
-
-
-@pytest.mark.asyncio
-async def test_get_or_create_player_lucidity_player_gone(repo: LucidityRepository, mock_session: _MockAsyncSession):
-    """#1147: a deleted player gets PlayerGoneError instead of an FK-violating insert."""
-    mock_session.execute.side_effect = [_scalar_result(None), _scalar_result(None)]
-    with pytest.raises(lucidity_repository.PlayerGoneError):
-        _ = await repo.get_or_create_player_lucidity(uuid.uuid4())
-    mock_session.add.assert_not_called()
-    mock_session.flush.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_add_adjustment_log(repo: LucidityRepository, mock_session: _MockAsyncSession):
-    """add_adjustment_log persists log entry."""
-    player_id = uuid.uuid4()
-    entry = await repo.add_adjustment_log(player_id, -5, "combat", "{}", "room_1")
-    assert entry.player_id == player_id
-    assert entry.delta == -5
-    mock_session.add.assert_called_once()
-    mock_session.flush.assert_awaited()
 
 
 @pytest.mark.asyncio
@@ -187,3 +131,20 @@ async def test_delete_cooldowns_by_action_code_pattern(repo: LucidityRepository,
     deleted = await repo.delete_cooldowns_by_action_code_pattern(player_id, "spell_%")
     assert deleted == 3
     mock_session.flush.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_clear_hallucination_timers_deletes_every_hallucination_cooldown(
+    repo: LucidityRepository, monkeypatch: pytest.MonkeyPatch
+):
+    """clear_hallucination_timers deletes the hallucination_% cooldowns and returns how many."""
+    patterns: list[str] = []
+
+    async def delete(_player_id: uuid.UUID, pattern: str) -> int:
+        patterns.append(pattern)
+        return 2
+
+    monkeypatch.setattr(repo, "delete_cooldowns_by_action_code_pattern", delete)
+
+    assert await repo.clear_hallucination_timers(uuid.uuid4()) == 2
+    assert patterns == ["hallucination_%"]

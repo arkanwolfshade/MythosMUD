@@ -24,10 +24,14 @@ from server.models.combat import (
     CombatStatus,
 )
 from server.services.lucidity_command_disruption import should_involuntary_flee
+from server.services.lucidity_repository import LucidityRepository, PlayerGoneError
 from server.services.lucidity_service import LucidityService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from server.game.player_registry import PlayerRegistry
     from server.services.combat_service import CombatService
 
 # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stubs need ... for basedpyright reportReturnType
@@ -283,11 +287,9 @@ async def execute_voluntary_flee(
     return bool(moved)
 
 
-async def _involuntary_flee_on_cooldown(
-    lucidity_service: LucidityService, participant_id: UUID, cooldown_code: str
-) -> bool:
+async def _involuntary_flee_on_cooldown(repo: LucidityRepository, participant_id: UUID, cooldown_code: str) -> bool:
     """True if the involuntary-flee cooldown is still active."""
-    cooldown = await lucidity_service.get_cooldown(participant_id, cooldown_code)
+    cooldown = await repo.get_cooldown(participant_id, cooldown_code)
     if not cooldown or not cooldown.cooldown_expires_at:
         return False
     if cooldown.cooldown_expires_at.tzinfo is None:
@@ -305,26 +307,31 @@ async def _involuntary_flee_on_cooldown(
 
 
 async def _check_involuntary_flee_with_session(
-    session: Any,
+    session: AsyncSession,
     target: CombatParticipant,
     damage_percent: float,
     damage: int,
+    registry: PlayerRegistry | None,
 ) -> bool:
     """
     Check tier, damage threshold, and cooldown; set cooldown and commit if flee allowed.
     Returns True if player should flee, False otherwise.
     """
-    lucidity_service = LucidityService(session)
-    lucidity_record = await lucidity_service.get_player_lucidity(target.participant_id)
-    tier = lucidity_record.current_tier if lucidity_record else "lucid"
+    tier = "lucid"
+    if registry is not None:
+        try:
+            tier = (await LucidityService(registry).get_lucidity(target.participant_id)).tier
+        except PlayerGoneError:
+            pass
     if not should_involuntary_flee(tier, damage_percent):
         return False
     cooldown_code = "involuntary_flee"
-    if await _involuntary_flee_on_cooldown(lucidity_service, target.participant_id, cooldown_code):
+    repo = LucidityRepository(session)
+    if await _involuntary_flee_on_cooldown(repo, target.participant_id, cooldown_code):
         return False
     cooldown_expires = datetime.now(UTC) + timedelta(minutes=2)
     cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
-    await lucidity_service.set_cooldown(target.participant_id, cooldown_code, cooldown_expires_naive)
+    _ = await repo.set_cooldown(target.participant_id, cooldown_code, cooldown_expires_naive)
     await session.commit()
     logger.info(
         "Involuntary flee conditions met",
@@ -337,7 +344,9 @@ async def _check_involuntary_flee_with_session(
     return True
 
 
-async def check_involuntary_flee(target: CombatParticipant, damage: int) -> bool:
+async def check_involuntary_flee(
+    target: CombatParticipant, damage: int, registry: PlayerRegistry | None = None
+) -> bool:
     """
     Check if player should involuntarily flee due to lucidity effects.
 
@@ -347,6 +356,7 @@ async def check_involuntary_flee(target: CombatParticipant, damage: int) -> bool
     Args:
         target: The player participant who took damage
         damage: Amount of damage taken
+        registry: The player registry, which holds the target's lucidity tier (ADR-029 step 5b-i)
 
     Returns:
         True if player should flee, False otherwise
@@ -357,7 +367,7 @@ async def check_involuntary_flee(target: CombatParticipant, damage: int) -> bool
         damage_percent = damage / target.max_dp
         async for session in get_async_session():
             try:
-                return await _check_involuntary_flee_with_session(session, target, damage_percent, damage)
+                return await _check_involuntary_flee_with_session(session, target, damage_percent, damage, registry)
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Flee check errors unpredictable, must not fail combat
                 logger.warning(
                     "Error checking involuntary flee",

@@ -17,12 +17,12 @@ from typing import cast
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
-from ..database import get_async_session
 from ..exceptions import DatabaseError
 from ..realtime.envelope import build_event
 from ..realtime.posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
 from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
 from ..services.lucidity_helpers import CatatoniaObserverProtocol
+from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
@@ -47,6 +47,7 @@ from .admin_setstat_support import (
     validate_set_stat_inputs,
 )
 from .command_results import command_error
+from .inventory_command_helpers import player_registry
 
 logger = get_logger(__name__)
 
@@ -253,38 +254,35 @@ async def _apply_lucidity_via_service(ctx: AdminSetStatApplyContext) -> dict[str
         return command_error(f"Player '{ctx.target_player}' has no valid id.")
 
     catatonia_observer = _get_catatonia_registry_from_app(ctx.app)
-    async for session in get_async_session():
-        lucidity_service = LucidityService(session, catatonia_observer=catatonia_observer)
-        current_lcd = await get_current_lcd(session, player_id)
-        delta = ctx.value - current_lcd
-        try:
-            _ = await lucidity_service.apply_lucidity_adjustment(
-                player_id=player_id,
-                delta=delta,
-                reason_code="admin_set",
-                metadata={
-                    "admin_name": ctx.player_name,
-                    "admin_id": await _resolve_admin_id(ctx),
-                    "previous_lcd": current_lcd,
-                    "target_lcd": ctx.value,
-                    "command": "admin setstat",
-                },
-            )
-            await session.commit()
-        except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as adjust_exc:
-            await session.rollback()
-            logger.error(
-                "Admin setstat lucidity adjustment failed",
-                player_name=ctx.player_name,
-                target_player=ctx.target_player,
-                error=str(adjust_exc),
-                error_type=type(adjust_exc).__name__,
-            )
-            return command_error(f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}")
-        return await _finish_occult_stat_change(
-            ctx, old_value=current_lcd, warning_message=warning_message, range_warning=range_warning
+    lucidity_service = LucidityService(player_registry(), catatonia_observer=catatonia_observer)
+    current_lcd = await get_current_lcd(player_id)
+    target = ctx.value
+    try:
+        # Computed from the live LCD inside the unit, so a change since the read cannot make the result miss.
+        _ = await lucidity_service.apply_lucidity_adjustment(
+            player_id=player_id,
+            delta=lambda current: target - current,
+            reason_code="admin_set",
+            metadata={
+                "admin_name": ctx.player_name,
+                "admin_id": await _resolve_admin_id(ctx),
+                "previous_lcd": current_lcd,
+                "target_lcd": ctx.value,
+                "command": "admin setstat",
+            },
         )
-    return command_error("Database session could not be established. Please try again.")
+    except (DatabaseError, SQLAlchemyError, PlayerGoneError, ValueError, TypeError, AttributeError) as adjust_exc:
+        logger.error(
+            "Admin setstat lucidity adjustment failed",
+            player_name=ctx.player_name,
+            target_player=ctx.target_player,
+            error=str(adjust_exc),
+            error_type=type(adjust_exc).__name__,
+        )
+        return command_error(f"Error setting lucidity for {ctx.target_player}: {str(adjust_exc)}")
+    return await _finish_occult_stat_change(
+        ctx, old_value=current_lcd, warning_message=warning_message, range_warning=range_warning
+    )
 
 
 async def _apply_stat_change_and_build_result(

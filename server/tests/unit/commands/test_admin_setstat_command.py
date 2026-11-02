@@ -8,6 +8,8 @@ Tests the admin set command handler function.
 # Reason: Unit tests intentionally call admin_setstat_command private helpers.
 
 import uuid
+from collections.abc import Callable
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -95,10 +97,6 @@ def _assert_stat_write_path(stat_input: str, value: int, set_stats: MagicMock, a
     apply_dp.reset_mock()
 
 
-async def _async_session_gen(session: AsyncMock):
-    yield session
-
-
 @pytest.mark.asyncio
 async def test_handle_admin_set_stat_command_success_str():
     """Test successful setting of STR stat."""
@@ -147,10 +145,7 @@ async def test_handle_admin_set_stat_command_success_all_stat_types():
     with (
         patch("server.commands.admin_setstat_command.CorruptionService", return_value=corr_svc),
         patch("server.commands.admin_setstat_command.LucidityService", return_value=luc_svc),
-        patch(
-            "server.commands.admin_setstat_command.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
+        patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()),
         patch("server.commands.admin_setstat_command.get_current_lcd", new_callable=AsyncMock, return_value=100),
     ):
         for stat_input, value in _ALL_STAT_TYPE_CASES:
@@ -216,10 +211,7 @@ async def test_handle_admin_set_stat_lucidity_routes_through_service():
 
     with (
         patch("server.commands.admin_setstat_command.LucidityService", return_value=luc_svc),
-        patch(
-            "server.commands.admin_setstat_command.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
+        patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()),
         patch("server.commands.admin_setstat_command.get_current_lcd", new_callable=AsyncMock, return_value=100),
     ):
         result = await _handle_admin_set_stat_command(
@@ -235,7 +227,9 @@ async def test_handle_admin_set_stat_lucidity_routes_through_service():
     save_player.assert_not_called()
     apply_lucidity.assert_awaited_once()
     assert apply_lucidity.await_args is not None
-    assert apply_lucidity.await_args.kwargs["delta"] == -15
+    delta = cast(Callable[[int], int], apply_lucidity.await_args.kwargs["delta"])
+    assert delta(100) == -15  # computed from the live LCD inside the unit, landing on 85 whatever it is
+    assert delta(40) == 45
     assert apply_lucidity.await_args.kwargs["reason_code"] == "admin_set"
 
 

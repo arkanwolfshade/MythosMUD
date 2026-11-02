@@ -10,7 +10,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,8 +20,11 @@ from ..models.lucidity import LucidityActionCode, LucidityAdjustmentLog
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
-from .lucidity_helpers import LucidityUpdateResult
-from .lucidity_service import CatatoniaObserverProtocol, LucidityService
+from .lucidity_helpers import CatatoniaObserverProtocol, LucidityUpdateResult
+from .lucidity_repository import LucidityRepository
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -35,10 +38,10 @@ NO_SESSION_MESSAGE = "The sanitarium records could not be accessed. Please try a
 DEBRIEF_PENDING_DAYS = 365
 
 
-async def mark_debrief_pending(lucidity_service: LucidityService, player_id: uuid.UUID) -> None:
+async def mark_debrief_pending(repo: LucidityRepository, player_id: uuid.UUID) -> None:
     """Leave the long-lived DEBRIEF_PENDING flag that ``perform_debrief`` spends (delirium respawns, a tutorial skip)."""
     expires_at = datetime.now(UTC).replace(tzinfo=None) + timedelta(days=DEBRIEF_PENDING_DAYS)
-    _ = await lucidity_service.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, expires_at)
+    _ = await repo.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, expires_at)
 
 
 _NO_RECORDS_RECAP = (
@@ -101,10 +104,14 @@ async def generate_narrative_recap(player_id: uuid.UUID, session: AsyncSession) 
 
 
 async def _therapy_note(
-    player: Player, session: AsyncSession, observer: CatatoniaObserverProtocol | None, player_id: uuid.UUID
+    player: Player,
+    session: AsyncSession,
+    registry: PlayerRegistry,
+    observer: CatatoniaObserverProtocol | None,
+    player_id: uuid.UUID,
 ) -> str:
     """The paragraph describing the optional immediate therapy session (run it, or say why it did not happen)."""
-    active_service = ActiveLucidityService(session, catatonia_observer=observer)
+    active_service = ActiveLucidityService(session, registry, catatonia_observer=observer)
     room_id = cast(str | None, player.current_room_id)
     try:
         result = cast(
@@ -128,17 +135,18 @@ async def _therapy_note(
 async def _run_debrief(
     player: Player,
     session: AsyncSession,
-    lucidity_service: LucidityService,
+    registry: PlayerRegistry,
     wants_therapy: bool,
     observer: CatatoniaObserverProtocol | None,
 ) -> DebriefOutcome:
     player_id = uuid.UUID(str(player.player_id))
-    if await lucidity_service.get_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING) is None:
+    repo = LucidityRepository(session)
+    if await repo.get_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING) is None:
         return DebriefOutcome(NOT_AVAILABLE_MESSAGE, completed=False)
     parts = [await generate_narrative_recap(player_id, session)]
     if wants_therapy:
-        parts.append(await _therapy_note(player, session, observer, player_id))
-    _ = await lucidity_service.clear_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING)
+        parts.append(await _therapy_note(player, session, registry, observer, player_id))
+    _ = await repo.delete_cooldowns_by_action_code_pattern(player_id, LucidityActionCode.DEBRIEF_PENDING)
     await session.commit()
     parts.append(_CONCLUSION)
     logger.info("Debrief completed", player_id=player_id, therapy_requested=wants_therapy)
@@ -146,7 +154,11 @@ async def _run_debrief(
 
 
 async def perform_debrief(
-    player: Player, *, wants_therapy: bool = False, catatonia_observer: CatatoniaObserverProtocol | None = None
+    player: Player,
+    registry: PlayerRegistry,
+    *,
+    wants_therapy: bool = False,
+    catatonia_observer: CatatoniaObserverProtocol | None = None,
 ) -> DebriefOutcome:
     """Run the debrief for ``player``: recap, optional therapy, then clear DEBRIEF_PENDING.
 
@@ -155,7 +167,7 @@ async def perform_debrief(
     """
     async for session in get_async_session():
         try:
-            return await _run_debrief(player, session, LucidityService(session), wants_therapy, catatonia_observer)
+            return await _run_debrief(player, session, registry, wants_therapy, catatonia_observer)
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: debrief errors are unpredictable and must be handled gracefully
             logger.error("Debrief failed", player_id=str(player.player_id), error=str(e), exc_info=True)
             await session.rollback()

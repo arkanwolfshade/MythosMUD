@@ -1,294 +1,279 @@
-"""
-Unit tests for lucidity service.
-"""
+"""Unit tests for LucidityService on a real player registry (ADR-029 step 5b-i)."""
 
+from __future__ import annotations
+
+import json
 import uuid
+from collections.abc import Iterator
+from dataclasses import dataclass
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from typing import cast
+from unittest.mock import patch
 
 import pytest
 
-from server.models.lucidity import PlayerLucidity
-from server.services.lucidity_helpers import LIABILITY_CATALOG, encode_liabilities
-from server.services.lucidity_service import LucidityService
+from server.constants.lucidity import STARTING_LCD
+from server.game.player_registry import LucidityData
+from server.services.lucidity_event_dispatcher import LucidityChangeEventExtras
+from server.services.lucidity_helpers import LIABILITY_CATALOG, decode_liabilities, encode_liabilities
+from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_service import LucidityService, max_lcd_from_stats
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
+
+PID = uuid.uuid4()
+T0 = datetime(2026, 10, 30, 12, 0, tzinfo=UTC)
 
 
-@pytest.fixture
-def mock_session():
-    """Create a mock async session."""
-    session = MagicMock()
-    session.flush = AsyncMock()
-    return session
+class _Send:
+    """Stands in for one of the client event senders: records the keyword arguments of every call."""
+
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+
+    async def __call__(self, *args: object, **kwargs: object) -> None:
+        _ = args
+        self.calls.append(kwargs)
 
 
-@pytest.fixture
-def mock_lucidity_record():
-    """Create a mock lucidity record."""
-    record = PlayerLucidity(
-        player_id=uuid.uuid4(),
-        current_lcd=50,
-        current_tier="uneasy",
-    )
-    return record
+class _Observer:
+    """A catatonia observer (CatatoniaObserverProtocol) that records what it was told."""
+
+    def __init__(self) -> None:
+        self.entered: list[uuid.UUID] = []
+        self.cleared: list[uuid.UUID] = []
+
+    def on_catatonia_entered(self, *, player_id: uuid.UUID, entered_at: datetime, current_lcd: int) -> None:
+        _ = entered_at, current_lcd
+        self.entered.append(player_id)
+
+    def on_catatonia_cleared(self, *, player_id: uuid.UUID, resolved_at: datetime) -> None:
+        _ = resolved_at
+        self.cleared.append(player_id)
+
+    def on_sanitarium_failover(self, *, player_id: uuid.UUID, current_lcd: int) -> None:
+        _ = player_id, current_lcd
+
+    def should_trigger_sanitarium_failover(self, player_id: uuid.UUID | str) -> bool:
+        _ = player_id
+        return False
 
 
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_positive_delta(mock_session, mock_lucidity_record):
-    """Test applying positive lucidity adjustment."""
-    service = LucidityService(mock_session)
-
-    # Mock repository
-    # Reason: Standard test mocking practice - replacing method with AsyncMock for testing
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-
-    player_id = uuid.uuid4()
-    result = await service.apply_lucidity_adjustment(
-        player_id=player_id,
-        delta=10,
-        reason_code="test_positive",
-    )
-
-    assert result.previous_lcd == 50
-    assert result.new_lcd == 60
-    assert result.previous_tier == "uneasy"
+@dataclass
+class _Sends:
+    change: _Send
+    catatonia: _Send
+    rescue: _Send
 
 
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_negative_delta(mock_session, mock_lucidity_record):
-    """Test applying negative lucidity adjustment."""
-    service = LucidityService(mock_session)
-
-    # Mock repository
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-
-    player_id = uuid.uuid4()
-    result = await service.apply_lucidity_adjustment(
-        player_id=player_id,
-        delta=-20,
-        reason_code="test_negative",
-    )
-
-    assert result.previous_lcd == 50
-    assert result.new_lcd == 30
-    assert result.previous_tier == "uneasy"
-
-
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_clamps_to_max(mock_session, mock_lucidity_record):
-    """Test that lucidity adjustment clamps to maximum value."""
-    # Set record to near max
-    mock_lucidity_record.current_lcd = 95
-
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-
-    player_id = uuid.uuid4()
-    result = await service.apply_lucidity_adjustment(
-        player_id=player_id,
-        delta=20,  # Would exceed max
-        reason_code="test_clamp",
-    )
-
-    # Should be clamped to 100
-    assert result.new_lcd == 100
-
-
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_clamps_to_min(mock_session, mock_lucidity_record):
-    """Test that lucidity adjustment clamps to minimum value."""
-    # Set record to near min
-    mock_lucidity_record.current_lcd = -95
-
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-
-    player_id = uuid.uuid4()
-    result = await service.apply_lucidity_adjustment(
-        player_id=player_id,
-        delta=-20,  # Would exceed min
-        reason_code="test_clamp",
-    )
-
-    # Should be clamped to -100
-    assert result.new_lcd == -100
-
-
-@pytest.mark.asyncio
-async def test_add_liability_new_entry(mock_session, mock_lucidity_record):
-    """Test adding a new liability code."""
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    player_id = mock_lucidity_record.player_id
-    code = await service.add_liability(player_id, "night_frayed_reflexes")
-    assert code == "night_frayed_reflexes"
-    mock_session.flush.assert_awaited()
-
-
-@pytest.mark.asyncio
-async def test_add_liability_increments_stack(mock_session, mock_lucidity_record):
-    """Test stacking an existing liability."""
-    mock_lucidity_record.liabilities = encode_liabilities([{"code": "night_frayed_reflexes", "stacks": 1}])
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    code = await service.add_liability(mock_lucidity_record.player_id, "night_frayed_reflexes")
-    assert code == "night_frayed_reflexes"
-
-
-@pytest.mark.asyncio
-async def test_clear_liability_remove_all(mock_session, mock_lucidity_record):
-    """Test clearing all stacks of a liability."""
-    mock_lucidity_record.liabilities = encode_liabilities([{"code": "ethereal_chill", "stacks": 2}])
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    changed = await service.clear_liability(mock_lucidity_record.player_id, "ethereal_chill", remove_all=True)
-    assert changed is True
-
-
-@pytest.mark.asyncio
-async def test_clear_liability_decrements_stack(mock_session, mock_lucidity_record):
-    """Test decrementing liability stacks."""
-    mock_lucidity_record.liabilities = encode_liabilities([{"code": "ethereal_chill", "stacks": 2}])
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    changed = await service.clear_liability(mock_lucidity_record.player_id, "ethereal_chill")
-    assert changed is True
-
-
-@pytest.mark.asyncio
-async def test_get_player_lucidity_delegates(mock_session, mock_lucidity_record):
-    """Test get_player_lucidity delegates to repository."""
-    service = LucidityService(mock_session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    record = await service.get_player_lucidity(mock_lucidity_record.player_id)
-    assert record is mock_lucidity_record
-
-
-@pytest.mark.asyncio
-async def test_increment_exposure_state_delegates(mock_session):
-    """Test increment_exposure_state delegates to repository."""
-    service = LucidityService(mock_session)
-    expected = MagicMock()
-    service._repo.increment_exposure_state = AsyncMock(return_value=expected)  # type: ignore[method-assign]
-    player_id = uuid.uuid4()
-    result = await service.increment_exposure_state(player_id, "deep_one")
-    assert result is expected
-
-
-@pytest.mark.asyncio
-async def test_cooldown_get_and_set(mock_session):
-    """Test cooldown get/set delegates to repository."""
-    service = LucidityService(mock_session)
-    player_id = uuid.uuid4()
-    expires = datetime(1926, 1, 1, tzinfo=UTC)
-    cooldown = MagicMock()
-    service._repo.get_cooldown = AsyncMock(return_value=cooldown)  # type: ignore[method-assign]
-    service._repo.set_cooldown = AsyncMock(return_value=cooldown)  # type: ignore[method-assign]
-    assert await service.get_cooldown(player_id, "rest") is cooldown
-    assert await service.set_cooldown(player_id, "rest", expires) is cooldown
-
-
-@pytest.mark.asyncio
-async def test_clear_hallucination_timers(mock_session):
-    """Test clearing hallucination timer cooldowns."""
-    service = LucidityService(mock_session)
-    service._repo.delete_cooldowns_by_action_code_pattern = AsyncMock(return_value=2)  # type: ignore[method-assign]
-    count = await service.clear_hallucination_timers(uuid.uuid4())
-    assert count == 2
-
-
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_adds_liability_on_large_drop(mock_session, mock_lucidity_record):
-    """Large negative delta triggers liability addition."""
-    service = LucidityService(
-        mock_session,
-        liability_picker=lambda *_args: "night_frayed_reflexes",
-    )
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=mock_lucidity_record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-    with patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()):
-        result = await service.apply_lucidity_adjustment(
-            player_id=mock_lucidity_record.player_id,
-            delta=-20,
-            reason_code="shock",
-        )
-    assert "night_frayed_reflexes" in result.liabilities_added
-
-
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_clears_phantoms_on_tier_improvement() -> None:
-    """#625: leaving fractured/deranged clears any lingering phantom hostiles for the player."""
-    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=25, current_tier="fractured")
-    session = MagicMock()
-    session.flush = AsyncMock()
-    service = LucidityService(session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
+@pytest.fixture(autouse=True)
+def sends() -> Iterator[_Sends]:
+    """Every client send the service and its trigger handlers make, captured."""
+    captured = _Sends(_Send(), _Send(), _Send())
     with (
-        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
-        patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock,
+        patch("server.services.lucidity_service.send_lucidity_change_event", new=captured.change),
+        patch("server.services.lucidity_trigger_handlers.send_catatonia_event", new=captured.catatonia),
+        patch("server.services.lucidity_trigger_handlers.send_rescue_update_event", new=captured.rescue),
     ):
-        result = await service.apply_lucidity_adjustment(
-            player_id=record.player_id, delta=20, reason_code="test_recovery"
-        )
-    assert result.new_tier == "uneasy"
-    clear_mock.assert_called_once_with(record.player_id)
+        yield captured
 
 
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_keeps_phantoms_within_eligible_tiers() -> None:
-    """#625: moving from fractured to deranged (still eligible) does not clear phantoms."""
-    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=20, current_tier="fractured")
-    session = MagicMock()
-    session.flush = AsyncMock()
-    service = LucidityService(session)
-    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=record)  # type: ignore[method-assign]
-    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
-    with (
-        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
-        patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock,
-    ):
-        result = await service.apply_lucidity_adjustment(
-            player_id=record.player_id, delta=-10, reason_code="test_worsen"
-        )
-    assert result.new_tier == "deranged"
-    clear_mock.assert_not_called()
+def _night_frayed(player_id: str, previous_lcd: int, new_lcd: int, reason_code: str) -> str:
+    _ = player_id, previous_lcd, new_lcd, reason_code
+    return "night_frayed_reflexes"
 
 
-@pytest.mark.asyncio
-async def test_apply_lucidity_adjustment_writes_through_the_tier_cache() -> None:
-    """#714: every adjustment writes the player's freshly-computed tier into the shared cache."""
-    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=20, current_tier="fractured")
-    session = MagicMock()
-    session.flush = AsyncMock()
-    mock_repo = MagicMock(
-        get_or_create_player_lucidity=AsyncMock(return_value=record),
-        add_adjustment_log=AsyncMock(),
+def _harness(
+    lcd: int = 50, tier: str = "uneasy", *, liabilities: str = "[]", catatonia_entered_at: datetime | None = None
+) -> LucidityHarness:
+    return lucidity_registry({PID: LucidityData(lcd, tier, liabilities, catatonia_entered_at)})
+
+
+async def test_a_positive_delta_raises_lcd_and_its_tier() -> None:
+    harness = _harness(50, "uneasy")
+
+    result = await LucidityService(harness.registry).apply_lucidity_adjustment(PID, 25, reason_code="pray")
+
+    assert (result.previous_lcd, result.new_lcd, result.previous_tier, result.new_tier) == (50, 75, "uneasy", "lucid")
+    assert (harness.lucidity(PID).lcd, harness.lucidity(PID).tier) == (75, "lucid")
+
+
+async def test_lcd_is_clamped_to_its_range() -> None:
+    harness = _harness(95, "lucid")
+    service = LucidityService(harness.registry)
+
+    assert (await service.apply_lucidity_adjustment(PID, 50, reason_code="up")).new_lcd == 100
+    assert (await service.apply_lucidity_adjustment(PID, -500, reason_code="down")).new_lcd == -100
+
+
+async def test_a_change_is_lazy_and_its_ledger_row_is_written_with_it() -> None:
+    harness = _harness(50, "uneasy")
+
+    _ = await LucidityService(harness.registry).apply_lucidity_adjustment(
+        PID, -5, reason_code="passive_flux", metadata={"source": "night"}, location_id="room_1"
     )
-    with (
-        patch("server.services.lucidity_service.LucidityRepository", return_value=mock_repo),
-        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
-        patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier_mock,
-    ):
-        service = LucidityService(session)
-        result = await service.apply_lucidity_adjustment(
-            player_id=record.player_id, delta=-10, reason_code="test_worsen"
-        )
-    set_tier_mock.assert_called_once_with(record.player_id, result.new_tier)
+
+    assert harness.db.commits == 0  # nothing written until the sweep
+    assert await harness.flush() == 1
+    [row] = harness.ledger()
+    assert (row["delta"], row["reason_code"], row["location_id"]) == (-5, "passive_flux", "room_1")
+    assert json.loads(str(row["metadata"])) == {"source": "night"}
 
 
-def test_max_lcd_from_stats():
-    """Test max LCD calculation from stats dict."""
-    assert LucidityService._max_lcd_from_stats({"education": 80}) == 80
-    assert LucidityService._max_lcd_from_stats({"max_lucidity": 90}) == 90
-    assert LucidityService._max_lcd_from_stats({}) == 100
+async def test_a_computed_delta_reads_the_live_value_and_a_zero_changes_nothing() -> None:
+    harness = _harness(5, "deranged")
+    service = LucidityService(harness.registry)
+
+    def to_floor(current: int) -> int:
+        return max(0 - current, -2) if current > 0 else 0
+
+    first = await service.apply_lucidity_adjustment(PID, to_floor, reason_code="drain")
+    assert (first.previous_lcd, first.new_lcd, first.delta) == (5, 3, -2)
+
+    _ = await service.apply_lucidity_adjustment(PID, -3, reason_code="hit")  # now 0
+    unchanged = await service.apply_lucidity_adjustment(PID, to_floor, reason_code="drain")
+
+    assert (unchanged.previous_lcd, unchanged.new_lcd, unchanged.delta) == (0, 0, 0)
+    _ = await harness.flush()
+    assert [row["reason_code"] for row in harness.ledger()] == ["drain", "hit"]  # the no-op is not logged
 
 
-def test_default_liability_picker(mock_session):
-    """Default picker returns first catalog entry when none applied."""
-    service = LucidityService(mock_session)
-    code = service._default_liability_picker(str(uuid.uuid4()), 50, 30, "test")
-    assert code in LIABILITY_CATALOG
+async def test_an_unknown_player_is_gone() -> None:
+    service = LucidityService(_harness().registry)
+
+    with pytest.raises(PlayerGoneError):
+        _ = await service.apply_lucidity_adjustment(uuid.uuid4(), -1, reason_code="x")
+    with pytest.raises(PlayerGoneError):
+        _ = await service.get_lucidity(uuid.uuid4())
+
+
+async def test_get_lucidity_is_the_starting_value_for_a_player_with_no_record() -> None:
+    harness = lucidity_registry({PID: None})
+
+    data = await LucidityService(harness.registry).get_lucidity(PID)
+
+    assert (data.lcd, data.tier) == (STARTING_LCD, "lucid")
+
+
+async def test_a_large_drop_adds_the_pickers_liability() -> None:
+    harness = _harness(80, "lucid")
+    service = LucidityService(harness.registry, liability_picker=_night_frayed)
+
+    result = await service.apply_lucidity_adjustment(PID, -20, reason_code="shock")
+
+    assert result.liabilities_added == ["night_frayed_reflexes"]
+    assert decode_liabilities(harness.lucidity(PID).liabilities) == [{"code": "night_frayed_reflexes", "stacks": 1}]
+
+
+async def test_a_worsened_tier_adds_the_first_liability_the_player_lacks() -> None:
+    first = LIABILITY_CATALOG[0]
+    harness = _harness(72, "lucid", liabilities=encode_liabilities([{"code": first, "stacks": 1}]))
+
+    result = await LucidityService(harness.registry).apply_lucidity_adjustment(PID, -5, reason_code="fright")
+
+    assert result.new_tier == "uneasy" and result.liabilities_added == [LIABILITY_CATALOG[1]]
+
+
+async def test_a_small_loss_in_the_same_tier_adds_no_liability() -> None:
+    harness = _harness(60, "uneasy")
+
+    result = await LucidityService(harness.registry).apply_lucidity_adjustment(PID, -3, reason_code="chill")
+
+    assert result.liabilities_added == []
+
+
+async def test_add_liability_adds_then_stacks() -> None:
+    harness = _harness()
+    service = LucidityService(harness.registry)
+
+    _ = await service.add_liability(PID, "ritual_compulsion")
+    _ = await service.add_liability(PID, "ritual_compulsion")
+
+    assert decode_liabilities(harness.lucidity(PID).liabilities) == [{"code": "ritual_compulsion", "stacks": 2}]
+
+
+async def test_clear_liability_decrements_removes_and_reports_absence() -> None:
+    harness = _harness(liabilities=encode_liabilities([{"code": "bleak_outlook", "stacks": 2}]))
+    service = LucidityService(harness.registry)
+
+    assert await service.clear_liability(PID, "bleak_outlook")
+    assert decode_liabilities(harness.lucidity(PID).liabilities) == [{"code": "bleak_outlook", "stacks": 1}]
+    assert await service.clear_liability(PID, "bleak_outlook", remove_all=True)
+    assert decode_liabilities(harness.lucidity(PID).liabilities) == []
+    assert not await service.clear_liability(PID, "bleak_outlook")
+
+
+async def test_entering_catatonia_stamps_it_and_is_announced_after_the_unit(sends: _Sends) -> None:
+    harness = _harness(2, "deranged")
+    observer = _Observer()
+
+    _ = await LucidityService(harness.registry, catatonia_observer=observer).apply_lucidity_adjustment(
+        PID, -5, reason_code="hit"
+    )
+
+    assert harness.lucidity(PID).catatonia_entered_at is not None
+    assert observer.entered == [PID]
+    assert len(sends.catatonia.calls) == 1
+
+
+async def test_leaving_catatonia_clears_it_and_announces_success_unless_a_rescue_owns_it(sends: _Sends) -> None:
+    harness = _harness(-3, "catatonic", catatonia_entered_at=T0)
+    observer = _Observer()
+    service = LucidityService(harness.registry, catatonia_observer=observer)
+
+    _ = await service.apply_lucidity_adjustment(PID, 10, reason_code="tonic")
+
+    assert harness.lucidity(PID).catatonia_entered_at is None
+    assert observer.cleared == [PID]
+    assert [call["status"] for call in sends.rescue.calls] == ["success"]
+
+    rescued = _harness(-3, "catatonic", catatonia_entered_at=T0)
+    sends.rescue.calls.clear()
+    _ = await LucidityService(rescued.registry).apply_lucidity_adjustment(PID, 4, reason_code="ground_rescue")
+    assert sends.rescue.calls == []  # the ground command announces its own success (#713)
+
+
+async def test_the_change_event_carries_the_lcd_ceiling_from_the_players_stats(sends: _Sends) -> None:
+    harness = lucidity_registry({PID: LucidityData(50, "uneasy")}, stats={"education": 60})
+
+    _ = await LucidityService(harness.registry).apply_lucidity_adjustment(PID, 30, reason_code="pray")
+
+    [kwargs] = sends.change.calls
+    assert kwargs["current_lcd"] == 60
+    assert cast(LucidityChangeEventExtras, kwargs["extras"]).max_lcd == 60
+
+
+async def test_a_rolled_back_enclosing_unit_undoes_the_change_and_its_ledger_row() -> None:
+    harness = _harness(50, "uneasy")
+    service = LucidityService(harness.registry)
+
+    with pytest.raises(RuntimeError):
+        async with harness.registry.mutate(PID):
+            _ = await service.apply_lucidity_adjustment(PID, -10, reason_code="hit")
+            raise RuntimeError("the enclosing command failed")
+
+    assert harness.lucidity(PID).lcd == 50
+    _ = await harness.flush()
+    assert harness.ledger() == []
+
+
+async def test_leaving_the_hallucination_tiers_clears_phantoms_but_moving_within_them_does_not() -> None:
+    harness = _harness(25, "fractured")
+    service = LucidityService(harness.registry)
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear:
+        _ = await service.apply_lucidity_adjustment(PID, -10, reason_code="worse")  # deranged: still eligible
+        clear.assert_not_called()
+        _ = await service.apply_lucidity_adjustment(PID, 40, reason_code="better")  # uneasy
+        clear.assert_called_once_with(PID)
+
+
+async def test_every_adjustment_writes_the_tier_cache_through() -> None:
+    harness = _harness(20, "fractured")
+    with patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier:
+        result = await LucidityService(harness.registry).apply_lucidity_adjustment(PID, -10, reason_code="worse")
+    set_tier.assert_called_once_with(PID, result.new_tier)
+
+
+def test_max_lcd_from_stats() -> None:
+    assert max_lcd_from_stats({"education": 80}) == 80
+    assert max_lcd_from_stats({"max_lucidity": 90, "education": 80}) == 90
+    assert max_lcd_from_stats({}) == 100

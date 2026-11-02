@@ -9,7 +9,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from ..models.player import Player
 from ..schemas.scripted_actions import (
@@ -28,6 +28,9 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .chat_npc_system import deliver_personal_quest, deliver_personal_system
 from .effect_store import add_content_effect
+
+if TYPE_CHECKING:
+    from .player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -51,6 +54,7 @@ class ScriptedActionContext:
     persistence: CorruptionPersistenceProtocol
     quest_service: QuestActionService | None = None
     catatonia_observer: CatatoniaObserverProtocol | None = None
+    player_registry: PlayerRegistry | None = None
 
 
 async def _apply_effect(action: ApplyEffectAction, ctx: ScriptedActionContext) -> None:
@@ -73,7 +77,12 @@ async def _corruption_at_least(action: CorruptionAtLeastAction, ctx: ScriptedAct
 
 
 async def _debrief(action: DebriefAction, ctx: ScriptedActionContext) -> None:
-    outcome = await perform_debrief(ctx.player, wants_therapy=action.therapy, catatonia_observer=ctx.catatonia_observer)
+    if ctx.player_registry is None:
+        logger.warning("Debrief action skipped: no player registry", player_id=str(ctx.player.player_id))
+        return
+    outcome = await perform_debrief(
+        ctx.player, ctx.player_registry, wants_therapy=action.therapy, catatonia_observer=ctx.catatonia_observer
+    )
     _ = await deliver_personal_system(uuid.UUID(str(ctx.player.player_id)), outcome.message)
 
 

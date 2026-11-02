@@ -41,6 +41,7 @@ from .command_results import command_error
 
 if TYPE_CHECKING:
     from server.events.event_bus import EventBus
+    from server.game.player_registry import PlayerRegistry
     from server.realtime.connection_manager import ConnectionManager
     from server.services.combat_service import CombatService
     from server.services.player_combat_service import PlayerCombatService
@@ -56,6 +57,7 @@ class CombatCommandHandlerExtras:
     party_service: object | None = None
     movement_service: object | None = None
     player_position_service: object | None = None
+    player_registry: object | None = None
 
 
 class _NpcWithLife(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
@@ -114,6 +116,7 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
             player_combat_service=player_combat_service,
             connection_manager=connection_manager,
             async_persistence=async_persistence,
+            player_registry=cast("PlayerRegistry | None", opt.player_registry),
         )
         self.persistence = async_persistence
         self._item_prototype_registry = opt.item_prototype_registry
