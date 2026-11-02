@@ -16,7 +16,7 @@ from server.app import game_tick_lucidity_drain as drain
 from server.app import game_tick_status_effects as tick
 from server.app.game_tick_protocols import _TickContainer
 from server.models.player import Player
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 
 EFFECT_TYPE = "lucidity_drain_over_time"
 

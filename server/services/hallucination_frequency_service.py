@@ -13,15 +13,15 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import TYPE_CHECKING, Any, cast
 
 from ..models.lucidity import LucidityActionCode
 from ..services.hallucination_rng import hallucination_rng
 from ..services.lucidity_helpers import resolve_tier
-from ..services.lucidity_repository import LucidityRepository
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -41,27 +41,18 @@ class HallucinationFrequencyService:
         logger.info("HallucinationFrequencyService initialized")
 
     async def _time_based_hallucination_due(
-        self, player_id: uuid.UUID, tier: str, config: dict[str, Any], session: AsyncSession
+        self, player_id: uuid.UUID, tier: str, config: dict[str, Any], registry: PlayerRegistry
     ) -> bool:
-        repo = LucidityRepository(session)
-        cooldown = await repo.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
-
+        """Roll for a time-based hallucination unless its timer is running; a hit starts the timer (one unit)."""
         now = datetime.now(UTC)
-        if cooldown and cooldown.cooldown_expires_at:
-            expires_at = (
-                cooldown.cooldown_expires_at.replace(tzinfo=UTC)
-                if cooldown.cooldown_expires_at.tzinfo is None
-                else cooldown.cooldown_expires_at
-            )
-            if now < expires_at:
+        async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            if player.cooldowns.active(LucidityActionCode.HALLUCINATION_TIMER, now):
                 return False
-
-        should_trigger: bool = hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311
+            should_trigger: bool = hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311
+            if should_trigger:
+                timer = timedelta(seconds=cast(int, config["cooldown_seconds"]))
+                player.cooldowns.set(LucidityActionCode.HALLUCINATION_TIMER, now + timer)
         if should_trigger:
-            cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
-            _ = await repo.set_cooldown(
-                player_id, LucidityActionCode.HALLUCINATION_TIMER, cooldown_expires.replace(tzinfo=None)
-            )
             logger.debug(
                 "Hallucination triggered",
                 player_id=player_id,
@@ -76,7 +67,7 @@ class HallucinationFrequencyService:
         player_id: uuid.UUID,
         tier: str,
         trigger_type: str = "time_based",
-        session: AsyncSession | None = None,
+        registry: PlayerRegistry | None = None,
     ) -> bool:
         """
         Check if a hallucination should trigger based on tier and frequency rules.
@@ -101,15 +92,15 @@ class HallucinationFrequencyService:
             return hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311: Game mechanics probability check, not cryptographic
 
         if trigger_type == "time_based":
-            if session is None:
+            if registry is None:
                 logger.warning(
-                    "Session required for time-based hallucination checks",
+                    "Player registry required for time-based hallucination checks",
                     player_id=player_id,
                     tier=tier,
                 )
                 return False
             try:
-                return await self._time_based_hallucination_due(player_id, tier, config, session)
+                return await self._time_based_hallucination_due(player_id, tier, config, registry)
             except Exception as e:  # pylint: disable=broad-except  # Reason: Hallucination frequency check errors unpredictable, must catch all exceptions to handle various failure modes during frequency validation
                 logger.warning(
                     "Error checking hallucination frequency",
@@ -122,25 +113,22 @@ class HallucinationFrequencyService:
 
         return False
 
-    async def check_room_entry_hallucination(
-        self, player_id: uuid.UUID, current_lcd: int, session: AsyncSession | None = None
-    ) -> bool:
+    async def check_room_entry_hallucination(self, player_id: uuid.UUID, current_lcd: int) -> bool:
         """
         Check if hallucination should trigger on room entry (Uneasy tier).
 
         Args:
             player_id: Player UUID
             current_lcd: Current lucidity value
-            session: Optional database session (not used for room entry checks)
 
         Returns:
             True if hallucination should trigger, False otherwise
         """
         tier = resolve_tier(current_lcd)
-        return await self.should_trigger_hallucination(player_id, tier, "room_entry", session)
+        return await self.should_trigger_hallucination(player_id, tier, "room_entry")
 
     async def check_time_based_hallucination(
-        self, player_id: uuid.UUID, current_lcd: int, session: AsyncSession
+        self, player_id: uuid.UUID, current_lcd: int, registry: PlayerRegistry
     ) -> bool:
         """
         Check if hallucination should trigger based on time (Fractured/Deranged tiers).
@@ -148,13 +136,13 @@ class HallucinationFrequencyService:
         Args:
             player_id: Player UUID
             current_lcd: Current lucidity value
-            session: Database session (required for cooldown checks)
+            registry: The player registry, which holds the hallucination timer (ADR-029 step 5b-ii)
 
         Returns:
             True if hallucination should trigger, False otherwise
         """
         tier = resolve_tier(current_lcd)
-        return await self.should_trigger_hallucination(player_id, tier, "time_based", session)
+        return await self.should_trigger_hallucination(player_id, tier, "time_based", registry)
 
 
 __all__ = ["HallucinationFrequencyService", "HALLUCINATION_FREQUENCIES"]

@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app import game_tick_catatonia as clock
 from server.app.game_tick_protocols import _TickContainer
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 
 PLAYER_A = uuid.uuid4()
 PLAYER_B = uuid.uuid4()

@@ -4,11 +4,21 @@ Unit tests for NPC combat lucidity effects.
 Tests the NPCCombatLucidity class for applying lucidity loss during NPC encounters.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from server.services.npc_combat_lucidity import NPCCombatLucidity
+
+
+class _RecordingService:
+    """Stands in for ActiveLucidityService; records each encounter loss's keyword arguments."""
+
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+
+    async def apply_encounter_lucidity_loss(self, **kwargs: object) -> None:
+        self.calls.append(kwargs)
 
 
 class TestNPCCombatLucidity:
@@ -109,10 +119,10 @@ class TestNPCCombatLucidity:
 
     @pytest.mark.asyncio
     async def test_apply_encounter_lucidity_effect_without_a_player_registry_skips(self):
-        """Lucidity lives in the player registry (ADR-029 step 5b-i): without one, no session is opened."""
-        with patch("server.services.npc_combat_lucidity.get_async_session") as mock_get_session:
+        """Lucidity lives in the player registry (ADR-029 step 5b-i): without one, no service is built."""
+        with patch("server.services.npc_combat_lucidity.ActiveLucidityService") as mock_service_class:
             await NPCCombatLucidity().apply_encounter_lucidity_effect("player_001", "npc_001", MagicMock(), "room_001")
-        mock_get_session.assert_not_called()
+        mock_service_class.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_apply_encounter_lucidity_effect_success(self):
@@ -122,17 +132,12 @@ class TestNPCCombatLucidity:
         mock_npc.name = "Test NPC"
         mock_npc.get_base_stats.return_value = {"lucidity_category": "disturbing"}
 
-        mock_session = AsyncMock()
-        mock_service = AsyncMock()
-        mock_service.apply_encounter_lucidity_loss = AsyncMock()
+        mock_service = _RecordingService()
 
-        with patch("server.services.npc_combat_lucidity.get_async_session") as mock_get_session:
-            mock_get_session.return_value.__aiter__.return_value = [mock_session]
-            with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
-                await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
+        with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
+            await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
 
-                mock_service.apply_encounter_lucidity_loss.assert_called_once()
-                mock_session.commit.assert_called_once()
+            assert len(mock_service.calls) == 1
 
     @pytest.mark.asyncio
     async def test_apply_encounter_lucidity_effect_with_npc_name(self):
@@ -142,17 +147,13 @@ class TestNPCCombatLucidity:
         mock_npc.name = "Eldritch Horror"
         mock_npc.get_base_stats.return_value = {"lucidity_category": "horrific"}
 
-        mock_session = AsyncMock()
-        mock_service = AsyncMock()
-        mock_service.apply_encounter_lucidity_loss = AsyncMock()
+        mock_service = _RecordingService()
 
-        with patch("server.services.npc_combat_lucidity.get_async_session") as mock_get_session:
-            mock_get_session.return_value.__aiter__.return_value = [mock_session]
-            with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
-                await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
+        with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
+            await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
 
-                call_args = mock_service.apply_encounter_lucidity_loss.call_args
-                assert call_args[1]["entity_archetype"] == "Eldritch Horror"
+            [call] = mock_service.calls
+            assert call["entity_archetype"] == "Eldritch Horror"
 
     @pytest.mark.asyncio
     async def test_apply_encounter_lucidity_effect_without_npc_name(self):
@@ -162,14 +163,10 @@ class TestNPCCombatLucidity:
         mock_npc.name = None
         mock_npc.get_base_stats.return_value = {"lucidity_category": "disturbing"}
 
-        mock_session = AsyncMock()
-        mock_service = AsyncMock()
-        mock_service.apply_encounter_lucidity_loss = AsyncMock()
+        mock_service = _RecordingService()
 
-        with patch("server.services.npc_combat_lucidity.get_async_session") as mock_get_session:
-            mock_get_session.return_value.__aiter__.return_value = [mock_session]
-            with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
-                await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
+        with patch("server.services.npc_combat_lucidity.ActiveLucidityService", return_value=mock_service):
+            await lucidity.apply_encounter_lucidity_effect("player_001", "npc_001", mock_npc, "room_001")
 
-                call_args = mock_service.apply_encounter_lucidity_loss.call_args
-                assert call_args[1]["entity_archetype"] == "npc_001"
+            [call] = mock_service.calls
+            assert call["entity_archetype"] == "npc_001"

@@ -20,11 +20,10 @@ from ..models.lucidity import LucidityActionCode, LucidityAdjustmentLog
 from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
-from .lucidity_helpers import CatatoniaObserverProtocol, LucidityUpdateResult
-from .lucidity_repository import LucidityRepository
+from .lucidity_helpers import CatatoniaObserverProtocol
 
 if TYPE_CHECKING:
-    from ..game.player_registry import PlayerRegistry
+    from ..game.player_registry import PlayerAggregate, PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -38,10 +37,12 @@ NO_SESSION_MESSAGE = "The sanitarium records could not be accessed. Please try a
 DEBRIEF_PENDING_DAYS = 365
 
 
-async def mark_debrief_pending(repo: LucidityRepository, player_id: uuid.UUID) -> None:
-    """Leave the long-lived DEBRIEF_PENDING flag that ``perform_debrief`` spends (delirium respawns, a tutorial skip)."""
-    expires_at = datetime.now(UTC).replace(tzinfo=None) + timedelta(days=DEBRIEF_PENDING_DAYS)
-    _ = await repo.set_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING, expires_at)
+def mark_debrief_pending(player: PlayerAggregate) -> None:
+    """Leave the long-lived DEBRIEF_PENDING flag that ``perform_debrief`` spends (delirium respawns, a tutorial skip).
+
+    Called inside the caller's registry unit, beside the lucidity it resets; the flag commits with that unit.
+    """
+    player.cooldowns.set(LucidityActionCode.DEBRIEF_PENDING, datetime.now(UTC) + timedelta(days=DEBRIEF_PENDING_DAYS))
 
 
 _NO_RECORDS_RECAP = (
@@ -105,20 +106,16 @@ async def generate_narrative_recap(player_id: uuid.UUID, session: AsyncSession) 
 
 async def _therapy_note(
     player: Player,
-    session: AsyncSession,
     registry: PlayerRegistry,
     observer: CatatoniaObserverProtocol | None,
     player_id: uuid.UUID,
 ) -> str:
     """The paragraph describing the optional immediate therapy session (run it, or say why it did not happen)."""
-    active_service = ActiveLucidityService(session, registry, catatonia_observer=observer)
+    active_service = ActiveLucidityService(registry, catatonia_observer=observer)
     room_id = cast(str | None, player.current_room_id)
     try:
-        result = cast(
-            LucidityUpdateResult,
-            await active_service.perform_recovery_action(
-                player_id=player_id, action_code="therapy", location_id=str(room_id) if room_id else None
-            ),
+        result = await active_service.perform_recovery_action(
+            player_id=player_id, action_code="therapy", location_id=str(room_id) if room_id else None
         )
     except LucidityActionOnCooldownError:
         return "Therapy is currently unavailable due to recent sessions. You may return later for additional support."
@@ -140,14 +137,14 @@ async def _run_debrief(
     observer: CatatoniaObserverProtocol | None,
 ) -> DebriefOutcome:
     player_id = uuid.UUID(str(player.player_id))
-    repo = LucidityRepository(session)
-    if await repo.get_cooldown(player_id, LucidityActionCode.DEBRIEF_PENDING) is None:
+    held = await registry.get(player_id)
+    if held is None or held.cooldowns.expires_at(LucidityActionCode.DEBRIEF_PENDING) is None:
         return DebriefOutcome(NOT_AVAILABLE_MESSAGE, completed=False)
     parts = [await generate_narrative_recap(player_id, session)]
     if wants_therapy:
-        parts.append(await _therapy_note(player, session, registry, observer, player_id))
-    _ = await repo.delete_cooldowns_by_action_code_pattern(player_id, LucidityActionCode.DEBRIEF_PENDING)
-    await session.commit()
+        parts.append(await _therapy_note(player, registry, observer, player_id))
+    async with registry.mutate(player_id) as aggregate:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        _ = aggregate.cooldowns.clear(LucidityActionCode.DEBRIEF_PENDING)
     parts.append(_CONCLUSION)
     logger.info("Debrief completed", player_id=player_id, therapy_requested=wants_therapy)
     return DebriefOutcome("\n\n".join(parts), completed=True)
@@ -162,8 +159,8 @@ async def perform_debrief(
 ) -> DebriefOutcome:
     """Run the debrief for ``player``: recap, optional therapy, then clear DEBRIEF_PENDING.
 
-    Reports "not available" (without touching anything) when no debrief is pending. A failure rolls back, so the flag
-    survives and the player can try again.
+    Reports "not available" (without touching anything) when no debrief is pending. The flag is cleared last, so a
+    failure before that leaves it for the player to try again. The session only reads the recap (the ledger).
     """
     async for session in get_async_session():
         try:

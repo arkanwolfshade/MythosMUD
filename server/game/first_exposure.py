@@ -94,19 +94,11 @@ async def skip_first_exposure(
 ) -> None:
     """Give a character created with the tutorial skipped the state a finished run leaves (ADR-028 D22/D24).
 
-    The character is created in the Recovery Ward at full health. This adds the rest: lucidity 70 (through the
-    player registry) and Dr. Morgan's debrief pending (one session), then the same finish actions the ending runs
-    (the corruption floor and the epilogue quest).
+    The character is created in the Recovery Ward at full health. This adds the rest: lucidity 70 and Dr. Morgan's
+    debrief pending (one registry unit), then the same finish actions the ending runs (the corruption floor and the
+    epilogue quest).
     """
-    # Imported here: the database module pulls in the app's engine setup, which this module must not need to import.
-    from ..database import get_async_session
-    from ..services.debrief_service import mark_debrief_pending
-    from ..services.lucidity_repository import LucidityRepository
-
     await restore_first_exposure_lucidity(registry, player_id)
-    async for session in get_async_session():
-        await mark_debrief_pending(LucidityRepository(session), player_id)
-        await session.commit()
     player = cast(Player | None, await persistence.get_player_by_id(player_id))
     if player is None:
         logger.warning("Tutorial skip: the new character could not be loaded", player_id=str(player_id))
@@ -136,12 +128,15 @@ def apply_first_exposure_end_state(player: Player) -> bool:
 
 
 async def restore_first_exposure_lucidity(registry: PlayerRegistry, player_id: uuid.UUID) -> None:
-    """Set the player's lucidity to what a finished run leaves (70), as one registry unit."""
+    """Leave the player as a finished run does, as one registry unit: lucidity 70 and Dr. Morgan's debrief pending."""
+    # Imported here, as the tutorial skip did: a top-level import would change this module's import graph.
+    from ..services.debrief_service import mark_debrief_pending
     from ..services.lucidity_tier_cache import lucidity_tier_cache
 
     tier = resolve_tier(RESTORED_LCD)
     async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
         _ = player.lucidity.set(lcd=RESTORED_LCD, tier=tier)
+        mark_debrief_pending(player)
     lucidity_tier_cache.set_tier(player_id, tier)
 
 

@@ -14,7 +14,6 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, Protocol, cast
 from uuid import UUID
 
-from server.database import get_async_session
 from server.models.combat import (
     CombatAction,
     CombatInstance,
@@ -24,13 +23,11 @@ from server.models.combat import (
     CombatStatus,
 )
 from server.services.lucidity_command_disruption import should_involuntary_flee
-from server.services.lucidity_repository import LucidityRepository, PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 from server.services.lucidity_service import LucidityService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
-
     from server.game.player_registry import PlayerRegistry
     from server.services.combat_service import CombatService
 
@@ -287,52 +284,36 @@ async def execute_voluntary_flee(
     return bool(moved)
 
 
-async def _involuntary_flee_on_cooldown(repo: LucidityRepository, participant_id: UUID, cooldown_code: str) -> bool:
-    """True if the involuntary-flee cooldown is still active."""
-    cooldown = await repo.get_cooldown(participant_id, cooldown_code)
-    if not cooldown or not cooldown.cooldown_expires_at:
-        return False
-    if cooldown.cooldown_expires_at.tzinfo is None:
-        expires_at = cooldown.cooldown_expires_at.replace(tzinfo=UTC)
-    else:
-        expires_at = cooldown.cooldown_expires_at
-    if datetime.now(UTC) < expires_at:
-        logger.debug(
-            "Involuntary flee on cooldown",
-            player_id=participant_id,
-            expires_at=expires_at.isoformat(),
-        )
-        return True
-    return False
+INVOLUNTARY_FLEE_COOLDOWN = "involuntary_flee"
+INVOLUNTARY_FLEE_COOLDOWN_LENGTH = timedelta(minutes=2)
 
 
-async def _check_involuntary_flee_with_session(
-    session: AsyncSession,
+async def _check_involuntary_flee(
     target: CombatParticipant,
     damage_percent: float,
     damage: int,
-    registry: PlayerRegistry | None,
+    registry: PlayerRegistry,
 ) -> bool:
     """
-    Check tier, damage threshold, and cooldown; set cooldown and commit if flee allowed.
+    Check tier, damage threshold, and cooldown; start the cooldown (one registry unit) if the player flees.
     Returns True if player should flee, False otherwise.
     """
-    tier = "lucid"
-    if registry is not None:
-        try:
-            tier = (await LucidityService(registry).get_lucidity(target.participant_id)).tier
-        except PlayerGoneError:
-            pass
+    try:
+        tier = (await LucidityService(registry).get_lucidity(target.participant_id)).tier
+    except PlayerGoneError:
+        tier = "lucid"
     if not should_involuntary_flee(tier, damage_percent):
         return False
-    cooldown_code = "involuntary_flee"
-    repo = LucidityRepository(session)
-    if await _involuntary_flee_on_cooldown(repo, target.participant_id, cooldown_code):
-        return False
-    cooldown_expires = datetime.now(UTC) + timedelta(minutes=2)
-    cooldown_expires_naive = cooldown_expires.replace(tzinfo=None)
-    _ = await repo.set_cooldown(target.participant_id, cooldown_code, cooldown_expires_naive)
-    await session.commit()
+    now = datetime.now(UTC)
+    async with registry.mutate(target.participant_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        if player.cooldowns.active(INVOLUNTARY_FLEE_COOLDOWN, now):
+            logger.debug(
+                "Involuntary flee on cooldown",
+                player_id=target.participant_id,
+                expires_at=str(player.cooldowns.expires_at(INVOLUNTARY_FLEE_COOLDOWN)),
+            )
+            return False
+        player.cooldowns.set(INVOLUNTARY_FLEE_COOLDOWN, now + INVOLUNTARY_FLEE_COOLDOWN_LENGTH)
     logger.info(
         "Involuntary flee conditions met",
         player_id=target.participant_id,
@@ -356,31 +337,18 @@ async def check_involuntary_flee(
     Args:
         target: The player participant who took damage
         damage: Amount of damage taken
-        registry: The player registry, which holds the target's lucidity tier (ADR-029 step 5b-i)
+        registry: The player registry, which holds the target's lucidity tier and cooldowns (ADR-029 step 5b)
 
     Returns:
         True if player should flee, False otherwise
     """
+    if registry is None or target.max_dp <= 0:
+        return False  # without the registry neither the tier nor the cooldown can be read
     try:
-        if target.max_dp <= 0:
-            return False
-        damage_percent = damage / target.max_dp
-        async for session in get_async_session():
-            try:
-                return await _check_involuntary_flee_with_session(session, target, damage_percent, damage, registry)
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Flee check errors unpredictable, must not fail combat
-                logger.warning(
-                    "Error checking involuntary flee",
-                    player_id=target.participant_id,
-                    error=str(e),
-                    error_type=type(e).__name__,
-                )
-                await session.rollback()
-                return False
-        return False
-    except Exception as e:  # pylint: disable=broad-except  # Reason: Flee check errors unpredictable, must catch all exceptions to handle various failure modes during flee validation
+        return await _check_involuntary_flee(target, damage / target.max_dp, damage, registry)
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Flee check errors unpredictable, must not fail combat
         logger.warning(
-            "Error in involuntary flee check (session creation)",
+            "Error checking involuntary flee",
             player_id=target.participant_id,
             error=str(e),
             error_type=type(e).__name__,

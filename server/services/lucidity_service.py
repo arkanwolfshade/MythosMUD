@@ -26,6 +26,7 @@ from .lucidity_helpers import (
     TIER_ORDER,
     CatatoniaObserverProtocol,
     LucidityUpdateResult,
+    PlayerGoneError,
     Tier,
     clamp_lucidity,
     coerce_metadata_dict,
@@ -36,7 +37,6 @@ from .lucidity_helpers import (
     resolve_tier,
     worsened_tier,
 )
-from .lucidity_repository import PlayerGoneError
 from .lucidity_trigger_handlers import (
     CatatoniaTransition,
     announce_catatonia_transition,
@@ -67,8 +67,8 @@ LiabilityPicker = Callable[[str, int, int, str], str | None]
 
 
 @dataclass(frozen=True)
-class _Applied:  # pylint: disable=too-many-instance-attributes  # Reason: everything the notifications after the unit need
-    """What one adjustment changed, for the notifications sent after its unit."""
+class AppliedAdjustment:  # pylint: disable=too-many-instance-attributes  # Reason: everything the notifications after the unit need
+    """What one adjustment changed (``apply_in``), for the notifications sent after its unit (``announce``)."""
 
     result: LucidityUpdateResult
     reason_code: str
@@ -160,23 +160,30 @@ class LucidityService:
         try:
             async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
                 current = player.lucidity.data
-                applied = self._apply(player, delta, reason_code, metadata, location_id)
+                applied = self.apply_in(
+                    player, delta, reason_code=reason_code, metadata=metadata, location_id=location_id
+                )
         except PlayerNotFoundError as error:
             raise PlayerGoneError(str(player_id)) from error
         if applied is None:
             return LucidityUpdateResult(player_id, current.lcd, current.lcd, current.tier, current.tier, 0, [])
-        await self._announce(applied)
+        await self.announce(applied)
         return applied.result
 
-    def _apply(
+    def apply_in(
         self,
         player: PlayerAggregate,
         delta: LucidityDelta,
+        *,
         reason_code: str,
-        metadata: Mapping[str, object] | str | None,
-        location_id: str | None,
-    ) -> _Applied | None:
-        """The in-unit half of an adjustment: LCD, tier, catatonia, liabilities and the ledger row."""
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+    ) -> AppliedAdjustment | None:
+        """The in-unit half of an adjustment: LCD, tier, catatonia, liabilities and the ledger row.
+
+        For a caller that changes other parts of the player in the same unit (a cooldown, an exposure count): call it
+        inside that unit, then ``announce`` the result once the unit has committed. None when a computed delta is 0.
+        """
         part = player.lucidity
         previous = part.data
         if callable(delta):
@@ -205,7 +212,7 @@ class LucidityService:
             clear_catatonia=catatonia == "cleared",
         )
         part.log(delta, reason_code, normalize_metadata(metadata), location_id)
-        return _Applied(
+        return AppliedAdjustment(
             result=LucidityUpdateResult(
                 player_id=player.player_id,
                 previous_lcd=previous.lcd,
@@ -243,7 +250,7 @@ class LucidityService:
             code = _first_new_liability(liabilities)
         return [code] if code else []
 
-    async def _announce(self, applied: _Applied) -> None:
+    async def announce(self, applied: AppliedAdjustment) -> None:
         """The after-unit half of an adjustment: observers, client events, hallucination clears, the tier cache."""
         result = applied.result
         player_id = result.player_id

@@ -11,16 +11,16 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..database import get_async_session
 from ..structured_logging.enhanced_logging_config import get_logger
 from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
+from .lucidity_helpers import PlayerGoneError
 
 if TYPE_CHECKING:
     from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
-_SOFT_ERRORS = (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError)
+_SOFT_ERRORS = (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, PlayerGoneError)
 
 
 class _EncounterCtx(NamedTuple):
@@ -49,30 +49,25 @@ class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lu
         return npc_id
 
     @staticmethod
-    async def _commit_loss(service: ActiveLucidityService, session: Any, ctx: _EncounterCtx, category: str) -> None:
-        """Apply and commit one encounter lucidity loss for the given category."""
-        await service.apply_encounter_lucidity_loss(
+    async def _apply_loss(service: ActiveLucidityService, ctx: _EncounterCtx, category: str) -> None:
+        """Apply one encounter lucidity loss for the given category (one registry unit, committed by it)."""
+        _ = await service.apply_encounter_lucidity_loss(
             player_id=str(ctx.player_id),
             entity_archetype=str(ctx.archetype),
             category=category,
             location_id=ctx.room_id,
         )
-        await session.commit()
 
-    async def _apply_disturbing_fallback(
-        self, service: ActiveLucidityService, session: Any, ctx: _EncounterCtx
-    ) -> None:
+    async def _apply_disturbing_fallback(self, service: ActiveLucidityService, ctx: _EncounterCtx) -> None:
         """Retry encounter loss with the disturbing category after unknown-category failure."""
-        await session.rollback()
         logger.warning(
             "Encounter SAN category unavailable, defaulting to disturbing",
             npc_id=ctx.npc_id,
             provided_category=ctx.category,
         )
         try:
-            await self._commit_loss(service, session, ctx, "disturbing")
+            await self._apply_loss(service, ctx, "disturbing")
         except _SOFT_ERRORS as nested_exc:  # pragma: no cover - defensive logging
-            await session.rollback()
             logger.error(
                 "Failed to apply fallback encounter lucidity loss",
                 npc_id=ctx.npc_id,
@@ -80,15 +75,14 @@ class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lu
                 error=str(nested_exc),
             )
 
-    async def _apply_loss_with_fallback(self, service: ActiveLucidityService, session: Any, ctx: _EncounterCtx) -> None:
+    async def _apply_loss_with_fallback(self, service: ActiveLucidityService, ctx: _EncounterCtx) -> None:
         """Apply encounter lucidity loss, falling back to disturbing on unknown category."""
         try:
-            await self._commit_loss(service, session, ctx, ctx.category)
+            await self._apply_loss(service, ctx, ctx.category)
         except UnknownEncounterCategoryError:
-            await self._apply_disturbing_fallback(service, session, ctx)
+            await self._apply_disturbing_fallback(service, ctx)
             return
         except _SOFT_ERRORS as exc:  # pragma: no cover - defensive logging
-            await session.rollback()
             logger.error(
                 "Active encounter lucidity adjustment failed",
                 npc_id=ctx.npc_id,
@@ -131,9 +125,7 @@ class NPCCombatLucidity:  # pylint: disable=too-few-public-methods  # Reason: Lu
         if self._player_registry is None:
             logger.warning("Encounter lucidity loss skipped: no player registry", npc_id=npc_id, player_id=player_id)
             return
-        async for session in get_async_session():
-            await self._apply_loss_with_fallback(ActiveLucidityService(session, self._player_registry), session, ctx)
-            break
+        await self._apply_loss_with_fallback(ActiveLucidityService(self._player_registry), ctx)
 
     def _resolve_lucidity_category(self, npc_definition: Any | None) -> str:
         """

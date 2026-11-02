@@ -20,7 +20,7 @@ from ...async_persistence import AsyncPersistenceLayer
 from ...config import get_config
 from ...game.player_registry import LucidityData
 from ...models.player import Player
-from ...services.lucidity_repository import PlayerGoneError
+from ...services.lucidity_helpers import PlayerGoneError
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 from ...services.lucidity_tier_cache import lucidity_tier_cache
 from ...structured_logging.enhanced_logging_config import get_logger
@@ -84,7 +84,7 @@ class PlayerFluxCtx:  # pylint: disable=too-few-public-methods  # Reason: datacl
     timestamp: datetime
     tick_count: int
     lucidity_service: LucidityService
-    session: AsyncSession
+    registry: PlayerRegistry
 
 
 @dataclass
@@ -158,31 +158,29 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
     async def _apply_player_flux_adjustment(
         self, ctx: PlayerFluxCtx, computation: _PlayerFluxComputation, flux_context: PassiveFluxContext
     ) -> LucidityUpdateResult | None:
-        """Apply the lucidity adjustment inside a savepoint, tolerating a since-removed player."""
+        """Apply the lucidity adjustment, tolerating a player removed since the tick loaded them (e2e, logout, delete)."""
         try:
-            # Savepoint: e2e (and logout/delete) can remove players between load and flush.
-            async with ctx.session.begin_nested():
-                await handle_hallucination_triggers(
-                    computation.player_id_uuid,
-                    computation.player_id_str,
-                    computation.room_id,
-                    ctx.lucidity_records,
-                    ctx.session,
-                )
-                return await ctx.lucidity_service.apply_lucidity_adjustment(
-                    computation.player_id_uuid,
-                    computation.delta,
-                    reason_code="passive_flux",
-                    metadata={
-                        "context_tags": list(flux_context.tags),
-                        "source": flux_context.source,
-                        "base_flux": computation.base_flux,
-                        "companion_flux": computation.companion_flux,
-                        "total_flux": computation.total_flux,
-                        "tick_count": ctx.tick_count,
-                        **flux_context.metadata,
-                    },
-                )
+            await handle_hallucination_triggers(
+                computation.player_id_uuid,
+                computation.player_id_str,
+                computation.room_id,
+                ctx.lucidity_records,
+                ctx.registry,
+            )
+            return await ctx.lucidity_service.apply_lucidity_adjustment(
+                computation.player_id_uuid,
+                computation.delta,
+                reason_code="passive_flux",
+                metadata={
+                    "context_tags": list(flux_context.tags),
+                    "source": flux_context.source,
+                    "base_flux": computation.base_flux,
+                    "companion_flux": computation.companion_flux,
+                    "total_flux": computation.total_flux,
+                    "tick_count": ctx.tick_count,
+                    **flux_context.metadata,
+                },
+            )
         except IntegrityError, PlayerGoneError:
             logger.warning(
                 "Skipping passive LCD flux for missing player",
@@ -248,7 +246,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             )
 
     async def _evaluate_players_tick(
-        self, session: AsyncSession, players: list[Player], tick_base: PlayerFluxCtx
+        self, players: list[Player], tick_base: PlayerFluxCtx
     ) -> tuple[set[str], list[LucidityUpdateResult]]:
         processed: set[str] = set()
         adjustments: list[LucidityUpdateResult] = []
@@ -263,7 +261,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                     tick_base.timestamp,
                     tick_base.tick_count,
                     tick_base.lucidity_service,
-                    session,
+                    tick_base.registry,
                 )
             )
             if result is not None:
@@ -298,10 +296,9 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             lucidity_records = await self._load_lucidity_records(registry, players)
             room_cache = await self._build_room_cache(players)
             processed_player_ids, adjustments = await self._evaluate_players_tick(
-                session,
                 players,
                 PlayerFluxCtx(
-                    None, players, lucidity_records, room_cache, timestamp, tick_count, lucidity_service, session
+                    None, players, lucidity_records, room_cache, timestamp, tick_count, lucidity_service, registry
                 ),
             )
             await self._commit_flux_adjustments(session, adjustments)

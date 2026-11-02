@@ -11,8 +11,7 @@ from typing import Any, NamedTuple, Protocol, cast
 
 from ..alias_storage import AliasStorage
 from ..services.lucidity_event_dispatcher import send_rescue_update_event
-from ..services.lucidity_helpers import CatatoniaObserverProtocol, LucidityUpdateResult
-from ..services.lucidity_repository import PlayerGoneError
+from ..services.lucidity_helpers import CatatoniaObserverProtocol, LucidityUpdateResult, PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..services.rescue_service import RescueService, rescue_lift
 from ..structured_logging.enhanced_logging_config import get_logger

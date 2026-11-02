@@ -3,7 +3,7 @@
 --
 -- Passive lucidity flux rate-override reads (replacing raw SQL in
 -- server/services/passive_lucidity_flux/rate_overrides.py, #633), the catatonia clock, and the player registry's
--- lucidity part (ADR-029 step 5b-i). Depends on players (player_lucidity and lucidity_adjustment_log FKs).
+-- lucidity, cooldown and exposure parts (ADR-029 steps 5b-i, 5b-ii). Depends on players (the tables' FKs).
 
 -- get_lucidity_rate_overrides: fetch zone- and subzone-level special_rules overrides in one
 -- polymorphic result set. subzone_stable_id IS NULL marks a zone-level row; callers already key
@@ -58,23 +58,56 @@ BEGIN
 END;
 $$;
 
--- get_player_lucidity: one player's player_lucidity row, or no row if they have none yet (the registry then uses the
--- starting values). Read with the rest of the player by the player registry (ADR-029 step 5b-i).
-CREATE OR REPLACE FUNCTION :schema_name.get_player_lucidity(p_player_id UUID) -- noqa: PRS
+-- Replaced by get_player_lucidity_state (ADR-029 step 5b-ii).
+DROP FUNCTION IF EXISTS :schema_name.get_player_lucidity(uuid); -- noqa: PRS
+
+-- get_player_lucidity_state: everything the player registry holds about one player's lucidity, in one row (ADR-029
+-- steps 5b-i and 5b-ii): the player_lucidity columns (NULL when the player has none yet; the registry then uses the
+-- starting values), and their lucidity_cooldowns and lucidity_exposure_state rows as JSON arrays.
+CREATE OR REPLACE FUNCTION :schema_name.get_player_lucidity_state(p_player_id UUID) -- noqa: PRS
 RETURNS TABLE (
     current_lcd integer,
     current_tier character varying,
     liabilities text,
     last_updated_at timestamp with time zone,
-    catatonia_entered_at timestamp with time zone
+    catatonia_entered_at timestamp with time zone,
+    cooldowns jsonb,
+    exposures jsonb
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT pl.current_lcd, pl.current_tier, pl.liabilities, pl.last_updated_at, pl.catatonia_entered_at
-    FROM player_lucidity pl
-    WHERE pl.player_id = p_player_id;
+    SELECT
+        pl.current_lcd,
+        pl.current_tier,
+        pl.liabilities,
+        pl.last_updated_at,
+        pl.catatonia_entered_at,
+        COALESCE(
+            (
+                SELECT jsonb_agg(jsonb_build_object('action_code', c.action_code, 'expires_at', c.cooldown_expires_at))
+                FROM lucidity_cooldowns c
+                WHERE c.player_id = p_player_id
+            ),
+            '[]'::jsonb
+        ) AS cooldowns,
+        COALESCE(
+            (
+                SELECT jsonb_agg(
+                    jsonb_build_object(
+                        'entity_archetype', e.entity_archetype,
+                        'encounter_count', e.encounter_count,
+                        'last_encounter_at', e.last_encounter_at
+                    )
+                )
+                FROM lucidity_exposure_state e
+                WHERE e.player_id = p_player_id
+            ),
+            '[]'::jsonb
+        ) AS exposures
+    FROM (SELECT p_player_id AS player_id) AS k
+    LEFT JOIN player_lucidity pl ON pl.player_id = k.player_id;
 END;
 $$;
 
@@ -122,5 +155,40 @@ AS $$
 BEGIN
     INSERT INTO lucidity_adjustment_log (player_id, delta, reason_code, metadata, location_id, created_at)
     VALUES (p_player_id, p_delta, p_reason_code, COALESCE(p_metadata, '{}'), p_location_id, COALESCE(p_created_at, now()));
+END;
+$$;
+
+-- replace_lucidity_cooldowns: the player registry's cooldown write (ADR-029 step 5b-ii). p_cooldowns is every
+-- cooldown the player holds, as [{"action_code", "expires_at"}]: the rest are deleted, these are inserted or updated.
+CREATE OR REPLACE PROCEDURE :schema_name.replace_lucidity_cooldowns(p_player_id UUID, p_cooldowns JSONB)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM lucidity_cooldowns c
+    WHERE c.player_id = p_player_id
+      AND c.action_code NOT IN (
+          SELECT r.action_code FROM jsonb_to_recordset(COALESCE(p_cooldowns, '[]'::jsonb)) AS r (action_code text)
+      );
+    INSERT INTO lucidity_cooldowns (player_id, action_code, cooldown_expires_at)
+    SELECT p_player_id, r.action_code, r.expires_at
+    FROM jsonb_to_recordset(COALESCE(p_cooldowns, '[]'::jsonb)) AS r (action_code text, expires_at timestamptz)
+    ON CONFLICT (player_id, action_code) DO UPDATE SET cooldown_expires_at = EXCLUDED.cooldown_expires_at;
+END;
+$$;
+
+-- upsert_lucidity_exposures: the player registry's exposure write (ADR-029 step 5b-ii). p_exposures is every
+-- archetype the player has met, as [{"entity_archetype", "encounter_count", "last_encounter_at"}]; exposure is
+-- never forgotten, so rows are only inserted or updated.
+CREATE OR REPLACE PROCEDURE :schema_name.upsert_lucidity_exposures(p_player_id UUID, p_exposures JSONB)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO lucidity_exposure_state (player_id, entity_archetype, encounter_count, last_encounter_at)
+    SELECT p_player_id, r.entity_archetype, r.encounter_count, r.last_encounter_at
+    FROM jsonb_to_recordset(COALESCE(p_exposures, '[]'::jsonb))
+        AS r (entity_archetype text, encounter_count integer, last_encounter_at timestamptz)
+    ON CONFLICT (player_id, entity_archetype) DO UPDATE SET
+        encounter_count = EXCLUDED.encounter_count,
+        last_encounter_at = EXCLUDED.last_encounter_at;
 END;
 $$;

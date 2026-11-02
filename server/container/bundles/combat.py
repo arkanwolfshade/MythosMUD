@@ -20,8 +20,6 @@ from anyio import sleep
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
-
     from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster, LucidityReader
     from server.container.main import ApplicationContainer
     from server.game.player_registry import PlayerRegistry
@@ -80,8 +78,6 @@ class CombatBundle:
         self, container: ApplicationContainer, player_id: str, current_lcd: int
     ) -> None:
         """Failover callback that relocates catatonic players to the sanitarium."""
-        from server.services.lucidity_repository import LucidityRepository
-
         await sleep(10.0)
 
         if container.database_manager is None:
@@ -102,8 +98,11 @@ class CombatBundle:
         async with session_maker() as session:
             try:
                 player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
-                repo = LucidityRepository(cast("AsyncSession", session))
-                timers_cleared = await repo.clear_hallucination_timers(player_id_uuid)
+                timers_cleared = 0
+                if container.player_registry is not None:
+                    # Every hallucination timer (the old LIKE 'hallucination_%'): the player wakes in the sanitarium.
+                    async with container.player_registry.mutate(player_id_uuid) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                        timers_cleared = player.cooldowns.clear_prefix("hallucination_")
                 logger.debug(
                     "Hallucination timers cleared in failover",
                     player_id=player_id,
@@ -117,7 +116,8 @@ class CombatBundle:
                 await self.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
                 await self.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
                 logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
-            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
+            # LookupError: KeyError, and the registry's PlayerNotFoundError (a player deleted during the wait).
+            except (ValueError, TypeError, AttributeError, LookupError, RuntimeError) as exc:
                 logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
                 await session.rollback()
 

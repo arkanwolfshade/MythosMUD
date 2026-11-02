@@ -46,18 +46,6 @@ TONIC_METADATA: dict[str, object] = {
 
 
 @dataclass
-class FakeSession:
-    commits: int = 0
-    rollbacks: int = 0
-
-    async def commit(self) -> None:
-        self.commits += 1
-
-    async def rollback(self) -> None:
-        self.rollbacks += 1
-
-
-@dataclass
 class FakeResult:
     delta: int
     new_lcd: int
@@ -71,8 +59,8 @@ class FakeService:
     calls: list[dict[str, object]] = []
     observers: list[object] = []
 
-    def __init__(self, session: FakeSession, registry: object, *, catatonia_observer: object = None) -> None:
-        _ = session, registry
+    def __init__(self, registry: object, *, catatonia_observer: object = None) -> None:
+        _ = registry
         FakeService.observers.append(catatonia_observer)
 
     async def apply_timed_recovery(
@@ -92,19 +80,13 @@ class FakeService:
         return FakeResult(delta=lcd_delta, new_lcd=57)
 
 
-@pytest.fixture
-def session(monkeypatch: pytest.MonkeyPatch) -> FakeSession:
-    fake_session = FakeSession()
-
-    async def fake_get_async_session():
-        yield fake_session
-
+@pytest.fixture(autouse=True)
+def _fake_service(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The service's own unit (cooldown check, gain, new cooldown) is tested in test_active_lucidity_service."""
     FakeService.on_cooldown = False
     FakeService.calls = []
     FakeService.observers = []
-    monkeypatch.setattr(item_effects, "get_async_session", fake_get_async_session)
     monkeypatch.setattr(item_effects, "ActiveLucidityService", FakeService)
-    return fake_session
 
 
 # An app whose container holds the player registry (lucidity lives there, ADR-029 step 5b-i).
@@ -116,7 +98,7 @@ def _context(prototype: ItemPrototypeModel, app: object | None = APP) -> ItemUse
 
 
 @pytest.mark.asyncio
-async def test_lucidity_recovery_applies_the_prototypes_numbers(session: FakeSession) -> None:
+async def test_lucidity_recovery_applies_the_prototypes_numbers() -> None:
     ctx = _context(_prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA))
 
     outcome = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](ctx)
@@ -132,35 +114,29 @@ async def test_lucidity_recovery_applies_the_prototypes_numbers(session: FakeSes
         "cooldown": timedelta(minutes=30),
         "location_id": "room-1",
     }
-    assert (session.commits, session.rollbacks) == (1, 0)
 
 
 @pytest.mark.asyncio
-async def test_lucidity_recovery_on_cooldown_refuses_and_rolls_back(session: FakeSession) -> None:
+async def test_lucidity_recovery_on_cooldown_refuses() -> None:
     FakeService.on_cooldown = True
 
     outcome = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(_prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA)))
 
     assert not outcome.ok
     assert outcome.message == "You don't think you can stomach another tonic at this time."
-    assert (session.commits, session.rollbacks) == (0, 1)
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("metadata", [{}, {"lucidity_recovery": {"lcd_delta": 3}}])
-async def test_lucidity_recovery_with_bad_metadata_does_nothing(
-    session: FakeSession, metadata: dict[str, object]
-) -> None:
+async def test_lucidity_recovery_with_bad_metadata_does_nothing(metadata: dict[str, object]) -> None:
     outcome = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(_prototype([LUCIDITY_RECOVERY_TAG], metadata)))
 
     assert not outcome.ok
     assert FakeService.calls == []
-    assert (session.commits, session.rollbacks) == (0, 0)
 
 
 @pytest.mark.asyncio
-async def test_catatonia_observer_comes_from_the_container_then_app_state(session: FakeSession) -> None:
-    _ = session
+async def test_catatonia_observer_comes_from_the_container_then_app_state() -> None:
     prototype = _prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA)
     from_container = SimpleNamespace(
         state=SimpleNamespace(container=SimpleNamespace(catatonia_registry=OBSERVER, player_registry=object()))
@@ -171,7 +147,7 @@ async def test_catatonia_observer_comes_from_the_container_then_app_state(sessio
 
 
 @pytest.mark.asyncio
-async def test_without_a_player_registry_the_item_is_kept(session: FakeSession) -> None:
+async def test_without_a_player_registry_the_item_is_kept() -> None:
     """No container (so no player registry): the effect is inert and the tonic is not used up."""
     prototype = _prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA)
     from_state = SimpleNamespace(state=SimpleNamespace(container=None, catatonia_registry=OBSERVER))
@@ -180,7 +156,7 @@ async def test_without_a_player_registry_the_item_is_kept(session: FakeSession) 
         outcome = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(prototype, app))
         assert not outcome.ok
 
-    assert FakeService.calls == [] and (session.commits, session.rollbacks) == (0, 0)
+    assert FakeService.calls == []
 
 
 def test_find_effect_returns_the_first_tag_with_a_handler() -> None:

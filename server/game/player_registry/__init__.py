@@ -2,6 +2,8 @@
 
 from .aggregate import (
     PlayerAggregate,
+    PlayerCooldownsView,
+    PlayerExposureView,
     PlayerInventoryView,
     PlayerLucidityView,
     PlayerQuestsView,
@@ -9,6 +11,8 @@ from .aggregate import (
     PlayerView,
 )
 from .part import DbSession, Part, PartWrite
+from .player_cooldowns import PlayerCooldownsPart
+from .player_exposure import Exposure, PlayerExposurePart
 from .player_inventory import InventoryData, PlayerInventoryPart
 from .player_lucidity import LucidityData, PlayerLucidityPart
 from .player_quests import PlayerQuestsPart, QuestInstanceData
@@ -24,12 +28,17 @@ from .registry import (
 
 __all__ = [
     "DbSession",
+    "Exposure",
     "InventoryData",
     "LockOrderError",
     "LucidityData",
     "Part",
     "PartWrite",
     "PlayerAggregate",
+    "PlayerCooldownsPart",
+    "PlayerCooldownsView",
+    "PlayerExposurePart",
+    "PlayerExposureView",
     "PlayerInventoryPart",
     "PlayerInventoryView",
     "PlayerLucidityPart",

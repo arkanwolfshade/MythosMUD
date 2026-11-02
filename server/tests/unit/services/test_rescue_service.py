@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.game.player_registry import LucidityData
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 from server.services.rescue_service import RescueService, rescue_lift
 
 

@@ -16,7 +16,6 @@ from uuid import UUID
 
 from pydantic import ValidationError as PydanticValidationError
 
-from server.database import get_async_session
 from server.game.items.metadata_models import LucidityRecoveryMetadata
 from server.game.items.models import ItemPrototypeModel
 from server.services.active_lucidity_service import ActiveLucidityService, LucidityActionOnCooldownError
@@ -87,29 +86,26 @@ async def _lucidity_recovery(ctx: ItemUseContext) -> ItemEffectResult:
             "Consumable lucidity recovery skipped: no player registry", prototype_id=ctx.prototype.prototype_id
         )
         return ItemEffectResult(ok=False, message=_INERT_MESSAGE)
-    async for session in get_async_session():
-        service = ActiveLucidityService(session, registry, catatonia_observer=_catatonia_observer(ctx.app))
-        try:
-            result = await service.apply_timed_recovery(
-                ctx.player_id,
-                cooldown_key=params.cooldown_key,
-                lcd_delta=params.lcd_delta,
-                cooldown=timedelta(minutes=params.cooldown_minutes),
-                location_id=ctx.room_id,
-            )
-            await session.commit()
-        except LucidityActionOnCooldownError:
-            await session.rollback()
-            return ItemEffectResult(ok=False, message=_COOLDOWN_REFUSAL)
-        sign = "+" if result.delta >= 0 else ""
-        return ItemEffectResult(
-            ok=True,
-            message=(
-                f"You swallow the {ctx.prototype.name.lower()}. A bitter warmth settles your thoughts. "
-                f"({sign}{result.delta} LCD, now {result.new_lcd}/100)"
-            ),
+    # The cooldown check, the gain and the new cooldown are one registry unit (ADR-029 step 5b-ii).
+    service = ActiveLucidityService(registry, catatonia_observer=_catatonia_observer(ctx.app))
+    try:
+        result = await service.apply_timed_recovery(
+            ctx.player_id,
+            cooldown_key=params.cooldown_key,
+            lcd_delta=params.lcd_delta,
+            cooldown=timedelta(minutes=params.cooldown_minutes),
+            location_id=ctx.room_id,
         )
-    return ItemEffectResult(ok=False, message=_INERT_MESSAGE)
+    except LucidityActionOnCooldownError:
+        return ItemEffectResult(ok=False, message=_COOLDOWN_REFUSAL)
+    sign = "+" if result.delta >= 0 else ""
+    return ItemEffectResult(
+        ok=True,
+        message=(
+            f"You swallow the {ctx.prototype.name.lower()}. A bitter warmth settles your thoughts. "
+            f"({sign}{result.delta} LCD, now {result.new_lcd}/100)"
+        ),
+    )
 
 
 ITEM_EFFECTS: dict[str, ItemEffectHandler] = {LUCIDITY_RECOVERY_TAG: _lucidity_recovery}

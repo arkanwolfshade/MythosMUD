@@ -22,8 +22,7 @@ from typing import TYPE_CHECKING, Literal, cast
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..services.lucidity_helpers import resolve_tier
-from ..services.lucidity_repository import PlayerGoneError
+from ..services.lucidity_helpers import PlayerGoneError, resolve_tier
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer

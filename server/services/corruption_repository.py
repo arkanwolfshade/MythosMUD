@@ -17,7 +17,7 @@ def _utc_now() -> datetime:
 
 
 class CorruptionRepository:
-    """Data-access helpers for corruption persistence. Mirrors `LucidityRepository`."""
+    """Data-access helpers for corruption persistence (the cooldowns and the ledger)."""
 
     _session: AsyncSession
 

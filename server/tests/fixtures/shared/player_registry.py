@@ -15,14 +15,19 @@ import uuid
 from collections.abc import AsyncGenerator, Callable, Mapping, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import cast
 
 import pytest
 
 from server.game.player_registry import (
     DbSession,
+    Exposure,
     LucidityData,
     PlayerAggregate,
+    PlayerCooldownsPart,
+    PlayerCooldownsView,
+    PlayerExposurePart,
     PlayerInventoryPart,
     PlayerLucidityPart,
     PlayerQuestsPart,
@@ -63,16 +68,23 @@ def raw_row(player_id: uuid.UUID | None = None, **overrides: object) -> dict[str
 
 
 def aggregate(
-    row: Mapping[str, object], quests: Sequence[QuestInstanceData] = (), lucidity: LucidityData | None = None
+    row: Mapping[str, object],
+    quests: Sequence[QuestInstanceData] = (),
+    lucidity: LucidityData | None = None,
+    *,
+    cooldowns: PlayerCooldownsPart | None = None,
+    exposure: PlayerExposurePart | None = None,
 ) -> PlayerAggregate:
-    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests`` and ``lucidity``, as
-    load_player_aggregate builds them."""
+    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, ``lucidity``, ``cooldowns``
+    and ``exposure``, as load_player_aggregate builds them."""
     player_id = uuid.UUID(str(row["player_id"]))
     return PlayerAggregate(
         PlayerRowPart(PlayerRowData.from_row(row)),
         PlayerInventoryPart.from_row(row),
         PlayerQuestsPart(player_id, quests),
         PlayerLucidityPart(player_id, lucidity),
+        cooldowns,
+        exposure,
     )
 
 
@@ -195,6 +207,18 @@ class LucidityHarness:
     registry: PlayerRegistry
     db: FakeDatabase
 
+    def cooldowns(self, player_id: uuid.UUID) -> PlayerCooldownsView:
+        """The player's live cooldowns."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.cooldowns
+
+    def encounters(self, player_id: uuid.UUID, entity_archetype: str) -> int:
+        """How many times the player has met ``entity_archetype``, live."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.exposure.encounter_count(entity_archetype)
+
     def lucidity(self, player_id: uuid.UUID) -> LucidityData:
         """The player's live lucidity (what the registry holds, flushed or not)."""
         player = self.registry.peek(player_id)
@@ -211,15 +235,27 @@ class LucidityHarness:
 
 
 def lucidity_registry(
-    players: Mapping[uuid.UUID, LucidityData | None], *, stats: Mapping[str, object] | None = None
+    players: Mapping[uuid.UUID, LucidityData | None],
+    *,
+    stats: Mapping[str, object] | None = None,
+    cooldowns: Mapping[str, datetime] | None = None,
+    exposures: Mapping[str, Exposure] | None = None,
 ) -> LucidityHarness:
-    """A registry with these players (lucidity None = the starting values); any other id is no such player."""
+    """A registry with these players (lucidity None = the starting values); any other id is no such player.
+
+    ``cooldowns`` and ``exposures`` seed every player's cooldowns and encounter counts (ADR-029 step 5b-ii).
+    """
     db = FakeDatabase()
 
     async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
         if player_id not in players:
             return None
         row = raw_row(player_id, stats=dict(stats) if stats is not None else {"current_dp": 20, "max_dp": 20})
-        return aggregate(row, lucidity=players[player_id])
+        return aggregate(
+            row,
+            lucidity=players[player_id],
+            cooldowns=PlayerCooldownsPart(player_id, cooldowns),
+            exposure=PlayerExposurePart(player_id, exposures),
+        )
 
     return LucidityHarness(PlayerRegistry(db.session, loader=load), db)

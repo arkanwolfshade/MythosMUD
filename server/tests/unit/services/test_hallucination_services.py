@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.models.lucidity import LucidityActionCode
 from server.services.fake_hallucination_service import (
     FAKE_NPC_NAMES,
     FAKE_NPC_TELL_MESSAGES,
@@ -14,6 +15,7 @@ from server.services.fake_hallucination_service import (
 )
 from server.services.hallucination_frequency_service import HallucinationFrequencyService
 from server.services.phantom_hostile_service import PHANTOM_HOSTILE_NAMES, PhantomHostileService
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
 def test_fake_hallucination_generate_npc_tell() -> None:
@@ -91,48 +93,68 @@ async def test_hallucination_frequency_time_based_requires_session() -> None:
 
 @pytest.mark.asyncio
 async def test_hallucination_frequency_time_based_cooldown_active() -> None:
-    """Active cooldown blocks time-based trigger."""
-    service = HallucinationFrequencyService()
+    """A running hallucination timer blocks the time-based trigger, and nothing commits."""
     player_id = uuid.uuid4()
-    session = MagicMock()
-    cooldown = MagicMock()
-    cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=5)
+    harness = lucidity_registry(
+        {player_id: None}, cooldowns={LucidityActionCode.HALLUCINATION_TIMER: datetime.now(UTC) + timedelta(minutes=5)}
+    )
 
-    mock_lucidity = MagicMock()
-    mock_lucidity.get_cooldown = AsyncMock(return_value=cooldown)
-
-    with patch("server.services.hallucination_frequency_service.LucidityRepository", return_value=mock_lucidity):
-        assert await service.should_trigger_hallucination(player_id, "fractured", "time_based", session) is False
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.01)):
+        assert (
+            await HallucinationFrequencyService().should_trigger_hallucination(
+                player_id, "fractured", "time_based", harness.registry
+            )
+            is False
+        )
+    assert harness.db.commits == 0
 
 
 @pytest.mark.asyncio
 async def test_hallucination_frequency_time_based_triggers_and_sets_cooldown() -> None:
-    """Expired cooldown allows roll; trigger sets new cooldown."""
-    service = HallucinationFrequencyService()
+    """With no timer running a hit starts the timer, committed in the same unit."""
     player_id = uuid.uuid4()
-    session = MagicMock()
-    mock_lucidity = MagicMock()
-    mock_lucidity.get_cooldown = AsyncMock(return_value=None)
-    mock_lucidity.set_cooldown = AsyncMock()
+    harness = lucidity_registry({player_id: None})
 
-    with (
-        patch("server.services.hallucination_frequency_service.LucidityRepository", return_value=mock_lucidity),
-        patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.01)),
-    ):
-        assert await service.should_trigger_hallucination(player_id, "fractured", "time_based", session) is True
-    mock_lucidity.set_cooldown.assert_awaited_once()
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.01)):
+        assert (
+            await HallucinationFrequencyService().should_trigger_hallucination(
+                player_id, "fractured", "time_based", harness.registry
+            )
+            is True
+        )
+    expires_at = harness.cooldowns(player_id).expires_at(LucidityActionCode.HALLUCINATION_TIMER)
+    assert expires_at is not None and expires_at > datetime.now(UTC)
+    assert harness.db.commits == 1
 
 
 @pytest.mark.asyncio
-async def test_hallucination_frequency_handles_lucidity_errors() -> None:
-    """Cooldown repository errors are swallowed and return False."""
+async def test_hallucination_frequency_a_miss_starts_no_timer() -> None:
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: None})
+
+    with patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.99)):
+        assert (
+            await HallucinationFrequencyService().should_trigger_hallucination(
+                player_id, "fractured", "time_based", harness.registry
+            )
+            is False
+        )
+    assert harness.cooldowns(player_id).expires_at(LucidityActionCode.HALLUCINATION_TIMER) is None
+    assert harness.db.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_hallucination_frequency_without_a_registry_or_player_returns_false() -> None:
+    """No registry, or a player it does not know: the error is swallowed and nothing triggers."""
     service = HallucinationFrequencyService()
-    session = MagicMock()
-    with patch(
-        "server.services.hallucination_frequency_service.LucidityRepository",
-        side_effect=RuntimeError("db down"),
-    ):
-        assert await service.should_trigger_hallucination(uuid.uuid4(), "fractured", "time_based", session) is False
+
+    assert await service.should_trigger_hallucination(uuid.uuid4(), "fractured", "time_based") is False
+    assert (
+        await service.should_trigger_hallucination(
+            uuid.uuid4(), "fractured", "time_based", lucidity_registry({}).registry
+        )
+        is False
+    )
 
 
 @pytest.mark.asyncio
@@ -153,9 +175,9 @@ async def test_check_time_based_delegates_to_should_trigger() -> None:
     """Time-based helper resolves tier and delegates."""
     service = HallucinationFrequencyService()
     player_id = uuid.uuid4()
-    session = MagicMock()
+    registry = lucidity_registry({player_id: None}).registry
     with patch.object(service, "should_trigger_hallucination", AsyncMock(return_value=False)) as mock_trigger:
-        result = await service.check_time_based_hallucination(player_id, current_lcd=15, session=session)
+        result = await service.check_time_based_hallucination(player_id, current_lcd=15, registry=registry)
     assert result is False
     mock_trigger.assert_awaited_once()
     assert mock_trigger.await_args is not None
