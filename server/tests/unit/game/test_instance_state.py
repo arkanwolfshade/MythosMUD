@@ -2,7 +2,7 @@
 
 import json
 import uuid
-from collections.abc import AsyncIterator, Callable, Iterable
+from collections.abc import Iterable
 from typing import cast
 from unittest.mock import AsyncMock, patch
 
@@ -16,10 +16,13 @@ from server.game.instance_state import (
     strip_instance_bound_items,
 )
 from server.game.items.constants import INSTANCE_BOUND_FLAG
-from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
+from server.game.player_registry import DbSession, LucidityData, PlayerAggregate, PlayerRegistry
 from server.models.player import Player
 from server.services.lucidity_service import resolve_tier
-from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, lucidity_registry, raw_row
+
+# restart_instance_run only hands the registry on to _reset_lucidity, which these tests patch.
+REGISTRY = cast(PlayerRegistry, object())
 
 
 def _player() -> Player:
@@ -161,68 +164,42 @@ async def test_restart_instance_run_restores_dp_keeps_corruption_and_resets_luci
     quests = _Quests()
 
     with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
-        await restart_instance_run(player, ["square", "walk"], quests)
+        await restart_instance_run(player, ["square", "walk"], quests, REGISTRY)
 
     stats = player.get_stats()
     assert stats["current_dp"] == 100
     assert stats["corruption"] == 3
-    reset_lucidity.assert_awaited_once_with(uuid.UUID(str(player.player_id)))
+    reset_lucidity.assert_awaited_once_with(REGISTRY, uuid.UUID(str(player.player_id)))
     assert quests.calls == [(uuid.UUID(str(player.player_id)), ["square", "walk"])]
 
 
-class _LucidityRecord:
-    current_lcd: int = 12
-    current_tier: str = "fractured"
+@pytest.mark.asyncio
+async def test_reset_lucidity_sets_the_starting_value_and_tier_in_the_registry() -> None:
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: LucidityData(12, "fractured")})
 
+    with patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier:
+        await _reset_lucidity(harness.registry, player_id)
 
-class _Session:
-    commits: int = 0
-
-    async def commit(self) -> None:
-        self.commits += 1
-
-
-class _LucidityRepository:
-    """Stands in for LucidityRepository: hands back one record and remembers who was asked for."""
-
-    record: _LucidityRecord
-    asked_for: list[uuid.UUID]
-
-    def __init__(self, record: _LucidityRecord) -> None:
-        self.record = record
-        self.asked_for = []
-
-    async def get_or_create_player_lucidity(self, player_id: uuid.UUID) -> _LucidityRecord:
-        self.asked_for.append(player_id)
-        return self.record
-
-
-def _repository_factory(repository: _LucidityRepository) -> Callable[[_Session], _LucidityRepository]:
-    def build(_session: _Session) -> _LucidityRepository:
-        return repository
-
-    return build
+    assert (harness.lucidity(player_id).lcd, harness.lucidity(player_id).tier) == (
+        STARTING_LCD,
+        resolve_tier(STARTING_LCD),
+    )
+    set_tier.assert_called_once_with(player_id, resolve_tier(STARTING_LCD))
 
 
 @pytest.mark.asyncio
-async def test_reset_lucidity_sets_the_starting_value_and_tier_and_commits() -> None:
-    session = _Session()
-    repository = _LucidityRepository(_LucidityRecord())
-    player_id = uuid.uuid4()
+async def test_restart_instance_run_without_a_registry_keeps_lucidity_but_resets_the_rest() -> None:
+    player = _player()
+    player.set_stats({"current_dp": 1, "max_dp": 100})
+    quests = _Quests()
 
-    async def sessions() -> AsyncIterator[_Session]:
-        yield session
+    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
+        await restart_instance_run(player, ["square"], quests, None)
 
-    with (
-        patch("server.database.get_async_session", new=sessions),
-        patch("server.services.lucidity_repository.LucidityRepository", new=_repository_factory(repository)),
-    ):
-        await _reset_lucidity(player_id)
-
-    assert repository.asked_for == [player_id]
-    assert repository.record.current_lcd == STARTING_LCD
-    assert repository.record.current_tier == resolve_tier(STARTING_LCD)
-    assert session.commits == 1
+    reset_lucidity.assert_not_awaited()
+    assert player.get_stats()["current_dp"] == 100
+    assert len(quests.calls) == 1
 
 
 @pytest.mark.asyncio
@@ -232,7 +209,7 @@ async def test_restart_instance_run_survives_a_failing_lucidity_or_quest_reset()
     quests = _Quests(error=RuntimeError("db down"))
 
     with patch("server.game.instance_state._reset_lucidity", new=AsyncMock(side_effect=RuntimeError("db down"))):
-        await restart_instance_run(player, ["square"], quests)
+        await restart_instance_run(player, ["square"], quests, REGISTRY)
 
     assert player.get_stats()["current_dp"] == 100
     assert len(quests.calls) == 1  # the quest reset still ran after the lucidity failure
@@ -244,6 +221,6 @@ async def test_restart_instance_run_without_a_quest_service_still_restores_dp() 
     player.set_stats({"current_dp": 1, "max_dp": 100})
 
     with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()):
-        await restart_instance_run(player, ["square"], None)
+        await restart_instance_run(player, ["square"], None, REGISTRY)
 
     assert player.get_stats()["current_dp"] == 100

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast, final
@@ -14,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.app import game_tick_catatonia as clock
 from server.app.game_tick_protocols import _TickContainer
+from server.services.lucidity_repository import PlayerGoneError
 
 PLAYER_A = uuid.uuid4()
 PLAYER_B = uuid.uuid4()
@@ -40,6 +42,7 @@ class Rig:
         default_factory=lambda: cast(list[tuple[uuid.UUID, int, str]], [])
     )
     fail_query: bool = False
+    gone: set[uuid.UUID] = field(default_factory=lambda: cast(set[uuid.UUID], set()))
 
 
 @pytest.fixture(name="rig")
@@ -47,15 +50,18 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     rig = Rig(lcds={PLAYER_A: 0})
 
     class FakeLucidityService:
-        def __init__(self, session: object, *, catatonia_observer: object | None = None) -> None:
-            _ = session, catatonia_observer
+        def __init__(self, registry: object, *, catatonia_observer: object | None = None) -> None:
+            _ = registry, catatonia_observer
 
-        async def get_player_lucidity(self, player_id: uuid.UUID) -> SimpleNamespace:
-            return SimpleNamespace(current_lcd=rig.lcds[player_id])
-
-        async def apply_lucidity_adjustment(self, player_id: uuid.UUID, delta: int, *, reason_code: str) -> None:
-            rig.adjustments.append((player_id, delta, reason_code))
-            rig.lcds[player_id] += delta
+        async def apply_lucidity_adjustment(
+            self, player_id: uuid.UUID, delta: Callable[[int], int], *, reason_code: str
+        ) -> None:
+            if player_id in rig.gone:
+                raise PlayerGoneError(str(player_id))
+            step = delta(rig.lcds[player_id])  # the clock's step, evaluated on the live value as the registry does
+            if step:
+                rig.adjustments.append((player_id, step, reason_code))
+                rig.lcds[player_id] += step
 
     monkeypatch.setattr(clock, "LucidityService", FakeLucidityService)
     return rig
@@ -79,8 +85,8 @@ class FakeSession:
         self.rig.rollbacks += 1
 
 
-async def _run(rig: Rig, tick_count: int = 0) -> None:
-    container = cast(_TickContainer, cast(object, SimpleNamespace()))
+async def _run(rig: Rig, tick_count: int = 0, registry: object | None = None) -> None:
+    container = cast(_TickContainer, cast(object, SimpleNamespace(player_registry=registry or object())))
     await clock.process_catatonia_decay(container, cast(AsyncSession, cast(object, FakeSession(rig))), tick_count)
 
 
@@ -116,7 +122,6 @@ async def test_a_due_tick_takes_one_lcd_with_the_decay_reason(rig: Rig):
         (PLAYER_B, -1, clock.CATATONIA_DECAY_REASON_CODE),
     ]
     assert rig.lcds == {PLAYER_A: -1, PLAYER_B: -5}
-    assert rig.commits == 1
 
 
 @pytest.mark.asyncio
@@ -124,7 +129,7 @@ async def test_a_tick_that_is_not_due_does_nothing(rig: Rig):
     with patch.object(clock, "is_catatonia_decay_tick", return_value=False):
         await _run(rig)
 
-    assert (rig.queries, rig.adjustments, rig.commits) == (0, [], 0)
+    assert (rig.queries, rig.adjustments) == (0, [])
 
 
 @pytest.mark.asyncio
@@ -150,12 +155,31 @@ async def test_the_last_step_lands_on_the_floor_and_the_next_tick_leaves_it(rig:
 
 
 @pytest.mark.asyncio
-async def test_nobody_catatonic_commits_nothing(rig: Rig):
+async def test_nobody_catatonic_changes_nothing(rig: Rig):
     rig.lcds = {}
     with patch.object(clock, "is_catatonia_decay_tick", return_value=True):
         await _run(rig)
 
-    assert (rig.queries, rig.commits) == (1, 0)
+    assert (rig.queries, rig.adjustments) == (1, [])
+
+
+@pytest.mark.asyncio
+async def test_a_player_gone_since_the_query_does_not_stop_the_others(rig: Rig):
+    rig.lcds = {PLAYER_A: 0, PLAYER_B: -2}
+    rig.gone = {PLAYER_A}
+    with patch.object(clock, "is_catatonia_decay_tick", return_value=True):
+        await _run(rig)
+
+    assert rig.adjustments == [(PLAYER_B, -1, clock.CATATONIA_DECAY_REASON_CODE)]
+
+
+@pytest.mark.asyncio
+async def test_without_a_player_registry_the_clock_does_not_run(rig: Rig):
+    container = cast(_TickContainer, cast(object, SimpleNamespace(player_registry=None)))
+    with patch.object(clock, "is_catatonia_decay_tick", return_value=True):
+        await clock.process_catatonia_decay(container, cast(AsyncSession, cast(object, FakeSession(rig))), 0)
+
+    assert (rig.queries, rig.adjustments) == (0, [])
 
 
 @pytest.mark.asyncio
@@ -164,4 +188,4 @@ async def test_a_database_failure_rolls_the_shared_session_back_and_does_not_rai
     with patch.object(clock, "is_catatonia_decay_tick", return_value=True):
         await _run(rig)
 
-    assert (rig.rollbacks, rig.commits, rig.adjustments) == (1, 0, [])
+    assert (rig.rollbacks, rig.adjustments) == (1, [])

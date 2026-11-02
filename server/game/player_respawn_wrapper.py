@@ -19,7 +19,6 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
     from ..async_persistence import AsyncPersistenceLayer
-    from ..models.lucidity import PlayerLucidity
     from ..services.player_respawn_service import PlayerRespawnService
 
 logger = get_logger(__name__)
@@ -169,17 +168,18 @@ class PlayerRespawnWrapper:
         }
 
     async def _load_player_for_delirium_respawn(
-        self, session: "AsyncSession", user_id: str
-    ) -> tuple[Player, "PlayerLucidity"]:
-        """Pick the user's delirious character (lucidity <= -10); an account can have several characters."""
-        from ..models.lucidity import PlayerLucidity
+        self, session: "AsyncSession", user_id: str, respawn_service: "PlayerRespawnService"
+    ) -> Player:
+        """Pick the user's delirious character (lucidity <= -10); an account can have several characters.
 
+        Lucidity is read from the player registry, through the respawn service (ADR-029 step 5b-i).
+        """
         players = await self._load_active_players(session, user_id)
-        delirious: list[tuple[Player, PlayerLucidity]] = []
+        delirious: list[Player] = []
         for candidate in players:
-            record = await session.get(PlayerLucidity, candidate.player_id)
-            if record is not None and record.current_lcd <= -10:
-                delirious.append((candidate, record))
+            lcd = await respawn_service.current_lcd(uuid.UUID(str(candidate.player_id)))
+            if lcd is not None and lcd <= -10:
+                delirious.append(candidate)
         if not delirious:
             log_and_raise_enhanced(
                 ValidationError,
@@ -190,7 +190,7 @@ class PlayerRespawnWrapper:
                 user_friendly="Player must be delirious to respawn",
             )
         # The one that just fell is the one the player is looking at: the most recently active.
-        return max(delirious, key=lambda pair: pair[0].last_active)
+        return max(delirious, key=lambda candidate: candidate.last_active)
 
     async def respawn_player_from_delirium_by_user_id(
         self,
@@ -221,7 +221,7 @@ class PlayerRespawnWrapper:
         Raises:
             ValidationError: If player not found or not delirious
         """
-        player, lucidity_record = await self._load_player_for_delirium_respawn(session, user_id)
+        player = await self._load_player_for_delirium_respawn(session, user_id, respawn_service)
 
         player_id_uuid = uuid.UUID(str(player.player_id))
         success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
@@ -245,8 +245,7 @@ class PlayerRespawnWrapper:
         room_data = _resolve_respawn_room_data(persistence, respawn_room_id)  # pyright: ignore[reportAny]
         updated_stats = player.get_stats()
 
-        await session.refresh(lucidity_record)
-        updated_lucidity = lucidity_record.current_lcd
+        updated_lucidity = await respawn_service.current_lcd(player_id_uuid)
 
         logger.info(
             "Player respawned from delirium successfully",

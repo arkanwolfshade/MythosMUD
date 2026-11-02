@@ -140,16 +140,14 @@ async def send_game_state_event_safely(
 
 
 async def _get_lucidity_for_client(player_id: uuid.UUID) -> tuple[str | None, int | None]:
-    """Get authoritative (tier, current_lcd) for game_state, or (None, None) if no row yet."""
-    from ..database import get_async_session
-    from ..models.lucidity import PlayerLucidity
+    """Authoritative (tier, current_lcd) for game_state from the player registry, or (None, None) if unavailable."""
+    from ..container import get_container
 
-    async for session in get_async_session():
-        record = await session.get(PlayerLucidity, player_id)
-        if record:
-            return record.current_tier, record.current_lcd
-        break
-    return None, None
+    registry = get_container().player_registry
+    player = await registry.get(player_id) if registry is not None else None
+    if player is None:
+        return None, None
+    return player.lucidity.tier, player.lucidity.lcd
 
 
 async def send_initial_game_state(

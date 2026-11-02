@@ -12,8 +12,7 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from datetime import UTC, datetime
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,16 +20,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from ..exceptions import DatabaseError
-from ..game.first_exposure import FinishFirstExposure, apply_first_exposure_end_state, tutorial_instance_of
+from ..game.first_exposure import (
+    RESTORED_LCD,
+    FinishFirstExposure,
+    apply_first_exposure_end_state,
+    tutorial_instance_of,
+)
 from ..game.instance_manager import is_template_room, template_exit_room_id
-from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
-from ..utils.liability_types import DecodeLiabilitiesFn, EncodeLiabilitiesFn
+from ..utils.liability_types import LiabilityStackEntry
 from .debrief_service import mark_debrief_pending
-from .lucidity_service import LucidityService, resolve_tier
+from .lucidity_helpers import LIABILITY_CATALOG, decode_liabilities, encode_liabilities, resolve_tier
+from .lucidity_repository import LucidityRepository
+from .lucidity_tier_cache import lucidity_tier_cache
 from .player_respawn_state import (
     apply_sanitarium_player_state,
     apply_standard_respawn_state,
@@ -41,13 +46,15 @@ from .player_respawn_state import (
     record_death_room_on_player,
 )
 
-
-def _utc_now() -> datetime:
-    """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
-    return datetime.now(UTC).replace(tzinfo=None)
-
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
+
+# Lucidity a delirium respawn restores, and a sanitarium respawn (LCD -100) resets to (Deranged tier).
+DELIRIUM_RESPAWN_LCD = 10
+SANITARIUM_RESPAWN_LCD = 1
+MAX_LIABILITY_STACKS = 5
 
 # Protocol stub bodies use Ellipsis per PEP 544; Pylint W2301 conflicts with pyright if replaced with pass.
 # pylint: disable=unnecessary-ellipsis
@@ -77,6 +84,17 @@ class _RandomChoiceSource(Protocol):
         ...
 
 
+def raise_sanitarium_liabilities(
+    liabilities: list[LiabilityStackEntry], random_module: _RandomChoiceSource
+) -> list[LiabilityStackEntry]:
+    """A sanitarium stay: one more stack of every liability (at most 5), or one new liability if there are none."""
+    if liabilities:
+        return [
+            {"code": entry["code"], "stacks": min(entry["stacks"] + 1, MAX_LIABILITY_STACKS)} for entry in liabilities
+        ]
+    return [{"code": random_module.choice(LIABILITY_CATALOG), "stacks": 1}]  # nosec B311 - Game mechanics, not security-critical
+
+
 class PlayerRespawnService:
     """
     Service for managing player respawn and limbo state.
@@ -95,6 +113,7 @@ class PlayerRespawnService:
         player_combat_service: _PlayerCombatClearing | None = None,
         room_lookup: Callable[[str], Room | None] | None = None,
         first_exposure_finish: FinishFirstExposure | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         """
         Initialize the player respawn service.
@@ -106,11 +125,14 @@ class PlayerRespawnService:
                 template be redirected to that template's exit room
             first_exposure_finish: Optional post-commit hook that finishes the First Exposure tutorial
                 (corruption floor, epilogue quest, instance flush) for a player who was inside it
+            player_registry: Holds the player's lucidity (ADR-029 step 5b-i), which a delirium or sanitarium
+                respawn resets once its session has committed
         """
         self._event_bus: _RespawnEventPublisher | None = event_bus
         self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
         self._room_lookup: Callable[[str], Room | None] | None = room_lookup
         self._first_exposure_finish: FinishFirstExposure | None = first_exposure_finish
+        self._player_registry: PlayerRegistry | None = player_registry
         logger.info(
             "PlayerRespawnService initialized",
             event_bus_available=bool(event_bus),
@@ -171,26 +193,25 @@ class PlayerRespawnService:
         )
         self._event_bus.publish(event)
 
-    async def _apply_sanitarium_liability_update(
-        self,
-        player_id: uuid.UUID,
-        lucidity_record: PlayerLucidity,
-        lucidity_service: LucidityService,
-        decode_liabilities: DecodeLiabilitiesFn,
-        encode_liabilities: EncodeLiabilitiesFn,
-        liability_catalog: Sequence[str],
-        random_module: _RandomChoiceSource,
-    ) -> None:
-        """Increase existing liability stacks or add one liability if none exist."""
-        liabilities = decode_liabilities(lucidity_record.liabilities)
-        if liabilities:
-            for liability in liabilities:
-                liability["stacks"] = min(liability["stacks"] + 1, 5)  # Cap at 5 stacks
-            lucidity_record.liabilities = encode_liabilities(liabilities)
-            return
+    async def current_lcd(self, player_id: uuid.UUID) -> int | None:
+        """The player's lucidity from the registry, or None without one (or with no such player)."""
+        if self._player_registry is None:
+            logger.error("Respawn lucidity unavailable: no player registry", player_id=player_id)
+            return None
+        player = await self._player_registry.get(player_id)
+        return player.lucidity.lcd if player is not None else None
 
-        liability_code = random_module.choice(liability_catalog)  # nosec B311 - Game mechanics, not security-critical
-        _ = await lucidity_service.add_liability(player_id, liability_code)
+    async def _set_respawn_lucidity(self, player_id: uuid.UUID, lcd: int, *, sanitarium: bool = False) -> None:
+        """After the respawn commits: set the player's lucidity (and, for the sanitarium, raise their liabilities)."""
+        if self._player_registry is None:
+            return
+        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            liabilities = None
+            if sanitarium:
+                raised = raise_sanitarium_liabilities(decode_liabilities(player.lucidity.data.liabilities), random)
+                liabilities = encode_liabilities(raised)
+            _ = player.lucidity.set(lcd=lcd, tier=resolve_tier(lcd), liabilities=liabilities)
+        lucidity_tier_cache.set_tier(player_id, resolve_tier(lcd))
 
     async def _clear_respawn_combat_state(self, player_id: uuid.UUID, respawn_context: str) -> None:
         """Clear combat state for a respawning player, logging and swallowing DB errors."""
@@ -234,67 +255,43 @@ class PlayerRespawnService:
     async def _prepare_delirium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, str, int, int] | None:
-        """Apply delirium-specific lucidity/location updates and return respawn context."""
-        lucidity_row = await session.get(PlayerLucidity, player_id)
-        if lucidity_row is None:
-            logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
+        """Apply the delirium location and debrief updates and return the respawn context.
+
+        The lucidity it returns is set by the caller once the session commits (it lives in the player registry).
+        """
+        old_lucidity = await self.current_lcd(player_id)
+        if old_lucidity is None:
+            logger.warning("Lucidity not available for delirium respawn", player_id=player_id)
             return None
-        lucidity_record = lucidity_row
+        new_lucidity = DELIRIUM_RESPAWN_LCD
 
-        old_lucidity = lucidity_record.current_lcd
-        new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
-        lucidity_record.current_lcd = new_lucidity
-        lucidity_record.current_tier = resolve_tier(new_lucidity)
-        lucidity_record.last_updated_at = _utc_now()
-
-        await mark_debrief_pending(LucidityService(session), player_id)
+        await mark_debrief_pending(LucidityRepository(session), player_id)
 
         respawn_room = RECOVERY_WARD_ROOM_ID
         _ = player.restore_to_full_health()
         old_room = player.current_room_id
         player.current_room_id = respawn_room
-        if apply_first_exposure_end_state(player, lucidity_record):
-            new_lucidity = lucidity_record.current_lcd
+        if apply_first_exposure_end_state(player):
+            new_lucidity = RESTORED_LCD
         return respawn_room, old_room, old_lucidity, new_lucidity
 
     async def _prepare_sanitarium_respawn(
         self, player_id: uuid.UUID, player: Player, session: AsyncSession
     ) -> tuple[str, dict[str, object], str, int, int] | None:
-        """Apply sanitarium-specific lucidity/liability/state updates and return respawn context."""
-        from .lucidity_service import (
-            LIABILITY_CATALOG,
-            decode_liabilities,
-            encode_liabilities,
-        )
+        """Apply the sanitarium state and debrief updates and return the respawn context.
 
-        lucidity_row = await session.get(PlayerLucidity, player_id)
-        if lucidity_row is None:
-            logger.warning("Lucidity record not found for sanitarium respawn", player_id=player_id)
+        The lucidity reset and the liability rise are applied by the caller once the session commits.
+        """
+        old_lucidity = await self.current_lcd(player_id)
+        if old_lucidity is None:
+            logger.warning("Lucidity not available for sanitarium respawn", player_id=player_id)
             return None
-        lucidity_record = lucidity_row
-
-        old_lucidity = lucidity_record.current_lcd
-        new_lucidity = 1  # Reset to 1 (Deranged tier) per spec
-        lucidity_record.current_lcd = new_lucidity
-        lucidity_record.current_tier = resolve_tier(new_lucidity)
-        lucidity_record.last_updated_at = _utc_now()
-
-        lucidity_service = LucidityService(session)
-        await self._apply_sanitarium_liability_update(
-            player_id=player_id,
-            lucidity_record=lucidity_record,
-            lucidity_service=lucidity_service,
-            decode_liabilities=cast(DecodeLiabilitiesFn, cast(object, decode_liabilities)),
-            encode_liabilities=cast(EncodeLiabilitiesFn, encode_liabilities),
-            liability_catalog=LIABILITY_CATALOG,
-            random_module=random,
-        )
 
         respawn_room = RECOVERY_WARD_ROOM_ID
         stats, old_room = apply_sanitarium_player_state(player, respawn_room)
-        await mark_debrief_pending(lucidity_service, player_id)
+        await mark_debrief_pending(LucidityRepository(session), player_id)
 
-        return respawn_room, stats, old_room, old_lucidity, new_lucidity
+        return respawn_room, stats, old_room, old_lucidity, SANITARIUM_RESPAWN_LCD
 
     async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool:
         """
@@ -499,6 +496,7 @@ class PlayerRespawnService:
 
             # Commit changes using async API
             await session.commit()
+            await self._set_respawn_lucidity(player_id, new_lucidity)
 
             log_delirium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
 
@@ -558,6 +556,7 @@ class PlayerRespawnService:
 
             # Commit changes using async API (includes debrief flag)
             await session.commit()
+            await self._set_respawn_lucidity(player_id, new_lucidity, sanitarium=True)
 
             log_sanitarium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
 

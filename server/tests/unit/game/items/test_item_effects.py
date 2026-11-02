@@ -71,8 +71,8 @@ class FakeService:
     calls: list[dict[str, object]] = []
     observers: list[object] = []
 
-    def __init__(self, session: FakeSession, *, catatonia_observer: object = None) -> None:
-        _ = session
+    def __init__(self, session: FakeSession, registry: object, *, catatonia_observer: object = None) -> None:
+        _ = session, registry
         FakeService.observers.append(catatonia_observer)
 
     async def apply_timed_recovery(
@@ -107,7 +107,11 @@ def session(monkeypatch: pytest.MonkeyPatch) -> FakeSession:
     return fake_session
 
 
-def _context(prototype: ItemPrototypeModel, app: object | None = None) -> ItemUseContext:
+# An app whose container holds the player registry (lucidity lives there, ADR-029 step 5b-i).
+APP = SimpleNamespace(state=SimpleNamespace(container=SimpleNamespace(player_registry=object())))
+
+
+def _context(prototype: ItemPrototypeModel, app: object | None = APP) -> ItemUseContext:
     return ItemUseContext(app=app, player_id=uuid4(), room_id="room-1", prototype=prototype)
 
 
@@ -158,13 +162,25 @@ async def test_lucidity_recovery_with_bad_metadata_does_nothing(
 async def test_catatonia_observer_comes_from_the_container_then_app_state(session: FakeSession) -> None:
     _ = session
     prototype = _prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA)
-    from_container = SimpleNamespace(state=SimpleNamespace(container=SimpleNamespace(catatonia_registry=OBSERVER)))
+    from_container = SimpleNamespace(
+        state=SimpleNamespace(container=SimpleNamespace(catatonia_registry=OBSERVER, player_registry=object()))
+    )
+    _ = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(prototype, from_container))
+
+    assert FakeService.observers == [OBSERVER]
+
+
+@pytest.mark.asyncio
+async def test_without_a_player_registry_the_item_is_kept(session: FakeSession) -> None:
+    """No container (so no player registry): the effect is inert and the tonic is not used up."""
+    prototype = _prototype([LUCIDITY_RECOVERY_TAG], TONIC_METADATA)
     from_state = SimpleNamespace(state=SimpleNamespace(container=None, catatonia_registry=OBSERVER))
 
-    for app in (from_container, from_state, None):
-        _ = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(prototype, app))
+    for app in (from_state, None):
+        outcome = await ITEM_EFFECTS[LUCIDITY_RECOVERY_TAG](_context(prototype, app))
+        assert not outcome.ok
 
-    assert FakeService.observers == [OBSERVER, OBSERVER, None]
+    assert FakeService.calls == [] and (session.commits, session.rollbacks) == (0, 0)
 
 
 def test_find_effect_returns_the_first_tag_with_a_handler() -> None:

@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.container.bundles.chat import CHAT_ATTRS, ChatBundle
-from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle, make_lucidity_adjuster
+from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle, make_lucidity_adjuster, make_lucidity_reader
 from server.container.bundles.core import CORE_ATTRS, CoreBundle
 from server.container.bundles.game import GAME_ATTRS, GameBundle
 from server.container.bundles.magic import (
@@ -23,6 +23,8 @@ from server.container.bundles.realtime import REALTIME_ATTRS, RealtimeBundle
 from server.container.bundles.time import TIME_ATTRS, TimeBundle
 from server.container.main import _flatten_bundle
 from server.game.magic.spell_effects import SpellEffectsDeps
+from server.game.player_registry import LucidityData
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
 def test_bundle_attr_constants() -> None:
@@ -390,29 +392,27 @@ def test_magic_validate_prerequisites() -> None:
 
 
 @pytest.mark.asyncio
-async def test_lucidity_adjuster_applies_through_lucidity_service_with_the_registry() -> None:
-    """ADR-029 step 3a: persistence-layer lucidity changes use LucidityService with the catatonia registry, committed."""
-    observer = MagicMock()
-    commit = AsyncMock()
-    session = MagicMock()
-    session.commit = commit
-
-    async def sessions():
-        yield session
-
-    adjust = AsyncMock()
-    service = MagicMock()
-    service.apply_lucidity_adjustment = adjust
+async def test_lucidity_adjuster_applies_through_lucidity_service_on_the_player_registry() -> None:
+    """ADR-029 step 5b-i: persistence-layer lucidity changes go through LucidityService on the player registry."""
     player_id = uuid.uuid4()
-    with (
-        patch("server.database.get_async_session", sessions),
-        patch("server.services.lucidity_service.LucidityService", return_value=service) as service_cls,
-    ):
-        await make_lucidity_adjuster(observer)(player_id, -7, "spell_cast:x")
+    harness = lucidity_registry({player_id: LucidityData(50, "uneasy")})
+    observer = MagicMock()
 
-    assert service_cls.call_args.kwargs["catatonia_observer"] is observer
-    adjust.assert_awaited_once_with(player_id, -7, reason_code="spell_cast:x")
-    commit.assert_awaited_once()
+    with patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()):
+        await make_lucidity_adjuster(harness.registry, observer)(player_id, -7, "spell_cast:x")
+
+    assert harness.lucidity(player_id).lcd == 43
+    _ = await harness.flush()
+    assert [row["reason_code"] for row in harness.ledger()] == ["spell_cast:x"]
+
+
+@pytest.mark.asyncio
+async def test_lucidity_reader_reads_the_player_registry_or_the_starting_value() -> None:
+    player_id = uuid.uuid4()
+    read = make_lucidity_reader(lucidity_registry({player_id: LucidityData(37, "fractured")}).registry)
+
+    assert await read(player_id) == 37
+    assert await read(uuid.uuid4()) == 100  # no such player
 
 
 def test_combat_bundle_validate_nats_prerequisites() -> None:
@@ -689,8 +689,16 @@ async def test_combat_bundle_sanitarium_failover_callback() -> None:
     session_maker.__aenter__ = AsyncMock(return_value=session)
     session_maker.__aexit__ = AsyncMock(return_value=None)
     container.database_manager.get_session_maker.return_value = MagicMock(return_value=session_maker)
-    with patch("server.services.lucidity_service.LucidityService") as lucidity_cls:
-        lucidity_cls.return_value.clear_hallucination_timers = AsyncMock(return_value=0)
+
+    class _NoTimers:
+        def __init__(self, session: object) -> None:
+            _ = session
+
+        async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
+            _ = player_id
+            return 0
+
+    with patch("server.services.lucidity_repository.LucidityRepository", _NoTimers):
         with patch("server.container.bundles.combat.sleep", AsyncMock()):
             await bundle._sanitarium_failover_callback(container, str(uuid.uuid4()), -100)
     bundle.player_respawn_service.move_player_to_limbo.assert_awaited_once()

@@ -1,4 +1,8 @@
-"""Repository layer for lucidity-related persistence."""
+"""Repository for the lucidity tables the player registry does not hold yet: exposure state and cooldowns.
+
+``player_lucidity`` and its ledger live in the registry's lucidity part (ADR-029 step 5b-i); exposure state and
+``lucidity_cooldowns`` move there in step 5b-ii.
+"""
 
 from __future__ import annotations
 
@@ -7,10 +11,11 @@ from datetime import UTC, datetime
 
 from sqlalchemy import Select, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
-from ..models.lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
-from ..models.player import Player
+from ..models.lucidity import LucidityCooldown, LucidityExposureState
+from ..structured_logging.enhanced_logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class PlayerGoneError(LookupError):
@@ -23,60 +28,10 @@ def _utc_now() -> datetime:
 
 
 class LucidityRepository:
-    """Data-access helpers for lucidity persistence."""
+    """Data-access helpers for lucidity exposure state and cooldowns."""
 
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
-
-    async def get_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity | None:
-        """Get player lucidity record."""
-        stmt: Select[tuple[PlayerLucidity]] = (
-            select(PlayerLucidity)
-            .options(selectinload(PlayerLucidity.player))
-            .where(PlayerLucidity.player_id == player_id)
-        )
-        result = await self._session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def get_or_create_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity:
-        """Get existing player lucidity record or create a new one.
-
-        Raises:
-            PlayerGoneError: no record exists and the player is gone, so inserting would violate the foreign key.
-        """
-        record = await self.get_player_lucidity(player_id)
-        if record is not None:
-            return record
-
-        player_exists = await self._session.execute(select(Player.player_id).where(Player.player_id == player_id))
-        if player_exists.scalar_one_or_none() is None:
-            raise PlayerGoneError(str(player_id))
-
-        record = PlayerLucidity(player_id=player_id)
-        self._session.add(record)
-        await self._session.flush()
-        return record
-
-    async def add_adjustment_log(
-        self,
-        player_id: uuid.UUID,
-        delta: int,
-        reason_code: str,
-        metadata: str,
-        location_id: str | None,
-    ) -> LucidityAdjustmentLog:
-        """Add a lucidity adjustment log entry."""
-        log_entry = LucidityAdjustmentLog(
-            player_id=player_id,
-            delta=delta,
-            reason_code=reason_code,
-            metadata_payload=metadata,
-            location_id=location_id,
-            created_at=_utc_now(),
-        )
-        self._session.add(log_entry)
-        await self._session.flush()
-        return log_entry
 
     async def get_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> LucidityExposureState | None:
         """Get exposure state for a player and entity archetype."""
@@ -137,4 +92,15 @@ class LucidityRepository:
         result = await self._session.execute(stmt)
         await self._session.flush()
         deleted_count: int = getattr(result, "rowcount", 0)
+        return deleted_count
+
+    async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
+        """Delete every hallucination timer cooldown of the player (sanitarium failover, LCD -100)."""
+        deleted_count = await self.delete_cooldowns_by_action_code_pattern(player_id, "hallucination_%")
+        if deleted_count > 0:
+            logger.info(
+                "Hallucination timers cleared for sanitarium failover",
+                player_id=player_id,
+                timers_cleared=deleted_count,
+            )
         return deleted_count

@@ -14,16 +14,17 @@ from dataclasses import dataclass
 from typing import Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..alias_storage import AliasStorage
-from ..database import get_async_session
+from ..constants.lucidity import STARTING_LCD
 from ..exceptions import DatabaseError
 from ..services.lucidity_helpers import CatatoniaObserverProtocol
+from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
 from .command_results import command_error
+from .inventory_command_helpers import player_registry
 
 logger = get_logger(__name__)
 
@@ -103,23 +104,16 @@ async def check_admin_permissions(
     return current_player_obj, None
 
 
-async def get_current_lcd(session: AsyncSession, target_player_id: uuid.UUID) -> int:
-    """Get current LCD value from database, defaulting to 100 if no record exists."""
-    from sqlalchemy import select
-
-    from ..models.lucidity import PlayerLucidity
-
-    stmt = select(PlayerLucidity).where(PlayerLucidity.player_id == target_player_id)
-    result = await session.execute(stmt)
-    lucidity_record = result.scalar_one_or_none()
-    return lucidity_record.current_lcd if lucidity_record else 100
+async def get_current_lcd(target_player_id: uuid.UUID) -> int:
+    """The player's LCD from the player registry (ADR-029 step 5b-i), or the starting 100 if there is no such player."""
+    player = await player_registry().get(target_player_id)
+    return player.lucidity.lcd if player is not None else STARTING_LCD
 
 
 @dataclass
 class LucidityChangeCtx:
     """Bundle for _apply_lucidity_change (lizard PARAM)."""
 
-    session: Any
     lucidity_service: LucidityService
     target_player_id: uuid.UUID
     current_lcd: int
@@ -166,11 +160,12 @@ def _log_lucidity_success(ctx: LucidityChangeCtx, adjustment_result: Any) -> dic
 
 async def _apply_lucidity_change(ctx: LucidityChangeCtx) -> dict[str, str] | None:
     """Apply lucidity adjustment and return result message or None on error."""
-    delta = ctx.target_lcd - ctx.current_lcd
+    target = ctx.target_lcd
     try:
+        # Computed from the live LCD inside the unit, so a change since the read cannot make the result miss.
         adjustment_result = await ctx.lucidity_service.apply_lucidity_adjustment(
             player_id=ctx.target_player_id,
-            delta=delta,
+            delta=lambda current: target - current,
             reason_code="admin_set",
             metadata={
                 "admin_name": ctx.player_name,
@@ -180,10 +175,8 @@ async def _apply_lucidity_change(ctx: LucidityChangeCtx) -> dict[str, str] | Non
                 "command": "admin setlucidity",
             },
         )
-        await ctx.session.commit()
         return _log_lucidity_success(ctx, adjustment_result)
-    except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError) as adjust_exc:
-        await ctx.session.rollback()
+    except (DatabaseError, SQLAlchemyError, PlayerGoneError, ValueError, TypeError, AttributeError) as adjust_exc:
         logger.error(
             "Admin setlucidity command failed during adjustment",
             player_name=ctx.player_name,
@@ -244,31 +237,23 @@ async def _execute_lucidity_change(  # pylint: disable=too-many-arguments,too-ma
     current_user_id: str,
     target_player: str,
 ) -> dict[str, str] | None:
-    """Execute the lucidity change in database session."""
+    """Set the player's lucidity through LucidityService on the player registry."""
     try:
-        async for session in get_async_session():
-            lucidity_service = LucidityService(session, catatonia_observer=catatonia_observer)
-            current_lcd = await get_current_lcd(session, target_player_id)
-
-            result = await _apply_lucidity_change(
-                LucidityChangeCtx(
-                    session,
-                    lucidity_service,
-                    target_player_id,
-                    current_lcd,
-                    lcd_value_int,
-                    player_name,
-                    current_user_id,
-                    target_player,
-                )
+        lucidity_service = LucidityService(player_registry(), catatonia_observer=catatonia_observer)
+        current_lcd = await get_current_lcd(target_player_id)
+        return await _apply_lucidity_change(
+            LucidityChangeCtx(
+                lucidity_service,
+                target_player_id,
+                current_lcd,
+                lcd_value_int,
+                player_name,
+                current_user_id,
+                target_player,
             )
-            if result:
-                return result
+        )
 
-        # If async for loop didn't execute (empty generator), return error
-        return command_error("Database session could not be established. Please try again.")
-
-    except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError) as e:
+    except (DatabaseError, SQLAlchemyError, ValueError, TypeError, AttributeError, OSError, RuntimeError) as e:
         logger.error(
             "Admin setlucidity command error", admin_name=player_name, target_player=target_player, error=str(e)
         )

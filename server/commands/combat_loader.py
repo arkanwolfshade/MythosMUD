@@ -52,6 +52,7 @@ def get_combat_command_handler(app: object | None = None) -> CombatCommandHandle
                 party_service=cast(object | None, getattr(container_obj, "party_service", None)),
                 movement_service=cast(object | None, getattr(container_obj, "movement_service", None)),
                 player_position_service=cast(object | None, getattr(container_obj, "player_position_service", None)),
+                player_registry=cast(object | None, getattr(container_obj, "player_registry", None)),
             ),
         )
     return _combat_command_handler

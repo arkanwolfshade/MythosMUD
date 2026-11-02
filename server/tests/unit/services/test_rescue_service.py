@@ -9,8 +9,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.models.lucidity import PlayerLucidity
-from server.services.rescue_service import RescueService
+from server.game.player_registry import LucidityData
+from server.services.lucidity_repository import PlayerGoneError
+from server.services.rescue_service import RescueService, rescue_lift
 
 
 @pytest.fixture
@@ -20,41 +21,12 @@ def mock_persistence():
 
 
 @pytest.fixture
-def mock_session():
-    """Create a mock async session."""
-    session = MagicMock()
-    session.get = AsyncMock()
-    session.commit = AsyncMock()
-    session.rollback = AsyncMock()
-    return session
-
-
-@pytest.fixture
-def async_session_factory(mock_session):
-    """Create an async session factory."""
-
-    async def factory():
-        yield mock_session
-
-    return factory
-
-
-@pytest.fixture
 def mock_lucidity_service():
     """Create a mock lucidity service."""
     service = MagicMock()
     service.apply_lucidity_adjustment = AsyncMock()
+    service.get_lucidity = AsyncMock()
     return service
-
-
-@pytest.fixture
-def lucidity_service_factory(mock_lucidity_service):
-    """Create a lucidity service factory."""
-
-    def factory(session):
-        return mock_lucidity_service
-
-    return factory
 
 
 @pytest.fixture
@@ -64,12 +36,12 @@ def mock_event_dispatcher():
 
 
 @pytest.fixture
-def rescue_service(mock_persistence, async_session_factory, lucidity_service_factory, mock_event_dispatcher):
+def rescue_service(mock_persistence, mock_lucidity_service: MagicMock, mock_event_dispatcher: AsyncMock):
     """Create a RescueService instance."""
     return RescueService(
         persistence=mock_persistence,
-        session_factory=async_session_factory,
-        lucidity_service_factory=lucidity_service_factory,
+        player_registry=MagicMock(),
+        lucidity_service=mock_lucidity_service,
         event_dispatcher=mock_event_dispatcher,
     )
 
@@ -95,19 +67,19 @@ def sample_target():
 @pytest.fixture
 def sample_lucidity_record():
     """Create a sample lucidity record."""
-    record = MagicMock(spec=PlayerLucidity)
-    record.current_tier = "catatonic"
-    record.current_lcd = 0.0
+    record = MagicMock(spec=LucidityData)
+    record.tier = "catatonic"
+    record.lcd = 0
     return record
 
 
 @pytest.mark.asyncio
-async def test_rescue_no_persistence(async_session_factory, lucidity_service_factory, mock_event_dispatcher):
+async def test_rescue_no_persistence(mock_lucidity_service: MagicMock, mock_event_dispatcher: AsyncMock):
     """Test rescue() returns error when persistence is not available."""
     service = RescueService(
         persistence=None,
-        session_factory=async_session_factory,
-        lucidity_service_factory=lucidity_service_factory,
+        player_registry=MagicMock(),
+        lucidity_service=mock_lucidity_service,
         event_dispatcher=mock_event_dispatcher,
     )
     result = await service.rescue("target", {"username": "rescuer"})
@@ -142,27 +114,38 @@ async def test_rescue_different_rooms(rescue_service, mock_persistence, sample_r
 
 @pytest.mark.asyncio
 async def test_rescue_lucidity_record_not_found(
-    rescue_service, mock_persistence, mock_session, sample_rescuer, sample_target
+    rescue_service: RescueService,
+    mock_persistence: MagicMock,
+    mock_lucidity_service: MagicMock,
+    sample_rescuer: MagicMock,
+    sample_target: MagicMock,
 ):
     """Test rescue() returns error when lucidity record is not found."""
-    sample_rescuer.current_room_id = uuid.uuid4()
-    sample_target.current_room_id = sample_rescuer.current_room_id  # Same room
+    room = uuid.uuid4()
+    sample_rescuer.current_room_id = room
+    sample_target.current_room_id = room  # Same room
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=None)
+    mock_lucidity_service.get_lucidity = AsyncMock(side_effect=PlayerGoneError("gone"))
     result = await rescue_service.rescue("target", {"username": "rescuer"})
     assert "lucidity record could not be found" in result["result"]
 
 
 @pytest.mark.asyncio
 async def test_rescue_not_catatonic(
-    rescue_service, mock_persistence, mock_session, sample_rescuer, sample_target, sample_lucidity_record
+    rescue_service: RescueService,
+    mock_persistence: MagicMock,
+    mock_lucidity_service: MagicMock,
+    sample_rescuer: MagicMock,
+    sample_target: MagicMock,
+    sample_lucidity_record: MagicMock,
 ):
     """Test rescue() returns error when target is not catatonic."""
-    sample_rescuer.current_room_id = uuid.uuid4()
-    sample_target.current_room_id = sample_rescuer.current_room_id  # Same room
-    sample_lucidity_record.current_tier = "stable"  # Not catatonic
+    room = uuid.uuid4()
+    sample_rescuer.current_room_id = room
+    sample_target.current_room_id = room  # Same room
+    sample_lucidity_record.tier = "stable"  # Not catatonic
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     result = await rescue_service.rescue("target", {"username": "rescuer"})
     assert "isn't catatonic" in result["result"]
 
@@ -171,7 +154,6 @@ async def test_rescue_not_catatonic(
 async def test_rescue_success(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     mock_event_dispatcher,
     sample_rescuer,
@@ -181,10 +163,10 @@ async def test_rescue_success(
     """Test rescue() successfully rescues target."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id  # Same room
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -203,7 +185,6 @@ async def test_rescue_success(
 async def test_rescue_with_player_name(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -212,10 +193,10 @@ async def test_rescue_with_player_name(
     """Test rescue() uses provided player_name instead of current_user."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -225,62 +206,34 @@ async def test_rescue_with_player_name(
 
 
 @pytest.mark.asyncio
-async def test_rescue_delta_calculation(
+async def test_rescue_lifts_with_rescue_lift(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
     sample_lucidity_record,
 ):
-    """Test rescue() calculates delta correctly."""
+    """Test rescue() hands the adjustment rescue_lift, so it is computed from the live LCD."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.5  # Half lucidity
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
-    mock_result = MagicMock()
-    mock_result.new_lcd = 1.0
-    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=MagicMock(new_lcd=1))
     await rescue_service.rescue("target", {"username": "rescuer"})
-    # Delta should be 1 - 0.5 = 0.5
     call_args = mock_lucidity_service.apply_lucidity_adjustment.call_args
-    assert call_args[0][1] == 0.5  # delta argument
+    assert call_args[0][1] is rescue_lift
 
 
-@pytest.mark.asyncio
-async def test_rescue_delta_zero_or_negative(
-    rescue_service,
-    mock_persistence,
-    mock_session,
-    mock_lucidity_service,
-    sample_rescuer,
-    sample_target,
-    sample_lucidity_record,
-):
-    """Test rescue() sets delta to 1 when delta is zero or negative."""
-    sample_rescuer.current_room_id = uuid.uuid4()
-    sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 1.0  # Already at max
-    mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
-    mock_result = MagicMock()
-    mock_result.new_lcd = 1.0
-    mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
-    await rescue_service.rescue("target", {"username": "rescuer"})
-    # Delta should be set to 1 when calculated delta <= 0
-    call_args = mock_lucidity_service.apply_lucidity_adjustment.call_args
-    assert call_args[0][1] == 1  # delta should be 1
+@pytest.mark.parametrize(("lcd", "delta"), [(0, 1), (-7, 8), (1, 1), (40, 1)])
+def test_rescue_lift_brings_catatonia_to_one_and_is_at_least_one(lcd: int, delta: int):
+    assert rescue_lift(lcd) == delta
 
 
 @pytest.mark.asyncio
 async def test_rescue_apply_lucidity_error(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -289,21 +242,19 @@ async def test_rescue_apply_lucidity_error(
     """Test rescue() handles errors during lucidity adjustment."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=Exception("Database error"))
     result = await rescue_service.rescue("target", {"username": "rescuer"})
     assert "unexpected error" in result["result"]
-    mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_rescue_event_dispatcher_error(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     mock_event_dispatcher,
     sample_rescuer,
@@ -313,10 +264,10 @@ async def test_rescue_event_dispatcher_error(
     """Test rescue() handles event dispatcher errors gracefully."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -330,7 +281,6 @@ async def test_rescue_event_dispatcher_error(
 async def test_rescue_metadata_includes_rescuer(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -339,10 +289,10 @@ async def test_rescue_metadata_includes_rescuer(
     """Test rescue() includes rescuer in metadata."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -357,7 +307,6 @@ async def test_rescue_metadata_includes_rescuer(
 async def test_rescue_metadata_includes_location(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -367,10 +316,10 @@ async def test_rescue_metadata_includes_location(
     room_id = uuid.uuid4()
     sample_rescuer.current_room_id = room_id
     sample_target.current_room_id = room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -383,7 +332,6 @@ async def test_rescue_metadata_includes_location(
 async def test_rescue_dispatches_events_for_both_players(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     mock_event_dispatcher,
     sample_rescuer,
@@ -393,10 +341,10 @@ async def test_rescue_dispatches_events_for_both_players(
     """Test rescue() dispatches events for both target and rescuer."""
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -409,7 +357,6 @@ async def test_rescue_dispatches_events_for_both_players(
 async def test_rescue_handles_uuid_strings(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -420,10 +367,10 @@ async def test_rescue_handles_uuid_strings(
     sample_target.player_id = str(uuid.uuid4())  # String UUID
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)
@@ -435,7 +382,6 @@ async def test_rescue_handles_uuid_strings(
 async def test_rescue_handles_uuid_objects(
     rescue_service,
     mock_persistence,
-    mock_session,
     mock_lucidity_service,
     sample_rescuer,
     sample_target,
@@ -446,10 +392,10 @@ async def test_rescue_handles_uuid_objects(
     sample_target.player_id = uuid.uuid4()  # UUID object
     sample_rescuer.current_room_id = uuid.uuid4()
     sample_target.current_room_id = sample_rescuer.current_room_id
-    sample_lucidity_record.current_tier = "catatonic"
-    sample_lucidity_record.current_lcd = 0.0
+    sample_lucidity_record.tier = "catatonic"
+    sample_lucidity_record.lcd = 0.0
     mock_persistence.get_player_by_name = AsyncMock(side_effect=[sample_rescuer, sample_target])
-    mock_session.get = AsyncMock(return_value=sample_lucidity_record)
+    mock_lucidity_service.get_lucidity = AsyncMock(return_value=sample_lucidity_record)
     mock_result = MagicMock()
     mock_result.new_lcd = 1.0
     mock_lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=mock_result)

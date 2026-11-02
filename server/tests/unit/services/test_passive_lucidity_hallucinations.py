@@ -113,14 +113,14 @@ async def test_handle_hallucination_triggers_no_record() -> None:
 @pytest.mark.asyncio
 async def test_handle_hallucination_triggers_wrong_tier() -> None:
     player_id = uuid.uuid4()
-    record = MagicMock(current_tier="lucid", current_lcd=50)
+    record = MagicMock(tier="lucid", lcd=50)
     await hall.handle_hallucination_triggers(player_id, str(player_id), "room-a", {str(player_id): record}, MagicMock())
 
 
 @pytest.mark.asyncio
 async def test_handle_hallucination_triggers_phantom_path() -> None:
     player_id = uuid.uuid4()
-    record = MagicMock(current_tier="fractured", current_lcd=-25)
+    record = MagicMock(tier="fractured", lcd=-25)
     with patch("server.services.hallucination_frequency_service.HallucinationFrequencyService") as freq_cls:
         freq_cls.return_value.check_time_based_hallucination = AsyncMock(return_value=True)
         with patch(

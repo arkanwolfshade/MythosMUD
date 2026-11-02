@@ -64,16 +64,23 @@ async def test_lucidity_change_without_a_wired_adjuster_fails_loudly(async_persi
 
 
 @pytest.mark.asyncio
-async def test_get_current_lcd_reads_player_lucidity_or_defaults(async_persistence_layer: AsyncPersistenceLayer):
-    session = MagicMock()
-    session.get = AsyncMock(side_effect=[MagicMock(current_lcd=37), None])
+async def test_get_current_lcd_uses_the_wired_reader(async_persistence_layer: AsyncPersistenceLayer):
+    player_id = uuid.uuid4()
+    read = AsyncMock(return_value=37)
+    async_persistence_layer.set_lucidity_reader(read)
 
-    async def sessions():
-        yield session
+    assert await async_persistence_layer.get_current_lcd(player_id) == 37
+    read.assert_awaited_once_with(player_id)
 
-    with patch("server.async_persistence.get_async_session", sessions):
-        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 37
-        assert await async_persistence_layer.get_current_lcd(uuid.uuid4()) == 100  # no record yet
+
+@pytest.mark.asyncio
+async def test_get_current_lcd_without_a_reader_refuses_rather_than_reading_a_stale_store(
+    async_persistence_layer: AsyncPersistenceLayer,
+):
+    async_persistence_layer.set_lucidity_reader(None)
+
+    with pytest.raises(RuntimeError, match="Lucidity reader not wired"):
+        _ = await async_persistence_layer.get_current_lcd(uuid.uuid4())
 
 
 @pytest.mark.asyncio

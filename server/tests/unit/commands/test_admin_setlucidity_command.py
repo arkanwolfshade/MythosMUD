@@ -1,6 +1,9 @@
 """Unit tests for admin setlucidity command helpers."""
 
 import uuid
+from collections.abc import Callable
+from types import SimpleNamespace
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -162,22 +165,17 @@ async def test_resolve_target_player_success() -> None:
 
 @pytest.mark.asyncio
 async def test_get_current_lcd_default_when_missing() -> None:
-    session = AsyncMock()
-    result_mock = MagicMock()
-    result_mock.scalar_one_or_none.return_value = None
-    session.execute = AsyncMock(return_value=result_mock)
-    lcd = await cmd.get_current_lcd(session, uuid.uuid4())
+    players = MagicMock(get=AsyncMock(return_value=None))
+    with patch.object(cmd, "player_registry", return_value=players):
+        lcd = await cmd.get_current_lcd(uuid.uuid4())
     assert lcd == 100
 
 
 @pytest.mark.asyncio
 async def test_get_current_lcd_from_record() -> None:
-    session = AsyncMock()
-    record = MagicMock(current_lcd=42)
-    result_mock = MagicMock()
-    result_mock.scalar_one_or_none.return_value = record
-    session.execute = AsyncMock(return_value=result_mock)
-    lcd = await cmd.get_current_lcd(session, uuid.uuid4())
+    players = MagicMock(get=AsyncMock(return_value=SimpleNamespace(lucidity=SimpleNamespace(lcd=42))))
+    with patch.object(cmd, "player_registry", return_value=players):
+        lcd = await cmd.get_current_lcd(uuid.uuid4())
     assert lcd == 42
 
 
@@ -193,14 +191,13 @@ async def test_apply_lucidity_change_success() -> None:
         delta=25,
         liabilities_added=[],
     )
-    session = AsyncMock()
     lucidity_service = AsyncMock()
-    lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=adjustment)
+    apply = AsyncMock(return_value=adjustment)
+    lucidity_service.apply_lucidity_adjustment = apply
     with patch("server.commands.admin_setlucidity_command.get_admin_actions_logger") as log_cls:
         log_cls.return_value.log_admin_command = MagicMock()
         result = await cmd._apply_lucidity_change(
             cmd.LucidityChangeCtx(
-                session=session,
                 lucidity_service=lucidity_service,
                 target_player_id=target_id,
                 current_lcd=50,
@@ -212,17 +209,18 @@ async def test_apply_lucidity_change_success() -> None:
         )
     assert result is not None
     assert "75" in result["result"]
-    session.commit.assert_awaited_once()
+    # The delta is computed from the live LCD inside the registry unit: whatever it is, it lands on the target.
+    assert apply.await_args is not None
+    delta = cast(Callable[[int], int], apply.await_args.kwargs["delta"])
+    assert (delta(50), delta(10)) == (25, 65)
 
 
 @pytest.mark.asyncio
 async def test_apply_lucidity_change_adjustment_error() -> None:
-    session = AsyncMock()
     lucidity_service = AsyncMock()
     lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=DatabaseError("boom"))
     result = await cmd._apply_lucidity_change(
         cmd.LucidityChangeCtx(
-            session=session,
             lucidity_service=lucidity_service,
             target_player_id=uuid.uuid4(),
             current_lcd=50,
@@ -234,18 +232,12 @@ async def test_apply_lucidity_change_adjustment_error() -> None:
     )
     assert result is not None
     assert "Error setting lucidity" in result["result"]
-    session.rollback.assert_awaited_once()
-
-
-async def _async_session_gen(session: AsyncMock):
-    yield session
 
 
 @pytest.mark.asyncio
 async def test_execute_lucidity_change_success() -> None:
     target_id = uuid.uuid4()
-    session = AsyncMock()
-    with patch("server.commands.admin_setlucidity_command.get_async_session", return_value=_async_session_gen(session)):
+    with patch.object(cmd, "player_registry", return_value=MagicMock()):
         with patch.object(cmd, "get_current_lcd", AsyncMock(return_value=60)):
             with patch.object(
                 cmd,
@@ -258,23 +250,17 @@ async def test_execute_lucidity_change_success() -> None:
 
 
 @pytest.mark.asyncio
-async def test_execute_lucidity_change_empty_session() -> None:
-    async def empty_gen():
-        if False:  # pragma: no cover - empty async generator
-            yield None
-
-    with patch("server.commands.admin_setlucidity_command.get_async_session", return_value=empty_gen()):
+async def test_execute_lucidity_change_without_a_player_registry() -> None:
+    no_registry = RuntimeError("The player registry is not initialised")
+    with patch.object(cmd, "player_registry", side_effect=no_registry), patch.object(cmd, "get_admin_actions_logger"):
         result = await cmd._execute_lucidity_change(uuid.uuid4(), 50, None, "Admin", "admin-id", "Alice")
     assert result is not None
-    assert "Database session could not be established" in result["result"]
+    assert "Error setting lucidity" in result["result"]
 
 
 @pytest.mark.asyncio
 async def test_execute_lucidity_change_outer_error() -> None:
-    with patch(
-        "server.commands.admin_setlucidity_command.get_async_session",
-        side_effect=SQLAlchemyError("connection lost"),
-    ):
+    with patch.object(cmd, "player_registry", side_effect=SQLAlchemyError("connection lost")):
         with patch("server.commands.admin_setlucidity_command.get_admin_actions_logger") as log_cls:
             log_cls.return_value.log_admin_command = MagicMock()
             result = await cmd._execute_lucidity_change(uuid.uuid4(), 50, None, "Admin", "admin-id", "Alice")
@@ -424,14 +410,12 @@ async def test_apply_lucidity_change_admin_logger_failure() -> None:
         delta=10,
         liabilities_added=[],
     )
-    session = AsyncMock()
     lucidity_service = AsyncMock()
     lucidity_service.apply_lucidity_adjustment = AsyncMock(return_value=adjustment)
     with patch("server.commands.admin_setlucidity_command.get_admin_actions_logger") as log_cls:
         log_cls.return_value.log_admin_command = MagicMock(side_effect=OSError("log disk full"))
         result = await cmd._apply_lucidity_change(
             cmd.LucidityChangeCtx(
-                session=session,
                 lucidity_service=lucidity_service,
                 target_player_id=target_id,
                 current_lcd=50,

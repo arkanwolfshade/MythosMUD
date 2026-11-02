@@ -9,11 +9,11 @@ checks again (the client is never trusted) and, for a skip, gives the new charac
 import uuid
 from typing import Annotated, cast
 
-from fastapi import Depends
+from fastapi import Depends, Request
 
 from ..async_persistence import AsyncPersistenceLayer
 from ..auth.users import get_current_user
-from ..dependencies import get_async_persistence, get_quest_service
+from ..dependencies import get_async_persistence, get_player_registry, get_quest_service
 from ..exceptions import LoggedHTTPException
 from ..game.first_exposure import FinishPersistence, account_completed_first_exposure, skip_first_exposure
 from ..game.quest import QuestService
@@ -56,8 +56,9 @@ async def refuse_ineligible_skip(
 
 
 async def apply_tutorial_skip(
-    player_id: uuid.UUID, persistence: AsyncPersistenceLayer, quest_service: QuestService
+    player_id: uuid.UUID, persistence: AsyncPersistenceLayer, quest_service: QuestService, request: Request
 ) -> None:
     """Give a character just created with the tutorial skipped the end state of a finished run."""
     # The corruption writer's protocol takes any corruption-capable player; the layer saves Player rows.
-    await skip_first_exposure(player_id, cast(FinishPersistence, cast(object, persistence)), quest_service)
+    finish = cast(FinishPersistence, cast(object, persistence))
+    await skip_first_exposure(player_id, finish, quest_service, get_player_registry(request))

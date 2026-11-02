@@ -20,8 +20,11 @@ from anyio import sleep
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster, LucidityReader
     from server.container.main import ApplicationContainer
+    from server.game.player_registry import PlayerRegistry
     from server.services.lucidity_helpers import CatatoniaObserverProtocol
     from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
     from server.services.player_combat_service import PlayerCombatService
@@ -39,19 +42,27 @@ COMBAT_ATTRS = (
 )
 
 
-def make_lucidity_adjuster(observer: CatatoniaObserverProtocol | None) -> LucidityAdjuster:
-    """Apply one lucidity adjustment through LucidityService in its own committed session."""
+def make_lucidity_adjuster(registry: PlayerRegistry, observer: CatatoniaObserverProtocol | None) -> LucidityAdjuster:
+    """Apply one lucidity adjustment through LucidityService on the player registry (ADR-029 step 5b-i)."""
+    from server.services.lucidity_service import LucidityService
+
+    service = LucidityService(registry, catatonia_observer=observer)
 
     async def adjust(player_id: uuid_lib.UUID, delta: int, reason_code: str) -> None:
-        from server.database import get_async_session
-        from server.services.lucidity_service import LucidityService
-
-        async for session in get_async_session():
-            service = LucidityService(session, catatonia_observer=observer)
-            _ = await service.apply_lucidity_adjustment(player_id, delta, reason_code=reason_code)
-            await session.commit()
+        _ = await service.apply_lucidity_adjustment(player_id, delta, reason_code=reason_code)
 
     return adjust
+
+
+def make_lucidity_reader(registry: PlayerRegistry) -> LucidityReader:
+    """Read a player's LCD from the player registry, or the starting value if there is no such player."""
+    from server.constants.lucidity import STARTING_LCD
+
+    async def read(player_id: uuid_lib.UUID) -> int:
+        player = await registry.get(player_id)
+        return player.lucidity.lcd if player is not None else STARTING_LCD
+
+    return read
 
 
 class CombatBundle:
@@ -69,7 +80,7 @@ class CombatBundle:
         self, container: ApplicationContainer, player_id: str, current_lcd: int
     ) -> None:
         """Failover callback that relocates catatonic players to the sanitarium."""
-        from server.services.lucidity_service import LucidityService
+        from server.services.lucidity_repository import LucidityRepository
 
         await sleep(10.0)
 
@@ -91,8 +102,8 @@ class CombatBundle:
         async with session_maker() as session:
             try:
                 player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
-                lucidity_service = LucidityService(session)
-                timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
+                repo = LucidityRepository(cast("AsyncSession", session))
+                timers_cleared = await repo.clear_hallucination_timers(player_id_uuid)
                 logger.debug(
                     "Hallucination timers cleared in failover",
                     player_id=player_id,
@@ -155,6 +166,7 @@ class CombatBundle:
             player_combat_service=respawn_combat,
             room_lookup=respawn_rooms.get_room_by_id if respawn_rooms else None,
             first_exposure_finish=make_first_exposure_finish(container),
+            player_registry=container.player_registry,
         )
         logger.info("Player respawn service initialized")
 
@@ -163,17 +175,20 @@ class CombatBundle:
 
         self.catatonia_registry = CatatoniaRegistry(failover_callback=failover_cb)
         logger.info("Catatonia registry initialized")
-        # Lucidity changes made through the persistence layer (combat, spells) go through LucidityService with this
-        # registry, like every other lucidity write (ADR-029 step 3a).
+        # Lucidity read and changed through the persistence layer (combat, spells, look, status) goes through the player
+        # registry, like every other lucidity access (ADR-029 step 5b-i).
         persistence = cast("AsyncPersistenceLayer | None", container.async_persistence)
-        if persistence is not None:
-            registry = cast("CatatoniaObserverProtocol", self.catatonia_registry)
-            persistence.set_lucidity_adjuster(make_lucidity_adjuster(registry))
+        player_registry = container.player_registry
+        if persistence is not None and player_registry is not None:
+            observer = cast("CatatoniaObserverProtocol", self.catatonia_registry)
+            persistence.set_lucidity_adjuster(make_lucidity_adjuster(player_registry, observer))
+            persistence.set_lucidity_reader(make_lucidity_reader(player_registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,
             performance_monitor=container.performance_monitor,
             catatonia_observer=self.catatonia_registry,
+            player_registry=player_registry,
         )
         logger.info("Passive lucidity flux service initialized")
 
@@ -215,6 +230,7 @@ class CombatBundle:
             event_bus=container.event_bus,
         )
         combat_service.skill_service = container.skill_service  # graded taunt rolls (#833)
+        combat_service.player_registry = container.player_registry
         self.combat_service = combat_service
         set_combat_service(self.combat_service)
         if container.player_service is None:

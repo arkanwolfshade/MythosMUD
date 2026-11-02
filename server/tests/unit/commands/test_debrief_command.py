@@ -48,12 +48,14 @@ def _service(monkeypatch: pytest.MonkeyPatch) -> ServiceCalls:
     recorded = ServiceCalls()
 
     async def fake_perform(
-        player: Player, *, wants_therapy: bool = False, catatonia_observer: object | None = None
+        player: Player, registry: object, *, wants_therapy: bool = False, catatonia_observer: object | None = None
     ) -> DebriefOutcome:
+        _ = registry
         recorded.calls.append((player, wants_therapy, catatonia_observer))
         return DebriefOutcome("Staff recap.", completed=True)
 
     monkeypatch.setattr(command, "perform_debrief", fake_perform)
+    monkeypatch.setattr(command, "player_registry", object)
     return recorded
 
 

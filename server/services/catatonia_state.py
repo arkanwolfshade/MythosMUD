@@ -6,13 +6,14 @@ Lives outside ``command_handler`` because ``commands`` cannot import that packag
 from __future__ import annotations
 
 import uuid
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..database import get_async_session
-from ..models.lucidity import PlayerLucidity
 from ..structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from ..game.player_registry import LucidityData, PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -29,23 +30,28 @@ class _CatatoniaLookup(Protocol):  # pylint: disable=too-few-public-methods
         ...
 
 
-def is_catatonic_record(record: PlayerLucidity | None) -> bool:
-    """Catatonic by the stored lucidity: the tier says so, or LCD is at or below zero."""
-    return record is not None and (record.current_tier == "catatonic" or record.current_lcd <= 0)
+def is_catatonic_lucidity(lucidity: LucidityData | None) -> bool:
+    """Catatonic by the player's lucidity: the tier says so, or LCD is at or below zero."""
+    return lucidity is not None and (lucidity.tier == "catatonic" or lucidity.lcd <= 0)
 
 
 async def player_is_catatonic(app_state: object, player_id: uuid.UUID) -> bool:
-    """True when the in-memory registry or, failing that, the stored lucidity says the player is catatonic.
+    """True when the catatonia registry or, failing that, the player's lucidity says the player is catatonic.
 
-    The registry is empty after a restart, so the database is the fallback. Any lookup failure answers False: this
-    gates convenience, and a broken lookup must not lock a player out of their own inventory.
+    The catatonia registry is empty after a restart, so the lucidity (from the player registry) is the fallback. Any
+    lookup failure answers False: this gates convenience, and a broken lookup must not lock a player out of their own
+    inventory.
     """
     registry = cast(_CatatoniaLookup | None, getattr(app_state, "catatonia_registry", None))
     if registry is not None and registry.is_catatonic(player_id):
         return True
+    container = cast(object | None, getattr(app_state, "container", None))
+    players = cast("PlayerRegistry | None", getattr(container, "player_registry", None))
+    if players is None:
+        return False
     try:
-        async for session in get_async_session():
-            return is_catatonic_record(await session.get(PlayerLucidity, player_id))
+        player = await players.get(player_id)
+        return is_catatonic_lucidity(player.lucidity.data if player is not None else None)
     except (SQLAlchemyError, RuntimeError, OSError) as e:
         logger.warning("Catatonia lookup failed", player_id=str(player_id), error=str(e))
     return False

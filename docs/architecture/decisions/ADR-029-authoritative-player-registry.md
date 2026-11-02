@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.9** · MythosMUD · 2026-10-30
+**Version 1.0.10** · MythosMUD · 2026-10-30
 
 ---
 
@@ -255,9 +255,20 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
        operation is one unit, and `QuestLogChanged` / `QuestCompleted` are published after its commit.
        `QuestInstanceRepository` is deleted. Quest progress counters are sync too, not lazy: a kill or a pickup
        that counts commits before it returns.
-     - 5b: lucidity, its exposure state and `lucidity_cooldowns` (including the debrief's `DEBRIEF_PENDING`).
-     - 5c: corruption (`stats` in the row part, `corruption_cooldowns`), and the run restart's quest and lucidity
-       resets.
+     - 5b: lucidity, split by table:
+         - 5b-i: a lucidity part (`player_lucidity`: LCD, tier, liabilities, `catatonia_entered_at`). It is lazy;
+           each change queues its `lucidity_adjustment_log` row on the part, and the flush writes both in one
+           transaction. `LucidityService` runs each operation as one unit and announces (observer, client events,
+           tier cache) only after it. Every reader and writer moves at once, the ticks (catatonia, drain, passive
+           flux) and the run restart's lucidity reset included, because a writer left on the ORM would revert the
+           registry's unflushed change.
+         - 5b-ii: `lucidity_exposure_state` and `lucidity_cooldowns` (including the debrief's `DEBRIEF_PENDING`),
+           both sync.
+     - 5c: corruption (`stats` in the row part, `corruption_cooldowns`).
+       Until step 8 raises the idle TTL, a lazily dirty part keeps its player in memory until the sweep, so its
+       row part can trail writers that still use `upsert_player`. 5c writes `stats` through the row part and must
+       not write from such a stale copy. Out-of-band scripts (`e2e_reset_players.py`, `e2e_player_state.py`) can
+       race a resident dirty player in that window too, until step 8 replaces them with server endpoints.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
@@ -279,6 +290,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.10 | 2026-10-30 | §6: step 5b splits into 5b-i (the lazy lucidity part and its ledger, every reader and writer, ticks and the run restart's reset included) and 5b-ii (exposure state and cooldowns, sync); 5c is corruption only; the TTL-0 residency hazard for 5c and the e2e scripts is recorded |
 | 1.0.9 | 2026-10-30 | §3.4: every quest change is sync, progress counters included. §6: step 5 splits into 5a (quests), 5b (lucidity, cooldowns, debrief) and 5c (corruption, run restart) |
 | 1.0.8 | 2026-10-30 | §3.4: `upsert_player` writes the inventory columns only when it inserts a player; after that only the registry writes them (step 4c-iii, which ends step 4) |
 | 1.0.7 | 2026-10-29 | §3.4: `write_new` for rows a unit creates (corpses); a death is one unit; a container-only unit for the bank forward (step 4c-ii) |

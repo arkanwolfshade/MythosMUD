@@ -8,7 +8,7 @@ Tests the websocket_initial_state module functions.
 # Reason: Pytest fixtures are injected as function parameters, which pylint incorrectly flags as redefining names from outer scope, this is standard pytest usage and cannot be avoided
 
 import uuid
-from collections.abc import AsyncIterator
+from types import SimpleNamespace
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -32,6 +32,12 @@ from server.realtime.websocket_initial_state import (
     send_initial_room_state,
     send_occupants_snapshot_if_needed,
 )
+
+
+def _container_with_lucidity(record: object | None) -> SimpleNamespace:
+    """An app container whose player registry serves ``record`` as the player's lucidity (None: no such player)."""
+    player = None if record is None else SimpleNamespace(lucidity=record)
+    return SimpleNamespace(player_registry=MagicMock(get=AsyncMock(return_value=player)))
 
 
 def _passthrough_room_data(room_data: object) -> object:
@@ -301,18 +307,13 @@ async def test_send_initial_game_state_includes_lucidity_tier(
     mock_player.get_stats = MagicMock(return_value={"hp": 100})
 
     mock_record = MagicMock()
-    mock_record.current_tier = "deranged"
-    mock_record.current_lcd = -30
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_record)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
+    mock_record.tier = "deranged"
+    mock_record.lcd = -30
 
     with (
         patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
         patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(mock_record)),
     ):
         mock_get_player_room.return_value = (mock_player, mock_room, room_id)
         mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}
@@ -342,16 +343,10 @@ async def test_send_initial_game_state_no_lucidity_row(
     mock_player.name = "TestPlayer"
     mock_player.get_stats = MagicMock(return_value={"hp": 100})
 
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=None)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
-
     with (
         patch("server.realtime.websocket_initial_state.get_player_and_room") as mock_get_player_room,
         patch("server.realtime.websocket_initial_state.prepare_player_data") as mock_prepare_player,
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(None)),
     ):
         mock_get_player_room.return_value = (mock_player, mock_room, room_id)
         mock_prepare_player.return_value = {"name": "TestPlayer", "stats": {"hp": 100}}
@@ -373,16 +368,11 @@ async def test_check_and_send_delirium_notification_sends_when_in_delirium():
     player_id_str = str(player_id)
 
     mock_record = MagicMock()
-    mock_record.current_tier = "deranged"
-    mock_record.current_lcd = -15
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_record)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
+    mock_record.tier = "deranged"
+    mock_record.lcd = -15
 
     with (
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(mock_record)),
         patch(
             "server.services.lucidity_event_dispatcher.send_rescue_update_event", new_callable=AsyncMock
         ) as mock_send_rescue_raw,
@@ -405,16 +395,11 @@ async def test_check_and_send_delirium_notification_skips_when_not_delirious():
     player_id_str = str(player_id)
 
     mock_record = MagicMock()
-    mock_record.current_tier = "lucid"
-    mock_record.current_lcd = 40
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_record)
-
-    async def async_gen() -> AsyncIterator[MagicMock]:
-        yield mock_session
+    mock_record.tier = "lucid"
+    mock_record.lcd = 40
 
     with (
-        patch("server.database.get_async_session", return_value=async_gen()),
+        patch("server.container.get_container", return_value=_container_with_lucidity(mock_record)),
         patch(
             "server.services.lucidity_event_dispatcher.send_rescue_update_event", new_callable=AsyncMock
         ) as mock_send_rescue_raw,

@@ -13,20 +13,25 @@ import asyncio
 import uuid
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
-from server.models.lucidity import PlayerLucidity
 from server.services.lucidity_event_dispatcher import send_rescue_update_event
-from server.services.lucidity_service import LucidityService
+from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_service import LucidityService, LucidityUpdateResult
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user
 
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
+
 logger = get_logger(__name__)
 
-# Type alias for async session factory: produces an async generator of sessions
-AsyncSessionFactory = Callable[[], Any]
-LucidityServiceFactory = Callable[[Any], LucidityService]
 EventDispatcher = Callable[..., Awaitable[None]]
+
+
+def rescue_lift(current_lcd: int) -> int:  # lizard: allow - the computed delta of both rescue paths (rescue, ground)
+    """The delta that brings a catatonic player back to 1 LCD (at least +1), from their live LCD."""
+    return max(1 - current_lcd, 1)
 
 
 def _ensure_uuid(value: Any) -> uuid.UUID:
@@ -107,36 +112,28 @@ class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue
     def __init__(
         self,
         persistence: Any,
-        session_factory: AsyncSessionFactory,
+        player_registry: PlayerRegistry,
         *,
         catatonia_registry: Any | None = None,
-        lucidity_service_factory: LucidityServiceFactory | None = None,
+        lucidity_service: LucidityService | None = None,
         event_dispatcher: EventDispatcher = send_rescue_update_event,
     ) -> None:
         self.persistence = persistence
-        self.session_factory = session_factory
         self.catatonia_registry = catatonia_registry
-        self.lucidity_service_factory = lucidity_service_factory or (
-            lambda session: LucidityService(session, catatonia_observer=catatonia_registry)
+        self.lucidity_service = lucidity_service or LucidityService(
+            player_registry, catatonia_observer=catatonia_registry
         )
-        self.event_dispatcher = event_dispatcher
+        self.event_dispatcher: EventDispatcher = event_dispatcher
 
     async def _apply_rescue_adjustment(
         self,
-        session: Any,
         target_player_id: uuid.UUID,
-        lucidity_record: PlayerLucidity,
         rescuer_name: str,
         rescuer_room: str | None,
-    ) -> Any:
-        delta = 1 - lucidity_record.current_lcd
-        if delta <= 0:
-            delta = 1
-
-        lucidity_service = self.lucidity_service_factory(session)
-        result = await lucidity_service.apply_lucidity_adjustment(
+    ) -> LucidityUpdateResult:
+        return await self.lucidity_service.apply_lucidity_adjustment(
             target_player_id,
-            delta,
+            rescue_lift,
             reason_code="rescue_command",
             metadata={
                 "rescuer": rescuer_name,
@@ -145,8 +142,6 @@ class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue
             },
             location_id=str(rescuer_room),
         )
-        await session.commit()
-        return result
 
     async def rescue(
         self, target_name: str, current_user: dict[str, Any], player_name: str | None = None
@@ -170,33 +165,26 @@ class RescueService:  # pylint: disable=too-few-public-methods  # Reason: Rescue
         target_player_id_str = str(target_player_id)
         rescuer_player_id_str = str(rescuer_player_id)
 
-        async for session in self.session_factory():
-            lucidity_record = await session.get(PlayerLucidity, target_player_id_str)
-            if lucidity_record is None:
-                return {"result": "The target's lucidity record could not be found."}
+        try:
+            lucidity = await self.lucidity_service.get_lucidity(target_player_id)
+        except PlayerGoneError:
+            return {"result": "The target's lucidity record could not be found."}
+        if lucidity.tier != "catatonic":
+            return {"result": f"{target_name} isn't catatonic and needs no rescue."}
 
-            if lucidity_record.current_tier != "catatonic":
-                return {"result": f"{target_name} isn't catatonic and needs no rescue."}
+        rescuer_room = cast(str | None, getattr(cast(object, rescuer), "current_room_id", None))
+        try:
+            result = await self._apply_rescue_adjustment(target_player_id, rescuer_name, rescuer_room)
+        except Exception as exc:  # noqa: B904  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rescue operation errors unpredictable, must return error
+            logger.error("Rescue failed", rescuer=rescuer_name, target=target_name, error=str(exc))
+            return {"result": "Rescue failed due to an unexpected error."}
 
-            try:
-                result = await self._apply_rescue_adjustment(
-                    session,
-                    target_player_id,
-                    lucidity_record,
-                    rescuer_name,
-                    getattr(rescuer, "current_room_id", None),
-                )
-            except Exception as exc:  # noqa: B904  # pragma: no cover - defensive path  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Rescue operation errors unpredictable, must rollback and return error
-                await session.rollback()
-                logger.error("Rescue failed", rescuer=rescuer_name, target=target_name, error=str(exc))
-                return {"result": "Rescue failed due to an unexpected error."}
-
-            await _dispatch_rescue_events(
-                self.event_dispatcher,
-                target_player_id_str,
-                rescuer_player_id_str,
-                rescuer_name,
-                target_name,
-            )
+        await _dispatch_rescue_events(
+            self.event_dispatcher,
+            target_player_id_str,
+            rescuer_player_id_str,
+            rescuer_name,
+            target_name,
+        )
 
         return _rescue_success_payload(rescuer_name, target_name, result)

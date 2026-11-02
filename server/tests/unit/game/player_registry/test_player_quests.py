@@ -11,6 +11,7 @@ from datetime import UTC, datetime, timedelta
 import pytest
 
 from server.game.player_registry import PlayerQuestsPart, QuestInstanceData, load_player_aggregate
+from server.game.player_registry.player_lucidity import LOAD_LUCIDITY_SQL
 from server.game.player_registry.player_quests import LIST_QUEST_INSTANCES_SQL, UPSERT_QUEST_INSTANCE_SQL
 
 from .fakes import FakeDatabase, raw_row
@@ -135,7 +136,7 @@ async def test_captured_write_upserts_every_instance_and_clears_the_flags() -> N
 
 
 class _QuestRowsSession:
-    """Answers the player-row query with ``row`` and the quest query with ``quest_rows``."""
+    """Answers the player-row query with ``row``, the quest query with ``quest_rows``, and lucidity with none."""
 
     def __init__(self, row: Mapping[str, object], quest_rows: Sequence[Mapping[str, object]]) -> None:
         self.row: Mapping[str, object] = row
@@ -147,6 +148,8 @@ class _QuestRowsSession:
         if statement is LIST_QUEST_INSTANCES_SQL:
             self.quest_queries.append(params)
             self._answer = self.quest_rows
+        elif statement is LOAD_LUCIDITY_SQL:
+            self._answer = []  # no player_lucidity row yet
         else:
             self._answer = [self.row]
         return self

@@ -235,19 +235,13 @@ async def test_handle_ground_command():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    # handle_ground_command uses get_async_session() and session.get(PlayerLucidity, ...); patch to avoid DB/send
-    mock_lucidity = MagicMock()
-    mock_lucidity.current_tier = "catatonic"
-    mock_session = MagicMock()
-    mock_session.get = AsyncMock(return_value=mock_lucidity)
-    mock_session.commit = AsyncMock()
-    mock_session.rollback = AsyncMock()
-
-    async def mock_get_async_session():
-        yield mock_session
+    # handle_ground_command reads the target's lucidity through LucidityService on the player registry
+    lucidity_service = MagicMock()
+    lucidity_service.get_lucidity = AsyncMock(return_value=MagicMock(tier="catatonic", lcd=0))
 
     with (
-        patch("server.commands.rescue_commands.get_async_session", side_effect=mock_get_async_session),
+        patch("server.commands.rescue_commands.player_registry", return_value=MagicMock()),
+        patch("server.commands.rescue_commands.LucidityService", return_value=lucidity_service),
         patch("server.commands.rescue_commands.send_rescue_update_event", new_callable=AsyncMock),
         patch(
             "server.commands.rescue_commands._apply_grounding_adjustment",

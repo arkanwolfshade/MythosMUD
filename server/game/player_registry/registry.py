@@ -34,6 +34,7 @@ from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
 from .part import DbSession, PartWrite
 from .player_inventory import PlayerInventoryPart
+from .player_lucidity import LOAD_LUCIDITY_SQL, LucidityData, PlayerLucidityPart
 from .player_quests import LIST_QUEST_INSTANCES_SQL, PlayerQuestsPart
 from .player_row import PlayerRowData, PlayerRowPart, fetch_player_row
 
@@ -59,7 +60,11 @@ async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> Pla
         return None
     quest_rows = await session.execute(LIST_QUEST_INSTANCES_SQL, {"id": str(player_id)})
     quests = PlayerQuestsPart.from_rows(player_id, quest_rows.mappings().all())
-    return PlayerAggregate(PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row), quests)
+    lucidity_row = (await session.execute(LOAD_LUCIDITY_SQL, {"id": str(player_id)})).mappings().first()
+    lucidity = PlayerLucidityPart(player_id, LucidityData.from_row(lucidity_row))
+    return PlayerAggregate(
+        PlayerRowPart(PlayerRowData.from_row(row)), PlayerInventoryPart.from_row(row), quests, lucidity
+    )
 
 
 @dataclass(slots=True)
@@ -400,7 +405,7 @@ class PlayerRegistry:  # pylint: disable=too-many-instance-attributes  # Reason:
                 await self._write([write for _part, write in writes])
             except Exception as error:  # pylint: disable=broad-exception-caught  # Reason: a failed lazy flush must not kill the sweep; the player stays dirty and is retried
                 for part, _write in writes:
-                    part.mark_dirty()
+                    part.write_failed()
                 self._record_failure(entry, error)
                 return False
             entry.failures = 0

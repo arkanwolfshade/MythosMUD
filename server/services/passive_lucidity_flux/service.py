@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...async_persistence import AsyncPersistenceLayer
 from ...config import get_config
-from ...models.lucidity import PlayerLucidity
+from ...game.player_registry import LucidityData
 from ...models.player import Player
 from ...services.lucidity_repository import PlayerGoneError
 from ...services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     # Type-only: with `from __future__ import annotations`, the annotation below is never
     # evaluated at runtime, so this need not survive monitoring being an optional dependency
     # the way a real import would.
+    from server.game.player_registry import PlayerRegistry
     from server.monitoring.performance_monitor import PerformanceMonitor
 
 logger = get_logger(__name__)
@@ -78,7 +79,7 @@ class PlayerFluxCtx:  # pylint: disable=too-few-public-methods  # Reason: datacl
 
     player: Player | None
     players: list[Player]
-    lucidity_records: dict[str, PlayerLucidity]
+    lucidity_records: dict[str, LucidityData]
     room_cache: dict[str, FluxRoom]
     timestamp: datetime
     tick_count: int
@@ -109,9 +110,11 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         *,
         catatonia_observer: CatatoniaObserverProtocol | None = None,
         config: FluxServiceConfig | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         cfg = config or FluxServiceConfig()
         self._persistence = persistence
+        self._player_registry: PlayerRegistry | None = player_registry
         self._performance_monitor = performance_monitor
         self._environment_config = cast(
             dict[str, object],  # normalize_environment_config returns dict[str, Any]
@@ -163,7 +166,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
                     computation.player_id_uuid,
                     computation.player_id_str,
                     computation.room_id,
-                    cast(dict[str, object], cast(object, ctx.lucidity_records)),
+                    ctx.lucidity_records,
                     ctx.session,
                 )
                 return await ctx.lucidity_service.apply_lucidity_adjustment(
@@ -281,14 +284,18 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
             should_process=self._should_process_tick(tick_count),
         )
 
+        registry = self._player_registry
+        if registry is None:
+            logger.warning("Passive LCD flux skipped: no player registry")
+            return {"evaluated": 0, "adjustments": 0, "skipped": True}
         evaluation_start = time.perf_counter()
         timestamp = now or self._now_provider()
-        lucidity_service = LucidityService(session, catatonia_observer=self._catatonia_observer)
+        lucidity_service = LucidityService(registry, catatonia_observer=self._catatonia_observer)
 
         try:
             all_players = await self._load_players(session)
             players = self._filter_active_players(all_players, timestamp)
-            lucidity_records = await self._load_lucidity_records(session)
+            lucidity_records = await self._load_lucidity_records(registry, players)
             room_cache = await self._build_room_cache(players)
             processed_player_ids, adjustments = await self._evaluate_players_tick(
                 session,
@@ -436,15 +443,19 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
 
         return active_players
 
-    async def _load_lucidity_records(self, session: AsyncSession) -> dict[str, PlayerLucidity]:
-        stmt: Select[tuple[PlayerLucidity]] = select(PlayerLucidity)
-        result = await session.execute(stmt)
-        records = result.scalars().all()
-        records_by_player = {str(record.player_id): record for record in records}
-        # #714: backstop refresh for the in-memory tier cache -- runs every tick
-        # (server_tick_rate = 0.1s), so a missed write-through elsewhere self-heals fast.
+    async def _load_lucidity_records(
+        self, registry: PlayerRegistry, players: Sequence[Player]
+    ) -> dict[str, LucidityData]:
+        """The active players' lucidity, from the registry (it holds changes the sweep has not written yet)."""
+        records_by_player: dict[str, LucidityData] = {}
+        for player in players:
+            view = await registry.get(uuid.UUID(str(player.player_id)))
+            if view is not None:
+                records_by_player[str(player.player_id)] = view.lucidity.data
+        # #714: backstop refresh for the in-memory tier cache on every flux run, so a missed
+        # write-through elsewhere self-heals.
         for player_id_str, record in records_by_player.items():
-            lucidity_tier_cache.set_tier(player_id_str, record.current_tier)
+            lucidity_tier_cache.set_tier(player_id_str, record.tier)
         return records_by_player
 
     def _lookup_base_flux_for_room(self, room: FluxRoom, period: str) -> tuple[float, str]:
@@ -544,14 +555,14 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         return PassiveFluxContext(base_flux=base_flux, tags=frozenset(tags), source=profile_source, metadata=metadata)
 
     def _count_companion_tiers(
-        self, companions: Sequence[Player], lucidity_records: dict[str, PlayerLucidity]
+        self, companions: Sequence[Player], lucidity_records: dict[str, LucidityData]
     ) -> tuple[int, bool]:
         """Count lucid companions and whether any destabilizing companion is present. Returns (lucid_count, has_destabilizing)."""
         lucid_companions = 0
         has_destabilizing = False
         for companion in companions:
-            record = lucidity_records.get(companion.player_id)
-            tier = record.current_tier if record else "lucid"
+            record = lucidity_records.get(str(companion.player_id))
+            tier = record.tier if record else "lucid"
             if tier in {"lucid", "uneasy"}:
                 lucid_companions += 1
             if tier in {"deranged", "catatonic"}:
@@ -562,7 +573,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         self,
         player: Player,
         players: Sequence[Player],
-        lucidity_records: dict[str, PlayerLucidity],
+        lucidity_records: dict[str, LucidityData],
     ) -> float:
         companions = [
             other

@@ -8,7 +8,8 @@ Tests catatonia checks, rate limiting, command validation, grace period, casting
 # Tests target module-private helpers and MagicMock surfaces that pyright would otherwise flag.
 
 import uuid
-from typing import cast, final
+from types import SimpleNamespace
+from typing import final
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
@@ -17,7 +18,6 @@ from fastapi import Request
 from server.command_handler.catatonia_check import (
     _check_catatonia_database,
     _check_catatonia_registry,
-    _fetch_lucidity_record,
     _load_player_for_catatonia_check,
     _query_lucidity_record,
     _registry_player_id_value,
@@ -33,7 +33,8 @@ from server.command_handler_unified import (
     _validate_command_basics,
 )
 from server.constants.message_category import MessageCategory
-from server.services.catatonia_state import is_catatonic_record
+from server.game.player_registry import LucidityData
+from server.services.catatonia_state import is_catatonic_lucidity
 
 
 class TestCatatoniaChecks:
@@ -50,79 +51,70 @@ class TestCatatoniaChecks:
         assert _registry_player_id_value(1234) == "1234"
 
     def test_is_catatonic_with_tier(self):
-        """Test is_catatonic_record() returns True for catatonic tier."""
+        """Test is_catatonic_lucidity() returns True for catatonic tier."""
         mock_record = MagicMock()
-        mock_record.current_tier = "catatonic"
-        mock_record.current_lcd = 5
-        result = is_catatonic_record(mock_record)
+        mock_record.tier = "catatonic"
+        mock_record.lcd = 5
+        result = is_catatonic_lucidity(mock_record)
         assert result is True
 
     def test_is_catatonic_with_zero_lcd(self):
-        """Test is_catatonic_record() returns True for zero LCD."""
+        """Test is_catatonic_lucidity() returns True for zero LCD."""
         mock_record = MagicMock()
-        mock_record.current_tier = "normal"
-        mock_record.current_lcd = 0
-        result = is_catatonic_record(mock_record)
+        mock_record.tier = "normal"
+        mock_record.lcd = 0
+        result = is_catatonic_lucidity(mock_record)
         assert result is True
 
     def test_is_catatonic_with_negative_lcd(self):
-        """Test is_catatonic_record() returns True for negative LCD."""
+        """Test is_catatonic_lucidity() returns True for negative LCD."""
         mock_record = MagicMock()
-        mock_record.current_tier = "normal"
-        mock_record.current_lcd = -5
-        result = is_catatonic_record(mock_record)
+        mock_record.tier = "normal"
+        mock_record.lcd = -5
+        result = is_catatonic_lucidity(mock_record)
         assert result is True
 
     def test_is_catatonic_not_catatonic(self):
-        """Test is_catatonic_record() returns False for normal player."""
+        """Test is_catatonic_lucidity() returns False for normal player."""
         mock_record = MagicMock()
-        mock_record.current_tier = "normal"
-        mock_record.current_lcd = 50
-        result = is_catatonic_record(mock_record)
+        mock_record.tier = "normal"
+        mock_record.lcd = 50
+        result = is_catatonic_lucidity(mock_record)
         assert result is False
 
     def test_is_catatonic_none(self):
-        """Test is_catatonic_record() returns False for None record."""
-        result = is_catatonic_record(None)
+        """Test is_catatonic_lucidity() returns False for None record."""
+        result = is_catatonic_lucidity(None)
         assert result is False
 
     @pytest.mark.asyncio
-    async def test_fetch_lucidity_record(self):
-        """Test _fetch_lucidity_record() fetches record."""
-        mock_session = AsyncMock()
-        mock_record = MagicMock()
-        mock_session.get = AsyncMock(return_value=mock_record)
+    async def test_query_lucidity_record_reads_the_player_registry(self):
+        """Test _query_lucidity_record() returns the player's lucidity from the registry, None for no player."""
         player_id = uuid.uuid4()
+        lucidity = LucidityData(0, "catatonic")
+        players = MagicMock()
+        players.get = AsyncMock(return_value=SimpleNamespace(lucidity=SimpleNamespace(data=lucidity)))
 
-        result = await _fetch_lucidity_record(mock_session, player_id, "testplayer")
-        assert result == mock_record
-        get_mock: AsyncMock = cast(AsyncMock, mock_session.get)
-        get_mock.assert_awaited_once()
+        with patch("server.command_handler.catatonia_check.player_registry", return_value=players):
+            assert await _query_lucidity_record(player_id, "testplayer") == lucidity
+            players.get = AsyncMock(return_value=None)
+            assert await _query_lucidity_record(player_id, "testplayer") is None
 
     @pytest.mark.asyncio
-    async def test_query_lucidity_record_success(self):
-        """Test _query_lucidity_record() queries database."""
-        player_id = uuid.uuid4()
-        mock_record = MagicMock()
-
-        mock_session = AsyncMock()
-        mock_session.get = AsyncMock(return_value=mock_record)
-
-        async def mock_async_gen():
-            """Create async generator that yields mock_session."""
-            yield mock_session
-
-        with patch("server.command_handler.catatonia_check.get_async_session", return_value=mock_async_gen()):
-            result = await _query_lucidity_record(player_id, "testplayer")
-            assert result == mock_record
+    async def test_query_lucidity_record_without_a_registry_answers_none(self):
+        """Test _query_lucidity_record() answers None when the registry is not initialised."""
+        with patch(
+            "server.command_handler.catatonia_check.player_registry", side_effect=RuntimeError("not initialised")
+        ):
+            assert await _query_lucidity_record(uuid.uuid4(), "testplayer") is None
 
     @pytest.mark.asyncio
     async def test_check_catatonia_database_catatonic(self):
         """Test _check_catatonia_database() detects catatonic player."""
         player_id = uuid.uuid4()
         mock_record = MagicMock()
-        mock_record.current_tier = "catatonic"
-        mock_record.current_lcd = 0
+        mock_record.tier = "catatonic"
+        mock_record.lcd = 0
 
         with patch("server.command_handler.catatonia_check._query_lucidity_record", return_value=mock_record):
             blocked, message = await _check_catatonia_database(player_id, "testplayer")
@@ -134,8 +126,8 @@ class TestCatatoniaChecks:
         """Test _check_catatonia_database() returns False for normal player."""
         player_id = uuid.uuid4()
         mock_record = MagicMock()
-        mock_record.current_tier = "normal"
-        mock_record.current_lcd = 50
+        mock_record.tier = "normal"
+        mock_record.lcd = 50
 
         with patch("server.command_handler.catatonia_check._query_lucidity_record", return_value=mock_record):
             blocked, message = await _check_catatonia_database(player_id, "testplayer")

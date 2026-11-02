@@ -6,6 +6,7 @@ import uuid
 from collections.abc import Mapping
 from typing import Protocol, cast
 
+from ..game.player_registry import PlayerRegistry
 from ..game.scripted_actions import QuestActionService, ScriptedActionContext, run_scripted_actions
 from ..models.player import Player
 from ..schemas.scripted_actions import on_put_actions
@@ -33,6 +34,7 @@ def container_context(
         persistence=cast(CorruptionPersistenceProtocol, persistence),
         quest_service=cast(QuestActionService | None, getattr(container, "quest_service", None)),
         catatonia_observer=cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None)),
+        player_registry=cast(PlayerRegistry | None, getattr(container, "player_registry", None)),
     )
 
 

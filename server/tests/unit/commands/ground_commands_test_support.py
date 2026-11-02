@@ -1,4 +1,4 @@
-"""Typed fakes for the /ground tests (#713): recording notifier, persistence, DB session, lucidity service.
+"""Typed fakes for the /ground tests (#713): recording notifier, persistence, lucidity service.
 
 Small hand-written fakes with real methods, shared by `test_ground_channel.py` and
 `test_rescue_commands.py`, so the tests read real attributes instead of chains of MagicMock.
@@ -7,12 +7,11 @@ Small hand-written fakes with real methods, shared by `test_ground_channel.py` a
 from __future__ import annotations
 
 import uuid
-from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 
 from server.commands.ground_channel import GroundChannel
-from server.models.lucidity import PlayerLucidity
+from server.services.lucidity_repository import PlayerGoneError
 
 
 @dataclass
@@ -84,29 +83,6 @@ class FakePersistence:
         return self.players.get(name)
 
 
-class FakeSession:
-    """DB session stand-in: serves one lucidity record and counts rollbacks."""
-
-    def __init__(self, record: PlayerLucidity | None) -> None:
-        self.record: PlayerLucidity | None = record
-        self.rollbacks: int = 0
-
-    async def get(self, _model: object, _key: str) -> PlayerLucidity | None:
-        """Return the configured record."""
-        return self.record
-
-    async def commit(self) -> None:
-        """Accept the commit."""
-
-    async def rollback(self) -> None:
-        """Count the rollback."""
-        self.rollbacks += 1
-
-    async def factory(self) -> AsyncIterator[FakeSession]:
-        """Stand-in for `get_async_session()`: yields this session once per call."""
-        yield self
-
-
 @dataclass(frozen=True)
 class FakeAdjustmentResult:
     """The only field of `LucidityUpdateResult` that `ground` reads."""
@@ -116,10 +92,19 @@ class FakeAdjustmentResult:
 
 @dataclass
 class FakeLucidityService:
-    """Lucidity service stand-in; raises `error` if configured, else grounds to LCD 1."""
+    """Lucidity service stand-in: the target is at LCD 0 in ``tier`` (or gone); an adjustment raises ``error`` if
+    configured, else grounds to LCD 1."""
 
     error: Exception | None = None
+    tier: str = "catatonic"
+    gone: bool = False
     calls: list[tuple[uuid.UUID, str]] = field(default_factory=list)
+
+    async def get_lucidity(self, player_id: uuid.UUID) -> SimpleNamespace:
+        """The target's lucidity, or PlayerGoneError."""
+        if self.gone:
+            raise PlayerGoneError(str(player_id))
+        return SimpleNamespace(lcd=0, tier=self.tier)
 
     async def apply_lucidity_adjustment(  # noqa: PLR0913  # Reason: mirrors LucidityService's signature
         self,
@@ -134,11 +119,6 @@ class FakeLucidityService:
         if self.error is not None:
             raise self.error
         return FakeAdjustmentResult(new_lcd=1)
-
-
-def catatonic_record(tier: str = "catatonic") -> PlayerLucidity:
-    """A lucidity record at LCD 0 in the given tier."""
-    return PlayerLucidity(player_id=str(uuid.uuid4()), current_lcd=0, current_tier=tier)
 
 
 def ground_request(persistence: FakePersistence, manager: FakeConnectionManager) -> SimpleNamespace:

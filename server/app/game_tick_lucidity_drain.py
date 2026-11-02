@@ -22,7 +22,6 @@ from typing import TYPE_CHECKING, Literal, cast
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..database import get_async_session
 from ..services.lucidity_helpers import resolve_tier
 from ..services.lucidity_repository import PlayerGoneError
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
@@ -30,6 +29,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer
 
 if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
     from ..models.player import Player
 
 logger = get_logger("server.game_tick")
@@ -123,24 +123,24 @@ def _no_liability(player_id: str, previous_lcd: int, new_lcd: int, reason_code: 
 async def _drain_step(
     container: _TickContainer, player_id: uuid.UUID, room_id: str | None, params: LucidityDrainParams
 ) -> tuple[int, bool] | None:
-    """Apply one second's drain; returns (LCD now, whether LCD was changed), or None with no database session."""
+    """Apply one second's drain; returns (LCD now, whether LCD was changed), or None with no player registry."""
+    registry = cast("PlayerRegistry | None", container.player_registry)
+    if registry is None:
+        return None
     observer = cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None))
-    async for session in get_async_session():
-        service = LucidityService(
-            session,
-            None if params.grants_liabilities else _no_liability,
-            catatonia_observer=observer,
-        )
-        current = (await service.get_player_lucidity(player_id)).current_lcd
-        if current <= params.floor:
-            return current, False
-        delta = -min(params.rate_now(), current - params.floor)
-        result = await service.apply_lucidity_adjustment(
-            player_id, delta, reason_code=DRAIN_REASON_CODE, location_id=room_id
-        )
-        await session.commit()
-        return result.new_lcd, True
-    return None
+    service = LucidityService(
+        registry,
+        None if params.grants_liabilities else _no_liability,
+        catatonia_observer=observer,
+    )
+
+    def step(current_lcd: int) -> int:
+        return -min(params.rate_now(), current_lcd - params.floor) if current_lcd > params.floor else 0
+
+    result = await service.apply_lucidity_adjustment(
+        player_id, step, reason_code=DRAIN_REASON_CODE, location_id=room_id
+    )
+    return result.new_lcd, bool(result.delta)
 
 
 async def process_lucidity_drain(

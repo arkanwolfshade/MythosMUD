@@ -12,16 +12,18 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, RECOVERY_WARD_ROOM_ID
-from server.models.lucidity import LucidityActionCode, PlayerLucidity
+from server.game.player_registry import LucidityData
+from server.models.lucidity import LucidityActionCode
 from server.models.player import Player
 from server.services import player_respawn_service as module
 from server.services.player_respawn_service import PlayerRespawnService
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 
 @dataclass
 class Rig:
     player: Player
-    lucidity: PlayerLucidity
+    lucidity: LucidityHarness
     cooldowns: list[tuple[uuid.UUID, str, datetime]] = field(
         default_factory=lambda: cast(list[tuple[uuid.UUID, str, datetime]], [])
     )
@@ -36,7 +38,8 @@ class FakeSession:
 
     async def get(self, model: type[object], player_id: uuid.UUID, options: Sequence[object] = ()) -> object | None:
         _ = (player_id, options)
-        return self._rig.player if model is Player else self._rig.lucidity
+        _ = model
+        return self._rig.player
 
     async def commit(self) -> None:
         self._rig.commits += 1
@@ -50,20 +53,17 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     player = Player(player_id=str(uuid.uuid4()), name="Tester")
     player.current_room_id = "somewhere_in_the_tutorial"
     player.set_stats({"current_dp": 1, "max_dp": 100, "position": "lying"})
-    lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=-10, current_tier="delirious", liabilities="[]")
+    lucidity = lucidity_registry({uuid.UUID(str(player.player_id)): LucidityData(-10, "catatonic")})
     rig = Rig(player, lucidity)
 
-    class FakeLucidityService:
+    class FakeLucidityRepository:
         def __init__(self, session: FakeSession) -> None:
             _ = session
 
         async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> None:
             rig.cooldowns.append((player_id, action_code, expires_at))
 
-        async def add_liability(self, player_id: uuid.UUID, liability_code: str) -> None:  # pragma: no cover
-            _ = player_id, liability_code
-
-    monkeypatch.setattr(module, "LucidityService", FakeLucidityService)
+    monkeypatch.setattr(module, "LucidityRepository", FakeLucidityRepository)
     return rig
 
 
@@ -73,7 +73,7 @@ def _session(rig: Rig) -> AsyncSession:
 
 @pytest.mark.asyncio
 async def test_a_delirium_respawn_leaves_a_pending_debrief(rig: Rig) -> None:
-    respawned = await PlayerRespawnService().respawn_player_from_delirium(
+    respawned = await PlayerRespawnService(player_registry=rig.lucidity.registry).respawn_player_from_delirium(
         uuid.UUID(str(rig.player.player_id)), _session(rig)
     )
 
@@ -86,9 +86,10 @@ async def test_a_delirium_respawn_leaves_a_pending_debrief(rig: Rig) -> None:
 
 @pytest.mark.asyncio
 async def test_a_sanitarium_respawn_still_leaves_a_pending_debrief(rig: Rig) -> None:
-    rig.lucidity.current_lcd = -100
+    async with rig.lucidity.registry.mutate(uuid.UUID(str(rig.player.player_id))) as player:
+        _ = player.lucidity.set(lcd=-100)
 
-    respawned = await PlayerRespawnService().respawn_player_from_sanitarium(
+    respawned = await PlayerRespawnService(player_registry=rig.lucidity.registry).respawn_player_from_sanitarium(
         uuid.UUID(str(rig.player.player_id)), _session(rig)
     )
 
@@ -98,7 +99,7 @@ async def test_a_sanitarium_respawn_still_leaves_a_pending_debrief(rig: Rig) -> 
 
 @pytest.mark.asyncio
 async def test_a_delirium_respawn_wakes_the_player_in_the_recovery_ward(rig: Rig) -> None:
-    respawned = await PlayerRespawnService().respawn_player_from_delirium(
+    respawned = await PlayerRespawnService(player_registry=rig.lucidity.registry).respawn_player_from_delirium(
         uuid.UUID(str(rig.player.player_id)), _session(rig)
     )
 
@@ -108,9 +109,10 @@ async def test_a_delirium_respawn_wakes_the_player_in_the_recovery_ward(rig: Rig
 
 @pytest.mark.asyncio
 async def test_a_sanitarium_respawn_wakes_the_player_in_the_recovery_ward(rig: Rig) -> None:
-    rig.lucidity.current_lcd = -100
+    async with rig.lucidity.registry.mutate(uuid.UUID(str(rig.player.player_id))) as player:
+        _ = player.lucidity.set(lcd=-100)
 
-    respawned = await PlayerRespawnService().respawn_player_from_sanitarium(
+    respawned = await PlayerRespawnService(player_registry=rig.lucidity.registry).respawn_player_from_sanitarium(
         uuid.UUID(str(rig.player.player_id)), _session(rig)
     )
 

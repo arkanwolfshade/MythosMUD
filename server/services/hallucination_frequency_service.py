@@ -19,7 +19,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.lucidity import LucidityActionCode
 from ..services.hallucination_rng import hallucination_rng
-from ..services.lucidity_service import LucidityService, resolve_tier
+from ..services.lucidity_helpers import resolve_tier
+from ..services.lucidity_repository import LucidityRepository
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -42,8 +43,8 @@ class HallucinationFrequencyService:
     async def _time_based_hallucination_due(
         self, player_id: uuid.UUID, tier: str, config: dict[str, Any], session: AsyncSession
     ) -> bool:
-        lucidity_service = LucidityService(session)
-        cooldown = await lucidity_service.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
+        repo = LucidityRepository(session)
+        cooldown = await repo.get_cooldown(player_id, LucidityActionCode.HALLUCINATION_TIMER)
 
         now = datetime.now(UTC)
         if cooldown and cooldown.cooldown_expires_at:
@@ -58,7 +59,7 @@ class HallucinationFrequencyService:
         should_trigger: bool = hallucination_rng.get().random() < cast(float, config["chance"])  # nosec B311
         if should_trigger:
             cooldown_expires = now + timedelta(seconds=cast(int, config["cooldown_seconds"]))
-            await lucidity_service.set_cooldown(
+            _ = await repo.set_cooldown(
                 player_id, LucidityActionCode.HALLUCINATION_TIMER, cooldown_expires.replace(tzinfo=None)
             )
             logger.debug(

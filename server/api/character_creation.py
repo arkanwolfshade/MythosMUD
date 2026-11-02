@@ -485,7 +485,7 @@ async def create_character_with_stats(
             request_data, current_user, player_service, profession_service, skill_service
         )
         if skipping:
-            await apply_tutorial_skip(uuid.UUID(str(response.player.id)), persistence, quest_service)
+            await apply_tutorial_skip(uuid.UUID(str(response.player.id)), persistence, quest_service, request)
         return response
     except HTTPException:
         raise

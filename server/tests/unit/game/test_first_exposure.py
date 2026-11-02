@@ -6,6 +6,7 @@ import uuid
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
+from unittest.mock import patch
 
 import pytest
 
@@ -17,16 +18,16 @@ from server.game.first_exposure import (
     RESTORED_LCD,
     FirstExposureFinisher,
     apply_first_exposure_end_state,
+    restore_first_exposure_lucidity,
 )
 from server.game.instance_state import StrippedInventory
 from server.game.items.constants import INSTANCE_BOUND_FLAG
-from server.game.player_registry import PlayerRegistry
+from server.game.player_registry import LucidityData, PlayerRegistry
 from server.game.scripted_actions import QuestActionService, ScriptedActionContext
-from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
 from server.schemas.scripted_actions import CorruptionAtLeastAction, StartQuestAction, parse_scripted_actions
 from server.services.lucidity_service import resolve_tier
-from server.tests.fixtures.shared.player_registry import FakeDatabase
+from server.tests.fixtures.shared.player_registry import FakeDatabase, lucidity_registry
 
 
 def _stack(item_id: str, *flags: str) -> dict[str, object]:
@@ -36,62 +37,57 @@ def _stack(item_id: str, *flags: str) -> dict[str, object]:
     return stack
 
 
-def _tutorial_player(instance_id: str | None = "instance-abc") -> tuple[Player, PlayerLucidity]:
+def _tutorial_player(instance_id: str | None = "instance-abc") -> Player:
     player = Player(player_id=str(uuid.uuid4()), name="Tester")
     player.current_room_id = f"instance_{uuid.uuid4()}_vault"
     player.tutorial_instance_id = instance_id
     player.set_stats({"current_dp": 1, "max_dp": 100})
     player.set_inventory([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG)])
-    lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=-10, current_tier="delirious", liabilities="[]")
-    return player, lucidity
+    return player
 
 
 # --- the in-session end state -----------------------------------------------------------------------------------
 
 
 def test_the_end_state_leaves_a_tutorial_player_whole_and_in_the_ward() -> None:
-    player, lucidity = _tutorial_player()
+    player = _tutorial_player()
 
-    applied = apply_first_exposure_end_state(player, lucidity)
+    applied = apply_first_exposure_end_state(player)
 
     assert applied is True
     assert player.current_room_id == RECOVERY_WARD_ROOM_ID
     assert player.tutorial_instance_id is None
-    assert lucidity.current_lcd == RESTORED_LCD == 70
-    assert lucidity.current_tier == resolve_tier(70)
     assert player.get_stats()["current_dp"] == player.get_stats()["max_dp"]
 
 
 def test_the_end_state_leaves_the_inventory_to_the_finisher() -> None:
     """The amulet is stripped through the player registry after the respawn commits (FirstExposureFinisher); inside
     the respawn's own session a registry write of the same players row could wait on that session for ever."""
-    player, lucidity = _tutorial_player()
+    player = _tutorial_player()
 
-    _ = apply_first_exposure_end_state(player, lucidity)
+    _ = apply_first_exposure_end_state(player)
 
     assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern", "jade_amulet"]
 
 
 def test_the_end_state_does_nothing_for_a_player_who_is_not_in_the_tutorial() -> None:
-    player, lucidity = _tutorial_player(instance_id=None)
+    player = _tutorial_player(instance_id=None)
     room_before = player.current_room_id
 
-    applied = apply_first_exposure_end_state(player, lucidity)
+    applied = apply_first_exposure_end_state(player)
 
     assert applied is False
-    assert lucidity.current_lcd == -10
     assert player.current_room_id == room_before
     assert len(player.get_inventory()) == 2
 
 
 def test_the_end_state_is_idempotent() -> None:
-    player, lucidity = _tutorial_player()
+    player = _tutorial_player()
 
-    _ = apply_first_exposure_end_state(player, lucidity)
-    second = apply_first_exposure_end_state(player, lucidity)
+    _ = apply_first_exposure_end_state(player)
+    second = apply_first_exposure_end_state(player)
 
     assert second is False  # tutorial_instance_id is cleared, so a replay finds nothing to do
-    assert lucidity.current_lcd == 70
 
 
 # --- what runs after the commit ---------------------------------------------------------------------------------
@@ -150,7 +146,7 @@ class FakeFlush:
 
 @pytest.fixture(name="rig")
 def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
-    rig = Rig(_tutorial_player()[0])
+    rig = Rig(_tutorial_player())
 
     async def fake_run(actions: tuple[object, ...], ctx: object) -> None:
         rig.order.append("actions")
@@ -278,3 +274,16 @@ async def test_the_lazy_finish_hands_the_containers_player_registry_to_the_finis
 
     assert rig.stripped == [player_id]
     assert rig.order[0] == "strip"
+
+
+@pytest.mark.asyncio
+async def test_the_restored_lucidity_is_set_in_the_registry_and_the_tier_cache() -> None:
+    """The respawn sets lucidity after its commit: 70 and its tier, in the registry and the tier cache."""
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: LucidityData(-10, "catatonic")})
+
+    with patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier:
+        await restore_first_exposure_lucidity(harness.registry, player_id)
+
+    assert (harness.lucidity(player_id).lcd, harness.lucidity(player_id).tier) == (RESTORED_LCD, resolve_tier(70))
+    set_tier.assert_called_once_with(player_id, resolve_tier(70))

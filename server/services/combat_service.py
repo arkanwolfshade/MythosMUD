@@ -60,6 +60,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.game.magic.magic_service import MagicService
+    from server.game.player_registry import PlayerRegistry
     from server.game.skill_service import SkillService
     from server.services.npc_combat_data_provider import NPCCombatDataProvider
     from server.services.npc_combat_integration_service import NPCCombatIntegrationService
@@ -116,6 +117,8 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
         self._player_respawn_service = life.player_respawn_service if life else None
         self.magic_service = magic_service  # For casting state checks
         self.skill_service = None
+        # Holds players' lucidity tier for the involuntary-flee check (ADR-029 step 5b-i); set like skill_service.
+        self.player_registry: PlayerRegistry | None = None
         # CRITICAL: Use shared EventBus instance, not a new one
         self._event_bus = event_bus or EventBus()
         # Create combat event publisher with proper NATS service and subject_manager
@@ -362,7 +365,7 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     async def check_involuntary_flee(self, target: CombatParticipant, damage: int, combat: CombatInstance) -> bool:
         """Return True if player should involuntarily flee due to lucidity effects."""
         _ = combat  # Intentionally unused - reserved for future combat context needs
-        return await check_involuntary_flee_fn(target, damage)
+        return await check_involuntary_flee_fn(target, damage, self.player_registry)
 
     async def validate_and_get_combat_participants(
         self, attacker_id: UUID, target_id: UUID, is_initial_attack: bool

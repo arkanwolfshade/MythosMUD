@@ -12,10 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from server.game.items.constants import INSTANCE_BOUND_FLAG
-from server.models.lucidity import PlayerLucidity
+from server.game.player_registry import LucidityData
 from server.models.player import Player
 from server.services import player_respawn_service as module
 from server.services.player_respawn_service import PlayerRespawnService
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 INSTANCE_ID = "instance-abc"
 
@@ -23,7 +24,7 @@ INSTANCE_ID = "instance-abc"
 @dataclass
 class Rig:
     player: Player
-    lucidity: PlayerLucidity
+    lucidity: LucidityHarness
     order: list[str] = field(default_factory=lambda: cast(list[str], []))
     finished: list[tuple[uuid.UUID, str]] = field(default_factory=lambda: cast(list[tuple[uuid.UUID, str]], []))
     finish_fails: bool = False
@@ -37,7 +38,8 @@ class FakeSession:
 
     async def get(self, model: type[object], player_id: uuid.UUID) -> object | None:
         _ = player_id
-        return self._rig.player if model is Player else self._rig.lucidity
+        _ = model
+        return self._rig.player
 
     async def commit(self) -> None:
         self._rig.order.append("commit")
@@ -55,17 +57,17 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     stack: dict[str, object] = {"item_id": "jade_amulet", "prototype_id": "jade_amulet", "quantity": 1}
     stack["flags"] = [INSTANCE_BOUND_FLAG]
     player.set_inventory([stack])
-    lucidity = PlayerLucidity(player_id=player.player_id, current_lcd=-10, current_tier="delirious", liabilities="[]")
+    lucidity = lucidity_registry({uuid.UUID(str(player.player_id)): LucidityData(-10, "catatonic")})
     rig = Rig(player, lucidity)
 
-    class FakeLucidityService:
+    class FakeLucidityRepository:
         def __init__(self, session: FakeSession) -> None:
             _ = session
 
         async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> None:
             _ = player_id, action_code, expires_at
 
-    monkeypatch.setattr(module, "LucidityService", FakeLucidityService)
+    monkeypatch.setattr(module, "LucidityRepository", FakeLucidityRepository)
     return rig
 
 
@@ -76,7 +78,7 @@ def _service(rig: Rig) -> PlayerRespawnService:
             raise RuntimeError("quest store down")
         rig.finished.append((player_id, instance_id))
 
-    return PlayerRespawnService(first_exposure_finish=finish)
+    return PlayerRespawnService(first_exposure_finish=finish, player_registry=rig.lucidity.registry)
 
 
 def _session(rig: Rig) -> AsyncSession:
@@ -93,7 +95,7 @@ async def test_a_tutorial_delirium_respawn_ends_the_tutorial(rig: Rig) -> None:
 
     assert respawned is True
     assert rig.player.current_room_id == RECOVERY_WARD_ROOM_ID
-    assert rig.lucidity.current_lcd == 70  # not the usual 10
+    assert rig.lucidity.lucidity(_player_id(rig)).lcd == 70  # not the usual 10
     assert rig.player.tutorial_instance_id is None
     # In-session the inventory is left alone, so this ORM commit never writes it: the finisher strips the amulet
     # through the player registry after the commit (ADR-029 step 4c-i), and clears the drain row.
@@ -121,7 +123,9 @@ async def test_a_failing_finish_does_not_undo_the_respawn(rig: Rig) -> None:
 
 @pytest.mark.asyncio
 async def test_the_ending_works_without_a_finisher_wired(rig: Rig) -> None:
-    respawned = await PlayerRespawnService().respawn_player_from_delirium(_player_id(rig), _session(rig))
+    respawned = await PlayerRespawnService(player_registry=rig.lucidity.registry).respawn_player_from_delirium(
+        _player_id(rig), _session(rig)
+    )
 
     assert respawned is True
     assert rig.player.tutorial_instance_id is None
@@ -134,6 +138,6 @@ async def test_an_ordinary_delirium_respawn_is_unchanged(rig: Rig) -> None:
     respawned = await _service(rig).respawn_player_from_delirium(_player_id(rig), _session(rig))
 
     assert respawned is True
-    assert rig.lucidity.current_lcd == 10
+    assert rig.lucidity.lucidity(_player_id(rig)).lcd == 10
     assert rig.finished == []
     assert len(rig.player.get_inventory()) == 1  # nothing was stripped

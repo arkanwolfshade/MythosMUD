@@ -7,13 +7,17 @@ import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.lucidity import LucidityExposureState
 from ..structured_logging.enhanced_logging_config import get_logger
+from .lucidity_repository import LucidityRepository
 from .lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -68,15 +72,20 @@ class ActiveLucidityService:
 
     ACCLIMATION_THRESHOLD = 6  # total encounters before acclimation applies
 
+    _repo: LucidityRepository
+
     def __init__(
         self,
         session: AsyncSession,
+        registry: PlayerRegistry,
         *,
         now_provider: Callable[[], datetime] | None = None,
         catatonia_observer: CatatoniaObserverProtocol | None = None,
     ) -> None:
+        """``session`` holds the exposure and cooldown rows (the caller commits it); lucidity is in ``registry``."""
         self._session = session
-        self._lucidity_service = LucidityService(session, catatonia_observer=catatonia_observer)
+        self._repo = LucidityRepository(session)
+        self._lucidity_service = LucidityService(registry, catatonia_observer=catatonia_observer)
         self._now_provider = now_provider or (lambda: datetime.now(UTC))
 
     async def apply_encounter_lucidity_loss(
@@ -104,9 +113,7 @@ class ActiveLucidityService:
         if profile is None:
             raise UnknownEncounterCategoryError(category)
 
-        exposure: LucidityExposureState = await self._lucidity_service.increment_exposure_state(
-            player_id_uuid, entity_archetype
-        )
+        exposure: LucidityExposureState = await self._repo.increment_exposure_state(player_id_uuid, entity_archetype)
         encounter_count = exposure.encounter_count
 
         if encounter_count == 1:
@@ -182,7 +189,7 @@ class ActiveLucidityService:
         """
 
         now = self._now_provider()
-        existing = await self._lucidity_service.get_cooldown(player_id, cooldown_key)
+        existing = await self._repo.get_cooldown(player_id, cooldown_key)
         if existing and existing.cooldown_expires_at:
             cooldown_expiry = existing.cooldown_expires_at
             if cooldown_expiry.tzinfo is None:
@@ -199,7 +206,7 @@ class ActiveLucidityService:
         )
 
         expires_at = (now + cooldown).replace(tzinfo=None)
-        _ = await self._lucidity_service.set_cooldown(player_id, cooldown_key, expires_at)
+        _ = await self._repo.set_cooldown(player_id, cooldown_key, expires_at)
 
         logger.info(
             "Recovery action performed",
@@ -223,7 +230,7 @@ class ActiveLucidityService:
                 raise ValueError(f"Invalid player_id format: {player_id}") from None
         else:
             player_id_uuid = player_id
-        return await self._lucidity_service.get_cooldown(player_id_uuid, action_code.lower())
+        return await self._repo.get_cooldown(player_id_uuid, action_code.lower())
 
 
 __all__ = [

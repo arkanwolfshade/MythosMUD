@@ -22,6 +22,7 @@ from server.game.scripted_actions import ScriptedActionContext
 from server.models.player import Player
 from server.schemas.scripted_actions import ScriptedAction
 from server.services.lucidity_service import resolve_tier
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 
 def _character() -> Player:
@@ -77,15 +78,9 @@ async def test_an_account_with_no_characters_may_not_skip() -> None:
 
 
 @dataclass
-class FakeLucidity:
-    current_lcd: int = 100
-    current_tier: str = "lucid"
-
-
-@dataclass
 class SkipRig:
     player: Player
-    lucidity: FakeLucidity = field(default_factory=FakeLucidity)
+    lucidity: LucidityHarness
     debriefs_marked: list[uuid.UUID] = field(default_factory=lambda: cast(list[uuid.UUID], []))
     commits: int = 0
     ran: list[tuple[tuple[ScriptedAction, ...], Player]] = field(
@@ -109,7 +104,8 @@ class FakePersistence:
 
 @pytest.fixture(name="rig")
 def _rig(monkeypatch: pytest.MonkeyPatch) -> SkipRig:
-    rig = SkipRig(player=_character())
+    player = _character()
+    rig = SkipRig(player=player, lucidity=lucidity_registry({_id(player): None}))
 
     class FakeSession:
         async def commit(self) -> None:
@@ -118,23 +114,14 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> SkipRig:
     async def fake_sessions() -> AsyncIterator[FakeSession]:
         yield FakeSession()
 
-    class FakeRepository:
-        def __init__(self, session: object) -> None:
-            _ = session
-
-        async def get_or_create_player_lucidity(self, player_id: uuid.UUID) -> FakeLucidity:
-            _ = player_id
-            return rig.lucidity
-
-    async def fake_mark(lucidity_service: object, player_id: uuid.UUID) -> None:
-        _ = lucidity_service
+    async def fake_mark(repo: object, player_id: uuid.UUID) -> None:
+        _ = repo
         rig.debriefs_marked.append(player_id)
 
     async def fake_run(actions: Sequence[ScriptedAction], ctx: ScriptedActionContext) -> None:
         rig.ran.append((tuple(actions), ctx.player))
 
     monkeypatch.setattr("server.database.get_async_session", fake_sessions)
-    monkeypatch.setattr("server.services.lucidity_repository.LucidityRepository", FakeRepository)
     monkeypatch.setattr("server.services.debrief_service.mark_debrief_pending", fake_mark)
     monkeypatch.setattr(module, "run_scripted_actions", fake_run)
     return rig
@@ -148,10 +135,10 @@ def _persistence(player: Player | None) -> FinishPersistence:
 async def test_a_skipped_character_gets_the_end_state_of_a_finished_run(rig: SkipRig) -> None:
     player_id = _id(rig.player)
 
-    await skip_first_exposure(player_id, _persistence(rig.player), None)
+    await skip_first_exposure(player_id, _persistence(rig.player), None, rig.lucidity.registry)
 
-    assert rig.lucidity.current_lcd == RESTORED_LCD
-    assert rig.lucidity.current_tier == resolve_tier(RESTORED_LCD)
+    assert rig.lucidity.lucidity(player_id).lcd == RESTORED_LCD
+    assert rig.lucidity.lucidity(player_id).tier == resolve_tier(RESTORED_LCD)
     assert rig.debriefs_marked == [player_id]  # Dr. Morgan's debrief waits for them
     assert rig.commits == 1
     # The same finish actions as the ending: the corruption floor, then the epilogue quest.
@@ -160,8 +147,8 @@ async def test_a_skipped_character_gets_the_end_state_of_a_finished_run(rig: Ski
 
 @pytest.mark.asyncio
 async def test_a_character_that_cannot_be_loaded_still_gets_its_lucidity_and_debrief(rig: SkipRig) -> None:
-    await skip_first_exposure(_id(rig.player), _persistence(None), None)
+    await skip_first_exposure(_id(rig.player), _persistence(None), None, rig.lucidity.registry)
 
-    assert rig.lucidity.current_lcd == RESTORED_LCD
+    assert rig.lucidity.lucidity(_id(rig.player)).lcd == RESTORED_LCD
     assert rig.debriefs_marked == [_id(rig.player)]
     assert rig.ran == []

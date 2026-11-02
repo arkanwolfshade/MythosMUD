@@ -1,4 +1,10 @@
-"""Lucidity repository and service for eldritch stability management."""
+"""Lucidity service: LCD adjustments, tiers, liabilities and catatonia, on the player registry (ADR-029 step 5b-i).
+
+Lucidity lives in the registry's lucidity part. Each operation is one registry unit; the change is lazy (the sweep
+writes it, with its ``lucidity_adjustment_log`` row). Everything that reaches outside the player (the catatonia
+observer, client events, the phantom and fake-sender clears, the tier cache) runs after the unit, so nothing is
+announced for a change that rolled back and no network send happens under the player's lock.
+"""
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity service requires many parameters for context and lucidity operations.
 
@@ -6,13 +12,11 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Callable, Mapping
-from datetime import datetime
-from typing import cast
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from ..models.lucidity import LucidityCooldown, LucidityExposureState, PlayerLucidity
+from ..game.player_registry import LucidityData, PlayerAggregate, PlayerNotFoundError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import LiabilityStackEntry
@@ -21,8 +25,6 @@ from .lucidity_helpers import (
     LIABILITY_CATALOG,
     TIER_ORDER,
     CatatoniaObserverProtocol,
-    LucidityAdjustmentFinalizeContext,
-    LucidityChangeEventContext,
     LucidityUpdateResult,
     Tier,
     clamp_lucidity,
@@ -32,11 +34,17 @@ from .lucidity_helpers import (
     lucidity_event_source,
     normalize_metadata,
     resolve_tier,
-    utc_now,
     worsened_tier,
 )
-from .lucidity_repository import LucidityRepository
-from .lucidity_trigger_handlers import handle_catatonia_transitions, handle_delirium_and_sanitarium_triggers
+from .lucidity_repository import PlayerGoneError
+from .lucidity_trigger_handlers import (
+    CatatoniaTransition,
+    announce_catatonia_transition,
+    handle_delirium_and_sanitarium_triggers,
+)
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -53,354 +61,269 @@ __all__ = [
     "resolve_tier",
 ]
 
+# A delta, or a function of the player's current LCD that returns one (0 = leave lucidity alone).
+LucidityDelta = int | Callable[[int], int]
+LiabilityPicker = Callable[[str, int, int, str], str | None]
+
+
+@dataclass(frozen=True)
+class _Applied:  # pylint: disable=too-many-instance-attributes  # Reason: everything the notifications after the unit need
+    """What one adjustment changed, for the notifications sent after its unit."""
+
+    result: LucidityUpdateResult
+    reason_code: str
+    metadata: dict[str, object]
+    location_id: str | None
+    max_lcd: int
+    liabilities: list[LiabilityStackEntry]
+    catatonia: CatatoniaTransition | None
+    at: datetime
+
+
+def max_lcd_from_stats(stats: Mapping[str, object]) -> int:
+    """The player's LCD ceiling: ``max_lucidity``, else ``education``, else 100."""
+    return coerce_int(stats.get("max_lucidity") or stats.get("education") or 100, default=100)
+
+
+def _first_new_liability(liabilities: list[LiabilityStackEntry]) -> str | None:
+    """The first catalogue liability the player does not have, else the first in the catalogue."""
+    existing = {entry["code"] for entry in liabilities}
+    for code in LIABILITY_CATALOG:
+        if code not in existing:
+            return code
+    return LIABILITY_CATALOG[0] if LIABILITY_CATALOG else None
+
+
+def _stack_liability(liabilities: list[LiabilityStackEntry], liability_code: str) -> None:
+    """Add one stack of ``liability_code`` (a new entry if the player has none)."""
+    for entry in liabilities:
+        if entry["code"] == liability_code:
+            entry["stacks"] += 1
+            return
+    liabilities.append({"code": liability_code, "stacks": 1})
+
 
 class LucidityService:
     """High-level operations for lucidity adjustments and liability tracking."""
 
-    _session: AsyncSession
-    _repo: LucidityRepository
-    _liability_picker: Callable[[str, int, int, str], str | None]
+    _registry: PlayerRegistry
+    _liability_picker: LiabilityPicker | None
     _liability_threshold: int
     _catatonia_observer: CatatoniaObserverProtocol | None
 
     def __init__(
         self,
-        session: AsyncSession,
-        liability_picker: Callable[[str, int, int, str], str | None] | None = None,
+        registry: PlayerRegistry,
+        liability_picker: LiabilityPicker | None = None,
         liability_threshold: int = 15,
         *,
         catatonia_observer: CatatoniaObserverProtocol | None = None,
     ) -> None:
-        self._session = session
-        self._repo = LucidityRepository(session)
-        self._liability_picker = liability_picker or self._default_liability_picker
+        self._registry = registry
+        self._liability_picker = liability_picker
         self._liability_threshold = liability_threshold
         self._catatonia_observer = catatonia_observer
 
-    async def _add_liabilities_for_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Liability addition requires many parameters for context and liability tracking
+    # ---- reads ----
+
+    async def get_lucidity(self, player_id: uuid.UUID) -> LucidityData:
+        """The player's lucidity (the starting values if they have never had a change).
+
+        Raises:
+            PlayerGoneError: there is no such player.
+        """
+        player = await self._registry.get(player_id)
+        if player is None:
+            raise PlayerGoneError(str(player_id))
+        return player.lucidity.data
+
+    # ---- adjustments ----
+
+    async def apply_lucidity_adjustment(
         self,
         player_id: uuid.UUID,
-        delta: int,
-        previous_lcd: int,
-        new_lcd: int,
-        previous_tier: str,
-        new_tier: str,
-        reason_code: str,
-    ) -> list[str]:
-        """Add liabilities based on delta or tier worsening."""
-        liabilities_added: list[str] = []
-        if delta < 0 and abs(delta) >= self._liability_threshold:
-            liability_code = self._liability_picker(str(player_id), previous_lcd, new_lcd, reason_code)
-            if liability_code:
-                liability_added = await self.add_liability(player_id, liability_code)
-                if liability_added:
-                    liabilities_added.append(liability_added)
-        elif worsened_tier(previous_tier, new_tier):
-            liability_code = self._liability_picker(str(player_id), previous_lcd, new_lcd, reason_code)
-            if liability_code:
-                liability_added = await self.add_liability(player_id, liability_code)
-                if liability_added:
-                    liabilities_added.append(liability_added)
-        return liabilities_added
-
-    def _get_player_from_record_inspect(self, record: PlayerLucidity) -> object | None:
-        """Get player from record's relationship via SQLAlchemy inspect if already loaded. Returns None otherwise."""
-        try:
-            from sqlalchemy import inspect as sqlalchemy_inspect
-
-            insp = sqlalchemy_inspect(record)
-            if not hasattr(insp, "attrs") or "player" not in insp.attrs:
-                return None
-            attr_state = insp.attrs.player
-            loaded_raw = getattr(attr_state, "loaded_value", None)
-            if loaded_raw is not None:
-                return cast(object, loaded_raw)
-            value_raw = getattr(attr_state, "value", None)
-            if value_raw is not None:
-                return cast(object, value_raw)
-            return None
-        except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: inspect can fail in many ways; fallback to explicit load
-            logger.debug("Inspect operation failed, falling through to explicit load", exc_info=e)
-            return None
-
-    @staticmethod
-    def _max_lcd_from_stats(stats: Mapping[str, object]) -> int:
-        """Return max_lcd from stats dict (max_lucidity, education, or 100)."""
-        raw = stats.get("max_lucidity") or stats.get("education") or 100
-        return coerce_int(raw, default=100)
-
-    async def _calculate_max_lcd(self, record: PlayerLucidity, player_id: uuid.UUID) -> int:
-        """Calculate max_lcd from player's education stat."""
-        default = 100
-        player_obj = self._get_player_from_record_inspect(record)
-        if player_obj is not None:
-            get_stats_fn = getattr(player_obj, "get_stats", None)
-            if callable(get_stats_fn):
-                try:
-                    return self._max_lcd_from_stats(cast(dict[str, object], get_stats_fn()))
-                except AttributeError:
-                    pass  # Not a real Player (e.g. LoaderCallableStatus); fall through to explicit load
-        try:
-            from ..models.player import Player
-
-            player = await self._session.get(Player, player_id)
-            if player is not None:
-                return self._max_lcd_from_stats(player.get_stats())
-        except (AttributeError, SQLAlchemyError, TypeError) as e:
-            logger.warning(
-                "Failed to calculate max_lcd from player stats, using default", player_id=player_id, error=str(e)
-            )
-        return default
-
-    async def _send_lucidity_change_event_if_needed(
-        self,
-        player_id: uuid.UUID,
-        ctx: LucidityChangeEventContext,
-    ) -> None:
-        """Send lucidity change event if delta or tier changed."""
-        if ctx.delta or ctx.previous_tier != ctx.new_tier:
-            max_lcd = await self._calculate_max_lcd(ctx.record, player_id)
-            current_lcd_to_send = min(ctx.new_lcd, max_lcd)
-            await send_lucidity_change_event(
-                player_id=player_id,
-                current_lcd=current_lcd_to_send,
-                delta=ctx.delta,
-                tier=ctx.new_tier,
-                extras=LucidityChangeEventExtras(
-                    max_lcd=max_lcd,
-                    liabilities=decode_liabilities(ctx.record.liabilities),
-                    reason=ctx.reason_code,
-                    source=lucidity_event_source(ctx.metadata_map, ctx.location_id),
-                    metadata=ctx.metadata_map if ctx.metadata_map else None,
-                ),
-            )
-
-    @staticmethod
-    def _apply_delta_to_record(record: PlayerLucidity, delta: int) -> tuple[int, Tier, int, Tier]:
-        """Update record LCD/tier from delta; return previous and new LCD/tier values."""
-        previous_lcd = record.current_lcd
-        previous_tier = record.current_tier
-        new_lcd = clamp_lucidity(previous_lcd + delta)
-        new_tier = resolve_tier(new_lcd)
-        record.current_lcd = new_lcd
-        record.current_tier = new_tier
-        record.last_updated_at = utc_now()
-        return previous_lcd, previous_tier, new_lcd, new_tier
-
-    async def _finalize_lucidity_adjustment(self, ctx: LucidityAdjustmentFinalizeContext) -> LucidityUpdateResult:
-        """Persist adjustment logs, liabilities, events, and return the update result."""
-        metadata_map = coerce_metadata_dict(ctx.metadata)
-        metadata_payload = normalize_metadata(ctx.metadata)
-        _ = await self._repo.add_adjustment_log(
-            ctx.player_id, ctx.delta, ctx.reason_code, metadata_payload, ctx.location_id
-        )
-        liabilities_added = await self._add_liabilities_for_adjustment(
-            ctx.player_id,
-            ctx.delta,
-            ctx.previous_lcd,
-            ctx.new_lcd,
-            ctx.previous_tier,
-            ctx.new_tier,
-            ctx.reason_code,
-        )
-        await self._session.flush()
-        await self._send_lucidity_change_event_if_needed(
-            ctx.player_id,
-            LucidityChangeEventContext(
-                record=ctx.record,
-                delta=ctx.delta,
-                previous_tier=ctx.previous_tier,
-                new_tier=ctx.new_tier,
-                new_lcd=ctx.new_lcd,
-                reason_code=ctx.reason_code,
-                metadata_map=metadata_map,
-                location_id=ctx.location_id,
-            ),
-        )
-        logger.info(
-            "Lucidity adjustment applied",
-            player_id=ctx.player_id,
-            lcd_change=ctx.delta,
-            reason=ctx.reason_code,
-            tier_before=ctx.previous_tier,
-            tier_after=ctx.new_tier,
-            liabilities_added=liabilities_added,
-        )
-        # #625/#714: phantoms and fake whisper senders only make sense while the player remains
-        # in a hallucination-eligible tier. Leaving fractured/deranged (in either direction)
-        # clears both.
-        if ctx.previous_tier != ctx.new_tier and ctx.new_tier not in ("fractured", "deranged"):
-            from .fake_sender_registry import fake_sender_registry
-            from .phantom_hostile_service import phantom_hostile_service
-
-            phantom_hostile_service.clear_all_phantoms(ctx.player_id)
-            fake_sender_registry.clear(ctx.player_id)
-        # #714: keep the in-memory tier cache (exit hallucination's cheap eligibility check)
-        # write-through fresh -- write unconditionally, not just on a transition, since this is
-        # the authoritative point where new_tier was just computed.
-        from .lucidity_tier_cache import lucidity_tier_cache
-
-        lucidity_tier_cache.set_tier(ctx.player_id, ctx.new_tier)
-        return LucidityUpdateResult(
-            player_id=ctx.player_id,
-            previous_lcd=ctx.previous_lcd,
-            new_lcd=ctx.new_lcd,
-            previous_tier=ctx.previous_tier,
-            new_tier=ctx.new_tier,
-            delta=ctx.delta,
-            liabilities_added=liabilities_added,
-        )
-
-    async def apply_lucidity_adjustment(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Lucidity adjustment requires many parameters for context and adjustment tracking
-        self,
-        player_id: uuid.UUID,
-        delta: int,
+        delta: LucidityDelta,
         *,
         reason_code: str,
         metadata: Mapping[str, object] | str | None = None,
         location_id: str | None = None,
     ) -> LucidityUpdateResult:
-        """Apply a LCD delta, log the change, and evaluate liabilities."""
-        record = await self._repo.get_or_create_player_lucidity(player_id)
-        previous_lcd, previous_tier, new_lcd, new_tier = self._apply_delta_to_record(record, delta)
-        await handle_catatonia_transitions(
-            record=record,
-            player_id=player_id,
-            new_tier=new_tier,
-            previous_tier=previous_tier,
-            new_lcd=new_lcd,
-            catatonia_observer=self._catatonia_observer,
-            reason_code=reason_code,
+        """Apply a LCD delta, log the change, and evaluate liabilities.
+
+        ``delta`` may be a function of the current LCD, evaluated inside the unit, so a read-then-adjust (a decay
+        that stops at a floor, a rescue that lifts to 1) cannot act on a stale value. When it returns 0 nothing
+        changes and nothing is logged.
+
+        Raises:
+            PlayerGoneError: there is no such player.
+        """
+        try:
+            async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                current = player.lucidity.data
+                applied = self._apply(player, delta, reason_code, metadata, location_id)
+        except PlayerNotFoundError as error:
+            raise PlayerGoneError(str(player_id)) from error
+        if applied is None:
+            return LucidityUpdateResult(player_id, current.lcd, current.lcd, current.tier, current.tier, 0, [])
+        await self._announce(applied)
+        return applied.result
+
+    def _apply(
+        self,
+        player: PlayerAggregate,
+        delta: LucidityDelta,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None,
+        location_id: str | None,
+    ) -> _Applied | None:
+        """The in-unit half of an adjustment: LCD, tier, catatonia, liabilities and the ledger row."""
+        part = player.lucidity
+        previous = part.data
+        if callable(delta):
+            delta = delta(previous.lcd)
+            if not delta:
+                return None
+        new_lcd = clamp_lucidity(previous.lcd + delta)
+        new_tier = resolve_tier(new_lcd)
+        now = datetime.now(UTC)
+        catatonia: CatatoniaTransition | None = None
+        if new_tier == "catatonic" and previous.catatonia_entered_at is None:
+            catatonia = "entered"
+        elif new_tier != "catatonic" and previous.catatonia_entered_at is not None:
+            catatonia = "cleared"
+
+        liabilities = decode_liabilities(previous.liabilities)
+        added = self._liabilities_for(player.player_id, liabilities, delta, previous, new_lcd, new_tier, reason_code)
+        for code in added:
+            _stack_liability(liabilities, code)
+
+        _ = part.set(
+            lcd=new_lcd,
+            tier=new_tier,
+            liabilities=encode_liabilities(liabilities) if added else None,
+            catatonia_entered_at=now if catatonia == "entered" else None,
+            clear_catatonia=catatonia == "cleared",
         )
-        await handle_delirium_and_sanitarium_triggers(player_id, new_lcd, previous_lcd, self._catatonia_observer)
-        return await self._finalize_lucidity_adjustment(
-            LucidityAdjustmentFinalizeContext(
-                player_id=player_id,
-                record=record,
-                delta=delta,
-                reason_code=reason_code,
-                previous_lcd=previous_lcd,
-                previous_tier=previous_tier,
+        part.log(delta, reason_code, normalize_metadata(metadata), location_id)
+        return _Applied(
+            result=LucidityUpdateResult(
+                player_id=player.player_id,
+                previous_lcd=previous.lcd,
                 new_lcd=new_lcd,
+                previous_tier=previous.tier,
                 new_tier=new_tier,
-                metadata=metadata,
-                location_id=location_id,
-            )
+                delta=delta,
+                liabilities_added=added,
+            ),
+            reason_code=reason_code,
+            metadata=coerce_metadata_dict(metadata),
+            location_id=location_id,
+            max_lcd=max_lcd_from_stats(player.row.stats),
+            liabilities=liabilities,
+            catatonia=catatonia,
+            at=now,
         )
+
+    def _liabilities_for(
+        self,
+        player_id: uuid.UUID,
+        liabilities: list[LiabilityStackEntry],
+        delta: int,
+        previous: LucidityData,
+        new_lcd: int,
+        new_tier: str,
+        reason_code: str,
+    ) -> list[str]:
+        """The liability an adjustment adds: one for a large loss or a worsened tier, else none."""
+        if not ((delta < 0 and abs(delta) >= self._liability_threshold) or worsened_tier(previous.tier, new_tier)):
+            return []
+        if self._liability_picker is not None:
+            code = self._liability_picker(str(player_id), previous.lcd, new_lcd, reason_code)
+        else:
+            code = _first_new_liability(liabilities)
+        return [code] if code else []
+
+    async def _announce(self, applied: _Applied) -> None:
+        """The after-unit half of an adjustment: observers, client events, hallucination clears, the tier cache."""
+        result = applied.result
+        player_id = result.player_id
+        if applied.catatonia is not None:
+            await announce_catatonia_transition(
+                transition=applied.catatonia,
+                player_id=player_id,
+                at=applied.at,
+                new_lcd=result.new_lcd,
+                catatonia_observer=self._catatonia_observer,
+                reason_code=applied.reason_code,
+            )
+        await handle_delirium_and_sanitarium_triggers(
+            player_id, result.new_lcd, result.previous_lcd, self._catatonia_observer
+        )
+        if result.delta or result.previous_tier != result.new_tier:
+            await send_lucidity_change_event(
+                player_id=player_id,
+                current_lcd=min(result.new_lcd, applied.max_lcd),
+                delta=result.delta,
+                tier=result.new_tier,
+                extras=LucidityChangeEventExtras(
+                    max_lcd=applied.max_lcd,
+                    liabilities=applied.liabilities,
+                    reason=applied.reason_code,
+                    source=lucidity_event_source(applied.metadata, applied.location_id),
+                    metadata=applied.metadata or None,
+                ),
+            )
+        logger.info(
+            "Lucidity adjustment applied",
+            player_id=player_id,
+            lcd_change=result.delta,
+            reason=applied.reason_code,
+            tier_before=result.previous_tier,
+            tier_after=result.new_tier,
+            liabilities_added=result.liabilities_added,
+        )
+        # #625/#714: phantoms and fake whisper senders only make sense while the player remains
+        # in a hallucination-eligible tier. Leaving fractured/deranged (in either direction)
+        # clears both.
+        if result.previous_tier != result.new_tier and result.new_tier not in ("fractured", "deranged"):
+            from .fake_sender_registry import fake_sender_registry
+            from .phantom_hostile_service import phantom_hostile_service
+
+            phantom_hostile_service.clear_all_phantoms(player_id)
+            fake_sender_registry.clear(player_id)
+        # #714: keep the in-memory tier cache (exit hallucination's cheap eligibility check)
+        # write-through fresh -- write unconditionally, not just on a transition, since this is
+        # the authoritative point where new_tier was just computed.
+        from .lucidity_tier_cache import lucidity_tier_cache
+
+        lucidity_tier_cache.set_tier(player_id, result.new_tier)
+
+    # ---- liabilities ----
 
     async def add_liability(self, player_id: uuid.UUID, liability_code: str) -> str | None:
         """Add or stack a liability on the player."""
-
-        record = await self._repo.get_or_create_player_lucidity(player_id)
-        liabilities = decode_liabilities(record.liabilities)
-
-        for entry in liabilities:
-            if entry["code"] == liability_code:
-                entry["stacks"] += 1
-                record.liabilities = encode_liabilities(liabilities)
-                await self._session.flush()
-                logger.info(
-                    "Liability stack increased",
-                    player_id=player_id,
-                    liability_code=liability_code,
-                    stacks=entry["stacks"],
-                )
-                return liability_code
-
-        liabilities.append({"code": liability_code, "stacks": 1})
-        record.liabilities = encode_liabilities(liabilities)
-        await self._session.flush()
-
-        logger.info("Liability added", player_id=player_id, liability_code=liability_code, stacks=1)
+        async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            liabilities = decode_liabilities(player.lucidity.data.liabilities)
+            _stack_liability(liabilities, liability_code)
+            _ = player.lucidity.set(liabilities=encode_liabilities(liabilities))
+        logger.info("Liability added", player_id=player_id, liability_code=liability_code)
         return liability_code
 
     async def clear_liability(self, player_id: uuid.UUID, liability_code: str, *, remove_all: bool = False) -> bool:
         """Reduce or remove a liability stack."""
-
-        record = await self._repo.get_or_create_player_lucidity(player_id)
-        liabilities = decode_liabilities(record.liabilities)
-
-        changed = False
-        updated: list[LiabilityStackEntry] = []
-        for entry in liabilities:
-            if entry["code"] != liability_code:
-                updated.append(entry)
-                continue
-
-            if remove_all or entry["stacks"] <= 1:
+        async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            changed = False
+            updated: list[LiabilityStackEntry] = []
+            for entry in decode_liabilities(player.lucidity.data.liabilities):
+                if entry["code"] != liability_code:
+                    updated.append(entry)
+                    continue
                 changed = True
-                continue
-
-            entry["stacks"] -= 1
-            updated.append(entry)
-            changed = True
-
+                if not remove_all and entry["stacks"] > 1:
+                    entry["stacks"] -= 1
+                    updated.append(entry)
+            if changed:
+                _ = player.lucidity.set(liabilities=encode_liabilities(updated))
         if changed:
-            record.liabilities = encode_liabilities(updated)
-            await self._session.flush()
             logger.info("Liability updated", player_id=player_id, liability_code=liability_code, remove_all=remove_all)
         return changed
-
-    async def get_player_lucidity(self, player_id: uuid.UUID) -> PlayerLucidity:
-        """Retrieve the player's lucidity record, creating it if needed."""
-        return await self._repo.get_or_create_player_lucidity(player_id)
-
-    async def increment_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> LucidityExposureState:
-        """Increment encounter count for a player/entity archetype exposure."""
-        return await self._repo.increment_exposure_state(player_id, entity_archetype)
-
-    async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> LucidityCooldown | None:
-        """Retrieve cooldown record for a specific action."""
-        return await self._repo.get_cooldown(player_id, action_code)
-
-    async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> LucidityCooldown:
-        """Set or update an action cooldown."""
-        return await self._repo.set_cooldown(player_id, action_code, expires_at)
-
-    async def clear_cooldown(self, player_id: uuid.UUID, action_code: str) -> int:
-        """Delete the player's cooldown rows whose action code matches ``action_code`` (a SQL LIKE pattern)."""
-        return await self._repo.delete_cooldowns_by_action_code_pattern(player_id, action_code)
-
-    async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
-        """
-        Clear all hallucination timer cooldowns for a player.
-
-        Used when player enters sanitarium failover state (LCD -100).
-
-        Args:
-            player_id: Player ID
-
-        Returns:
-            Number of hallucination timers cleared
-        """
-        # Delete all cooldowns with action_code matching 'hallucination_timer' or 'hallucination_%'
-        # Using pattern matching to catch any hallucination-related timers
-        deleted_count = await self._repo.delete_cooldowns_by_action_code_pattern(player_id, "hallucination_%")
-        if deleted_count > 0:
-            logger.info(
-                "Hallucination timers cleared for sanitarium failover",
-                player_id=player_id,
-                timers_cleared=deleted_count,
-            )
-        return deleted_count
-
-    def _default_liability_picker(
-        self, player_id: str, _previous_lcd: int, _new_lcd: int, _reason_code: str
-    ) -> str | None:
-        """Select the first liability not already applied, falling back to the first option."""
-        # This deterministic picker ensures predictable unit tests while allowing overrides.
-        # Implementations can provide more complex logic with randomization or weighting.
-        existing: set[str] = set()
-        # Attempt to read liabilities from session identity map if available.
-        # Parse player_id to UUID for identity_key (parameter is str).
-        player_id_uuid = uuid.UUID(player_id)
-        identity_key = self._session.identity_key(PlayerLucidity, (player_id_uuid,))
-        instance = self._session.identity_map.get(identity_key)
-        if isinstance(instance, PlayerLucidity):
-            for entry in decode_liabilities(instance.liabilities):
-                existing.add(entry["code"])
-
-        for code in LIABILITY_CATALOG:
-            if code not in existing:
-                return code
-        return LIABILITY_CATALOG[0] if LIABILITY_CATALOG else None

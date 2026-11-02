@@ -21,22 +21,13 @@ def test_extract_args_from_args_list() -> None:
     assert htype == "overlay"
 
 
-async def _async_session_gen(session: AsyncMock):
-    yield session
-
-
 @pytest.mark.asyncio
-async def test_get_current_lcd_or_error_raises_when_session_unavailable() -> None:
-    """#714: an empty session generator raises HallucinateCommandError, not a bare None."""
-
-    async def empty_gen():
-        for _ in ():  # loop never runs; keeps this a reachable (not statically-dead) async generator
-            yield None
-
-    with patch.object(cmd, "get_async_session", return_value=empty_gen()):
+async def test_get_current_lcd_or_error_raises_when_lucidity_cannot_be_read() -> None:
+    """#714: an unreadable lucidity (no player registry) raises HallucinateCommandError, not a bare None."""
+    with patch.object(cmd, "get_current_lcd", AsyncMock(side_effect=RuntimeError("not initialised"))):
         with pytest.raises(cmd.HallucinateCommandError) as exc_info:
             _ = await cmd.get_current_lcd_or_error(uuid.uuid4())
-    assert "Database session could not be established" in exc_info.value.result["result"]
+    assert "Lucidity could not be read" in exc_info.value.result["result"]
 
 
 @pytest.mark.asyncio
@@ -140,12 +131,10 @@ async def test_handle_admin_hallucinate_delivers_phantom() -> None:
     target_id = uuid.uuid4()
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=MagicMock(current_room_id="room-a"))
-    session = AsyncMock()
     with (
         patch.object(cmd, "get_player_service_from_app", return_value=player_service),
         patch.object(cmd, "check_admin_permissions", AsyncMock(return_value=(MagicMock(), None))),
         patch.object(cmd, "resolve_target_player", AsyncMock(return_value=(target_id, None))),
-        patch.object(cmd, "get_async_session", return_value=_async_session_gen(session)),
         patch.object(cmd, "get_current_lcd", AsyncMock(return_value=25)),
         patch.object(cmd, "deliver_forced_hallucination", AsyncMock()) as deliver,
         patch.object(cmd, "get_admin_actions_logger") as log_cls,
@@ -165,12 +154,10 @@ async def test_handle_admin_hallucinate_delivery_error() -> None:
     target_id = uuid.uuid4()
     player_service = MagicMock()
     player_service.resolve_player_name = AsyncMock(return_value=MagicMock(current_room_id="room-a"))
-    session = AsyncMock()
     with (
         patch.object(cmd, "get_player_service_from_app", return_value=player_service),
         patch.object(cmd, "check_admin_permissions", AsyncMock(return_value=(MagicMock(), None))),
         patch.object(cmd, "resolve_target_player", AsyncMock(return_value=(target_id, None))),
-        patch.object(cmd, "get_async_session", return_value=_async_session_gen(session)),
         patch.object(cmd, "get_current_lcd", AsyncMock(return_value=50)),
         patch.object(cmd, "deliver_forced_hallucination", AsyncMock(side_effect=RuntimeError("boom"))),
     ):

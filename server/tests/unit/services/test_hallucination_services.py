@@ -101,7 +101,7 @@ async def test_hallucination_frequency_time_based_cooldown_active() -> None:
     mock_lucidity = MagicMock()
     mock_lucidity.get_cooldown = AsyncMock(return_value=cooldown)
 
-    with patch("server.services.hallucination_frequency_service.LucidityService", return_value=mock_lucidity):
+    with patch("server.services.hallucination_frequency_service.LucidityRepository", return_value=mock_lucidity):
         assert await service.should_trigger_hallucination(player_id, "fractured", "time_based", session) is False
 
 
@@ -116,7 +116,7 @@ async def test_hallucination_frequency_time_based_triggers_and_sets_cooldown() -
     mock_lucidity.set_cooldown = AsyncMock()
 
     with (
-        patch("server.services.hallucination_frequency_service.LucidityService", return_value=mock_lucidity),
+        patch("server.services.hallucination_frequency_service.LucidityRepository", return_value=mock_lucidity),
         patch("server.services.hallucination_rng.hallucination_rng.get", return_value=_mock_rng(random=0.01)),
     ):
         assert await service.should_trigger_hallucination(player_id, "fractured", "time_based", session) is True
@@ -125,11 +125,11 @@ async def test_hallucination_frequency_time_based_triggers_and_sets_cooldown() -
 
 @pytest.mark.asyncio
 async def test_hallucination_frequency_handles_lucidity_errors() -> None:
-    """Lucidity service errors are swallowed and return False."""
+    """Cooldown repository errors are swallowed and return False."""
     service = HallucinationFrequencyService()
     session = MagicMock()
     with patch(
-        "server.services.hallucination_frequency_service.LucidityService",
+        "server.services.hallucination_frequency_service.LucidityRepository",
         side_effect=RuntimeError("db down"),
     ):
         assert await service.should_trigger_hallucination(uuid.uuid4(), "fractured", "time_based", session) is False

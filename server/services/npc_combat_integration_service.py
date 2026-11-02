@@ -48,6 +48,7 @@ from .player_combat_service import PlayerCombatService
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+    from ..game.player_registry import PlayerRegistry
     from ..realtime.connection_manager import ConnectionManager
     from .combat_service import CombatService
 
@@ -86,6 +87,7 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
         player_combat_service: PlayerCombatService | None = None,
         connection_manager: ConnectionManager | None = None,
         async_persistence: AsyncPersistenceLayer | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         """
         Initialize the NPC combat integration service.
@@ -104,12 +106,13 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                 CRITICAL: Production code should ALWAYS pass the shared instance
                 from container to prevent initialization failures.
             async_persistence: Async persistence layer instance (required)
+            player_registry: Holds player lucidity (ADR-029 step 5b-i); encounter lucidity loss needs it
         """
         if async_persistence is None:
             raise ValueError("async_persistence is required for NPCCombatIntegrationService")
         self._init_persistence_and_event_bus(event_bus, async_persistence)
         self._init_player_combat_service(player_combat_service)
-        self._init_npc_submodules(async_persistence)
+        self._init_npc_submodules(async_persistence, player_registry)
         self._init_combat_service(combat_service)
         self._init_messaging_handlers_and_publisher(connection_manager)
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
@@ -141,12 +144,14 @@ class NPCCombatIntegrationService(NPCCombatIntegrationValidationMixin, NPCCombat
                 instance_id=id(self._player_combat_service),
             )
 
-    def _init_npc_submodules(self, async_persistence: AsyncPersistenceLayer) -> None:
+    def _init_npc_submodules(
+        self, async_persistence: AsyncPersistenceLayer, player_registry: PlayerRegistry | None = None
+    ) -> None:
         self._combat_memory = NPCCombatMemory()
         self._uuid_mapping = NPCCombatUUIDMapping()
         self._data_provider = NPCCombatDataProvider(async_persistence)
         self._rewards = NPCCombatRewards()
-        self._lucidity = NPCCombatLucidity()
+        self._lucidity = NPCCombatLucidity(player_registry)
         self._lifecycle = NPCCombatLifecycle(async_persistence)
 
     def _init_combat_service(self, combat_service: CombatService | None) -> None:

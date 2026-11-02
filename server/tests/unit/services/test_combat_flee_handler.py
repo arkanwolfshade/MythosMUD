@@ -7,8 +7,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.game.player_registry import LucidityData
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatResult
 from server.services.combat_flee_handler import try_voluntary_flee_roll
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 # pylint: disable=protected-access  # Reason: Test file - accessing for test setup
 
@@ -319,12 +321,12 @@ async def test_check_involuntary_flee_with_session_tier_blocks():
 
     participant = _make_participant(uuid.uuid4())
     session = AsyncMock()
-    with patch("server.services.combat_flee_handler.LucidityService") as mock_svc_cls:
-        mock_svc = mock_svc_cls.return_value
-        mock_svc.get_player_lucidity = AsyncMock(return_value=MagicMock(current_tier="lucid"))
-        with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=False):
-            result = await _check_involuntary_flee_with_session(session, participant, 0.05, 5)
+    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=False) as should_flee:
+        result = await _check_involuntary_flee_with_session(session, participant, 0.05, 5, None)
     assert result is False
+    should_flee.assert_called_once_with(
+        "lucid", 0.05
+    )  # no registry: the tier is unknown, so the target counts as lucid
 
 
 @pytest.mark.asyncio
@@ -334,15 +336,26 @@ async def test_check_involuntary_flee_with_session_sets_cooldown():
 
     participant = _make_participant(uuid.uuid4())
     session = AsyncMock()
-    with patch("server.services.combat_flee_handler.LucidityService") as mock_svc_cls:
-        mock_svc = mock_svc_cls.return_value
-        mock_svc.get_player_lucidity = AsyncMock(return_value=MagicMock(current_tier="deranged"))
-        mock_svc.get_cooldown = AsyncMock(return_value=None)
-        mock_svc.set_cooldown = AsyncMock()
-        with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=True):
-            result = await _check_involuntary_flee_with_session(session, participant, 0.20, 20)
+    harness = lucidity_registry({participant.participant_id: LucidityData(10, "deranged")})
+    cooldowns_set: list[str] = []
+
+    class _Cooldowns:
+        def __init__(self, session: object) -> None:
+            _ = session
+
+        async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> None:
+            _ = player_id, action_code
+
+        async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: object) -> None:
+            _ = player_id, expires_at
+            cooldowns_set.append(action_code)
+
+    with patch("server.services.combat_flee_handler.LucidityRepository", _Cooldowns):
+        with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=True) as should_flee:
+            result = await _check_involuntary_flee_with_session(session, participant, 0.20, 20, harness.registry)
     assert result is True
-    mock_svc.set_cooldown.assert_awaited_once()
+    should_flee.assert_called_once_with("deranged", 0.20)
+    assert cooldowns_set == ["involuntary_flee"]
     session.commit.assert_awaited_once()
 
 

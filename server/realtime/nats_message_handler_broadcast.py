@@ -441,7 +441,10 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
 
     async def _get_player_lucidity_tier(self, player_id: str) -> str:
         """
-        Get a player's current lucidity tier from database.
+        Get a player's current lucidity tier: the tier cache, else the player registry (ADR-029 step 5b-i).
+
+        Every lucidity change writes the cache through, so a miss only means no change since the server started;
+        the registry read then fills it, so a broadcast to a room costs no query per listener after the first.
 
         Args:
             player_id: Player ID (string or UUID)
@@ -449,37 +452,29 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
         Returns:
             Lucidity tier string (defaults to 'lucid' if not found)
         """
+        from ..services.lucidity_tier_cache import lucidity_tier_cache
+
+        cached = lucidity_tier_cache.get_tier(player_id)
+        if cached is not None:
+            return cached
         try:
-            from ..database import get_async_session
-            from ..services.lucidity_service import LucidityService
+            from ..container import get_container
 
+            registry = get_container().player_registry
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-
-            async for session in get_async_session():
-                try:
-                    lucidity_service = LucidityService(session)
-                    lucidity_record = await lucidity_service.get_player_lucidity(player_id_uuid)
-                    tier = lucidity_record.current_tier if lucidity_record else "lucid"
-                    return tier
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lucidity tier retrieval errors unpredictable, optional metadata
-                    logger.debug(
-                        "Error getting player lucidity tier",
-                        player_id=player_id,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
-                    return "lucid"
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Session creation errors unpredictable, must return fallback
+            player = await registry.get(player_id_uuid) if registry is not None else None
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Lucidity tier retrieval errors unpredictable, optional metadata
             logger.debug(
-                "Error in _get_player_lucidity_tier (session creation)",
+                "Error getting player lucidity tier",
                 player_id=player_id,
                 error=str(e),
                 error_type=type(e).__name__,
             )
             return "lucid"
-
-        return "lucid"
+        if player is None:
+            return "lucid"
+        lucidity_tier_cache.set_tier(player_id, player.lucidity.tier)
+        return player.lucidity.tier
 
     def _compare_canonical_rooms(self, player_room_id: str, message_room_id: str) -> bool:
         """Compare two room IDs using canonical room ID resolution."""

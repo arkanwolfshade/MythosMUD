@@ -92,22 +92,27 @@ async def test_respawn_player_by_user_id_multiple_dead_picks_most_recent() -> No
 
 
 def _session_with_characters(*characters: tuple[MagicMock, int | None]) -> MagicMock:
-    """A session whose user owns ``characters`` as (player, current_lcd); lcd None means no lucidity row."""
+    """A session whose user owns the players of ``characters`` ((player, current_lcd) pairs)."""
     session = MagicMock()
     session.execute = AsyncMock(
         return_value=MagicMock(
             scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[p for p, _ in characters])))
         )
     )
-    lcd_by_player = {p.player_id: lcd for p, lcd in characters}
-
-    async def _get(_model: object, player_id: uuid.UUID) -> MagicMock | None:
-        lcd = lcd_by_player[player_id]
-        return None if lcd is None else MagicMock(current_lcd=lcd)
-
-    session.get = AsyncMock(side_effect=_get)
-    session.refresh = AsyncMock()
     return session
+
+
+def _respawn_service(*characters: tuple[MagicMock, int | None]) -> MagicMock:
+    """A respawn service whose registry-backed ``current_lcd`` answers each character's LCD (None: no such player)."""
+    lcd_by_player = {str(p.player_id): lcd for p, lcd in characters}
+
+    async def current_lcd(player_id: uuid.UUID) -> int | None:
+        return lcd_by_player.get(str(player_id))
+
+    service = MagicMock()
+    service.current_lcd = AsyncMock(side_effect=current_lcd)
+    service.respawn_player_from_delirium = AsyncMock(return_value=True)
+    return service
 
 
 @pytest.mark.asyncio
@@ -115,16 +120,19 @@ async def test_respawn_from_delirium_player_not_found() -> None:
     wrapper = PlayerRespawnWrapper(MagicMock())
     with pytest.raises(ValidationError):
         _ = await wrapper.respawn_player_from_delirium_by_user_id(
-            "user-1", _session_with_characters(), MagicMock(), MagicMock()
+            "user-1", _session_with_characters(), _respawn_service(), MagicMock()
         )
 
 
 @pytest.mark.asyncio
 async def test_respawn_from_delirium_not_delirious() -> None:
     wrapper = PlayerRespawnWrapper(MagicMock())
-    session = _session_with_characters((_dead_player("Fine"), 50), (_dead_player("NoRecord"), None))
+    characters = ((_dead_player("Fine"), 50), (_dead_player("NoRecord"), None))
+    session = _session_with_characters(*characters)
     with pytest.raises(ValidationError):
-        await wrapper.respawn_player_from_delirium_by_user_id("user-1", session, MagicMock(), MagicMock())
+        _ = await wrapper.respawn_player_from_delirium_by_user_id(
+            "user-1", session, _respawn_service(*characters), MagicMock()
+        )
 
 
 @pytest.mark.asyncio
@@ -133,8 +141,7 @@ async def test_respawn_from_delirium_picks_the_delirious_character_among_several
     wrapper = PlayerRespawnWrapper(MagicMock())
     fine, delirious = _dead_player("Fine"), _dead_player("Delirious")
     session = _session_with_characters((fine, 70), (delirious, -10))
-    respawn_service = MagicMock()
-    respawn_service.respawn_player_from_delirium = AsyncMock(return_value=True)
+    respawn_service = _respawn_service((fine, 70), (delirious, -10))
     persistence = MagicMock()
     persistence.get_room_by_id.return_value = None
 
@@ -151,8 +158,7 @@ async def test_respawn_from_delirium_prefers_the_most_recently_active_delirious_
     older.last_active = datetime.datetime(2026, 1, 1, tzinfo=datetime.UTC)
     newer.last_active = datetime.datetime(2026, 6, 1, tzinfo=datetime.UTC)
     session = _session_with_characters((older, -12), (newer, -10))
-    respawn_service = MagicMock()
-    respawn_service.respawn_player_from_delirium = AsyncMock(return_value=True)
+    respawn_service = _respawn_service((older, -12), (newer, -10))
     persistence = MagicMock()
     persistence.get_room_by_id.return_value = None
 
@@ -166,9 +172,7 @@ async def test_respawn_from_delirium_success() -> None:
     wrapper = PlayerRespawnWrapper(MagicMock())
     player = _dead_player("Delirious")
     session = _session_with_characters((player, -15))
-    session.refresh = AsyncMock()
-    respawn_service = MagicMock()
-    respawn_service.respawn_player_from_delirium = AsyncMock(return_value=True)
+    respawn_service = _respawn_service((player, -15))
     persistence = MagicMock()
     persistence.get_room_by_id.return_value = None
     result = await wrapper.respawn_player_from_delirium_by_user_id("user-1", session, respawn_service, persistence)
