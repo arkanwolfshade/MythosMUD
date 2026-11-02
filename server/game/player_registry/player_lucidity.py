@@ -20,10 +20,11 @@ from sqlalchemy import text
 from ...constants.lucidity import STARTING_LCD
 from .part import DbSession, Part, PartWrite
 
+# One row per player: the lucidity columns (NULL with no row yet) plus the cooldowns and exposures as JSON (5b-ii).
 LOAD_LUCIDITY_SQL = text(
     """
-    SELECT current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at
-    FROM get_player_lucidity(:id)
+    SELECT current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at, cooldowns, exposures
+    FROM get_player_lucidity_state(:id)
     """
 )
 
@@ -52,8 +53,8 @@ class LucidityData:
 
     @classmethod
     def from_row(cls, row: Mapping[str, object] | None) -> LucidityData:
-        """Build from a ``get_player_lucidity`` row, or the starting values if there is none."""
-        if row is None:
+        """Build from a ``get_player_lucidity_state`` row; the starting values if the player has no lucidity yet."""
+        if row is None or row.get("current_lcd") is None:
             return cls()
         return cls(
             lcd=int(cast(int, row["current_lcd"])),

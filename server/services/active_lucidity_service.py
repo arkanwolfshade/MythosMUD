@@ -1,4 +1,4 @@
-"""Active LCD adjustment helpers for encounters and recovery rituals."""
+"""Active LCD adjustments: Mythos encounters and recovery rituals, on the player registry (ADR-029 step 5b-ii)."""
 
 from __future__ import annotations
 
@@ -7,13 +7,11 @@ import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from ..models.lucidity import LucidityExposureState
+from ..game.player_registry import PlayerNotFoundError
 from ..structured_logging.enhanced_logging_config import get_logger
-from .lucidity_repository import LucidityRepository
+from .lucidity_helpers import PlayerGoneError
 from .lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 
 if TYPE_CHECKING:
@@ -72,21 +70,27 @@ class ActiveLucidityService:
 
     ACCLIMATION_THRESHOLD = 6  # total encounters before acclimation applies
 
-    _repo: LucidityRepository
-
     def __init__(
         self,
-        session: AsyncSession,
         registry: PlayerRegistry,
         *,
         now_provider: Callable[[], datetime] | None = None,
         catatonia_observer: CatatoniaObserverProtocol | None = None,
     ) -> None:
-        """``session`` holds the exposure and cooldown rows (the caller commits it); lucidity is in ``registry``."""
-        self._session = session
-        self._repo = LucidityRepository(session)
-        self._lucidity_service = LucidityService(registry, catatonia_observer=catatonia_observer)
-        self._now_provider = now_provider or (lambda: datetime.now(UTC))
+        """Lucidity, exposure and cooldowns all live in ``registry`` (ADR-029 steps 5b-i, 5b-ii)."""
+        self._registry: PlayerRegistry = registry
+        self._lucidity_service: LucidityService = LucidityService(registry, catatonia_observer=catatonia_observer)
+        self._now_provider: Callable[[], datetime] = now_provider or (lambda: datetime.now(UTC))
+
+    @classmethod
+    def encounter_delta(cls, profile: EncounterProfile, encounter_count: int) -> int:
+        """The LCD an encounter costs: the first sight, a repeat, or half a repeat once acclimated (at least 1)."""
+        if encounter_count == 1:
+            return profile.first_time
+        if encounter_count >= cls.ACCLIMATION_THRESHOLD:
+            half_value = math.trunc(profile.repeat / 2)
+            return -1 if not half_value and profile.repeat < 0 else half_value
+        return profile.repeat
 
     async def apply_encounter_lucidity_loss(
         self,
@@ -95,51 +99,34 @@ class ActiveLucidityService:
         *,
         category: str,
         location_id: str | None = None,
-    ) -> Any:
-        """Apply LCD loss for a Mythos encounter."""
-
-        # Convert player_id to UUID if it's a string
-        if isinstance(player_id, str):
-            try:
-                player_id_uuid = uuid.UUID(player_id)
-            except ValueError, AttributeError:
-                logger.error("Invalid player_id format", player_id=player_id)
-                raise ValueError(f"Invalid player_id format: {player_id}") from None
-        else:
-            player_id_uuid = player_id
-
+    ) -> LucidityUpdateResult:
+        """Apply LCD loss for a Mythos encounter: count the encounter and take the loss in one unit."""
+        player_id_uuid = _as_uuid(player_id)
         category_key = category.lower()
         profile = self.ENCOUNTER_PROFILES.get(category_key)
         if profile is None:
             raise UnknownEncounterCategoryError(category)
 
-        exposure: LucidityExposureState = await self._repo.increment_exposure_state(player_id_uuid, entity_archetype)
-        encounter_count = exposure.encounter_count
-
-        if encounter_count == 1:
-            delta = profile.first_time
-        elif encounter_count >= self.ACCLIMATION_THRESHOLD:
-            half = profile.repeat / 2
-            half_value = math.trunc(half)
-            if not half_value and profile.repeat < 0:
-                half_value = -1
-            delta = half_value
-        else:
-            delta = profile.repeat
-
-        metadata = {
-            "encounter_category": category_key,
-            "entity_archetype": entity_archetype,
-            "encounter_count": encounter_count,
-        }
-
-        return await self._lucidity_service.apply_lucidity_adjustment(
-            player_id_uuid,
-            delta,
-            reason_code=f"encounter_{category_key}",
-            metadata=metadata,
-            location_id=location_id,
-        )
+        try:
+            async with self._registry.mutate(player_id_uuid) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                encounter_count = player.exposure.record_encounter(entity_archetype, self._now_provider())
+                applied = self._lucidity_service.apply_in(
+                    player,
+                    self.encounter_delta(profile, encounter_count),
+                    reason_code=f"encounter_{category_key}",
+                    metadata={
+                        "encounter_category": category_key,
+                        "entity_archetype": entity_archetype,
+                        "encounter_count": encounter_count,
+                    },
+                    location_id=location_id,
+                )
+        except PlayerNotFoundError as error:
+            raise PlayerGoneError(str(player_id_uuid)) from error
+        if applied is None:  # pragma: no cover - an encounter always costs LCD
+            raise RuntimeError("encounter adjustment applied nothing")
+        await self._lucidity_service.announce(applied)
+        return applied.result
 
     async def perform_recovery_action(
         self,
@@ -147,19 +134,9 @@ class ActiveLucidityService:
         *,
         action_code: str,
         location_id: str | None = None,
-    ) -> Any:
+    ) -> LucidityUpdateResult:
         """Perform a recovery action and enforce cooldowns."""
-
-        # Convert player_id to UUID if it's a string
-        if isinstance(player_id, str):
-            try:
-                player_id_uuid = uuid.UUID(player_id)
-            except ValueError, AttributeError:
-                logger.error("Invalid player_id format", player_id=player_id)
-                raise ValueError(f"Invalid player_id format: {player_id}") from None
-        else:
-            player_id_uuid = player_id
-
+        player_id_uuid = _as_uuid(player_id)
         action_key = action_code.lower()
         profile = self.RECOVERY_ACTIONS.get(action_key)
         if profile is None:
@@ -184,29 +161,28 @@ class ActiveLucidityService:
     ) -> LucidityUpdateResult:
         """Apply an LCD gain under a named cooldown (shared by recovery actions and consumable items).
 
-        The key names the cooldown row and the audit reason code (``recovery_<key>``), so several
-        sources may share one cooldown by sharing a key.
+        The key names the cooldown and the audit reason code (``recovery_<key>``), so several sources may share one
+        cooldown by sharing a key. The check, the gain and the new cooldown are one unit: two rites at once cannot both
+        pass the check.
         """
-
         now = self._now_provider()
-        existing = await self._repo.get_cooldown(player_id, cooldown_key)
-        if existing and existing.cooldown_expires_at:
-            cooldown_expiry = existing.cooldown_expires_at
-            if cooldown_expiry.tzinfo is None:
-                cooldown_expiry = cooldown_expiry.replace(tzinfo=UTC)
-            if cooldown_expiry > now:
-                raise LucidityActionOnCooldownError(cooldown_key)
-
-        result = await self._lucidity_service.apply_lucidity_adjustment(
-            player_id,
-            lcd_delta,
-            reason_code=f"recovery_{cooldown_key}",
-            metadata={"recovery_action": cooldown_key},
-            location_id=location_id,
-        )
-
-        expires_at = (now + cooldown).replace(tzinfo=None)
-        _ = await self._repo.set_cooldown(player_id, cooldown_key, expires_at)
+        try:
+            async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                if player.cooldowns.active(cooldown_key, now):
+                    raise LucidityActionOnCooldownError(cooldown_key)
+                applied = self._lucidity_service.apply_in(
+                    player,
+                    lcd_delta,
+                    reason_code=f"recovery_{cooldown_key}",
+                    metadata={"recovery_action": cooldown_key},
+                    location_id=location_id,
+                )
+                player.cooldowns.set(cooldown_key, now + cooldown)
+        except PlayerNotFoundError as error:
+            raise PlayerGoneError(str(player_id)) from error
+        if applied is None:  # pragma: no cover - a fixed delta is always applied
+            raise RuntimeError("recovery adjustment applied nothing")
+        await self._lucidity_service.announce(applied)
 
         logger.info(
             "Recovery action performed",
@@ -216,21 +192,22 @@ class ActiveLucidityService:
             lcd_delta=lcd_delta,
             cooldown_minutes=cooldown.total_seconds() / 60,
         )
+        return applied.result
 
-        return result
+    async def get_action_cooldown(self, player_id: uuid.UUID | str, action_code: str) -> datetime | None:
+        """When the player's cooldown on a recovery action expires, or None if there is none."""
+        player = await self._registry.get(_as_uuid(player_id))
+        return player.cooldowns.expires_at(action_code.lower()) if player is not None else None
 
-    async def get_action_cooldown(self, player_id: uuid.UUID | str, action_code: str) -> Any:
-        """Fetch the cooldown record for a recovery action."""
-        # Convert player_id to UUID if it's a string
-        if isinstance(player_id, str):
-            try:
-                player_id_uuid = uuid.UUID(player_id)
-            except ValueError, AttributeError:
-                logger.error("Invalid player_id format", player_id=player_id)
-                raise ValueError(f"Invalid player_id format: {player_id}") from None
-        else:
-            player_id_uuid = player_id
-        return await self._repo.get_cooldown(player_id_uuid, action_code.lower())
+
+def _as_uuid(player_id: uuid.UUID | str) -> uuid.UUID:
+    if isinstance(player_id, uuid.UUID):
+        return player_id
+    try:
+        return uuid.UUID(player_id)
+    except ValueError, AttributeError:
+        logger.error("Invalid player_id format", player_id=player_id)
+        raise ValueError(f"Invalid player_id format: {player_id}") from None
 
 
 __all__ = [

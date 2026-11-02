@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Sequence
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from typing import cast
 
 import pytest
@@ -15,7 +15,6 @@ from server.constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, RECOVERY_WARD_
 from server.game.player_registry import LucidityData
 from server.models.lucidity import LucidityActionCode
 from server.models.player import Player
-from server.services import player_respawn_service as module
 from server.services.player_respawn_service import PlayerRespawnService
 from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
@@ -24,10 +23,12 @@ from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidi
 class Rig:
     player: Player
     lucidity: LucidityHarness
-    cooldowns: list[tuple[uuid.UUID, str, datetime]] = field(
-        default_factory=lambda: cast(list[tuple[uuid.UUID, str, datetime]], [])
-    )
     commits: int = 0
+
+    def debrief_pending_until(self) -> datetime | None:
+        return self.lucidity.cooldowns(uuid.UUID(str(self.player.player_id))).expires_at(
+            LucidityActionCode.DEBRIEF_PENDING
+        )
 
 
 class FakeSession:
@@ -49,21 +50,13 @@ class FakeSession:
 
 
 @pytest.fixture(name="rig")
-def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
+def _rig() -> Rig:
     player = Player(player_id=str(uuid.uuid4()), name="Tester")
     player.current_room_id = "somewhere_in_the_tutorial"
     player.set_stats({"current_dp": 1, "max_dp": 100, "position": "lying"})
     lucidity = lucidity_registry({uuid.UUID(str(player.player_id)): LucidityData(-10, "catatonic")})
     rig = Rig(player, lucidity)
 
-    class FakeLucidityRepository:
-        def __init__(self, session: FakeSession) -> None:
-            _ = session
-
-        async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> None:
-            rig.cooldowns.append((player_id, action_code, expires_at))
-
-    monkeypatch.setattr(module, "LucidityRepository", FakeLucidityRepository)
     return rig
 
 
@@ -78,10 +71,9 @@ async def test_a_delirium_respawn_leaves_a_pending_debrief(rig: Rig) -> None:
     )
 
     assert respawned is True
-    [(player_id, action_code, expires_at)] = rig.cooldowns
-    assert player_id == uuid.UUID(str(rig.player.player_id))
-    assert action_code == LucidityActionCode.DEBRIEF_PENDING
-    assert expires_at > datetime.now() + timedelta(days=300)  # a long-lived flag, cleared by the debrief itself
+    expires_at = rig.debrief_pending_until()
+    assert expires_at is not None
+    assert expires_at > datetime.now(UTC) + timedelta(days=300)  # a long-lived flag, cleared by the debrief itself
 
 
 @pytest.mark.asyncio
@@ -94,7 +86,7 @@ async def test_a_sanitarium_respawn_still_leaves_a_pending_debrief(rig: Rig) -> 
     )
 
     assert respawned is True
-    assert [code for _, code, _ in rig.cooldowns] == [LucidityActionCode.DEBRIEF_PENDING]
+    assert rig.debrief_pending_until() is not None
 
 
 @pytest.mark.asyncio

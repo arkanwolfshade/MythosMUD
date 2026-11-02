@@ -12,6 +12,11 @@ from typing import Protocol, cast
 from ..utils.int_coercion import coerce_int
 from ..utils.liability_types import LiabilityStackEntry
 
+
+class PlayerGoneError(LookupError):
+    """The player row no longer exists (deleted or reset), so there is no lucidity to create or change (#1147)."""
+
+
 LIABILITY_CATALOG: tuple[str, ...] = (
     "night_frayed_reflexes",
     "murmuring_chorus",

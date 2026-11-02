@@ -112,12 +112,7 @@ async def test_handle_pray_command_success(mock_request, mock_persistence, mock_
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        mock_session.commit = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -142,14 +137,9 @@ async def test_handle_pray_command_cooldown(mock_request, mock_persistence, mock
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_cooldown = MagicMock()
-    mock_cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=5)
+    mock_cooldown = datetime.now(UTC) + timedelta(minutes=5)
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -173,11 +163,7 @@ async def test_handle_pray_command_unknown_action(mock_request, mock_persistence
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -212,11 +198,7 @@ async def test_handle_pray_command_with_mp_restoration(mock_request, mock_persis
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -247,12 +229,7 @@ async def test_handle_meditate_command_delegates(mock_request, mock_persistence,
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        mock_session.commit = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -279,11 +256,7 @@ async def test_handle_group_solace_command_delegates(mock_request, mock_persiste
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -310,11 +283,7 @@ async def test_handle_therapy_command_delegates(mock_request, mock_persistence, 
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -337,13 +306,7 @@ async def test_handle_pray_command_os_error(mock_request, mock_persistence, mock
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_session = AsyncMock()
-    mock_session.rollback = AsyncMock()
-
-    async def async_gen():
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -358,7 +321,6 @@ async def test_handle_pray_command_os_error(mock_request, mock_persistence, mock
             )
 
             assert "Anomalous interference" in result["result"]
-            mock_session.rollback.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -367,14 +329,9 @@ async def test_handle_pray_command_cooldown_no_expiry(mock_request, mock_persist
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_cooldown = MagicMock()
-    mock_cooldown.cooldown_expires_at = None
+    mock_cooldown = None
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -398,11 +355,7 @@ async def test_handle_pray_command_cooldown_no_cooldown_object(mock_request, moc
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -431,12 +384,7 @@ async def test_handle_pray_command_negative_delta(mock_request, mock_persistence
     mock_result.delta = -5  # Negative delta
     mock_result.new_lcd = 45
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        mock_session.commit = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -468,12 +416,7 @@ async def test_handle_meditate_command_with_mp_restoration(mock_request, mock_pe
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        mock_session.commit = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -506,12 +449,7 @@ async def test_handle_pray_command_mp_restored_zero(mock_request, mock_persisten
     mock_result.delta = 5
     mock_result.new_lcd = 55
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        mock_session.commit = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -551,15 +489,10 @@ async def test_handle_pray_command_cooldown_naive_datetime(mock_request, mock_pe
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_cooldown = MagicMock()
     # Naive datetime (no timezone)
-    mock_cooldown.cooldown_expires_at = datetime.now() + timedelta(minutes=5)
+    mock_cooldown = datetime.now() + timedelta(minutes=5)
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -583,14 +516,9 @@ async def test_handle_meditate_command_cooldown(mock_request, mock_persistence, 
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_cooldown = MagicMock()
-    mock_cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=3)
+    mock_cooldown = datetime.now(UTC) + timedelta(minutes=3)
 
-    async def async_gen():
-        mock_session = AsyncMock()
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -614,13 +542,7 @@ async def test_handle_group_solace_command_unknown_action(mock_request, mock_per
     mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
     mock_request.app.state.container.async_persistence = mock_persistence
 
-    mock_session = AsyncMock()
-    mock_session.rollback = AsyncMock()
-
-    async def async_gen():
-        yield mock_session
-
-    with patch("server.commands.lucidity_recovery_commands.get_async_session", return_value=async_gen()):
+    with patch("server.commands.lucidity_recovery_commands.player_registry"):
         with patch("server.commands.lucidity_recovery_commands.ActiveLucidityService") as mock_service_class:
             mock_service = AsyncMock()
             mock_service_class.return_value = mock_service
@@ -635,4 +557,3 @@ async def test_handle_group_solace_command_unknown_action(mock_request, mock_per
             )
 
             assert "uncharted" in result["result"]
-            mock_session.rollback.assert_awaited_once()

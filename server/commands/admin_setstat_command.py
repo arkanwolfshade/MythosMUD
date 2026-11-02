@@ -21,8 +21,7 @@ from ..exceptions import DatabaseError
 from ..realtime.envelope import build_event
 from ..realtime.posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
 from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
-from ..services.lucidity_helpers import CatatoniaObserverProtocol
-from ..services.lucidity_repository import PlayerGoneError
+from ..services.lucidity_helpers import CatatoniaObserverProtocol, PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int

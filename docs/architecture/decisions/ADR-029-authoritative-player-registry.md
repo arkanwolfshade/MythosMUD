@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.10** · MythosMUD · 2026-10-30
+**Version 1.0.11** · MythosMUD · 2026-11-02
 
 ---
 
@@ -83,7 +83,8 @@ saves player-keyed rows.
 | --- | --- |
 | core | `players` row and `stats` jsonb: DP, MP, corruption, fear, occult knowledge, position, XP, level, room, tutorial instance |
 | inventory | `player_inventories` (inventory, equipped) |
-| lucidity | `player_lucidity`, `lucidity_exposure_state` |
+| lucidity | `player_lucidity` |
+| exposure | `lucidity_exposure_state` (encounter counts per archetype) |
 | effects | `player_effects` |
 | quests | `quest_instances` |
 | skills / spells | `player_skills` / `player_spells` |
@@ -137,7 +138,7 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
 | Lazy | DP, MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
@@ -262,8 +263,12 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
            tier cache) only after it. Every reader and writer moves at once, the ticks (catatonia, drain, passive
            flux) and the run restart's lucidity reset included, because a writer left on the ORM would revert the
            registry's unflushed change.
-         - 5b-ii: `lucidity_exposure_state` and `lucidity_cooldowns` (including the debrief's `DEBRIEF_PENDING`),
-           both sync.
+         - 5b-ii: an exposure part (`lucidity_exposure_state`) and a cooldowns part (`lucidity_cooldowns`: recovery
+           actions, hallucination timers, the involuntary flee, the debrief's `DEBRIEF_PENDING`), both sync. One
+           function, `get_player_lucidity_state`, loads them with the lucidity row; a cooldown write replaces the
+           player's whole set, so a cleared code is deleted. A check and its new cooldown are one unit (a recovery,
+           a hallucination roll, a flee), as are an encounter's count and its loss, and a delirium respawn's
+           lucidity reset and its `DEBRIEF_PENDING`. `LucidityRepository` is deleted.
      - 5c: corruption (`stats` in the row part, `corruption_cooldowns`).
        Until step 8 raises the idle TTL, a lazily dirty part keeps its player in memory until the sweep, so its
        row part can trail writers that still use `upsert_player`. 5c writes `stats` through the row part and must
@@ -290,6 +295,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.11 | 2026-11-02 | §3.2: exposure is its own part. §3.4: cooldowns and encounter counts are sync. §6: step 5b-ii as shipped (one load function, replace-set cooldown writes, checks and their cooldowns in one unit) |
 | 1.0.10 | 2026-10-30 | §6: step 5b splits into 5b-i (the lazy lucidity part and its ledger, every reader and writer, ticks and the run restart's reset included) and 5b-ii (exposure state and cooldowns, sync); 5c is corruption only; the TTL-0 residency hazard for 5c and the e2e scripts is recorded |
 | 1.0.9 | 2026-10-30 | §3.4: every quest change is sync, progress counters included. §6: step 5 splits into 5a (quests), 5b (lucidity, cooldowns, debrief) and 5c (corruption, run restart) |
 | 1.0.8 | 2026-10-30 | §3.4: `upsert_player` writes the inventory columns only when it inserts a player; after that only the registry writes them (step 4c-iii, which ends step 4) |

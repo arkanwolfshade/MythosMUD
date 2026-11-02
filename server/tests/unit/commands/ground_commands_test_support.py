@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace
 
 from server.commands.ground_channel import GroundChannel
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 
 
 @dataclass

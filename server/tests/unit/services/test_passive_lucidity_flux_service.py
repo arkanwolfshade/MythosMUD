@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from server.config import get_config
 from server.game.player_registry import LucidityData, PlayerRegistry
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 from server.services.lucidity_service import LucidityUpdateResult
 from server.services.passive_lucidity_flux.config import FluxServiceConfig
 from server.services.passive_lucidity_flux.models import PassiveFluxContext
@@ -319,7 +319,7 @@ async def test_process_single_player_no_delta() -> None:
             timestamp=datetime.now(UTC),
             tick_count=2,
             lucidity_service=AsyncMock(),
-            session=AsyncMock(),
+            registry=lucidity_registry({}).registry,
         )
     )
     assert result is None
@@ -345,17 +345,12 @@ async def test_process_single_player_skips_missing_player_fk(missing_player_erro
     player = MagicMock(player_id=str(player_id), current_room_id="room-a")
     lucidity_service: AsyncMock = AsyncMock()
     lucidity_service.apply_lucidity_adjustment = AsyncMock(side_effect=missing_player_error)
-    nested = MagicMock()
-    nested.__aenter__ = AsyncMock(return_value=None)
-    nested.__aexit__ = AsyncMock(return_value=None)
-    session: AsyncMock = AsyncMock()
-    begin_nested: MagicMock = MagicMock(return_value=nested)
-    session.begin_nested = begin_nested
+    registry = lucidity_registry({}).registry
 
     with patch(
         "server.services.passive_lucidity_flux.service.handle_hallucination_triggers",
         new_callable=AsyncMock,
-    ):
+    ) as triggers:
         # Same private entry as test_process_single_player_no_delta (unit seam for one player).
         player_id_str, result = await svc._process_single_player(  # pyright: ignore[reportPrivateUsage]
             PlayerFluxCtx(
@@ -366,13 +361,13 @@ async def test_process_single_player_skips_missing_player_fk(missing_player_erro
                 timestamp=datetime.now(UTC),
                 tick_count=2,
                 lucidity_service=lucidity_service,
-                session=session,
+                registry=registry,
             )
         )
 
     assert result is None
     assert player_id_str == str(player_id)
-    begin_nested.assert_called_once()
+    assert triggers.await_args is not None and triggers.await_args.args[-1] is registry  # timers live in the registry
 
 
 @pytest.mark.asyncio

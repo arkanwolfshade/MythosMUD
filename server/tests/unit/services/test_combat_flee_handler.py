@@ -3,6 +3,7 @@ Unit tests for combat flee handler (voluntary flee roll and execute_voluntary_fl
 """
 
 import uuid
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -214,61 +215,62 @@ async def test_check_involuntary_flee_zero_max_dp_returns_false():
 
 
 @pytest.mark.asyncio
-async def test_involuntary_flee_on_cooldown_active():
-    """_involuntary_flee_on_cooldown returns True when cooldown not expired."""
-    from datetime import UTC, datetime, timedelta
+async def test_check_involuntary_flee_without_a_registry_returns_false():
+    """Without the registry neither the tier nor the cooldown can be read."""
+    from server.services.combat_flee_handler import check_involuntary_flee
 
-    from server.services.combat_flee_handler import _involuntary_flee_on_cooldown
-
-    lucidity_service = AsyncMock()
-    cooldown = MagicMock()
-    cooldown.cooldown_expires_at = datetime.now(UTC) + timedelta(minutes=1)
-    lucidity_service.get_cooldown = AsyncMock(return_value=cooldown)
-    player_id = uuid.uuid4()
-    assert await _involuntary_flee_on_cooldown(lucidity_service, player_id, "involuntary_flee") is True
+    assert await check_involuntary_flee(_make_participant(uuid.uuid4()), 50) is False
 
 
 @pytest.mark.asyncio
-async def test_involuntary_flee_on_cooldown_expired():
-    """_involuntary_flee_on_cooldown returns False when cooldown expired."""
-    from datetime import UTC, datetime, timedelta
+async def test_involuntary_flee_blocked_by_tier_and_damage_starts_no_cooldown():
+    """The target's tier comes from the registry; a check that does not pass leaves no cooldown."""
+    from server.services.combat_flee_handler import INVOLUNTARY_FLEE_COOLDOWN, check_involuntary_flee
 
-    from server.services.combat_flee_handler import _involuntary_flee_on_cooldown
-
-    lucidity_service = AsyncMock()
-    cooldown = MagicMock()
-    cooldown.cooldown_expires_at = datetime.now(UTC) - timedelta(minutes=1)
-    lucidity_service.get_cooldown = AsyncMock(return_value=cooldown)
-    player_id = uuid.uuid4()
-    assert await _involuntary_flee_on_cooldown(lucidity_service, player_id, "involuntary_flee") is False
+    participant = _make_participant(uuid.uuid4())
+    harness = lucidity_registry({participant.participant_id: LucidityData(10, "deranged")})
+    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=False) as should_flee:
+        assert await check_involuntary_flee(participant, 5, harness.registry) is False
+    should_flee.assert_called_once_with("deranged", 0.05)
+    assert harness.cooldowns(participant.participant_id).expires_at(INVOLUNTARY_FLEE_COOLDOWN) is None
 
 
 @pytest.mark.asyncio
-async def test_involuntary_flee_on_cooldown_naive_datetime():
-    """Naive cooldown_expires_at is treated as UTC."""
-    from datetime import datetime
+async def test_involuntary_flee_starts_its_cooldown_in_one_commit():
+    from server.services.combat_flee_handler import INVOLUNTARY_FLEE_COOLDOWN, check_involuntary_flee
 
-    from server.services.combat_flee_handler import _involuntary_flee_on_cooldown
-
-    lucidity_service = AsyncMock()
-    cooldown = MagicMock()
-    cooldown.cooldown_expires_at = datetime(2099, 1, 1)
-    lucidity_service.get_cooldown = AsyncMock(return_value=cooldown)
-    player_id = uuid.uuid4()
-    assert await _involuntary_flee_on_cooldown(lucidity_service, player_id, "involuntary_flee") is True
+    participant = _make_participant(uuid.uuid4())
+    harness = lucidity_registry({participant.participant_id: LucidityData(10, "deranged")})
+    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=True):
+        assert await check_involuntary_flee(participant, 20, harness.registry) is True
+    expires_at = harness.cooldowns(participant.participant_id).expires_at(INVOLUNTARY_FLEE_COOLDOWN)
+    assert expires_at is not None and expires_at > datetime.now(UTC) + timedelta(minutes=1)
+    assert harness.db.commits == 1  # cooldowns are a sync part
 
 
 @pytest.mark.asyncio
-async def test_involuntary_flee_on_cooldown_no_expiry():
-    """Missing cooldown_expires_at is not on cooldown."""
-    from server.services.combat_flee_handler import _involuntary_flee_on_cooldown
+@pytest.mark.parametrize(("offset", "flees"), [(timedelta(minutes=1), False), (timedelta(minutes=-1), True)])
+async def test_involuntary_flee_waits_out_its_cooldown(offset: timedelta, flees: bool):
+    from server.services.combat_flee_handler import INVOLUNTARY_FLEE_COOLDOWN, check_involuntary_flee
 
-    lucidity_service = AsyncMock()
-    cooldown = MagicMock()
-    cooldown.cooldown_expires_at = None
-    lucidity_service.get_cooldown = AsyncMock(return_value=cooldown)
-    player_id = uuid.uuid4()
-    assert await _involuntary_flee_on_cooldown(lucidity_service, player_id, "involuntary_flee") is False
+    participant = _make_participant(uuid.uuid4())
+    harness = lucidity_registry(
+        {participant.participant_id: LucidityData(10, "deranged")},
+        cooldowns={INVOLUNTARY_FLEE_COOLDOWN: datetime.now(UTC) + offset},
+    )
+    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=True):
+        assert await check_involuntary_flee(participant, 20, harness.registry) is flees
+    assert harness.db.commits == (1 if flees else 0)
+
+
+@pytest.mark.asyncio
+async def test_involuntary_flee_for_a_target_the_registry_does_not_know_counts_them_lucid():
+    from server.services.combat_flee_handler import check_involuntary_flee
+
+    participant = _make_participant(uuid.uuid4())
+    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=False) as should_flee:
+        assert await check_involuntary_flee(participant, 20, lucidity_registry({}).registry) is False
+    should_flee.assert_called_once_with("lucid", 0.20)
 
 
 @pytest.mark.asyncio
@@ -312,73 +314,6 @@ async def test_execute_voluntary_flee_move_fails_returns_false():
                 AsyncMock(), MagicMock(return_value=room), movement_service, combat, fleeing_id
             )
     assert result is False
-
-
-@pytest.mark.asyncio
-async def test_check_involuntary_flee_with_session_tier_blocks():
-    """Involuntary flee blocked when tier/damage threshold not met."""
-    from server.services.combat_flee_handler import _check_involuntary_flee_with_session
-
-    participant = _make_participant(uuid.uuid4())
-    session = AsyncMock()
-    with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=False) as should_flee:
-        result = await _check_involuntary_flee_with_session(session, participant, 0.05, 5, None)
-    assert result is False
-    should_flee.assert_called_once_with(
-        "lucid", 0.05
-    )  # no registry: the tier is unknown, so the target counts as lucid
-
-
-@pytest.mark.asyncio
-async def test_check_involuntary_flee_with_session_sets_cooldown():
-    """Involuntary flee allowed sets cooldown and commits."""
-    from server.services.combat_flee_handler import _check_involuntary_flee_with_session
-
-    participant = _make_participant(uuid.uuid4())
-    session = AsyncMock()
-    harness = lucidity_registry({participant.participant_id: LucidityData(10, "deranged")})
-    cooldowns_set: list[str] = []
-
-    class _Cooldowns:
-        def __init__(self, session: object) -> None:
-            _ = session
-
-        async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> None:
-            _ = player_id, action_code
-
-        async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: object) -> None:
-            _ = player_id, expires_at
-            cooldowns_set.append(action_code)
-
-    with patch("server.services.combat_flee_handler.LucidityRepository", _Cooldowns):
-        with patch("server.services.combat_flee_handler.should_involuntary_flee", return_value=True) as should_flee:
-            result = await _check_involuntary_flee_with_session(session, participant, 0.20, 20, harness.registry)
-    assert result is True
-    should_flee.assert_called_once_with("deranged", 0.20)
-    assert cooldowns_set == ["involuntary_flee"]
-    session.commit.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_check_involuntary_flee_session_path():
-    """check_involuntary_flee delegates to session helper."""
-    from server.services.combat_flee_handler import check_involuntary_flee
-
-    participant = _make_participant(uuid.uuid4())
-    session = AsyncMock()
-
-    async def fake_session_gen():
-        yield session
-
-    with patch("server.services.combat_flee_handler.get_async_session", return_value=fake_session_gen()):
-        with patch(
-            "server.services.combat_flee_handler._check_involuntary_flee_with_session",
-            new_callable=AsyncMock,
-            return_value=True,
-        ) as mock_check:
-            result = await check_involuntary_flee(participant, 20)
-    assert result is True
-    mock_check.assert_awaited_once()
 
 
 def _make_npc_participant(participant_id: uuid.UUID, name: str = "Npc", dp: int = 100) -> CombatParticipant:

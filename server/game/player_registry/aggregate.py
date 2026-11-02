@@ -1,8 +1,8 @@
 """
 PlayerAggregate: everything the server knows about one player, held once in memory (ADR-029 §3.2).
 
-The aggregate is a set of parts. Today that is the ``players`` row, the inventory, the quests and lucidity; later
-ADR-029 steps add effects, cooldowns and the rest as their subsystems move onto the registry. Callers only ever reach it through
+The aggregate is a set of parts. Today that is the ``players`` row, the inventory, the quests, lucidity, the
+lucidity cooldowns and exposure; later ADR-029 steps add effects and the rest as their subsystems move onto the registry. Callers only ever reach it through
 PlayerRegistry: ``mutate()`` hands out the aggregate itself, ``peek()`` hands out a PlayerView.
 """
 
@@ -10,10 +10,13 @@ from __future__ import annotations
 
 import uuid
 from collections.abc import Mapping, Sequence
+from datetime import datetime
 from typing import Protocol
 
 from ...events.event_types import BaseEvent
 from .part import Part, PartWrite
+from .player_cooldowns import PlayerCooldownsPart
+from .player_exposure import PlayerExposurePart
 from .player_inventory import PlayerInventoryPart
 from .player_lucidity import LucidityData, PlayerLucidityPart
 from .player_quests import PlayerQuestsPart, QuestInstanceData
@@ -133,6 +136,26 @@ class PlayerLucidityView(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
+class PlayerCooldownsView(Protocol):
+    """Read-only access to the cooldowns part."""
+
+    def expires_at(self, action_code: str) -> datetime | None:
+        """When the cooldown on ``action_code`` expires, or None."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    def active(self, action_code: str, now: datetime) -> bool:
+        """True while the cooldown on ``action_code`` has not expired."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
+class PlayerExposureView(Protocol):
+    """Read-only access to the exposure part."""
+
+    def encounter_count(self, entity_archetype: str) -> int:
+        """How many times the player has met ``entity_archetype``."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
 class PlayerView(Protocol):
     """What ``PlayerRegistry.peek()`` returns: the live aggregate, typed read-only."""
 
@@ -161,16 +184,28 @@ class PlayerView(Protocol):
         """Lucidity (LCD, tier, liabilities)."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
+    @property
+    def cooldowns(self) -> PlayerCooldownsView:
+        """Lucidity cooldowns by action code."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    @property
+    def exposure(self) -> PlayerExposureView:
+        """Encounter counts by entity archetype."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
 
 class PlayerAggregate:
     """One player's in-memory state: its parts and the domain events its current unit of work has queued."""
 
-    __slots__: tuple[str, ...] = ("_events", "_inventory", "_lucidity", "_quests", "_row")
+    __slots__: tuple[str, ...] = ("_cooldowns", "_events", "_exposure", "_inventory", "_lucidity", "_quests", "_row")
 
     _row: PlayerRowPart
     _inventory: PlayerInventoryPart
     _quests: PlayerQuestsPart
     _lucidity: PlayerLucidityPart
+    _cooldowns: PlayerCooldownsPart
+    _exposure: PlayerExposurePart
     _events: list[BaseEvent]
 
     def __init__(
@@ -179,11 +214,15 @@ class PlayerAggregate:
         inventory: PlayerInventoryPart,
         quests: PlayerQuestsPart | None = None,
         lucidity: PlayerLucidityPart | None = None,
+        cooldowns: PlayerCooldownsPart | None = None,
+        exposure: PlayerExposurePart | None = None,
     ) -> None:
         self._row = row
         self._inventory = inventory
         self._quests = quests if quests is not None else PlayerQuestsPart(row.player_id)
         self._lucidity = lucidity if lucidity is not None else PlayerLucidityPart(row.player_id)
+        self._cooldowns = cooldowns if cooldowns is not None else PlayerCooldownsPart(row.player_id)
+        self._exposure = exposure if exposure is not None else PlayerExposurePart(row.player_id)
         self._events = []
 
     @property
@@ -211,9 +250,19 @@ class PlayerAggregate:
         """Lucidity (LCD, tier, liabilities)."""
         return self._lucidity
 
+    @property
+    def cooldowns(self) -> PlayerCooldownsPart:
+        """Lucidity cooldowns by action code."""
+        return self._cooldowns
+
+    @property
+    def exposure(self) -> PlayerExposurePart:
+        """Encounter counts by entity archetype."""
+        return self._exposure
+
     def parts(self) -> tuple[Part, ...]:
         """Every part, in write order."""
-        return (self._row, self._inventory, self._quests, self._lucidity)
+        return (self._row, self._inventory, self._quests, self._lucidity, self._cooldowns, self._exposure)
 
     def emit(self, event: BaseEvent) -> None:
         """Queue a domain event; it is published only if the unit of work commits."""

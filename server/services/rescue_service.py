@@ -16,7 +16,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from server.services.lucidity_event_dispatcher import send_rescue_update_event
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import PlayerGoneError
 from server.services.lucidity_service import LucidityService, LucidityUpdateResult
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.command_parser import get_username_from_user

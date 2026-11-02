@@ -1,12 +1,16 @@
 """Unit tests for container bundle modules."""
 
 import uuid
-from datetime import datetime
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.container import ApplicationContainer
 from server.container.bundles.chat import CHAT_ATTRS, ChatBundle
 from server.container.bundles.combat import COMBAT_ATTRS, CombatBundle, make_lucidity_adjuster, make_lucidity_reader
 from server.container.bundles.core import CORE_ATTRS, CoreBundle
@@ -23,7 +27,8 @@ from server.container.bundles.realtime import REALTIME_ATTRS, RealtimeBundle
 from server.container.bundles.time import TIME_ATTRS, TimeBundle
 from server.container.main import _flatten_bundle
 from server.game.magic.spell_effects import SpellEffectsDeps
-from server.game.player_registry import LucidityData
+from server.game.player_registry import LucidityData, PlayerRegistry
+from server.services.player_respawn_service import PlayerRespawnService
 from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
@@ -681,27 +686,64 @@ async def test_realtime_bundle_connect_nats_success() -> None:
 
 
 async def test_combat_bundle_sanitarium_failover_callback() -> None:
+    """The failover clears every hallucination timer (and only those), then moves the player to the sanitarium."""
+    player_id = uuid.uuid4()
+    later = datetime.now(UTC) + timedelta(minutes=5)
+    harness = lucidity_registry(
+        {player_id: None}, cooldowns={"hallucination_timer": later, "hallucination_x": later, "pray": later}
+    )
+    respawn = _FailoverRespawn()
+
+    await _run_failover(respawn, harness.registry, player_id)
+
+    cooldowns = harness.cooldowns(player_id)
+    assert cooldowns.expires_at("hallucination_timer") is None and cooldowns.expires_at("hallucination_x") is None
+    assert cooldowns.expires_at("pray") == later
+    assert respawn.moved == [str(player_id)]
+
+
+@pytest.mark.asyncio
+async def test_combat_bundle_sanitarium_failover_for_a_deleted_player_is_logged_not_raised() -> None:
+    respawn = _FailoverRespawn()
+
+    await _run_failover(respawn, lucidity_registry({}).registry, uuid.uuid4())
+
+    assert respawn.moved == []
+
+
+class _FailoverRespawn:
+    def __init__(self) -> None:
+        self.moved: list[str] = []
+
+    async def move_player_to_limbo(self, player_id: str, reason: str, session: object) -> bool:
+        _ = reason, session
+        self.moved.append(player_id)
+        return True
+
+    async def respawn_player_from_sanitarium(self, player_id: str, session: object) -> bool:
+        _ = player_id, session
+        return True
+
+
+class _FailoverSession:
+    async def rollback(self) -> None:
+        return None
+
+
+async def _run_failover(respawn: _FailoverRespawn, registry: PlayerRegistry, player_id: uuid.UUID) -> None:
+    @asynccontextmanager
+    async def session() -> AsyncGenerator[_FailoverSession]:
+        yield _FailoverSession()
+
+    container = SimpleNamespace(
+        database_manager=SimpleNamespace(get_session_maker=lambda: session), player_registry=registry
+    )
     bundle = CombatBundle()
-    bundle.player_respawn_service = AsyncMock()
-    container = MagicMock()
-    session = AsyncMock()
-    session_maker = MagicMock()
-    session_maker.__aenter__ = AsyncMock(return_value=session)
-    session_maker.__aexit__ = AsyncMock(return_value=None)
-    container.database_manager.get_session_maker.return_value = MagicMock(return_value=session_maker)
-
-    class _NoTimers:
-        def __init__(self, session: object) -> None:
-            _ = session
-
-        async def clear_hallucination_timers(self, player_id: uuid.UUID) -> int:
-            _ = player_id
-            return 0
-
-    with patch("server.services.lucidity_repository.LucidityRepository", _NoTimers):
-        with patch("server.container.bundles.combat.sleep", AsyncMock()):
-            await bundle._sanitarium_failover_callback(container, str(uuid.uuid4()), -100)
-    bundle.player_respawn_service.move_player_to_limbo.assert_awaited_once()
+    bundle.player_respawn_service = cast(PlayerRespawnService, cast(object, respawn))
+    with patch("server.container.bundles.combat.sleep", AsyncMock()):
+        await bundle._sanitarium_failover_callback(  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - the failover is the bundle's private catatonia callback  # Appropriate because: it is only reachable through the catatonia observer, which needs the whole app
+            cast(ApplicationContainer, cast(object, container)), str(player_id), -100
+        )
 
 
 @pytest.mark.asyncio

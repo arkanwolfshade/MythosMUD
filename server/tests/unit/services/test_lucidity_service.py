@@ -15,8 +15,7 @@ import pytest
 from server.constants.lucidity import STARTING_LCD
 from server.game.player_registry import LucidityData
 from server.services.lucidity_event_dispatcher import LucidityChangeEventExtras
-from server.services.lucidity_helpers import LIABILITY_CATALOG, decode_liabilities, encode_liabilities
-from server.services.lucidity_repository import PlayerGoneError
+from server.services.lucidity_helpers import LIABILITY_CATALOG, PlayerGoneError, decode_liabilities, encode_liabilities
 from server.services.lucidity_service import LucidityService, max_lcd_from_stats
 from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 

@@ -17,7 +17,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..config import get_config
-from ..services.lucidity_repository import PlayerGoneError
+from ..services.lucidity_helpers import PlayerGoneError
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .game_tick_protocols import _TickContainer

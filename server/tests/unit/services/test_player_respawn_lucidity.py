@@ -5,7 +5,6 @@ from __future__ import annotations
 import uuid
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import cast
 
 import pytest
@@ -17,7 +16,6 @@ from server.exceptions import DatabaseError
 from server.game.player_registry import LucidityData
 from server.models.game import PositionState
 from server.models.player import Player
-from server.services import player_respawn_service as module
 from server.services.lucidity_helpers import LIABILITY_CATALOG, decode_liabilities, encode_liabilities, resolve_tier
 from server.services.player_respawn_service import PlayerRespawnService, raise_sanitarium_liabilities
 from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
@@ -80,20 +78,12 @@ class FakeCombat:
 
 
 @pytest.fixture(name="rig")
-def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
+def _rig() -> Rig:
     player = Player(player_id=str(uuid.uuid4()), name="Tester")
     player.current_room_id = "limbo"
     player.set_stats({"current_dp": 1, "max_dp": 100, "position": PositionState.LYING})
     rig = Rig(player, lucidity_registry({uuid.UUID(str(player.player_id)): LucidityData(-10, "catatonic")}))
 
-    class FakeLucidityRepository:
-        def __init__(self, session: FakeSession) -> None:
-            _ = session
-
-        async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> None:
-            _ = player_id, action_code, expires_at
-
-    monkeypatch.setattr(module, "LucidityRepository", FakeLucidityRepository)
     return rig
 
 

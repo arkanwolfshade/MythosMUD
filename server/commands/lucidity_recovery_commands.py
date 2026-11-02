@@ -22,12 +22,12 @@ from datetime import UTC, datetime
 from typing import Any
 
 from ..alias_storage import AliasStorage
-from ..database import get_async_session
 from ..services.active_lucidity_service import (
     ActiveLucidityService,
     LucidityActionOnCooldownError,
     UnknownLucidityActionError,
 )
+from ..services.lucidity_helpers import PlayerGoneError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .inventory_command_helpers import player_registry
@@ -140,26 +140,13 @@ def _resolve_catatonia_observer(app: Any) -> Any | None:  # pyright: ignore[repo
     return getattr(app.state, "catatonia_registry", None)  # pyright: ignore[reportAny]
 
 
-# Reason: DYNAMIC_DISPATCH - service/player are untyped domain objects, matching this module's
-# established, unsuppressed Any convention.
-# Appropriate because: same unsuppressed convention as _run_recovery_session's own parameters.
 async def _handle_recovery_cooldown_error(
-    service: Any,  # pyright: ignore[reportAny, reportExplicitAny]
-    # Reason: DYNAMIC_DISPATCH - same untyped domain-object convention as service above.
-    # Appropriate because: same unsuppressed convention as this function's own service parameter.
-    player: Any,  # pyright: ignore[reportAny, reportExplicitAny]
-    action_code: str,
+    service: ActiveLucidityService, player_id: str, action_code: str
 ) -> dict[str, str]:
     """Build the player-facing message for a recovery action still on cooldown."""
-    # Reason: DYNAMIC_DISPATCH - service/player are Any per this function's own parameters above.
-    # Appropriate because: same unsuppressed convention as this function's own signature.
-    cooldown = await service.get_action_cooldown(player.player_id, action_code)  # pyright: ignore[reportAny]
-    # Reason: DYNAMIC_DISPATCH - cooldown is Any from the untyped service call above.
-    # Appropriate because: same unsuppressed convention as this function's own signature.
-    if cooldown and cooldown.cooldown_expires_at:  # pyright: ignore[reportAny]
-        # Reason: DYNAMIC_DISPATCH - cooldown.cooldown_expires_at is Any per the same lookup.
-        # Appropriate because: same unsuppressed convention as this function's own signature.
-        return _format_cooldown_message(cooldown.cooldown_expires_at)  # pyright: ignore[reportAny]
+    expires_at = await service.get_action_cooldown(player_id, action_code)
+    if expires_at is not None:
+        return _format_cooldown_message(expires_at)
     return {"result": "The ritual pathways are still resonating; patience is required."}
 
 
@@ -170,37 +157,34 @@ async def _run_recovery_session(
     action_code: str,
 ) -> dict[str, str]:
     catatonia_observer = _resolve_catatonia_observer(app)
+    # Reason: DYNAMIC_DISPATCH - player is Any per this function's own parameter above.
+    # Appropriate because: same unsuppressed convention as this function's own signature.
+    player_id = str(player.player_id)  # pyright: ignore[reportAny]
 
-    async for session in get_async_session():
-        service = ActiveLucidityService(session, player_registry(), catatonia_observer=catatonia_observer)
-        try:
-            result = await service.perform_recovery_action(
-                player_id=str(player.player_id),
-                action_code=action_code,
-                location_id=str(room_id),
-            )
-            await session.commit()
-        except LucidityActionOnCooldownError:
-            await session.rollback()
-            return await _handle_recovery_cooldown_error(service, player, action_code)
-        except UnknownLucidityActionError:
-            await session.rollback()
-            return {"result": "That rite is uncharted in the Pnakotic addenda. Choose a known discipline."}
-        except OSError as exc:  # pragma: no cover - defensive logging
-            await session.rollback()
-            logger.error(
-                "Recovery ritual failed",
-                action=action_code,
-                player_id=str(player.player_id),
-                room_id=str(room_id),
-                error=str(exc),
-            )
-            return {"result": "Anomalous interference disrupts the ritual. Try again when the stars align."}
+    # The cooldown check, the gain and the new cooldown are one registry unit (ADR-029 step 5b-ii).
+    service = ActiveLucidityService(player_registry(), catatonia_observer=catatonia_observer)
+    try:
+        result = await service.perform_recovery_action(
+            player_id=player_id,
+            action_code=action_code,
+            location_id=str(room_id),
+        )
+    except LucidityActionOnCooldownError:
+        return await _handle_recovery_cooldown_error(service, player_id, action_code)
+    except UnknownLucidityActionError:
+        return {"result": "That rite is uncharted in the Pnakotic addenda. Choose a known discipline."}
+    except (OSError, PlayerGoneError) as exc:  # pragma: no cover - defensive logging
+        logger.error(
+            "Recovery ritual failed",
+            action=action_code,
+            player_id=player_id,
+            room_id=str(room_id),
+            error=str(exc),
+        )
+        return {"result": "Anomalous interference disrupts the ritual. Try again when the stars align."}
 
-        mp_message = await _restore_mp_for_action(app, action_code, player)
-        return _format_recovery_success_message(action_code, result.delta, result.new_lcd, mp_message)
-
-    return {"result": "The rite fizzles before contact is made with the numinous."}
+    mp_message = await _restore_mp_for_action(app, action_code, player)
+    return _format_recovery_success_message(action_code, result.delta, result.new_lcd, mp_message)
 
 
 async def _perform_recovery_action(

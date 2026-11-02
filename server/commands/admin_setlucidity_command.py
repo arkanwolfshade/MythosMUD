@@ -18,8 +18,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from ..alias_storage import AliasStorage
 from ..constants.lucidity import STARTING_LCD
 from ..exceptions import DatabaseError
-from ..services.lucidity_helpers import CatatoniaObserverProtocol
-from ..services.lucidity_repository import PlayerGoneError
+from ..services.lucidity_helpers import CatatoniaObserverProtocol, PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.admin_actions_logger import get_admin_actions_logger
 from ..structured_logging.enhanced_logging_config import get_logger
