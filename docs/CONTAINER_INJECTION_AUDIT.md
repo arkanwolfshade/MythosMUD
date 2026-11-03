@@ -65,7 +65,6 @@ For each class or function that calls `ApplicationContainer.get_instance()`:
 | `get_container()` | `container/main.py` | The DI accessor itself | Sanctioned (infrastructure) |
 | `_ensure_room_cache_before_npc_startup` | `app/lifespan_startup.py` | Startup-sequence helper function | Sanctioned (infrastructure) |
 | (docstring reference only) | `async_persistence.py:599,611` | N/A | Sanctioned (infrastructure — the fallback-container comment/lookup for a function with no other way to reach it) |
-| `CombatDPSync` | `services/combat_hp_sync.py` | **Zero production callers** — only `test_combat_service_modules.py:287` constructs it | **Dead code, not debt.** Belongs to #630, not #636 |
 
 ## 4. Cycle verification
 

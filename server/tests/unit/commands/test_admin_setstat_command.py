@@ -15,6 +15,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.commands.admin_setstat_command import _handle_admin_set_stat_command
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 _BASELINE_STATS: dict[str, int] = {
     "strength": 50,
@@ -165,6 +166,28 @@ async def test_handle_admin_set_stat_command_success_all_stat_types():
 
 
 @pytest.mark.asyncio
+async def test_handle_admin_set_stat_dp_writes_through_the_player_registry():
+    """DP has one writer, the registry (ADR-029 step 6a): admin set DP commits there, never via save_player."""
+    request, target, _apply_dp, persistence = _make_all_stat_types_harness()
+    player_id = uuid.uuid4()
+    target.player_id = player_id
+    save_player: AsyncMock = AsyncMock()
+    persistence.save_player = save_player
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": -3, "max_dp": 20, "position": "lying"})
+
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=harness.registry):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["DP", "TargetPlayer", "12"]}, {"name": "AdminPlayer"}, request, None, "AdminPlayer"
+        )
+
+    assert "Set TargetPlayer's DP" in result["result"]
+    assert harness.stats(player_id)["current_dp"] == 12
+    assert harness.stats(player_id)["position"] == "standing"  # revived from lying
+    assert harness.db.commits == 1
+    save_player.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_handle_admin_set_stat_corruption_routes_through_service():
     """#816: Corruption uses CorruptionService with permanence-floor bypass, not set_stats."""
     request, target, _apply_dp, persistence = _make_all_stat_types_harness()
@@ -177,7 +200,10 @@ async def test_handle_admin_set_stat_corruption_routes_through_service():
     corr_svc: MagicMock = MagicMock()
     corr_svc.apply_corruption_adjustment = apply_corruption
 
-    with patch("server.commands.admin_setstat_command.CorruptionService", return_value=corr_svc) as corr_cls:
+    with (
+        patch("server.commands.admin_setstat_command.CorruptionService", return_value=corr_svc) as corr_cls,
+        patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()),
+    ):
         result = await _handle_admin_set_stat_command(
             {"args": ["Corruption", "TargetPlayer", "0"]},
             {"name": "AdminPlayer"},
@@ -352,7 +378,8 @@ async def test_handle_admin_set_stat_command_dp_above_maximum():
     mock_current_player = MagicMock()
     mock_current_player.id = uuid.uuid4()
     mock_target_player = MagicMock()
-    mock_target_player.player_id = uuid.uuid4()
+    target_id = uuid.uuid4()
+    mock_target_player.player_id = target_id
     # CON=50, SIZ=50, max_dp = (50+50)//5 = 20
     mock_target_player.get_stats = MagicMock(return_value={"current_dp": 20, "constitution": 50, "size": 50})
     set_stats: MagicMock = MagicMock()
@@ -367,12 +394,15 @@ async def test_handle_admin_set_stat_command_dp_above_maximum():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await _handle_admin_set_stat_command(
-        {"args": ["DP", "TargetPlayer", "25"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
-    )
+    harness = lucidity_registry({target_id: None})
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=harness.registry):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["DP", "TargetPlayer", "25"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
+        )
 
     assert "result" in result
     assert "Set TargetPlayer's DP" in result["result"]
+    assert harness.stats(target_id)["current_dp"] == 25  # written through the registry
     assert "Warning" in result["result"]
     assert "exceeds calculated maximum" in result["result"]
     apply_dp_change.assert_called_once_with(25)

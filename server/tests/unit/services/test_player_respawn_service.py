@@ -1,362 +1,198 @@
 """
 Unit tests for player respawn service.
 
-Tests the PlayerRespawnService for managing player resurrection and limbo state.
+Tests the PlayerRespawnService for managing player resurrection and limbo state. Every transition is one sync unit on
+the player registry (ADR-029 step 6a), so these run it on a real registry and read back what it holds and wrote.
 """
 
+import json
 import uuid
-from typing import cast
-from unittest.mock import AsyncMock, MagicMock
+from collections.abc import Callable, Mapping
 
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.events.event_types import PlayerRespawnedEvent
+from server.events.event_types import BaseEvent, PlayerRespawnedEvent
 from server.exceptions import DatabaseError
 from server.models.game import PositionState
-from server.models.player import Player
 from server.models.room import Room
 from server.services.player_respawn_service import (
     DEFAULT_RESPAWN_ROOM,
     LIMBO_ROOM_ID,
     PlayerRespawnService,
 )
-from server.services.player_respawn_state import normalize_current_dp
+from server.services.player_respawn_state import DEATH_ROOM_ID_STAT
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
-# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
-# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
-
-
-@pytest.fixture
-def mock_event_bus():
-    """Create a mock event bus."""
-    return MagicMock()
-
-
-@pytest.fixture
-def mock_player_combat_service():
-    """Create a mock player combat service."""
-    service = MagicMock()
-    service.clear_player_combat_state = AsyncMock()
-    return service
-
-
-@pytest.fixture
-def respawn_service(mock_event_bus, mock_player_combat_service):
-    """Create a PlayerRespawnService instance."""
-    return PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
-
-
-@pytest.fixture
-def respawn_service_no_deps():
-    """Create a PlayerRespawnService instance without dependencies."""
-    return PlayerRespawnService()
-
-
-@pytest.fixture
-def mock_session():
-    """Create a mock async session."""
-    session = MagicMock()
-    session.get = AsyncMock()
-    session.commit = AsyncMock()
-    session.rollback = AsyncMock()
-    return session
-
-
-@pytest.fixture
-def sample_player():
-    """Create a sample player for testing (alive: 50 DP)."""
-    player = MagicMock(spec=Player)
-    player.player_id = uuid.uuid4()
-    player.id = player.player_id
-    player.name = "TestPlayer"
-    player.current_room_id = "earth_arkhamcity_street_room_001"
-    player.respawn_room_id = None
-    player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": PositionState.STANDING})
-    player.set_stats = MagicMock()
-    player.restore_to_full_health = MagicMock(return_value=0)
-    player.is_dead = MagicMock(return_value=False)
-    return player
-
-
-@pytest.fixture
-def sample_dead_player():
-    """Create a sample player that is dead (DP <= -10) for limbo movement tests."""
-    player = MagicMock(spec=Player)
-    player.player_id = uuid.uuid4()
-    player.id = player.player_id
-    player.name = "TestPlayer"
-    player.current_room_id = "earth_arkhamcity_street_room_001"
-    player.respawn_room_id = None
-    player.get_stats = MagicMock(return_value={"current_dp": -10, "max_dp": 100, "position": PositionState.LYING})
-    player.set_stats = MagicMock()
-    player.restore_to_full_health = MagicMock(return_value=-10)
-    player.is_dead = MagicMock(return_value=True)
-    return player
-
-
-def test_respawn_service_initialization(respawn_service, mock_event_bus, mock_player_combat_service):
-    """Test PlayerRespawnService initializes correctly."""
-    assert respawn_service._event_bus == mock_event_bus
-    assert respawn_service._player_combat_service == mock_player_combat_service
-
-
-def test_respawn_service_initialization_no_deps(respawn_service_no_deps):
-    """Test PlayerRespawnService initializes without dependencies."""
-    assert respawn_service_no_deps._event_bus is None
-    assert respawn_service_no_deps._player_combat_service is None
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_success(respawn_service, mock_session, sample_dead_player):
-    """Test moving player to limbo successfully when player is dead (DP <= -10)."""
-    mock_session.get.return_value = sample_dead_player
-
-    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
-
-    assert result is True
-    assert sample_dead_player.current_room_id == LIMBO_ROOM_ID
-    mock_session.get.assert_awaited_once_with(Player, sample_dead_player.player_id)
-    mock_session.commit.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_refused_when_not_dead(respawn_service, mock_session, sample_player):
-    """Test that player is not moved to limbo when DP is above -10 (death threshold)."""
-    mock_session.get.return_value = sample_player
-
-    result = await respawn_service.move_player_to_limbo(sample_player.player_id, "death_room", mock_session)
-
-    assert result is False
-    assert sample_player.current_room_id == "earth_arkhamcity_street_room_001"
-    mock_session.get.assert_awaited_once_with(Player, sample_player.player_id)
-    mock_session.commit.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_player_not_found(respawn_service, mock_session):
-    """Test moving player to limbo when player not found."""
-    mock_session.get.return_value = None
-    player_id = uuid.uuid4()
-
-    result = await respawn_service.move_player_to_limbo(player_id, "death_room", mock_session)
-
-    assert result is False
-    mock_session.get.assert_awaited_once_with(Player, player_id)
-    mock_session.commit.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_database_error(respawn_service, mock_session, sample_dead_player):
-    """Test moving player to limbo with database error."""
-    mock_session.get.return_value = sample_dead_player
-    mock_session.commit.side_effect = DatabaseError("Database error")
-
-    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
-
-    assert result is False
-    mock_session.rollback.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_sqlalchemy_error(respawn_service, mock_session, sample_dead_player):
-    """Test moving player to limbo with SQLAlchemy error."""
-    mock_session.get.return_value = sample_dead_player
-    mock_session.commit.side_effect = SQLAlchemyError("SQL error", None, None)
-
-    result = await respawn_service.move_player_to_limbo(sample_dead_player.player_id, "death_room", mock_session)
-
-    assert result is False
-    mock_session.rollback.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_get_respawn_room_custom(respawn_service, mock_session, sample_player):
-    """Test getting custom respawn room."""
-    sample_player.respawn_room_id = "custom_respawn_room"
-    mock_session.get.return_value = sample_player
-
-    result = await respawn_service.get_respawn_room(sample_player.player_id, mock_session)
-
-    assert result == "custom_respawn_room"
-    mock_session.get.assert_awaited_once_with(Player, sample_player.player_id)
-
-
-@pytest.mark.asyncio
-async def test_get_respawn_room_default(respawn_service, mock_session, sample_player):
-    """Test getting default respawn room when custom not set."""
-    sample_player.respawn_room_id = None
-    mock_session.get.return_value = sample_player
-
-    result = await respawn_service.get_respawn_room(sample_player.player_id, mock_session)
-
-    assert result == DEFAULT_RESPAWN_ROOM
-    mock_session.get.assert_awaited_once_with(Player, sample_player.player_id)
-
-
-@pytest.mark.asyncio
-async def test_get_respawn_room_player_not_found(respawn_service, mock_session):
-    """Test getting respawn room when player not found."""
-    mock_session.get.return_value = None
-    player_id = uuid.uuid4()
-
-    result = await respawn_service.get_respawn_room(player_id, mock_session)
-
-    assert result == DEFAULT_RESPAWN_ROOM
-    mock_session.get.assert_awaited_once_with(Player, player_id)
-
-
-@pytest.mark.asyncio
-async def test_get_respawn_room_database_error(respawn_service, mock_session):
-    """Test getting respawn room with database error."""
-    mock_session.get.side_effect = DatabaseError("Database error")
-    player_id = uuid.uuid4()
-
-    result = await respawn_service.get_respawn_room(player_id, mock_session)
-
-    assert result == DEFAULT_RESPAWN_ROOM
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_success(respawn_service, mock_session, sample_player, mock_event_bus):
-    """Test respawning player successfully via Player.restore_to_full_health."""
-    sample_player.current_room_id = LIMBO_ROOM_ID
-    sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
-    mock_session.get.side_effect = [sample_player, sample_player]  # First for respawn, second for get_respawn_room
-
-    result = await respawn_service.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is True
-    assert sample_player.current_room_id == DEFAULT_RESPAWN_ROOM
-    sample_player.restore_to_full_health.assert_called_once()
-    mock_session.commit.assert_awaited_once()
-    mock_event_bus.publish.assert_called_once()
-    published_event = mock_event_bus.publish.call_args[0][0]
-    assert isinstance(published_event, PlayerRespawnedEvent)
-    assert published_event.player_id == sample_player.player_id
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_with_custom_respawn_room(respawn_service, mock_session, sample_player):
-    """Test respawning player with custom respawn room."""
-    sample_player.current_room_id = LIMBO_ROOM_ID
-    sample_player.respawn_room_id = "custom_respawn_room"
-    sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
-    mock_session.get.side_effect = [sample_player, sample_player]
-
-    result = await respawn_service.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is True
-    assert sample_player.current_room_id == "custom_respawn_room"
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_clears_combat_state(
-    respawn_service, mock_session, sample_player, mock_player_combat_service
-):
-    """Test respawning player clears combat state."""
-    sample_player.current_room_id = LIMBO_ROOM_ID
-    sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
-    mock_session.get.side_effect = [sample_player, sample_player]
-
-    result = await respawn_service.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is True
-    mock_player_combat_service.clear_player_combat_state.assert_awaited_once_with(sample_player.player_id)
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_no_combat_service(respawn_service_no_deps, mock_session, sample_player):
-    """Test respawning player without combat service."""
-    sample_player.current_room_id = LIMBO_ROOM_ID
-    sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
-    mock_session.get.side_effect = [sample_player, sample_player]
-
-    result = await respawn_service_no_deps.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is True
-    mock_session.commit.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_combat_clear_error(
-    respawn_service, mock_session, sample_player, mock_player_combat_service
-):
-    """Test respawning player when combat clear fails."""
-    sample_player.current_room_id = LIMBO_ROOM_ID
-    sample_player.get_stats.return_value = {"current_dp": 0, "max_dp": 100, "position": PositionState.LYING}
-    mock_session.get.side_effect = [sample_player, sample_player]
-    mock_player_combat_service.clear_player_combat_state.side_effect = DatabaseError("Combat clear error")
-
-    result = await respawn_service.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is True  # Respawn should still succeed even if combat clear fails
-    mock_session.commit.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_not_found(respawn_service, mock_session):
-    """Test respawning player when player not found."""
-    mock_session.get.return_value = None
-    player_id = uuid.uuid4()
-
-    result = await respawn_service.respawn_player(player_id, mock_session)
-
-    assert result is False
-    mock_session.commit.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_database_error(respawn_service, mock_session, sample_player):
-    """Test respawning player with database error."""
-    mock_session.get.return_value = sample_player
-    mock_session.commit.side_effect = DatabaseError("Database error")
-
-    result = await respawn_service.respawn_player(sample_player.player_id, mock_session)
-
-    assert result is False
-    mock_session.rollback.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_respawn_player_from_delirium_player_not_found(respawn_service, mock_session):
-    """Test respawning player from delirium when player not found."""
-    mock_session.get.return_value = None
-    player_id = uuid.uuid4()
-
-    result = await respawn_service.respawn_player_from_delirium(player_id, mock_session)
-
-    assert result is False
-    mock_session.commit.assert_not_awaited()
-
-
-def test_normalize_current_dp_non_numeric():
-    """Non-numeric current_dp defaults to zero."""
-    assert normalize_current_dp({"current_dp": "bad"}) == 0
-
-
-def test_can_move_to_limbo_catatonia_failover(respawn_service, sample_player):
-    """Catatonia failover bypasses DP/death gate."""
-    allowed, dp = respawn_service._can_move_to_limbo(sample_player, "catatonia_failover")
-    assert allowed is True
-    assert dp == 0
-
-
-@pytest.mark.asyncio
-async def test_move_player_to_limbo_catatonia_failover(respawn_service, mock_session, sample_player):
-    """Alive player can enter limbo on catatonia failover."""
-    mock_session.get.return_value = sample_player
-
-    result = await respawn_service.move_player_to_limbo(sample_player.player_id, "catatonia_failover", mock_session)
-
-    assert result is True
-    assert sample_player.current_room_id == LIMBO_ROOM_ID
-    mock_session.commit.assert_awaited_once()
-
-
+STREET = "earth_arkhamcity_street_room_001"
 BEDROOM_ID = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
 FOYER_ID = "earth_arkhamcity_sanitarium_room_foyer_001"
+PLAYER_ID = uuid.uuid4()
+
+
+def _harness(*, current_dp: int = -10, respawn_room_id: str | None = None, **stats: object) -> LucidityHarness:
+    return lucidity_registry(
+        {PLAYER_ID: None},
+        stats={"current_dp": current_dp, "max_dp": 30, "position": PositionState.LYING, **stats},
+        row={"current_room_id": STREET, "respawn_room_id": respawn_room_id, "name": "TestPlayer"},
+    )
+
+
+def _written_stats(harness: LucidityHarness) -> list[Mapping[str, object]]:
+    return [
+        json.loads(str(params["stats_changes"]))
+        for params in harness.db.executed
+        if params is not None and "stats_changes" in params
+    ]
+
+
+class _Bus:
+    """Records what the respawn publishes."""
+
+    def __init__(self) -> None:
+        self.events: list[BaseEvent] = []
+
+    def publish(self, event: BaseEvent) -> None:
+        self.events.append(event)
+
+
+class _Combat:
+    """Records which players had their combat state cleared; ``error`` makes clearing fail."""
+
+    def __init__(self, error: Exception | None = None) -> None:
+        self.cleared: list[uuid.UUID] = []
+        self._error: Exception | None = error
+
+    async def clear_player_combat_state(self, player_id: uuid.UUID) -> None:
+        if self._error is not None:
+            raise self._error
+        self.cleared.append(player_id)
+
+
+def _service(
+    harness: LucidityHarness,
+    *,
+    event_bus: _Bus | None = None,
+    player_combat_service: _Combat | None = None,
+    room_lookup: Callable[[str], Room | None] | None = None,
+) -> PlayerRespawnService:
+    return PlayerRespawnService(
+        event_bus=event_bus,
+        player_combat_service=player_combat_service,
+        room_lookup=room_lookup,
+        player_registry=harness.registry,
+    )
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_moves_the_dead_and_records_the_death_room() -> None:
+    harness = _harness()
+
+    assert await _service(harness).move_player_to_limbo(PLAYER_ID, STREET) is True
+
+    assert harness.room(PLAYER_ID) == LIMBO_ROOM_ID
+    assert harness.stats(PLAYER_ID)[DEATH_ROOM_ID_STAT] == STREET
+    assert harness.db.commits == 1  # sync: committed before returning
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_refused_when_not_dead() -> None:
+    harness = _harness(current_dp=-9)
+
+    assert await _service(harness).move_player_to_limbo(PLAYER_ID, STREET) is False
+
+    assert harness.room(PLAYER_ID) == STREET
+    assert harness.db.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_catatonia_failover_needs_no_dp() -> None:
+    """Catatonia failover is lucidity-based: the player goes to limbo at any DP, and no death room is recorded."""
+    harness = _harness(current_dp=20)
+
+    assert await _service(harness).move_player_to_limbo(PLAYER_ID, "catatonia_failover") is True
+
+    assert harness.room(PLAYER_ID) == LIMBO_ROOM_ID
+    assert DEATH_ROOM_ID_STAT not in harness.stats(PLAYER_ID)
+
+
+@pytest.mark.asyncio
+async def test_move_player_to_limbo_player_not_found() -> None:
+    assert await _service(lucidity_registry({})).move_player_to_limbo(uuid.uuid4(), STREET) is False
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("error", [DatabaseError("db down"), SQLAlchemyError("db down")])
+async def test_move_player_to_limbo_failed_commit_rolls_back(error: Exception) -> None:
+    harness = _harness()
+    harness.db.fail_commits, harness.db.commit_error = 1, error
+
+    assert await _service(harness).move_player_to_limbo(PLAYER_ID, STREET) is False
+
+    player = harness.registry.peek(PLAYER_ID)
+    assert player is None or player.row.current_room_id == STREET  # the in-memory change rolled back too
+
+
+@pytest.mark.asyncio
+async def test_without_a_registry_nothing_happens() -> None:
+    service = PlayerRespawnService()
+
+    assert await service.move_player_to_limbo(PLAYER_ID, STREET) is False
+    assert await service.respawn_player(PLAYER_ID) is False
+    assert await service.get_respawn_room(PLAYER_ID) == DEFAULT_RESPAWN_ROOM
+
+
+@pytest.mark.asyncio
+async def test_get_respawn_room_custom_and_default() -> None:
+    assert await _service(_harness(respawn_room_id=FOYER_ID)).get_respawn_room(PLAYER_ID) == FOYER_ID
+    assert await _service(_harness()).get_respawn_room(PLAYER_ID) == DEFAULT_RESPAWN_ROOM
+    assert await _service(lucidity_registry({})).get_respawn_room(uuid.uuid4()) == DEFAULT_RESPAWN_ROOM
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_restores_full_dp_standing_in_the_respawn_room() -> None:
+    harness = _harness(respawn_room_id=FOYER_ID, death_room_id=STREET, death_location="Street")
+    bus, combat = _Bus(), _Combat()
+    service = _service(harness, event_bus=bus, player_combat_service=combat)
+
+    assert await service.respawn_player(PLAYER_ID) is True
+
+    stats = harness.stats(PLAYER_ID)
+    assert (stats["current_dp"], stats["position"]) == (30, PositionState.STANDING)
+    assert harness.room(PLAYER_ID) == FOYER_ID
+    assert DEATH_ROOM_ID_STAT not in stats
+    assert _written_stats(harness)[-1] == {
+        "current_dp": 30,
+        "position": "standing",
+        "death_room_id": None,  # null removes the key (update_player_row)
+        "death_location": None,
+    }
+    assert combat.cleared == [PLAYER_ID]
+    [event] = bus.events
+    assert isinstance(event, PlayerRespawnedEvent)
+    assert (event.old_dp, event.new_dp, event.respawn_room_id) == (-10, 30, FOYER_ID)
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_survives_a_combat_clear_error() -> None:
+    harness = _harness()
+
+    assert await _service(harness, player_combat_service=_Combat(DatabaseError("db down"))).respawn_player(PLAYER_ID)
+    assert harness.room(PLAYER_ID) == DEFAULT_RESPAWN_ROOM
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_not_found_and_failed_commit() -> None:
+    assert await _service(lucidity_registry({})).respawn_player(uuid.uuid4()) is False
+
+    harness = _harness()
+    harness.db.fail_commits, harness.db.commit_error = 1, SQLAlchemyError("db down")
+    assert await _service(harness).respawn_player(PLAYER_ID) is False
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_from_delirium_player_not_found() -> None:
+    assert await _service(lucidity_registry({})).respawn_player_from_delirium(uuid.uuid4()) is False
 
 
 def _template_bedroom() -> Room:
@@ -372,29 +208,21 @@ def _foyer() -> Room:
     return Room({"id": FOYER_ID, "attributes": {}})
 
 
-def _session_returning(player: Player) -> AsyncSession:
-    session = MagicMock()
-    session.configure_mock(get=AsyncMock(return_value=player))
-    return cast(AsyncSession, session)
-
-
 @pytest.mark.asyncio
 async def test_get_respawn_room_redirects_template_to_exit_room() -> None:
     """A respawn room that is an instance template sends the player to its exit room."""
     rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
-    player_id = uuid.uuid4()
-    session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=BEDROOM_ID))
+    service = _service(_harness(respawn_room_id=BEDROOM_ID), room_lookup=rooms.get)
 
-    assert await PlayerRespawnService(room_lookup=rooms.get).get_respawn_room(player_id, session) == FOYER_ID
+    assert await service.get_respawn_room(PLAYER_ID) == FOYER_ID
 
 
 @pytest.mark.asyncio
 async def test_get_respawn_room_keeps_normal_custom_room() -> None:
     """Ordinary custom respawn rooms (and services without a room lookup) are unchanged."""
     rooms = {FOYER_ID: _foyer()}
-    player_id = uuid.uuid4()
-    foyer_session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=FOYER_ID))
-    bedroom_session = _session_returning(Player(player_id=str(player_id), name="Ada", respawn_room_id=BEDROOM_ID))
 
-    assert await PlayerRespawnService(room_lookup=rooms.get).get_respawn_room(player_id, foyer_session) == FOYER_ID
-    assert await PlayerRespawnService().get_respawn_room(player_id, bedroom_session) == BEDROOM_ID
+    assert await _service(_harness(respawn_room_id=FOYER_ID), room_lookup=rooms.get).get_respawn_room(PLAYER_ID) == (
+        FOYER_ID
+    )
+    assert await _service(_harness(respawn_room_id=BEDROOM_ID)).get_respawn_room(PLAYER_ID) == BEDROOM_ID

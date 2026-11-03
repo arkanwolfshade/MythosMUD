@@ -42,14 +42,19 @@ def test_update_params_cover_every_procedure_argument_and_no_inventory() -> None
     assert not {"inventory", "inventory_json", "equipped_json"} & set(params)  # the inventory part writes those
 
 
-def test_update_params_send_only_the_changed_stats_and_utc_times() -> None:
-    """A write merges just the keys it changed (step 5c): DP and MP still have writers outside the registry."""
+def test_update_params_send_only_the_changed_columns_and_stats() -> None:
+    """A write sets just what it changed (steps 5c, 6a): players are still saved outside the registry."""
     local = datetime(2026, 10, 26, 12, 0, tzinfo=UTC)
-    data = row_data(last_active=local, stats={"current_dp": 20, "max_dp": 20, "corruption": 4})
+    data = row_data(last_active=local, respawn_room_id=None, stats={"current_dp": 20, "max_dp": 20, "corruption": 4})
 
-    assert data.update_params()["last_active"] == local
-    assert json.loads(str(data.update_params()["stats_changes"])) == {}
-    assert json.loads(str(data.update_params(["corruption"])["stats_changes"])) == {"corruption": 4}
+    nothing = data.update_params()
+    assert json.loads(str(nothing["changes"])) == {} and json.loads(str(nothing["stats_changes"])) == {}
+    some = data.update_params(["last_active", "respawn_room_id"], ["corruption"])
+    assert json.loads(str(some["changes"])) == {
+        "last_active": local.isoformat(),
+        "respawn_room_id": "earth_arkhamcity_sanitarium_room_foyer_001",  # PlayerSavePreparer's default
+    }
+    assert json.loads(str(some["stats_changes"])) == {"corruption": 4}
 
 
 def test_set_stat_marks_lazy_dirty_only_on_change() -> None:
@@ -78,9 +83,8 @@ async def test_rollback_restores_state_and_flags() -> None:
     assert part.stats["current_dp"] == 20
     assert part.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
     assert not part.dirty and not part.sync_required
-    assert (
-        json.loads(str((await _written(part))["stats_changes"])) == {}
-    )  # the rolled-back key is not sent later either
+    params = await _written(part)  # the rolled-back changes are not sent later either
+    assert json.loads(str(params["stats_changes"])) == {} and json.loads(str(params["changes"])) == {}
 
 
 def test_take_write_captures_state_at_capture_time() -> None:
@@ -92,7 +96,8 @@ def test_take_write_captures_state_at_capture_time() -> None:
     assert part.take_write() is not None
 
 
-async def test_captured_write_sends_the_row_columns_and_only_the_changed_stats() -> None:
+async def test_captured_write_sends_only_what_changed() -> None:
+    """A stats change must not write back the aggregate's copy of the room, XP or last_active (step 6a)."""
     part = PlayerRowPart(row_data())
     part.set_stat("current_dp", 9)
     write = part.take_write()
@@ -102,21 +107,38 @@ async def test_captured_write_sends_the_row_columns_and_only_the_changed_stats()
         await write(session)
     params = db.executed[-1]
     assert params is not None and json.loads(str(params["stats_changes"])) == {"current_dp": 9}
+    assert json.loads(str(params["changes"])) == {}
 
-    part.set_current_room_id("elsewhere")  # a later write of other columns sends no stats
-    assert json.loads(str((await _written(part))["stats_changes"])) == {}
+    part.set_current_room_id("elsewhere")
+    part.set_experience(10, 1)  # the level is unchanged, so only the XP is sent
+    params = await _written(part)
+    assert json.loads(str(params["changes"])) == {"current_room_id": "elsewhere", "experience_points": 10}
+    assert json.loads(str(params["stats_changes"])) == {}
 
 
-async def test_a_failed_lazy_flush_sends_its_stats_keys_again() -> None:
+async def test_remove_stat_sends_the_key_as_null_which_removes_it() -> None:
+    part = PlayerRowPart(row_data(stats={"current_dp": 20, "death_room_id": "street"}))
+
+    part.remove_stat("death_room_id", sync=True)
+    part.remove_stat("never_there")  # a no-op
+
+    assert "death_room_id" not in part.stats and part.sync_required
+    assert json.loads(str((await _written(part))["stats_changes"])) == {"death_room_id": None}
+
+
+async def test_a_failed_lazy_flush_sends_its_changes_again() -> None:
     part = PlayerRowPart(row_data())
     part.set_stat("current_dp", 9)
+    part.set_current_room_id("elsewhere")
     assert part.take_write() is not None
     part.set_stat("max_dp", 30)
 
     part.write_failed()
 
     assert part.dirty
-    assert json.loads(str((await _written(part))["stats_changes"])) == {"current_dp": 9, "max_dp": 30}
+    params = await _written(part)
+    assert json.loads(str(params["stats_changes"])) == {"current_dp": 9, "max_dp": 30}
+    assert json.loads(str(params["changes"])) == {"current_room_id": "elsewhere"}
 
 
 async def _written(part: PlayerRowPart) -> dict[str, object]:

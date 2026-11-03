@@ -5,12 +5,16 @@ This module handles player state modifications including health, lucidity, fear,
 """
 
 import uuid
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from ..exceptions import ValidationError
 from ..services.corruption_service import CorruptionPersistence
+from ..services.player_health_service import HealthPersistence
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
+
+if TYPE_CHECKING:
+    from ..models.player import Player
 
 logger = get_logger(__name__)
 
@@ -186,7 +190,7 @@ class PlayerStateService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.async_heal_player(player, amount)
+        await cast(HealthPersistence, self.persistence).heal_player(cast("Player", player), amount)
         logger.info("Player healed successfully", player_id=player_id, amount=amount)
         return {"message": f"Healed {player.name} for {amount} health"}
 
@@ -219,6 +223,6 @@ class PlayerStateService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.async_damage_player(player, amount, damage_type)
+        await cast(HealthPersistence, self.persistence).damage_player(cast("Player", player), amount, damage_type)
         logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
         return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}

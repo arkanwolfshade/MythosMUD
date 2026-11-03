@@ -6,6 +6,7 @@
 
 import datetime
 import uuid
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -60,6 +61,7 @@ async def test_respawn_player_by_user_id_success() -> None:
         return_value=MagicMock(scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[player]))))
     )
     respawn_service = MagicMock()
+    respawn_service.player_view = AsyncMock(return_value=None)
     respawn_service.respawn_player = AsyncMock(return_value=True)
     room = MagicMock()
     room.to_dict.return_value = {"id": "room-spawn", "name": "Arkham"}
@@ -68,6 +70,31 @@ async def test_respawn_player_by_user_id_success() -> None:
     result = await wrapper.respawn_player_by_user_id("user-1", session, respawn_service, persistence)
     assert result["success"] is True
     assert result["player"]["name"] == "Corpse"
+
+
+@pytest.mark.asyncio
+async def test_respawn_player_by_user_id_reports_what_the_registry_holds() -> None:
+    """The respawn writes the player registry, not the loaded row (ADR-029 step 6a): the response reads it."""
+    wrapper = PlayerRespawnWrapper(MagicMock())
+    player = _dead_player()
+    session = MagicMock()
+    session.execute = AsyncMock(
+        return_value=MagicMock(scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[player]))))
+    )
+    respawn_service = MagicMock()
+    respawn_service.respawn_player = AsyncMock(return_value=True)
+    respawned = SimpleNamespace(
+        row=SimpleNamespace(current_room_id="room-spawn", stats={"current_dp": 30, "max_dp": 30})
+    )
+    respawn_service.player_view = AsyncMock(return_value=respawned)
+    persistence = MagicMock()
+    persistence.get_room_by_id.return_value = None
+
+    result = await wrapper.respawn_player_by_user_id("user-1", session, respawn_service, persistence)
+
+    assert result["player"]["current_room_id"] == "room-spawn"
+    assert (result["player"]["dp"], result["player"]["max_dp"]) == (30, 30)
+    respawn_service.respawn_player.assert_awaited_once_with(uuid.UUID(str(player.player_id)))
 
 
 @pytest.mark.asyncio
@@ -82,6 +109,7 @@ async def test_respawn_player_by_user_id_multiple_dead_picks_most_recent() -> No
         return_value=MagicMock(scalars=MagicMock(return_value=MagicMock(all=MagicMock(return_value=[older, newer]))))
     )
     respawn_service = MagicMock()
+    respawn_service.player_view = AsyncMock(return_value=None)
     respawn_service.respawn_player = AsyncMock(return_value=True)
     persistence = MagicMock()
     # Reason: TEST_MOCK - persistence is a MagicMock; attribute access is inherently Any.
@@ -112,6 +140,7 @@ def _respawn_service(*characters: tuple[MagicMock, int | None]) -> MagicMock:
     service = MagicMock()
     service.current_lcd = AsyncMock(side_effect=current_lcd)
     service.respawn_player_from_delirium = AsyncMock(return_value=True)
+    service.player_view = AsyncMock(return_value=None)
     return service
 
 
@@ -147,7 +176,7 @@ async def test_respawn_from_delirium_picks_the_delirious_character_among_several
 
     result = await wrapper.respawn_player_from_delirium_by_user_id("user-1", session, respawn_service, persistence)
 
-    respawn_service.respawn_player_from_delirium.assert_awaited_once_with(delirious.player_id, session)
+    respawn_service.respawn_player_from_delirium.assert_awaited_once_with(delirious.player_id)
     assert result["player"]["name"] == "Delirious"
 
 

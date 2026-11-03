@@ -91,9 +91,6 @@ CONTAINER_GET_INSTANCE_ALLOWLIST: tuple[AllowlistEntry, ...] = (
     AllowlistEntry("server/services/combat_persistence_handler.py", 1, "constructed by CombatService, not a bundle"),
     AllowlistEntry("server/services/combat_messaging/base.py", 1, "mixin, never instantiated directly"),
     AllowlistEntry(
-        "server/services/combat_hp_sync.py", 1, "dead code (#630): CombatDPSync has zero production callers"
-    ),
-    AllowlistEntry(
         "server/services/npc_combat_handlers.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"
     ),
     AllowlistEntry("server/game/magic/magic_healing_events.py", 1, "mixin, never instantiated directly"),

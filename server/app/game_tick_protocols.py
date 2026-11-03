@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from ..events.event_types import PlayerDPDecayEvent
     from ..models.combat import CombatInstance
     from ..models.player import Player
+    from ..models.player_dp import DpChange
     from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
 
 __all__ = [
@@ -63,14 +64,10 @@ class _TickMagicService(Protocol):
 
 class _TickDeathService(Protocol):
     async def handle_player_death(
-        self,
-        player_id: uuid.UUID,
-        death_location: str,
-        killer_info: Mapping[str, object] | None,
-        session: AsyncSession,
+        self, player_id: uuid.UUID, death_location: str, killer_info: Mapping[str, object] | None
     ) -> bool: ...
 
-    async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool: ...
+    async def process_mortally_wounded_tick(self, player_id: uuid.UUID) -> DpChange | None: ...
 
     async def get_mortally_wounded_players(self, session: AsyncSession) -> list[Player]: ...
 
@@ -78,7 +75,7 @@ class _TickDeathService(Protocol):
 
 
 class _TickRespawnService(Protocol):
-    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool: ...
+    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str) -> bool: ...
 
 
 class _TickEventBus(Protocol):

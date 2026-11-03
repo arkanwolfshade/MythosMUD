@@ -12,11 +12,15 @@ import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
-from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
+from server.events.event_types import BaseEvent, PlayerDiedEvent, PlayerDPDecayEvent
 from server.models.game import PositionState
 from server.models.player import Player
 from server.services.player_death_service import PlayerDeathService
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
+
+REGISTRY_PLAYER = uuid.uuid4()
 
 
 @pytest.fixture
@@ -194,111 +198,111 @@ async def test_get_dead_players_handles_error(player_death_service, mock_session
     mock_session.rollback.assert_awaited_once()
 
 
-@pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_player_not_found(player_death_service, mock_session, sample_player_id):
-    """Test process_mortally_wounded_tick() returns False when player not found."""
-    mock_session.get = AsyncMock(return_value=None)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is False
+class _Bus:
+    """Records what the death service publishes."""
+
+    def __init__(self) -> None:
+        self.events: list[BaseEvent] = []
+
+    def publish(self, event: BaseEvent) -> None:
+        self.events.append(event)
+
+
+class _Combat:
+    """Records which players had their combat state cleared."""
+
+    def __init__(self) -> None:
+        self.cleared: list[uuid.UUID] = []
+
+    async def clear_player_combat_state(self, player_id: uuid.UUID) -> None:
+        self.cleared.append(player_id)
+
+
+def _registry_service(
+    *, current_dp: int = -5, position: str = "standing", event_bus: _Bus | None = None, combat: _Combat | None = None
+) -> tuple[PlayerDeathService, LucidityHarness]:
+    """A death service on a real registry holding one player (ADR-029 step 6a)."""
+    harness = lucidity_registry(
+        {REGISTRY_PLAYER: None},
+        stats={"current_dp": current_dp, "max_dp": 20, "position": position},
+        row={"name": "TestPlayer", "current_room_id": "room_001"},
+    )
+    service = PlayerDeathService(event_bus=event_bus, player_combat_service=combat, player_registry=harness.registry)
+    return service, harness
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_already_dead(
-    player_death_service, mock_session, sample_player_id, mock_player
-):
-    """Test process_mortally_wounded_tick() returns False when player already dead."""
-    mock_player.is_dead.return_value = True
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is False
+async def test_process_mortally_wounded_tick_player_not_found() -> None:
+    service, _ = _registry_service()
+    assert await service.process_mortally_wounded_tick(uuid.uuid4()) is None
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_applies_decay(
-    player_death_service, mock_session, sample_player_id, mock_player
-):
-    """Test process_mortally_wounded_tick() applies DP decay via Player.apply_dp_decay."""
-    mock_player.get_stats.return_value = {"current_dp": -5, "position": "standing"}
-    mock_player.is_dead.return_value = False
-    mock_player.apply_dp_decay = MagicMock(return_value=(-5, -6, False))
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is True
-    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
-    mock_session.commit.assert_awaited_once()
+async def test_process_mortally_wounded_tick_without_a_registry_does_nothing() -> None:
+    assert await PlayerDeathService().process_mortally_wounded_tick(REGISTRY_PLAYER) is None
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_caps_at_negative_10(
-    player_death_service, mock_session, sample_player_id, mock_player
-):
-    """Test process_mortally_wounded_tick() caps DP at -10 via Player.apply_dp_decay."""
-    mock_player.get_stats.return_value = {"current_dp": -10, "position": "lying"}
-    mock_player.is_dead.return_value = False
-    mock_player.apply_dp_decay = MagicMock(return_value=(-10, -10, False))
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is True
-    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
+async def test_process_mortally_wounded_tick_already_dead() -> None:
+    service, harness = _registry_service(current_dp=-10)
+
+    assert await service.process_mortally_wounded_tick(REGISTRY_PLAYER) is None
+    assert harness.db.commits == 0
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_changes_posture_to_lying(
-    player_death_service, mock_session, sample_player_id, mock_player
-):
-    """Test process_mortally_wounded_tick() delegates posture change to Player.apply_dp_decay."""
-    mock_player.get_stats.return_value = {"current_dp": 0, "position": "standing"}
-    mock_player.is_dead.return_value = False
-    mock_player.apply_dp_decay = MagicMock(return_value=(0, -1, True))  # posture_changed=True
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is True
-    mock_player.apply_dp_decay.assert_called_once_with(amount=1)
+async def test_process_mortally_wounded_tick_applies_decay() -> None:
+    service, harness = _registry_service(current_dp=-5, position="lying")
+
+    change = await service.process_mortally_wounded_tick(REGISTRY_PLAYER)
+
+    assert change is not None and (change.old_dp, change.new_dp) == (-5, -6)
+    assert harness.stats(REGISTRY_PLAYER)["current_dp"] == -6
+    assert harness.db.commits == 1  # sync: the next tick's database query sees it
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_publishes_event(
-    player_death_service, mock_session, sample_player_id, mock_player, mock_event_bus
-):
-    """Test process_mortally_wounded_tick() publishes DP decay event."""
-    mock_player.get_stats.return_value = {"current_dp": -5, "position": "standing"}
-    mock_player.is_dead.return_value = False
-    mock_player.apply_dp_decay = MagicMock(return_value=(-5, -6, False))
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is True
-    mock_event_bus.publish.assert_called_once()
-    published_event = mock_event_bus.publish.call_args[0][0]
+async def test_process_mortally_wounded_tick_reaches_minus_10() -> None:
+    service, _ = _registry_service(current_dp=-9, position="lying")
+
+    change = await service.process_mortally_wounded_tick(REGISTRY_PLAYER)
+
+    assert change is not None and change.new_dp == -10 and change.became_dead
+
+
+@pytest.mark.asyncio
+async def test_process_mortally_wounded_tick_changes_posture_to_lying() -> None:
+    service, harness = _registry_service(current_dp=0, position="standing")
+
+    _ = await service.process_mortally_wounded_tick(REGISTRY_PLAYER)
+
+    assert harness.stats(REGISTRY_PLAYER)["position"] == PositionState.LYING
+
+
+@pytest.mark.asyncio
+async def test_process_mortally_wounded_tick_publishes_event() -> None:
+    bus = _Bus()
+    service, _ = _registry_service(event_bus=bus)
+
+    _ = await service.process_mortally_wounded_tick(REGISTRY_PLAYER)
+
+    [published_event] = bus.events
     assert isinstance(published_event, PlayerDPDecayEvent)
-    assert published_event.player_id == sample_player_id
+    assert (published_event.player_id, published_event.new_dp, published_event.room_id) == (
+        REGISTRY_PLAYER,
+        -6,
+        "room_001",
+    )
 
 
 @pytest.mark.asyncio
-async def test_process_mortally_wounded_tick_handles_error(player_death_service, mock_session, sample_player_id):
-    """Test process_mortally_wounded_tick() handles errors gracefully."""
-    mock_session.get = AsyncMock(side_effect=Exception("Database error"))
-    result = await player_death_service.process_mortally_wounded_tick(sample_player_id, mock_session)
-    assert result is False
-    mock_session.rollback.assert_awaited_once()
+async def test_process_mortally_wounded_tick_handles_a_failed_commit() -> None:
+    bus = _Bus()
+    service, harness = _registry_service(event_bus=bus)
+    harness.db.fail_commits, harness.db.commit_error = 1, SQLAlchemyError("Database error")
 
-
-@pytest.mark.asyncio
-async def test_ensure_player_posture_lying_already_lying(player_death_service, mock_player, sample_player_id):
-    """Test _ensure_player_posture_lying() does nothing when already lying."""
-    mock_player.get_stats.return_value = {"position": PositionState.LYING}
-    await player_death_service._ensure_player_posture_lying(mock_player, sample_player_id)
-    # Should not call set_stats if already lying
-    mock_player.set_stats.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_ensure_player_posture_lying_changes_posture(player_death_service, mock_player, sample_player_id):
-    """Test _ensure_player_posture_lying() changes posture to lying."""
-    mock_player.get_stats.return_value = {"position": "standing"}
-    await player_death_service._ensure_player_posture_lying(mock_player, sample_player_id)
-    mock_player.set_stats.assert_called_once()
-    call_args = mock_player.set_stats.call_args
-    assert call_args[0][0]["position"] == PositionState.LYING
+    assert await service.process_mortally_wounded_tick(REGISTRY_PLAYER) is None
+    assert bus.events == []
 
 
 @pytest.mark.asyncio
@@ -387,51 +391,48 @@ def test_publish_death_event_no_event_bus(player_death_service_no_dependencies, 
 
 
 @pytest.mark.asyncio
-async def test_handle_player_death_success(player_death_service, mock_session, sample_player_id, mock_player):
-    """Test handle_player_death() successfully handles player death."""
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
-    assert result is True
-    mock_session.commit.assert_awaited_once()
-    player_death_service._event_bus.publish.assert_called_once()
+async def test_handle_player_death_lays_the_player_down_and_records_the_room() -> None:
+    bus, combat = _Bus(), _Combat()
+    service, harness = _registry_service(current_dp=-10, event_bus=bus, combat=combat)
+
+    with patch.object(service, "_get_room_name_for_death", return_value="Arkham › Street"):
+        assert await service.handle_player_death(REGISTRY_PLAYER, "room_001", None) is True
+
+    stats = harness.stats(REGISTRY_PLAYER)
+    assert stats["position"] == PositionState.LYING
+    assert (stats["death_room_id"], stats["death_location"]) == ("room_001", "Arkham › Street")
+    assert harness.db.commits == 1
+    assert combat.cleared == [REGISTRY_PLAYER]
+    [event] = bus.events
+    assert isinstance(event, PlayerDiedEvent)
 
 
 @pytest.mark.asyncio
-async def test_handle_player_death_player_not_found(player_death_service, mock_session, sample_player_id):
-    """Test handle_player_death() returns False when player not found."""
-    mock_session.get = AsyncMock(return_value=None)
-    result = await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
-    assert result is False
+async def test_handle_player_death_player_not_found() -> None:
+    service, _ = _registry_service()
+    assert await service.handle_player_death(uuid.uuid4(), "room_001", None) is False
 
 
 @pytest.mark.asyncio
-async def test_handle_player_death_with_killer_info(player_death_service, mock_session, sample_player_id, mock_player):
-    """Test handle_player_death() handles death with killer information."""
-    killer_info = {"killer_id": uuid.uuid4(), "killer_name": "KillerPlayer"}
-    mock_session.get = AsyncMock(return_value=mock_player)
-    result = await player_death_service.handle_player_death(sample_player_id, "room_001", killer_info, mock_session)
-    assert result is True
-    published_event = player_death_service._event_bus.publish.call_args[0][0]
-    assert published_event.killer_id == killer_info["killer_id"]
+async def test_handle_player_death_with_killer_info() -> None:
+    killer_id = uuid.uuid4()
+    bus = _Bus()
+    service, _ = _registry_service(current_dp=-10, event_bus=bus)
+
+    assert await service.handle_player_death(REGISTRY_PLAYER, "room_001", {"killer_id": killer_id}) is True
+
+    [published_event] = bus.events
+    assert isinstance(published_event, PlayerDiedEvent) and published_event.killer_id == killer_id
 
 
 @pytest.mark.asyncio
-async def test_handle_player_death_clears_combat_state(
-    player_death_service, mock_session, sample_player_id, mock_player, mock_player_combat_service
-):
-    """Test handle_player_death() clears combat state."""
-    mock_session.get = AsyncMock(return_value=mock_player)
-    await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
-    mock_player_combat_service.clear_player_combat_state.assert_awaited_once_with(sample_player_id)
+async def test_handle_player_death_handles_a_failed_commit() -> None:
+    bus = _Bus()
+    service, harness = _registry_service(current_dp=-10, event_bus=bus)
+    harness.db.fail_commits, harness.db.commit_error = 1, SQLAlchemyError("Database error")
 
-
-@pytest.mark.asyncio
-async def test_handle_player_death_handles_error(player_death_service, mock_session, sample_player_id):
-    """Test handle_player_death() handles errors gracefully."""
-    mock_session.get = AsyncMock(side_effect=Exception("Database error"))
-    result = await player_death_service.handle_player_death(sample_player_id, "room_001", None, mock_session)
-    assert result is False
-    mock_session.rollback.assert_awaited_once()
+    assert await service.handle_player_death(REGISTRY_PLAYER, "room_001", None) is False
+    assert bus.events == []
 
 
 def _session_with_players(players: list[MagicMock]) -> AsyncMock:

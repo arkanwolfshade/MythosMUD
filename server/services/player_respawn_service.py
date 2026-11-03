@@ -4,6 +4,9 @@ Player Respawn Service for managing player resurrection and limbo state.
 This service handles player death transitions, limbo room placement, and respawn mechanics.
 As documented in the Pnakotic Manuscripts, resurrection requires careful navigation of
 the spaces between worlds.
+
+Each transition is one player registry unit, and a sync one (ADR-029 step 6a): the room, DP, posture, death room and
+(for a delirium or sanitarium respawn) the lucidity and pending debrief commit together.
 """
 
 from __future__ import annotations
@@ -12,10 +15,9 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Callable, Mapping, Sequence
-from typing import TYPE_CHECKING, Protocol, cast
+from typing import TYPE_CHECKING, Protocol
 
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..constants.spawn_defaults import DEFAULT_RESPAWN_ROOM, LIMBO_ROOM_ID, RECOVERY_WARD_ROOM_ID
 from ..events.event_types import BaseEvent, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
@@ -27,7 +29,8 @@ from ..game.first_exposure import (
     tutorial_instance_of,
 )
 from ..game.instance_manager import is_template_room, template_exit_room_id
-from ..models.player import Player
+from ..game.player_registry import PlayerNotFoundError
+from ..models.player_dp import DEAD_DP, dp_of, restored
 from ..models.room import Room
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
@@ -35,18 +38,17 @@ from ..utils.liability_types import LiabilityStackEntry
 from .debrief_service import mark_debrief_pending
 from .lucidity_helpers import LIABILITY_CATALOG, decode_liabilities, encode_liabilities, resolve_tier
 from .lucidity_tier_cache import lucidity_tier_cache
+from .player_health_service import PlayerHealthService
 from .player_respawn_state import (
     apply_sanitarium_player_state,
     apply_standard_respawn_state,
-    log_delirium_respawn,
-    log_sanitarium_respawn,
+    log_lucidity_respawn,
     log_standard_respawn,
-    normalize_current_dp,
-    record_death_room_on_player,
+    record_death_room,
 )
 
 if TYPE_CHECKING:
-    from ..game.player_registry import PlayerRegistry
+    from ..game.player_registry import PlayerAggregate, PlayerRegistry, PlayerView
 
 logger = get_logger(__name__)
 
@@ -124,8 +126,7 @@ class PlayerRespawnService:
                 template be redirected to that template's exit room
             first_exposure_finish: Optional post-commit hook that finishes the First Exposure tutorial
                 (corruption floor, epilogue quest, instance flush) for a player who was inside it
-            player_registry: Holds the player's lucidity (ADR-029 step 5b-i), which a delirium or sanitarium
-                respawn resets once its session has committed
+            player_registry: Holds the player (ADR-029): every transition here is one unit on it
         """
         self._event_bus: _RespawnEventPublisher | None = event_bus
         self._player_combat_service: _PlayerCombatClearing | None = player_combat_service
@@ -157,18 +158,13 @@ class PlayerRespawnService:
         )
         return exit_room_id
 
-    def _can_move_to_limbo(self, player: Player, death_location: str) -> tuple[bool, int]:
-        """Return (allowed, current_dp_int) for limbo movement gate checks."""
+    @staticmethod
+    def _can_move_to_limbo(player: PlayerAggregate, death_location: str) -> tuple[bool, int]:
+        """Return (allowed, current_dp) for the limbo move: only the dead (DP -10 or lower) or a catatonia failover."""
         if death_location == "catatonia_failover":
             return True, 0
-
-        stats = player.get_stats() or {}
-        current_dp_int = normalize_current_dp(stats)
-        player_is_dead = player.is_dead()
-
-        # Require actual DP <= -10; do not rely on is_dead() alone (defense against bad/stale stats)
-        allowed = not (current_dp_int > -10 or not player_is_dead)
-        return allowed, current_dp_int
+        current_dp = dp_of(player.row.stats)
+        return current_dp <= DEAD_DP, current_dp
 
     def _publish_delirium_respawn_event(
         self,
@@ -200,19 +196,27 @@ class PlayerRespawnService:
         player = await self._player_registry.get(player_id)
         return player.lucidity.lcd if player is not None else None
 
-    async def _set_respawn_lucidity(self, player_id: uuid.UUID, lcd: int, *, sanitarium: bool = False) -> None:
-        """After the respawn commits: set the player's lucidity (and, for the sanitarium, raise their liabilities),
-        and leave the pending debrief, in one registry unit."""
+    async def player_view(self, player_id: uuid.UUID) -> PlayerView | None:
+        """The player as the registry holds them (where a respawn left them), or None without one or such a player."""
         if self._player_registry is None:
-            return
-        async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
-            liabilities = None
-            if sanitarium:
-                raised = raise_sanitarium_liabilities(decode_liabilities(player.lucidity.data.liabilities), random)
-                liabilities = encode_liabilities(raised)
-            _ = player.lucidity.set(lcd=lcd, tier=resolve_tier(lcd), liabilities=liabilities)
-            mark_debrief_pending(player)
-        lucidity_tier_cache.set_tier(player_id, resolve_tier(lcd))
+            return None
+        return await self._player_registry.get(player_id)
+
+    @staticmethod
+    def _apply_respawn_lucidity(player: PlayerAggregate, lcd: int, *, sanitarium: bool = False) -> None:
+        """Inside the respawn's unit: set the player's lucidity (and, for the sanitarium, raise their liabilities),
+        and leave the pending debrief. The caller sets the tier cache once the unit has committed."""
+        liabilities = None
+        if sanitarium:
+            raised = raise_sanitarium_liabilities(decode_liabilities(player.lucidity.data.liabilities), random)
+            liabilities = encode_liabilities(raised)
+        _ = player.lucidity.set(lcd=lcd, tier=resolve_tier(lcd), liabilities=liabilities)
+        mark_debrief_pending(player)
+
+    def _registry(self, player_id: uuid.UUID, operation: str) -> PlayerRegistry | None:
+        if self._player_registry is None:
+            logger.error("No player registry; cannot respawn", player_id=player_id, operation=operation)
+        return self._player_registry
 
     async def _clear_respawn_combat_state(self, player_id: uuid.UUID, respawn_context: str) -> None:
         """Clear combat state for a respawning player, logging and swallowing DB errors."""
@@ -253,44 +257,23 @@ class PlayerRespawnService:
         )
         self._event_bus.publish(event)
 
-    async def _prepare_delirium_respawn(self, player_id: uuid.UUID, player: Player) -> tuple[str, str, int, int] | None:
-        """Apply the delirium location update and return the respawn context.
-
-        The lucidity it returns (and the pending debrief) is set by the caller once the session commits.
-        """
-        old_lucidity = await self.current_lcd(player_id)
-        if old_lucidity is None:
-            logger.warning("Lucidity not available for delirium respawn", player_id=player_id)
-            return None
-        new_lucidity = DELIRIUM_RESPAWN_LCD
-
+    @staticmethod
+    def _prepare_delirium_respawn(player: PlayerAggregate) -> tuple[str, str, int, int]:
+        """Inside the unit: full health in the Recovery Ward (or a finished tutorial's end state), and the lucidity it
+        restores; returns (respawn_room, old_room, old_lucidity, new_lucidity)."""
+        old_lucidity, new_lucidity = player.lucidity.lcd, DELIRIUM_RESPAWN_LCD
         respawn_room = RECOVERY_WARD_ROOM_ID
-        _ = player.restore_to_full_health()
-        old_room = player.current_room_id
-        player.current_room_id = respawn_room
+        old_room = player.row.current_room_id
         if apply_first_exposure_end_state(player):
             new_lucidity = RESTORED_LCD
+        else:  # unlike a death, the death room is kept
+            _ = PlayerHealthService.apply_in(player, restored(player.row.stats))
+            player.row.set_current_room_id(respawn_room, sync=True)
         return respawn_room, old_room, old_lucidity, new_lucidity
 
-    async def _prepare_sanitarium_respawn(
-        self, player_id: uuid.UUID, player: Player
-    ) -> tuple[str, dict[str, object], str, int, int] | None:
-        """Apply the sanitarium state and return the respawn context.
-
-        The lucidity reset, the liability rise and the pending debrief are applied by the caller once the session commits.
+    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str) -> bool:
         """
-        old_lucidity = await self.current_lcd(player_id)
-        if old_lucidity is None:
-            logger.warning("Lucidity not available for sanitarium respawn", player_id=player_id)
-            return None
-
-        respawn_room = RECOVERY_WARD_ROOM_ID
-        stats, old_room = apply_sanitarium_player_state(player, respawn_room)
-        return respawn_room, stats, old_room, old_lucidity, SANITARIUM_RESPAWN_LCD
-
-    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool:
-        """
-        Move a dead player to the limbo room.
+        Move a dead player to the limbo room, as one sync registry unit.
 
         The limbo room completely isolates the player from the game world
         during the death/respawn sequence.
@@ -298,58 +281,53 @@ class PlayerRespawnService:
         Args:
             player_id: ID of the player to move
             death_location: Room ID where the player died (for reference)
-            session: Async database session for player data access
 
         Returns:
             True if player was moved to limbo, False otherwise
         """
+        registry = self._registry(player_id, "move_player_to_limbo")
+        if registry is None:
+            return False
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for limbo movement", player_id=player_id)
-                return False
-
-            # Player must be at -10 or lower DP before moving to limbo (death transition).
-            # Catatonia failover is the only exception (lucidity-based, not DP).
-            can_move, current_dp_int = self._can_move_to_limbo(player, death_location)
-            if not can_move:
-                logger.warning(
-                    "Refusing to move player to limbo: DP must be -10 or lower",
-                    player_id=player_id,
-                    current_dp=current_dp_int,
-                )
-                return False
-
-            # Move player to limbo room
-            old_room = player.current_room_id
-            # Record where they died before overwriting current_room_id with limbo.
-            record_death_room_on_player(player, death_location if death_location else str(old_room))
-            player.current_room_id = LIMBO_ROOM_ID
-
-            # Commit changes using async API
-            await session.commit()
-
-            logger.info(
-                "Player moved to limbo",
-                player_id=player_id,
-                player_name=player.name,
-                from_room=old_room,
-                death_location=death_location,
-            )
-
-            return True
-
+            async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                # Player must be at -10 or lower DP before moving to limbo (death transition).
+                # Catatonia failover is the only exception (lucidity-based, not DP).
+                can_move, current_dp = self._can_move_to_limbo(player, death_location)
+                if not can_move:
+                    logger.warning(
+                        "Refusing to move player to limbo: DP must be -10 or lower",
+                        player_id=player_id,
+                        current_dp=current_dp,
+                    )
+                    return False
+                old_room = player.row.current_room_id
+                # Record where they died before overwriting the room with limbo.
+                record_death_room(player, death_location or old_room)
+                player.row.set_current_room_id(LIMBO_ROOM_ID, sync=True)
+                player_name = player.row.name
+        except PlayerNotFoundError:
+            logger.warning("Player not found for limbo movement", player_id=player_id)
+            return False
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error moving player to limbo", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
             return False
-        except Exception as e:  # pylint: disable=broad-except  # Also catch generic exceptions for test compatibility
-            logger.error("Unexpected error moving player to limbo", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
-            return False
+        logger.info(
+            "Player moved to limbo",
+            player_id=player_id,
+            player_name=player_name,
+            from_room=old_room,
+            death_location=death_location,
+        )
+        return True
 
-    async def get_respawn_room(self, player_id: uuid.UUID, session: AsyncSession) -> str:
+    def _respawn_room_of(self, player: PlayerView) -> str:
+        """The player's custom respawn room if set (redirected out of a template), else the default foyer."""
+        respawn_room_id = player.row.respawn_room_id
+        if respawn_room_id:
+            return self._redirect_template_respawn(player.row.player_id, respawn_room_id)
+        return DEFAULT_RESPAWN_ROOM
+
+    async def get_respawn_room(self, player_id: uuid.UUID) -> str:
         """
         Get the respawn room for a player.
 
@@ -358,46 +336,20 @@ class PlayerRespawnService:
 
         Args:
             player_id: ID of the player
-            session: Async database session for player data access
 
         Returns:
             Room ID for respawn location
         """
-        try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for respawn room lookup, using default", player_id=player_id)
-                return DEFAULT_RESPAWN_ROOM
-
-            # Prefer a configured custom respawn room when available, falling back to the
-            # default Arkham Sanitarium foyer when none is configured.
-            respawn_room_id = cast(str | None, getattr(player, "respawn_room_id", None))
-            if respawn_room_id:
-                logger.debug(
-                    "Using custom respawn room for player",
-                    player_id=player_id,
-                    custom_respawn_room=respawn_room_id,
-                )
-                return self._redirect_template_respawn(player_id, respawn_room_id)
-
-            logger.debug(
-                "Using default respawn room for player",
-                player_id=player_id,
-                effective_respawn_room=DEFAULT_RESPAWN_ROOM,
-            )
+        registry = self._registry(player_id, "get_respawn_room")
+        player = await registry.get(player_id) if registry is not None else None
+        if player is None:
+            logger.warning("Player not found for respawn room lookup, using default", player_id=player_id)
             return DEFAULT_RESPAWN_ROOM
+        return self._respawn_room_of(player)
 
-        except (DatabaseError, SQLAlchemyError) as e:
-            logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
-            return DEFAULT_RESPAWN_ROOM
-        except Exception as e:  # pylint: disable=broad-except  # Also catch generic exceptions for test compatibility
-            logger.error("Unexpected error getting respawn room, using default", player_id=player_id, error=str(e))
-            return DEFAULT_RESPAWN_ROOM
-
-    async def respawn_player(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
+    async def respawn_player(self, player_id: uuid.UUID) -> bool:
         """
-        Respawn a dead player at their respawn location with full DP.
+        Respawn a dead player at their respawn location with full DP, as one sync registry unit.
 
         This method:
         1. Restores player DP to their max_dp (not hardcoded 100)
@@ -406,49 +358,36 @@ class PlayerRespawnService:
 
         Args:
             player_id: ID of the player to respawn
-            session: Database session for player data access
 
         Returns:
             True if respawn was successful, False otherwise
         """
+        registry = self._registry(player_id, "respawn_player")
+        if registry is None:
+            return False
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for respawn", player_id=player_id)
-                return False
-
-            # Get respawn room using async API
-            respawn_room = await self.get_respawn_room(player_id, session)
-
-            old_dp, max_dp, old_room = apply_standard_respawn_state(player, respawn_room)
-
-            # BUGFIX #244: clear combat state on resurrection to prevent stale combat continuity.
-            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="standard")
-
-            # Commit changes using async API
-            await session.commit()
-
-            log_standard_respawn(player, player_id, respawn_room, old_dp, max_dp, old_room)
-
-            self._publish_standard_respawn_event(
-                player_id=player_id,
-                player_name=str(player.name),
-                respawn_room=respawn_room,
-                stats={"current_dp": old_dp, "max_dp": max_dp},
-                old_room=old_room,
-            )
-
-            return True
-
+            async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                respawn_room = self._respawn_room_of(player)
+                change, old_room = apply_standard_respawn_state(player, respawn_room)
+                player_name = player.row.name
+        except PlayerNotFoundError:
+            logger.warning("Player not found for respawn", player_id=player_id)
+            return False
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error respawning player", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
             return False
-        except Exception as e:  # pylint: disable=broad-except  # Also catch generic exceptions for test compatibility
-            logger.error("Unexpected error respawning player", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
-            return False
+
+        # BUGFIX #244: clear combat state on resurrection to prevent stale combat continuity.
+        await self._clear_respawn_combat_state(player_id=player_id, respawn_context="standard")
+        log_standard_respawn(player_name, player_id, respawn_room, change, old_room)
+        self._publish_standard_respawn_event(
+            player_id=player_id,
+            player_name=player_name,
+            respawn_room=respawn_room,
+            stats={"current_dp": change.old_dp, "max_dp": change.max_dp},
+            old_room=old_room,
+        )
+        return True
 
     async def _finish_first_exposure(self, player_id: uuid.UUID, instance_id: str | None) -> None:
         """After the respawn committed: finish the tutorial the player just left. Never fails the respawn."""
@@ -459,68 +398,54 @@ class PlayerRespawnService:
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: the respawn already committed; a failed finish must not turn it into an error
             logger.error("First Exposure finish failed", player_id=player_id, instance_id=instance_id, error=str(e))
 
-    async def respawn_player_from_delirium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
+    async def respawn_player_from_delirium(self, player_id: uuid.UUID) -> bool:
         """
-        Respawn a delirious player in the Sanitarium Recovery Ward with restored lucidity.
+        Respawn a delirious player in the Sanitarium Recovery Ward with restored lucidity, as one sync registry unit.
 
         This method:
-        1. Sets player lucidity to 10
+        1. Restores full DP and sets player lucidity to 10 (70 at the end of the tutorial)
         2. Moves player to the Recovery Ward (RECOVERY_WARD_ROOM_ID) and leaves a pending debrief
         3. Publishes delirium respawn event for UI updates
 
         Args:
             player_id: ID of the player to respawn
-            session: Database session for player data access
 
         Returns:
             True if respawn was successful, False otherwise
         """
+        registry = self._registry(player_id, "respawn_player_from_delirium")
+        if registry is None:
+            return False
         try:
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for delirium respawn", player_id=player_id)
-                return False
-
-            first_exposure_instance = tutorial_instance_of(player)
-            prepared = await self._prepare_delirium_respawn(player_id, player)
-            if not prepared:
-                return False
-            respawn_room, old_room, old_lucidity, new_lucidity = prepared
-
-            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="delirium")
-
-            # Commit changes using async API
-            await session.commit()
-            await self._set_respawn_lucidity(player_id, new_lucidity)
-
-            log_delirium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
-
-            self._publish_delirium_respawn_event(
-                player_id=player_id,
-                player_name=str(player.name),
-                respawn_room=respawn_room,
-                old_lucidity=old_lucidity,
-                new_lucidity=new_lucidity,
-                old_room=old_room,
-            )
-
-            await self._finish_first_exposure(player_id, first_exposure_instance)
-            return True
-
+            async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                first_exposure_instance = tutorial_instance_of(player)
+                respawn_room, old_room, old_lucidity, new_lucidity = self._prepare_delirium_respawn(player)
+                self._apply_respawn_lucidity(player, new_lucidity)
+                player_name = player.row.name
+        except PlayerNotFoundError:
+            logger.warning("Player not found for delirium respawn", player_id=player_id)
+            return False
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error respawning player from delirium", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
             return False
-        except Exception as e:  # pylint: disable=broad-except  # Also catch generic exceptions for test compatibility
-            logger.error(
-                "Unexpected error respawning player from delirium", player_id=player_id, error=str(e), exc_info=True
-            )
-            await session.rollback()
-            return False
+        lucidity_tier_cache.set_tier(player_id, resolve_tier(new_lucidity))
 
-    async def respawn_player_from_sanitarium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:  # pylint: disable=too-many-locals  # Reason: Respawn processing requires many intermediate variables for complex respawn logic
+        await self._clear_respawn_combat_state(player_id=player_id, respawn_context="delirium")
+        log_lucidity_respawn("delirium", player_name, player_id, respawn_room, (old_lucidity, new_lucidity), old_room)
+        self._publish_delirium_respawn_event(
+            player_id=player_id,
+            player_name=player_name,
+            respawn_room=respawn_room,
+            old_lucidity=old_lucidity,
+            new_lucidity=new_lucidity,
+            old_room=old_room,
+        )
+        await self._finish_first_exposure(player_id, first_exposure_instance)
+        return True
+
+    async def respawn_player_from_sanitarium(self, player_id: uuid.UUID) -> bool:
         """
-        Respawn a player from sanitarium failover at LCD -100.
+        Respawn a player from sanitarium failover at LCD -100, as one sync registry unit.
 
         This method:
         1. Sets player lucidity to 1 (Deranged tier)
@@ -530,48 +455,36 @@ class PlayerRespawnService:
 
         Args:
             player_id: ID of the player to respawn
-            session: Database session for player data access
 
         Returns:
             True if respawn was successful, False otherwise
         """
+        registry = self._registry(player_id, "respawn_player_from_sanitarium")
+        if registry is None:
+            return False
+        respawn_room, new_lucidity = RECOVERY_WARD_ROOM_ID, SANITARIUM_RESPAWN_LCD
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for sanitarium respawn", player_id=player_id)
-                return False
-
-            prepared = await self._prepare_sanitarium_respawn(player_id, player)
-            if not prepared:
-                return False
-            respawn_room, stats, old_room, old_lucidity, new_lucidity = prepared
-
-            await self._clear_respawn_combat_state(player_id=player_id, respawn_context="sanitarium")
-
-            # Commit changes using async API (includes debrief flag)
-            await session.commit()
-            await self._set_respawn_lucidity(player_id, new_lucidity, sanitarium=True)
-
-            log_sanitarium_respawn(player, player_id, respawn_room, old_lucidity, new_lucidity, old_room)
-
-            self._publish_standard_respawn_event(
-                player_id=player_id,
-                player_name=str(player.name),
-                respawn_room=respawn_room,
-                stats=stats,
-                old_room=old_room,
-            )
-
-            return True
-
+            async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                old_lucidity = player.lucidity.lcd
+                old_room = apply_sanitarium_player_state(player, respawn_room)
+                self._apply_respawn_lucidity(player, new_lucidity, sanitarium=True)
+                stats = dict(player.row.stats)
+                player_name = player.row.name
+        except PlayerNotFoundError:
+            logger.warning("Player not found for sanitarium respawn", player_id=player_id)
+            return False
         except (DatabaseError, SQLAlchemyError) as e:
             logger.error("Error respawning player from sanitarium", player_id=player_id, error=str(e), exc_info=True)
-            await session.rollback()
             return False
-        except Exception as e:  # pylint: disable=broad-except  # Also catch generic exceptions for test compatibility
-            logger.error(
-                "Unexpected error respawning player from sanitarium", player_id=player_id, error=str(e), exc_info=True
-            )
-            await session.rollback()
-            return False
+        lucidity_tier_cache.set_tier(player_id, resolve_tier(new_lucidity))
+
+        await self._clear_respawn_combat_state(player_id=player_id, respawn_context="sanitarium")
+        log_lucidity_respawn("sanitarium", player_name, player_id, respawn_room, (old_lucidity, new_lucidity), old_room)
+        self._publish_standard_respawn_event(
+            player_id=player_id,
+            player_name=player_name,
+            respawn_room=respawn_room,
+            stats=stats,
+            old_room=old_room,
+        )
+        return True

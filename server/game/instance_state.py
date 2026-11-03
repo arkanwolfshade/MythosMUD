@@ -90,13 +90,17 @@ class QuestResetter(Protocol):  # pylint: disable=too-few-public-methods  # Reas
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
-async def _reset_lucidity(registry: PlayerRegistry, player_id: uuid.UUID) -> None:
-    """Set the player's lucidity back to what a new character starts with, as one registry unit."""
+async def _reset_dp_and_lucidity(registry: PlayerRegistry, player_id: uuid.UUID) -> None:
+    """Full DP (standing) and a new character's lucidity, as one registry unit: the registry is DP's only writer
+    (ADR-029 step 6a), so the reconnect's own save of the player no longer writes it."""
+    from ..models.player_dp import restored
     from ..services.lucidity_helpers import resolve_tier
     from ..services.lucidity_tier_cache import lucidity_tier_cache
+    from ..services.player_health_service import PlayerHealthService
 
     tier = resolve_tier(STARTING_LCD)
     async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+        _ = PlayerHealthService.apply_in(player, restored(player.row.stats))
         _ = player.lucidity.set(lcd=STARTING_LCD, tier=tier)
     lucidity_tier_cache.set_tier(player_id, tier)
 
@@ -110,18 +114,19 @@ async def restart_instance_run(
     """Start the player's run over: full DP, starting lucidity, and the instance's quests back to not started.
 
     The instance-bound items (``strip_instance_bound_items``) and effects are separate. Corruption is a floor that survives a
-    restart, so it is untouched. Lucidity lives in ``registry`` (ADR-029 step 5b-i). Each step is isolated: a failure
-    is logged and never blocks the reconnect.
+    restart, so it is untouched. DP and lucidity live in ``registry`` (ADR-029 steps 5b-i, 6a); ``player`` gets the
+    full DP too, for the reconnect that reads it. Each step is isolated: a failure is logged and never blocks the
+    reconnect.
     """
     _ = player.restore_to_full_health()
     player_id = uuid.UUID(str(player.player_id))
     try:
         if registry is None:
-            logger.warning("Run restart: no player registry, lucidity kept", player_id=str(player_id))
+            logger.warning("Run restart: no player registry, DP and lucidity kept", player_id=str(player_id))
         else:
-            await _reset_lucidity(registry, player_id)
+            await _reset_dp_and_lucidity(registry, player_id)
     except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: a failed reset must not block the reconnect
-        logger.error("Run restart: lucidity reset failed", player_id=str(player_id), error=str(e))
+        logger.error("Run restart: DP and lucidity reset failed", player_id=str(player_id), error=str(e))
     if quests is None:
         return
     try:

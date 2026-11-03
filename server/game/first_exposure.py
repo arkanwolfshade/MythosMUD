@@ -1,15 +1,12 @@
 """The First Exposure ending (ADR-028): what a tutorial delirium respawn leaves the player with.
 
-Ending the tutorial is two steps, because the respawn commits through its own database session:
+Ending the tutorial is two steps:
 
-* ``apply_first_exposure_end_state`` runs inside that session: health is restored and they wake in the Recovery Ward.
-  Lucidity (restored to 70) lives in the player registry, so the respawn sets it after its commit (ADR-029 step 5b-i).
-* ``FirstExposureFinisher.finish`` runs after the commit: it clears the instance-bound items (the amulet) through the
-  player registry (a registry write inside the respawn's own session could wait on that session's lock on the
-  players row), raises corruption to its floor and starts the epilogue
-  quest (data, run by the scripted-action runner), clears any instance-scoped effects (the drain), then flushes the
-  instance. Corruption is written after the commit
-  because ``restore_to_full_health`` rewrites the same ``stats`` column, and it must be a floor ("at least 1"), never
+* ``apply_first_exposure_end_state`` runs inside the delirium respawn's registry unit (ADR-029 step 6a): health is
+  restored and they wake in the Recovery Ward; the respawn restores their lucidity (to 70) in the same unit.
+* ``FirstExposureFinisher.finish`` runs after that unit commits: it clears the instance-bound items (the amulet),
+  raises corruption to its floor and starts the epilogue quest (data, run by the scripted-action runner), clears any
+  instance-scoped effects (the drain), then flushes the instance. Corruption must be a floor ("at least 1"), never
   "+1", so replay, restart and skip are idempotent.
 
 Anyone not in the tutorial is untouched: ``apply_first_exposure_end_state`` does nothing without a
@@ -28,6 +25,7 @@ from typing import TYPE_CHECKING, Protocol, cast
 
 from ..constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from ..models.player import Player
+from ..models.player_dp import restored
 from ..schemas.scripted_actions import CorruptionAtLeastAction, ScriptedAction, StartQuestAction
 from ..services.corruption_service import CorruptionPersistence
 from ..services.lucidity_service import resolve_tier
@@ -37,7 +35,7 @@ from .instance_state import strip_instance_bound_items
 from .scripted_actions import QuestActionService, ScriptedActionContext, run_scripted_actions
 
 if TYPE_CHECKING:
-    from .player_registry import PlayerRegistry
+    from .player_registry import PlayerAggregate, PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -112,22 +110,20 @@ async def skip_first_exposure(
     )
 
 
-def tutorial_instance_of(player: Player) -> str | None:
+def tutorial_instance_of(player: PlayerAggregate) -> str | None:
     """The tutorial instance the player is in (or the pending marker), or None when they are not in the tutorial."""
-    raw = cast(object, player.tutorial_instance_id)
-    return raw if isinstance(raw, str) and raw else None
+    return player.row.tutorial_instance_id or None
 
 
-def apply_first_exposure_end_state(player: Player) -> bool:
-    """Leave a tutorial player whole and in the Recovery Ward; True if they were in the tutorial, else a no-op.
-
-    The caller restores their lucidity (``restore_first_exposure_lucidity``) once its session has committed.
-    """
+def apply_first_exposure_end_state(player: PlayerAggregate) -> bool:
+    """Leave a tutorial player whole and in the Recovery Ward, inside the caller's unit (sync); True if they were in
+    the tutorial, else a no-op. The caller sets their lucidity (``RESTORED_LCD``) in the same unit."""
     if tutorial_instance_of(player) is None:
         return False
-    _ = player.restore_to_full_health()
-    player.current_room_id = RECOVERY_WARD_ROOM_ID
-    player.tutorial_instance_id = None
+    for key, value in restored(player.row.stats).changes.items():
+        player.row.set_stat(key, value, sync=True)
+    player.row.set_current_room_id(RECOVERY_WARD_ROOM_ID, sync=True)
+    player.row.set_tutorial_instance_id(None)
     return True
 
 

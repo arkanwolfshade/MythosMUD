@@ -131,7 +131,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 **Services / components:**
 
 - `player_combat_service`, `player_death_service`, `player_respawn_service`
-- `combat_service`, `combat_service_state`, `combat_event_handler`, `combat_event_publisher`, `combat_attack_handler`, `combat_flee_handler`, `combat_death_handler`, `combat_cleanup_handler`, `combat_initialization`, `combat_turn_processor`, `combat_persistence_handler`, `combat_messaging_service`, `combat_messaging_integration`, `combat_configuration_service`, `combat_monitoring_service`, `combat_hp_sync`
+- `combat_service`, `combat_service_state`, `combat_event_handler`, `combat_event_publisher`, `combat_attack_handler`, `combat_flee_handler`, `combat_death_handler`, `combat_cleanup_handler`, `combat_initialization`, `combat_turn_processor`, `combat_persistence_handler`, `combat_messaging_service`, `combat_messaging_integration`, `combat_configuration_service`, `combat_monitoring_service`
 - `catatonia_registry`, `passive_lucidity_flux_service`
 - `lucidity_service`, `active_lucidity_service`, `lucidity_event_dispatcher`, `lucidity_command_disruption`, `lucidity_communication_dampening`, `hallucination_frequency_service`, `fake_hallucination_service`
 - `target_resolution_service`

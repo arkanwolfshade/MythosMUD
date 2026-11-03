@@ -1,8 +1,6 @@
 """Unit tests for container bundle modules."""
 
 import uuid
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from typing import cast
@@ -581,10 +579,11 @@ async def test_combat_bundle_initialize() -> None:
 
 
 @pytest.mark.asyncio
-async def test_combat_bundle_sanitarium_failover_no_db_manager() -> None:
+async def test_combat_bundle_sanitarium_failover_without_a_respawn_service_logs() -> None:
     bundle = CombatBundle()
-    container = MagicMock(database_manager=None)
-    await bundle._sanitarium_failover_callback(container, str(uuid.uuid4()), 0)
+    container = MagicMock(player_registry=None)
+    with patch("server.container.bundles.combat.sleep", AsyncMock()):
+        await bundle._sanitarium_failover_callback(container, str(uuid.uuid4()), 0)  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - the failover is the bundle's private catatonia callback  # Appropriate because: it is only reachable through the catatonia observer, which needs the whole app
 
 
 @pytest.mark.asyncio
@@ -715,29 +714,18 @@ class _FailoverRespawn:
     def __init__(self) -> None:
         self.moved: list[str] = []
 
-    async def move_player_to_limbo(self, player_id: str, reason: str, session: object) -> bool:
-        _ = reason, session
-        self.moved.append(player_id)
+    async def move_player_to_limbo(self, player_id: uuid.UUID, reason: str) -> bool:
+        _ = reason
+        self.moved.append(str(player_id))
         return True
 
-    async def respawn_player_from_sanitarium(self, player_id: str, session: object) -> bool:
-        _ = player_id, session
+    async def respawn_player_from_sanitarium(self, player_id: uuid.UUID) -> bool:
+        _ = player_id
         return True
-
-
-class _FailoverSession:
-    async def rollback(self) -> None:
-        return None
 
 
 async def _run_failover(respawn: _FailoverRespawn, registry: PlayerRegistry, player_id: uuid.UUID) -> None:
-    @asynccontextmanager
-    async def session() -> AsyncGenerator[_FailoverSession]:
-        yield _FailoverSession()
-
-    container = SimpleNamespace(
-        database_manager=SimpleNamespace(get_session_maker=lambda: session), player_registry=registry
-    )
+    container = SimpleNamespace(player_registry=registry)  # registry units only: no database session (step 6a)
     bundle = CombatBundle()
     bundle.player_respawn_service = cast(PlayerRespawnService, cast(object, respawn))
     with patch("server.container.bundles.combat.sleep", AsyncMock()):

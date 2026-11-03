@@ -35,6 +35,7 @@ from server.app.game_tick_processing import (
 )
 from server.app.game_tick_protocols import _tick_online_players
 from server.models.combat import CombatStatus
+from server.models.player_dp import DpChange
 from server.services.corpse_lifecycle_service import CorpseServiceError
 
 
@@ -56,8 +57,7 @@ async def test_process_mortally_wounded_skips_active_combat() -> None:
     player: MagicMock = MagicMock()
     player.player_id = str(uuid.uuid4())
     player.name = "Victim"
-    session: AsyncMock = AsyncMock()
-    await _process_mortally_wounded_player(container, player, session)
+    await _process_mortally_wounded_player(container, player)
     process_mortally_wounded_tick.assert_not_called()
 
 
@@ -65,7 +65,10 @@ def _bleed_out_setup() -> tuple[MagicMock, MagicMock, AsyncMock, AsyncMock]:
     """A container and player whose next tick takes the player to -10 DP, plus the limbo-move mock."""
     handle_player_death: AsyncMock = AsyncMock()
     player_death_service: MagicMock = MagicMock()
-    player_death_service.process_mortally_wounded_tick = AsyncMock()
+    # The registry decay takes the player to -10 (ADR-029 step 6a: the tick reads the change, not the row).
+    player_death_service.process_mortally_wounded_tick = AsyncMock(
+        return_value=DpChange(-9, -10, 100, {"current_dp": -10}, became_dead=True)
+    )
     player_death_service.handle_player_death = handle_player_death
     move_player_to_limbo: AsyncMock = AsyncMock()
     player_respawn_service: MagicMock = MagicMock()
@@ -86,7 +89,6 @@ def _bleed_out_setup() -> tuple[MagicMock, MagicMock, AsyncMock, AsyncMock]:
 @pytest.mark.asyncio
 async def test_process_mortally_wounded_death_threshold() -> None:
     container, player, handle_player_death, move_player_to_limbo = _bleed_out_setup()
-    session: AsyncMock = AsyncMock()
     order: list[str] = []
 
     async def _record_corpse(*_args: object, **_kwargs: object) -> None:
@@ -106,8 +108,8 @@ async def test_process_mortally_wounded_death_threshold() -> None:
         ),
         patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service) as corpse_service_cls,
     ):
-        await _process_mortally_wounded_player(container, player, session)
-    handle_player_death.assert_awaited_once()
+        await _process_mortally_wounded_player(container, player)
+    handle_player_death.assert_awaited_once_with(uuid.UUID(player.player_id), "room-1", None)
     # Bleed-out deaths never pass through combat's death handler, so the tick must make the corpse (#917):
     # in the room the player died in, before the limbo move relocates them.
     corpse_service_cls.assert_called_once()
@@ -129,7 +131,7 @@ async def test_bleed_out_corpse_failure_does_not_abort_the_death_sequence() -> N
         ),
         patch("server.app.game_tick_death.CorpseLifecycleService", return_value=corpse_service),
     ):
-        await _process_mortally_wounded_player(container, player, AsyncMock())
+        await _process_mortally_wounded_player(container, player)
     move_player_to_limbo.assert_awaited_once()
     container.event_bus.publish.assert_called_once()
 
@@ -145,7 +147,7 @@ async def test_bleed_out_without_persistence_skips_corpse_but_still_moves_to_lim
         ),
         patch("server.app.game_tick_death.CorpseLifecycleService") as corpse_service_cls,
     ):
-        await _process_mortally_wounded_player(container, player, AsyncMock())
+        await _process_mortally_wounded_player(container, player)
     corpse_service_cls.assert_not_called()
     move_player_to_limbo.assert_awaited_once()
 
@@ -153,7 +155,7 @@ async def test_bleed_out_without_persistence_skips_corpse_but_still_moves_to_lim
 @pytest.mark.asyncio
 async def test_process_mortally_wounded_publishes_dp_decay_to_nats() -> None:
     """DP decay tick publishes to NATS (#634) alongside the existing personal message."""
-    process_mortally_wounded_tick: AsyncMock = AsyncMock()
+    process_mortally_wounded_tick: AsyncMock = AsyncMock(return_value=DpChange(-2, -3, 100, {"current_dp": -3}))
     player_death_service: MagicMock = MagicMock()
     player_death_service.process_mortally_wounded_tick = process_mortally_wounded_tick
     combat_service: MagicMock = MagicMock()
@@ -168,12 +170,11 @@ async def test_process_mortally_wounded_publishes_dp_decay_to_nats() -> None:
     player.name = "Victim"
     player.current_room_id = "room-1"
     player.get_stats = get_stats
-    session: AsyncMock = AsyncMock()
     with patch(
         "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
         new_callable=AsyncMock,
     ):
-        await _process_mortally_wounded_player(container, player, session)
+        await _process_mortally_wounded_player(container, player)
     combat_service.publish_player_dp_decay_event_to_nats.assert_awaited_once()
     published_event = combat_service.publish_player_dp_decay_event_to_nats.await_args.args[0]
     assert published_event.new_dp == -3
@@ -198,7 +199,7 @@ async def test_process_dead_players_moves_to_limbo() -> None:
     container.player_respawn_service = player_respawn_service
     session: AsyncMock = AsyncMock()
     await _process_dead_players(container, session)
-    move_player_to_limbo.assert_awaited_once_with(player_id, "room-1", session)
+    move_player_to_limbo.assert_awaited_once_with(player_id, "room-1")
 
 
 @pytest.mark.asyncio

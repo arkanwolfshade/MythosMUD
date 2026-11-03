@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from server.services.lucidity_helpers import CatatoniaObserverProtocol
     from server.services.passive_corruption_flux.service import PassiveCorruptionFluxService
     from server.services.player_combat_service import PlayerCombatService
+    from server.services.player_respawn_service import PlayerRespawnService
 
 logger = get_logger(__name__)
 
@@ -77,49 +78,33 @@ class CombatBundle:
     async def _sanitarium_failover_callback(
         self, container: ApplicationContainer, player_id: str, current_lcd: int
     ) -> None:
-        """Failover callback that relocates catatonic players to the sanitarium."""
+        """Failover callback that relocates catatonic players to the sanitarium (registry units, ADR-029 step 6a)."""
         await sleep(10.0)
 
-        if container.database_manager is None:
-            logger.error("Database manager not available for catatonia failover", player_id=player_id)
-            return
-
         try:
-            session_maker = container.database_manager.get_session_maker()
-        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
-            logger.error(
-                "Failed to get session maker for catatonia failover",
+            player_id_uuid = uuid_lib.UUID(player_id)
+            timers_cleared = 0
+            if container.player_registry is not None:
+                # Every hallucination timer (the old LIKE 'hallucination_%'): the player wakes in the sanitarium.
+                async with container.player_registry.mutate(player_id_uuid) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                    timers_cleared = player.cooldowns.clear_prefix("hallucination_")
+            logger.debug(
+                "Hallucination timers cleared in failover",
                 player_id=player_id,
-                error=str(exc),
-                exc_info=True,
+                timers_cleared=timers_cleared,
             )
-            return
 
-        async with session_maker() as session:
-            try:
-                player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
-                timers_cleared = 0
-                if container.player_registry is not None:
-                    # Every hallucination timer (the old LIKE 'hallucination_%'): the player wakes in the sanitarium.
-                    async with container.player_registry.mutate(player_id_uuid) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
-                        timers_cleared = player.cooldowns.clear_prefix("hallucination_")
-                logger.debug(
-                    "Hallucination timers cleared in failover",
-                    player_id=player_id,
-                    timers_cleared=timers_cleared,
-                )
+            respawn = cast("PlayerRespawnService | None", self.player_respawn_service)
+            if respawn is None:
+                logger.error("PlayerRespawnService not available for catatonia failover", player_id=player_id)
+                return
 
-                if self.player_respawn_service is None:
-                    logger.error("PlayerRespawnService not available for catatonia failover", player_id=player_id)
-                    return
-
-                await self.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
-                await self.player_respawn_service.respawn_player_from_sanitarium(player_id, session)
-                logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
-            # LookupError: KeyError, and the registry's PlayerNotFoundError (a player deleted during the wait).
-            except (ValueError, TypeError, AttributeError, LookupError, RuntimeError) as exc:
-                logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
-                await session.rollback()
+            _ = await respawn.move_player_to_limbo(player_id_uuid, "catatonia_failover")
+            _ = await respawn.respawn_player_from_sanitarium(player_id_uuid)
+            logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
+        # LookupError: KeyError, and the registry's PlayerNotFoundError (a player deleted during the wait).
+        except (ValueError, TypeError, AttributeError, LookupError, RuntimeError) as exc:
+            logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
 
     async def initialize(self, container: ApplicationContainer) -> None:
         """Initialize combat services."""
@@ -155,6 +140,7 @@ class CombatBundle:
             event_bus=container.event_bus,
             player_combat_service=self.player_combat_service,
             async_persistence=container.async_persistence,
+            player_registry=container.player_registry,
         )
         logger.info("Player death service initialized")
 
@@ -185,8 +171,11 @@ class CombatBundle:
             persistence.set_lucidity_reader(make_lucidity_reader(player_registry))
             # Corruption changed through the persistence layer (spells, mechanics) too (step 5c).
             from server.services.corruption_service import CorruptionService
+            from server.services.player_health_service import PlayerHealthService
 
             persistence.set_corruption_service(CorruptionService(player_registry))
+            # And DP: damage and healing from ticks, mechanics and spells (step 6a).
+            persistence.set_health_service(PlayerHealthService(player_registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,

@@ -131,7 +131,7 @@ class PlayerRespawnWrapper:
         player = _select_dead_player_for_respawn(all_players, user_id)
 
         player_id_uuid = uuid.UUID(str(player.player_id))
-        success = await respawn_service.respawn_player(player_id_uuid, session)
+        success = await respawn_service.respawn_player(player_id_uuid)
         if not success:
             logger.error("Respawn failed", player_id=player.player_id)
             log_and_raise_enhanced(
@@ -144,13 +144,14 @@ class PlayerRespawnWrapper:
                 user_friendly="Respawn failed",
             )
 
-        respawn_room_id = player.current_room_id  # Updated by respawn_player
+        respawned = await respawn_service.player_view(player_id_uuid)  # the respawn wrote the registry, not ``player``
+        respawn_room_id = respawned.row.current_room_id if respawned is not None else player.current_room_id
         # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this class's own established,
         # unsuppressed __init__(persistence: Any) convention.
         # Appropriate because: consistent with the rest of this class; narrowing the constructor
         # parameter is out of scope for this complexity-only extraction.
         room_data = _resolve_respawn_room_data(persistence, respawn_room_id)  # pyright: ignore[reportAny]
-        updated_stats = player.get_stats()
+        updated_stats = respawned.row.stats if respawned is not None else player.get_stats()
 
         logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
 
@@ -224,7 +225,7 @@ class PlayerRespawnWrapper:
         player = await self._load_player_for_delirium_respawn(session, user_id, respawn_service)
 
         player_id_uuid = uuid.UUID(str(player.player_id))
-        success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
+        success = await respawn_service.respawn_player_from_delirium(player_id_uuid)
         if not success:
             logger.error("Delirium respawn failed", player_id=player.player_id)
             log_and_raise_enhanced(
@@ -237,13 +238,14 @@ class PlayerRespawnWrapper:
                 user_friendly="Delirium respawn failed",
             )
 
-        respawn_room_id = player.current_room_id  # Updated by respawn_player_from_delirium
+        respawned = await respawn_service.player_view(player_id_uuid)  # the respawn wrote the registry, not ``player``
+        respawn_room_id = respawned.row.current_room_id if respawned is not None else player.current_room_id
         # Reason: SERIALIZATION_BOUNDARY - persistence is Any per this class's own established,
         # unsuppressed __init__(persistence: Any) convention.
         # Appropriate because: consistent with the rest of this class; narrowing the constructor
         # parameter is out of scope for this complexity-only extraction.
         room_data = _resolve_respawn_room_data(persistence, respawn_room_id)  # pyright: ignore[reportAny]
-        updated_stats = player.get_stats()
+        updated_stats = respawned.row.stats if respawned is not None else player.get_stats()
 
         updated_lucidity = await respawn_service.current_lcd(player_id_uuid)
 

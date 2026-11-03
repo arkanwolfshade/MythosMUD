@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.12** · MythosMUD · 2026-11-03
+**Version 1.0.13** · MythosMUD · 2026-11-03
 
 ---
 
@@ -96,8 +96,9 @@ saves player-keyed rows.
 - Outside the aggregate: append-only ledgers (`lucidity_adjustment_log`, `corruption_adjustment_log`,
   `skill_use_log`). They are written in the same transaction as the flush that applies the change they record:
   a part queues the rows (lucidity's own, or a generic ledger part for corruption) and its write inserts them.
-- The core part writes only the `stats` keys a unit changed, merged into the stored jsonb (`stats || changes`),
-  so a write cannot put back a stale copy of keys other writers still own (DP and MP, until step 6).
+- The core part writes only what a unit changed: the changed columns and the changed `stats` keys, merged into
+  the stored jsonb (`stats || changes`; a key sent as null is removed). Players are still saved outside the
+  registry until step 9, so a write must never put back a stale copy of anything it did not change.
 - Duplicate stores are removed: `player_lucidity` and `player_effects` win. A DDL migration drops
   `players.stats.lucidity` and `players.status_effects`, with a DML migration in the data repo if values need
   carrying over.
@@ -141,8 +142,8 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
-| Lazy | DP, MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, DP (until step 8), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Lazy | DP (from step 8), MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
@@ -284,6 +285,20 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
        (`e2e_reset_players.py`, `e2e_player_state.py`) can still race a resident dirty player in that window,
        until step 8 replaces them with server endpoints.
 6. Ticks and periodic writers, combat, death and respawn.
+   - 6a: DP. The DP rules are pure functions of a player's stats (`models/player_dp.py`), shared by the ORM
+     `Player` and `PlayerHealthService`, the one write path for `stats.current_dp`. Damage and healing (status
+     effects, mechanics, spells, the effects API) reach it through the persistence layer's injected service;
+     combat's background write, admin `set DP`, the death tick's decay, `handle_player_death` and every respawn are
+     registry units. A respawn is one unit: room, DP, posture, death room and, after a delirium or sanitarium, the
+     lucidity and `DEBRIEF_PENDING` commit together. `HealthRepository` and the dead `combat_hp_sync.py` are
+     deleted.
+     DP is sync until step 8 moves its readers onto the registry: the tick's candidate queries and many commands
+     still read players from the database. `update_player_row` now sets only changed columns too: before 6a it
+     wrote every column from the aggregate's copy, so a sync corruption write from a player kept resident by lazy
+     lucidity could put back a room or XP that movement had saved meanwhile. `upsert_player` keeps an existing
+     player's stored `current_dp`, `corruption`, `death_room_id` and `death_location` (present or absent), so the
+     registry is their only writer. Posture (`position`) still has legacy writers (sit, stand, logout) until step 7.
+   - 6b: MP (regeneration, rest, meditation, spell costs).
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
@@ -304,6 +319,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.13 | 2026-11-03 | §3.2: the core part writes only changed columns and stats keys (a null key is removed). §3.4: DP is sync until step 8. §6: step 6a as shipped (DP rules, `PlayerHealthService`, death and respawn units, `upsert_player` keeps DP and the death room) |
 | 1.0.12 | 2026-11-03 | §3.2: the core part writes only changed `stats` keys (merged); ledgers are queued on a part. §3.4: corruption is sync. §6: step 5c as shipped (`upsert_player` keeps stored corruption; `adjust_corruption` on the persistence layer) |
 | 1.0.11 | 2026-11-02 | §3.2: exposure is its own part. §3.4: cooldowns and encounter counts are sync. §6: step 5b-ii as shipped (one load function, replace-set cooldown writes, checks and their cooldowns in one unit) |
 | 1.0.10 | 2026-10-30 | §6: step 5b splits into 5b-i (the lazy lucidity part and its ledger, every reader and writer, ticks and the run restart's reset included) and 5b-ii (exposure state and cooldowns, sync); 5c is corruption only; the TTL-0 residency hazard for 5c and the e2e scripts is recorded |

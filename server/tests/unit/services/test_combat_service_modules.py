@@ -1,18 +1,15 @@
 """Unit tests for combat_service_start, combat_service_end, and combat_service_events."""
 
 # pyright: reportPrivateUsage=false
-# Reason: this module unit-tests CombatDPSync protected methods and melee helper functions.
+# Reason: this module unit-tests protected combat service helpers and melee helper functions.
 
 from __future__ import annotations
 
-import asyncio
 import uuid
-from collections.abc import Coroutine
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.exceptions import DatabaseError
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services import (
     combat_service_attack,
@@ -20,7 +17,6 @@ from server.services import (
     combat_service_events,
     combat_service_start,
 )
-from server.services.combat_hp_sync import CombatDPSync
 from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
 
@@ -53,10 +49,6 @@ def _combat_instance() -> CombatInstance:
     )
     combat.turn_order = [participant.participant_id]
     return combat
-
-
-def _create_task(coro: Coroutine[None, None, None]) -> asyncio.Task[None]:
-    return asyncio.ensure_future(coro)
 
 
 @pytest.mark.asyncio
@@ -315,143 +307,6 @@ async def test_broadcast_aggro_target_switches_sends_messages() -> None:
     await combat_service_events.broadcast_aggro_target_switches(service, "room_001", uuid.uuid4(), switches)
     broadcast_combat_target_switch.assert_awaited_once()
     service.publish_combat_target_switch_event_to_nats.assert_awaited_once()
-
-
-def _dp_sync(**combat_attrs: AsyncMock | MagicMock | None) -> CombatDPSync:
-    combat_service: MagicMock = MagicMock()
-    for name, value in combat_attrs.items():
-        setattr(combat_service, name, value)
-    return CombatDPSync(combat_service)
-
-
-def test_combat_dp_sync_get_persistence_missing() -> None:
-    sync = _dp_sync()
-    with patch("server.container.ApplicationContainer.get_instance", side_effect=RuntimeError("no container")):
-        assert sync._get_persistence(uuid.uuid4()) is None
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_update_and_save_player_not_found() -> None:
-    sync = _dp_sync()
-    get_player_by_id: AsyncMock = AsyncMock(return_value=None)
-    persistence: AsyncMock = AsyncMock()
-    persistence.get_player_by_id = get_player_by_id
-    result = await sync._update_and_save_player_dp(persistence, uuid.uuid4(), 5)
-    assert result is None
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_update_and_save_success() -> None:
-    sync = _dp_sync()
-    apply_dp_change: MagicMock = MagicMock(return_value=(10, False, False))
-    player: MagicMock = MagicMock(name="Investigator")
-    player.apply_dp_change = apply_dp_change
-    save_player: AsyncMock = AsyncMock()
-    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
-    persistence: AsyncMock = AsyncMock()
-    persistence.get_player_by_id = get_player_by_id
-    persistence.save_player = save_player
-    result = await sync._update_and_save_player_dp(persistence, uuid.uuid4(), 8)
-    assert result is not None
-    save_player.assert_awaited_once()
-
-
-def test_combat_dp_sync_log_death_threshold() -> None:
-    sync = _dp_sync()
-    player_id = uuid.uuid4()
-    sync._log_death_threshold_events(-10, 5, player_id, "Investigator")
-    sync._log_death_threshold_events(-1, 5, player_id, "Investigator")
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_persist_player_dp_sync_no_persistence() -> None:
-    sync = _dp_sync()
-    with patch.object(sync, "_get_persistence", return_value=None):
-        await sync._persist_player_dp_sync(uuid.uuid4(), 5)
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_publish_correction_event() -> None:
-    sync = _dp_sync()
-    publish: MagicMock = MagicMock()
-    bus: MagicMock = MagicMock()
-    bus.publish = publish
-    with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value = bus
-        await sync._publish_player_dp_correction_event(uuid.uuid4(), 10, 20, error_message="db fail")
-        publish.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_verify_player_save_mismatch() -> None:
-    sync = _dp_sync()
-    get_stats: MagicMock = MagicMock(return_value={"current_dp": 99})
-    player: MagicMock = MagicMock()
-    player.get_stats = get_stats
-    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
-    persistence: AsyncMock = AsyncMock()
-    persistence.get_player_by_id = get_player_by_id
-    await sync._verify_player_save(persistence, uuid.uuid4(), "Investigator", 10, 8)
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_persist_player_dp_sync_success() -> None:
-    sync = _dp_sync()
-    apply_dp_change: MagicMock = MagicMock(return_value=(10, True, False))
-    player: MagicMock = MagicMock(name="Investigator")
-    player.apply_dp_change = apply_dp_change
-    save_player: AsyncMock = AsyncMock()
-    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
-    persistence: AsyncMock = AsyncMock()
-    persistence.get_player_by_id = get_player_by_id
-    persistence.save_player = save_player
-    with patch.object(sync, "_get_persistence", return_value=persistence):
-        await sync._persist_player_dp_sync(uuid.uuid4(), 5)
-    save_player.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_persist_player_dp_sync_database_error() -> None:
-    sync = _dp_sync()
-    get_player_by_id: AsyncMock = AsyncMock(side_effect=DatabaseError("db down"))
-    persistence: AsyncMock = AsyncMock()
-    persistence.get_player_by_id = get_player_by_id
-    with patch.object(sync, "_get_persistence", return_value=persistence):
-        await sync._persist_player_dp_sync(uuid.uuid4(), 5)
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_persist_background_runs_task() -> None:
-    sync = _dp_sync()
-    player_id = uuid.uuid4()
-    persist: AsyncMock = AsyncMock()
-    with patch.object(sync, "_persist_player_dp_sync", persist):
-        with patch("asyncio.create_task", new=_create_task):
-            sync._persist_player_dp_background(player_id, 8, 10, 20, room_id="room-a")
-            await asyncio.sleep(0)
-    persist.assert_awaited_once_with(player_id, 8)
-
-
-def test_combat_dp_sync_persist_background_no_event_loop() -> None:
-    sync = _dp_sync()
-    with patch("asyncio.create_task", side_effect=RuntimeError("no loop")):
-        sync._persist_player_dp_background(uuid.uuid4(), 8, 10, 20)
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_persist_background_persistence_failure_sends_correction() -> None:
-    sync = _dp_sync()
-
-    async def fail_persist(_player_id: uuid.UUID, _dp: int) -> None:
-        raise DatabaseError("write failed")
-
-    correction: AsyncMock = AsyncMock()
-    with patch.object(sync, "_persist_player_dp_sync", fail_persist):
-        with patch.object(sync, "_publish_player_dp_correction_event", correction):
-            with patch("asyncio.create_task", new=_create_task):
-                sync._persist_player_dp_background(uuid.uuid4(), 8, 10, 20, room_id="room-a")
-                await asyncio.sleep(0)
-            correction.assert_awaited_once()
 
 
 def _attack_participant(

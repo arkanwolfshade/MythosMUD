@@ -24,7 +24,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..utils.int_coercion import coerce_int
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
-from .game import PositionState
+from .player_dp import DpChange, decayed, restored, set_to
 
 if TYPE_CHECKING:
     from .corruption import CorruptionAdjustmentLog, CorruptionCooldown
@@ -359,79 +359,29 @@ class Player(Base):
             max_dp = 20  # Prevent division by zero
         return float((current_dp / max_dp) * 100)
 
-    def apply_dp_decay(self, amount: int = 1) -> tuple[int, int, bool]:
-        """
-        Apply DP decay (e.g. mortally wounded bleeding) with posture updates.
-
-        Decreases DP by amount, caps at -10. When crossing to 0 or below, posture
-        is set to LYING (unconscious). Encapsulates domain rules from "Corporeal
-        Collapse and Unconsciousness" - Dr. Armitage, 1928.
-
-        Args:
-            amount: DP to subtract (default 1)
-
-        Returns:
-            Tuple of (old_dp, new_dp, posture_changed)
-        """
+    def apply_stat_changes(self, changes: Mapping[str, object]) -> None:
+        """Set these stats keys (a DpChange's changes, mirrored from the registry onto this copy)."""
         stats = self.get_stats()
-        old_dp = _stats_int(stats, "current_dp", 0)
-        new_dp = max(old_dp - amount, -10)
-        stats["current_dp"] = new_dp
-
-        posture_changed = False
-        if new_dp <= 0 < old_dp:
-            stats["position"] = PositionState.LYING
-            posture_changed = True
-        elif new_dp <= 0 and stats.get("position") != PositionState.LYING:
-            stats["position"] = PositionState.LYING
-            posture_changed = True
-
+        stats.update(changes)
         self.set_stats(stats)
-        return (old_dp, new_dp, posture_changed)
+
+    def _apply(self, change: DpChange) -> DpChange:
+        self.apply_stat_changes(change.changes)
+        return change
+
+    def apply_dp_decay(self, amount: int = 1) -> tuple[int, int, bool]:
+        """Bleed ``amount`` DP while mortally wounded (player_dp.decayed); returns (old_dp, new_dp, posture_changed)."""
+        change = self._apply(decayed(self.get_stats(), amount))
+        return (change.old_dp, change.new_dp, "position" in change.changes)
 
     def restore_to_full_health(self) -> int:
-        """
-        Restore player to full health (max DP, standing posture).
-
-        Used on respawn. Sets DP to max_dp and posture to STANDING.
-        As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930.
-
-        Returns:
-            Previous DP value (before restore)
-        """
-        stats = self.get_stats()
-        old_dp = _stats_int(stats, "current_dp", 0)
-        max_dp = _stats_int(stats, "max_dp", 100)
-        stats["current_dp"] = max_dp
-        stats["position"] = PositionState.STANDING
-        self.set_stats(stats)
-        return old_dp
+        """Full DP and standing, on respawn (player_dp.restored); returns the previous DP."""
+        return self._apply(restored(self.get_stats())).old_dp
 
     def apply_dp_change(self, new_dp: int) -> tuple[int, bool, bool]:
-        """
-        Apply a DP change (e.g. from combat sync) with posture updates.
-
-        Updates current_dp to new_dp, sets posture to LYING when DP <= 0.
-        Used when syncing in-memory combat state to persistent player.
-
-        Args:
-            new_dp: New DP value (typically from CombatParticipant)
-
-        Returns:
-            Tuple of (old_dp, became_mortally_wounded, became_dead)
-        """
-        stats = self.get_stats()
-        old_dp = _stats_int(stats, "current_dp", 0)
-        stats["current_dp"] = new_dp
-        if new_dp <= 0:
-            stats["position"] = PositionState.LYING
-        elif old_dp <= 0 < new_dp:
-            stats["position"] = PositionState.STANDING
-        self.set_stats(stats)
-        # R1716: two distinct variables (old_dp, new_dp) cannot be one chained comparison
-        became_mortally_wounded = old_dp > 0 and (0 >= new_dp > -10)  # pylint: disable=chained-comparison
-        became_dead = new_dp <= -10 and old_dp > -10
-        return (old_dp, became_mortally_wounded, became_dead)
+        """Set an absolute DP (player_dp.set_to); returns (old_dp, became_mortally_wounded, became_dead)."""
+        change = self._apply(set_to(self.get_stats(), new_dp))
+        return (change.old_dp, change.became_mortally_wounded, change.became_dead)
 
     lucidity: Mapped[PlayerLucidity] = relationship(
         "PlayerLucidity",
