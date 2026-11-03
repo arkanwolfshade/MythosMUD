@@ -26,8 +26,11 @@ LIST_QUEST_INSTANCES_SQL = text(
 )
 
 UPSERT_QUEST_INSTANCE_SQL = text(
-    "CALL upsert_quest_instance(:id, :player_id, :quest_id, :state, CAST(:progress AS jsonb), :accepted_at,"
-    + " :completed_at)"
+    """
+    CALL upsert_quest_instance(
+        :id, :player_id, :quest_id, :state, CAST(:progress AS jsonb), :accepted_at, :completed_at
+    )
+    """
 )
 
 _EPOCH = datetime.min.replace(tzinfo=UTC)

@@ -10,7 +10,7 @@ import pytest
 
 from server.constants.lucidity import STARTING_LCD
 from server.game.instance_state import (
-    _reset_lucidity,  # pyright: ignore[reportPrivateUsage]
+    _reset_dp_and_lucidity,  # pyright: ignore[reportPrivateUsage]
     clear_lost_instance_items,
     restart_instance_run,
     strip_instance_bound_items,
@@ -21,7 +21,7 @@ from server.models.player import Player
 from server.services.lucidity_service import resolve_tier
 from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, lucidity_registry, raw_row
 
-# restart_instance_run only hands the registry on to _reset_lucidity, which these tests patch.
+# restart_instance_run only hands the registry on to _reset_dp_and_lucidity, which these tests patch.
 REGISTRY = cast(PlayerRegistry, object())
 
 
@@ -163,7 +163,7 @@ async def test_restart_instance_run_restores_dp_keeps_corruption_and_resets_luci
     player.set_stats({"current_dp": 1, "max_dp": 100, "corruption": 3})
     quests = _Quests()
 
-    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
+    with patch("server.game.instance_state._reset_dp_and_lucidity", new=AsyncMock()) as reset_lucidity:
         await restart_instance_run(player, ["square", "walk"], quests, REGISTRY)
 
     stats = player.get_stats()
@@ -174,17 +174,22 @@ async def test_restart_instance_run_restores_dp_keeps_corruption_and_resets_luci
 
 
 @pytest.mark.asyncio
-async def test_reset_lucidity_sets_the_starting_value_and_tier_in_the_registry() -> None:
+async def test_reset_dp_and_lucidity_restores_full_dp_and_the_starting_lucidity_in_the_registry() -> None:
+    """DP's only writer is the registry (ADR-029 step 6a): the reconnect's save of ``player`` no longer writes it."""
     player_id = uuid.uuid4()
-    harness = lucidity_registry({player_id: LucidityData(12, "fractured")})
+    harness = lucidity_registry(
+        {player_id: LucidityData(12, "fractured")}, stats={"current_dp": 5, "max_dp": 20, "position": "lying"}
+    )
 
     with patch("server.services.lucidity_tier_cache.lucidity_tier_cache.set_tier") as set_tier:
-        await _reset_lucidity(harness.registry, player_id)
+        await _reset_dp_and_lucidity(harness.registry, player_id)
 
     assert (harness.lucidity(player_id).lcd, harness.lucidity(player_id).tier) == (
         STARTING_LCD,
         resolve_tier(STARTING_LCD),
     )
+    assert (harness.stats(player_id)["current_dp"], harness.stats(player_id)["position"]) == (20, "standing")
+    assert harness.db.commits == 1  # DP is sync, and the lucidity commits with it
     set_tier.assert_called_once_with(player_id, resolve_tier(STARTING_LCD))
 
 
@@ -194,7 +199,7 @@ async def test_restart_instance_run_without_a_registry_keeps_lucidity_but_resets
     player.set_stats({"current_dp": 1, "max_dp": 100})
     quests = _Quests()
 
-    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity:
+    with patch("server.game.instance_state._reset_dp_and_lucidity", new=AsyncMock()) as reset_lucidity:
         await restart_instance_run(player, ["square"], quests, None)
 
     reset_lucidity.assert_not_awaited()
@@ -208,7 +213,7 @@ async def test_restart_instance_run_survives_a_failing_lucidity_or_quest_reset()
     player.set_stats({"current_dp": 1, "max_dp": 100})
     quests = _Quests(error=RuntimeError("db down"))
 
-    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock(side_effect=RuntimeError("db down"))):
+    with patch("server.game.instance_state._reset_dp_and_lucidity", new=AsyncMock(side_effect=RuntimeError("db down"))):
         await restart_instance_run(player, ["square"], quests, REGISTRY)
 
     assert player.get_stats()["current_dp"] == 100
@@ -220,7 +225,7 @@ async def test_restart_instance_run_without_a_quest_service_still_restores_dp() 
     player = _player()
     player.set_stats({"current_dp": 1, "max_dp": 100})
 
-    with patch("server.game.instance_state._reset_lucidity", new=AsyncMock()):
+    with patch("server.game.instance_state._reset_dp_and_lucidity", new=AsyncMock()):
         await restart_instance_run(player, ["square"], None, REGISTRY)
 
     assert player.get_stats()["current_dp"] == 100

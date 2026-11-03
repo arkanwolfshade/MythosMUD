@@ -337,21 +337,35 @@ async def test_the_registry_part_writes_each_touch_only_their_own_columns(
         _ = await session.execute(UPDATE_PLAYER_INVENTORY_SQL, inventory.write_params())
         after_inventory = await _inventory_and_stats(session, player_id)
 
-        # Another writer changes a key the row part does not touch, after the part loaded (DP and MP still have
-        # writers outside the registry, step 5c): the row write merges only its own key, so this survives.
+        # Another writer changes a stats key and a column the row part does not touch, after the part loaded
+        # (players are still saved outside the registry, steps 5c and 6a): the row write sets only what it
+        # changed, so both survive.
         _ = await session.execute(
-            text("""UPDATE players SET stats = stats || '{"magic_points": 3}'::jsonb WHERE player_id = :id"""),
+            text(
+                """
+                UPDATE players SET stats = stats || '{"magic_points": 3}'::jsonb, current_room_id = 'moved_on'
+                WHERE player_id = :id
+                """
+            ),
             {"id": str(player_id)},
         )
         row = PlayerRowData.from_row(loaded)
         row.stats["current_dp"] = 12
-        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params(["current_dp"]))
+        row.experience_points = 40
+        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params(["experience_points"], ["current_dp"]))
         after_row = await _inventory_and_stats(session, player_id)
+        columns = (
+            await session.execute(
+                text("SELECT current_room_id, experience_points FROM players WHERE player_id = :id"),
+                {"id": str(player_id)},
+            )
+        ).one()
 
     assert "Jade Amulet" in str(after_inventory["inventory"])
     assert after_inventory["inventory"] == after_inventory["inventory_json"]
     assert after_inventory["stats"] == stats  # the inventory write left stats alone
     assert after_row["stats"] == {"current_dp": 12, "max_dp": 20, "magic_points": 3}
+    assert tuple(columns) == ("moved_on", 40)
     assert after_row["inventory"] == after_inventory["inventory"]  # the row write left the inventory alone
 
 

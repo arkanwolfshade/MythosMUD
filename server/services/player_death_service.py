@@ -5,13 +5,15 @@ This service handles the mortally wounded state (0 to -10 DP), automatic DP deca
 and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 
-ASYNC MIGRATION (Phase 2):
-All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
+Decay and death are sync player registry units (ADR-029 step 6a); the per-tick candidate queries still read players
+from the database, which the sync writes keep current.
 """
+
+from __future__ import annotations
 
 import uuid
 from collections.abc import Sequence
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
@@ -19,12 +21,26 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.constants.spawn_defaults import LIMBO_ROOM_ID
 from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
+from server.exceptions import DatabaseError
+from server.game.player_registry import PlayerNotFoundError
 from server.models.game import PositionState
 from server.models.player import Player
+from server.models.player_dp import DEAD_DP, DpChange, decayed, dp_of
+from server.services.player_health_service import PlayerHealthService
 from server.structured_logging.enhanced_logging_config import get_logger, log_exception_once
 from server.utils.room_utils import format_room_location
 
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerAggregate, PlayerRegistry
+
 logger = get_logger(__name__)
+
+
+class _DecayEventPublisher(Protocol):  # pylint: disable=too-few-public-methods  # Reason: one-method event sink
+    """The event bus, as the decay publishes to it."""
+
+    def publish(self, event: PlayerDPDecayEvent) -> None:
+        """Deliver a DP decay event."""
 
 # Mirrored in player_respawn_service — room of death for interstitial / login UI.
 DEATH_ROOM_ID_STAT = "death_room_id"
@@ -35,7 +51,7 @@ DEATH_LOCATION_STAT = "death_location"
 # stats.current_dp is NOT a JSON number > 0 -- normally no rows. It is a deliberate superset of
 # "dead or mortally wounded" (odd stored values come back too), so the Python predicates
 # (Player.is_dead / is_mortally_wounded, via coerce_int) keep the final say. from_statement() maps the
-# rows onto session-attached Player entities, which the tick code needs (session.refresh(player)).
+# rows onto Player entities; the tick reads their ids and rooms, and changes them through the registry.
 _DP_CHECK_CANDIDATES = select(Player).from_statement(
     text(  # ADR-015: explicit column list -- the lint guard forbids `SELECT *`.
         """
@@ -75,6 +91,7 @@ class PlayerDeathService:
         event_bus: Any | None = None,
         player_combat_service: Any | None = None,
         async_persistence: Any | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         """
         Initialize the player death service.
@@ -84,10 +101,12 @@ class PlayerDeathService:
             player_combat_service: Optional player combat service for clearing combat state
             async_persistence: Optional async persistence layer for room-name lookups (#679:
                 injected by CombatBundle instead of reached via ApplicationContainer.get_instance())
+            player_registry: Holds the player: decay and death are units on it (ADR-029 step 6a)
         """
         self._event_bus = event_bus
         self._player_combat_service = player_combat_service
         self._async_persistence = async_persistence
+        self._player_registry: PlayerRegistry | None = player_registry
         logger.info(
             "PlayerDeathService initialized",
             event_bus_available=bool(event_bus),
@@ -173,95 +192,62 @@ class PlayerDeathService:
             await session.rollback()
             return []
 
-    async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
+    async def process_mortally_wounded_tick(self, player_id: uuid.UUID) -> DpChange | None:
         """
-        Process DP decay for a single mortally wounded player.
-
-        Decreases player DP by 1, capped at 0. Returns True if decay was applied.
+        Bleed a mortally wounded player 1 DP (to at most -10), as one sync registry unit.
 
         Args:
             player_id: ID of the player to process
-            session: Database session for player data access
 
         Returns:
-            True if DP decay was applied, False otherwise
+            The DP change, or None if none was applied (already dead, no such player, or the write failed)
         """
+        if self._player_registry is None:
+            logger.error("No player registry; cannot apply DP decay", player_id=player_id)
+            return None
         try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for DP decay", player_id=player_id)
-                return False
-
-            # Check if player is already dead (DP <= -10)
-            if player.is_dead():
-                logger.debug("Player already dead, skipping DP decay", player_id=player_id)
-                return False
-
-            # Delegate DP decay and posture updates to Player domain model
-            old_dp, new_dp, posture_changed = player.apply_dp_decay(amount=1)
-            if posture_changed:
-                logger.info(
-                    "Player posture changed to lying (unconscious)",
-                    player_id=player_id,
-                    player_name=player.name,
-                    dp=new_dp,
-                )
-
-            # Commit changes to database using async API
-            await session.commit()
-
-            logger.info(
-                "DP decay applied to player",
-                player_id=player_id,
-                player_name=player.name,
-                old_dp=old_dp,
-                new_dp=new_dp,
-                delta=-1,
-            )
-
-            # Publish DP decay event if event bus is available
-            if self._event_bus:
-                event = PlayerDPDecayEvent(
-                    player_id=player_id,
-                    old_dp=old_dp,
-                    new_dp=new_dp,
-                    decay_amount=1,
-                    room_id=str(player.current_room_id),
-                )
-                self._event_bus.publish(event)
-
-            return True
-
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: DP decay errors unpredictable, must log and return False
+            async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                if dp_of(player.row.stats) <= DEAD_DP:
+                    logger.debug("Player already dead, skipping DP decay", player_id=player_id)
+                    return None
+                change = PlayerHealthService.apply_in(player, decayed(player.row.stats, 1))
+                player_name, room_id = player.row.name, player.row.current_room_id
+        except PlayerNotFoundError:
+            logger.warning("Player not found for DP decay", player_id=player_id)
+            return None
+        except (DatabaseError, SQLAlchemyError) as e:
             log_exception_once(
-                logger,
-                "error",
-                "Error processing DP decay for player",
-                exc=e,
-                exc_info=True,
-                player_id=player_id,
+                logger, "error", "Error processing DP decay for player", exc=e, exc_info=True, player_id=player_id
             )
-            await session.rollback()
-            return False
+            return None
 
-    async def _ensure_player_posture_lying(self, player: Player, player_id: uuid.UUID) -> None:
-        """
-        Ensure player posture is set to lying when dead.
-
-        Args:
-            player: Player object to update
-            player_id: ID of the player for logging
-        """
-        stats = player.get_stats()
-        if stats.get("position") != PositionState.LYING:
-            stats["position"] = PositionState.LYING
-            player.set_stats(stats)
-            logger.debug(
-                "Set player posture to lying on death",
+        if "position" in change.changes:
+            logger.info(
+                "Player posture changed to lying (unconscious)",
                 player_id=player_id,
-                player_name=player.name,
+                player_name=player_name,
+                dp=change.new_dp,
             )
+        logger.info(
+            "DP decay applied to player",
+            player_id=player_id,
+            player_name=player_name,
+            old_dp=change.old_dp,
+            new_dp=change.new_dp,
+            delta=-1,
+        )
+        event_bus = cast(_DecayEventPublisher | None, self._event_bus)
+        if event_bus:
+            event_bus.publish(
+                PlayerDPDecayEvent(
+                    player_id=player_id,
+                    old_dp=change.old_dp,
+                    new_dp=change.new_dp,
+                    decay_amount=1,
+                    room_id=room_id,
+                )
+            )
+        return change
 
     async def _clear_player_combat_state(self, player_id: uuid.UUID) -> None:
         """
@@ -316,14 +302,14 @@ class PlayerDeathService:
 
         return "Unknown Location"
 
-    def _persist_death_location_stats(self, player: Player, death_location: str, room_name: str) -> None:
+    @staticmethod
+    def _persist_death_location_stats(player: PlayerAggregate, death_location: str, room_name: str) -> None:
         """Store death room id/name on player stats so login can show the place of death."""
         if not death_location or death_location == LIMBO_ROOM_ID:
             return
-        stats = player.get_stats()
-        stats[DEATH_ROOM_ID_STAT] = death_location
-        stats[DEATH_LOCATION_STAT] = room_name if room_name and room_name != LIMBO_ROOM_ID else death_location
-        player.set_stats(stats)
+        player.row.set_stat(DEATH_ROOM_ID_STAT, death_location, sync=True)
+        location = room_name if room_name and room_name != LIMBO_ROOM_ID else death_location
+        player.row.set_stat(DEATH_LOCATION_STAT, location, sync=True)
 
     def _publish_death_event(
         self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict[str, Any] | None
@@ -353,64 +339,45 @@ class PlayerDeathService:
         self._event_bus.publish(event)
 
     async def handle_player_death(
-        self, player_id: uuid.UUID, death_location: str, killer_info: dict[str, Any] | None, session: AsyncSession
+        self, player_id: uuid.UUID, death_location: str, killer_info: dict[str, Any] | None
     ) -> bool:
         """
-        Handle player death when DP reaches -10 or below.
-
-        Records death location and killer information, then triggers respawn sequence.
+        Handle player death when DP reaches -10 or below: lying, with the place of death recorded (one sync unit).
 
         Args:
             player_id: ID of the player who died
             death_location: Room ID where the player died
             killer_info: Optional dict with killer_id and killer_name
-            session: Async database session for player data access
 
         Returns:
             True if death was handled successfully, False otherwise
         """
-        try:
-            # Retrieve player from database using async API
-            player = await session.get(Player, player_id)
-            if not player:
-                logger.warning("Player not found for death handling", player_id=player_id)
-                return False
-
-            # Ensure player posture is set to lying when dead
-            await self._ensure_player_posture_lying(player, player_id)
-
-            room_name = self._get_room_name_for_death(death_location)
-            self._persist_death_location_stats(player, death_location, room_name)
-
-            # Log death event
-            logger.info(
-                "Player died",
-                player_id=player_id,
-                player_name=player.name,
-                death_location=death_location,
-                killer_id=killer_info.get("killer_id") if killer_info else None,
-                killer_name=killer_info.get("killer_name") if killer_info else None,
-            )
-
-            # Clear player combat state when they die
-            await self._clear_player_combat_state(player_id)
-
-            # Commit any pending changes using async API
-            await session.commit()
-
-            # Publish player died event if event bus is available
-            self._publish_death_event(player_id, str(player.name), death_location, killer_info)
-
-            return True
-
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Player death handling errors unpredictable, must log and return False
-            log_exception_once(
-                logger,
-                "error",
-                "Error handling player death",
-                exc=e,
-                exc_info=True,
-                player_id=player_id,
-            )
-            await session.rollback()
+        if self._player_registry is None:
+            logger.error("No player registry; cannot handle player death", player_id=player_id)
             return False
+        room_name = self._get_room_name_for_death(death_location)
+        try:
+            async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                player.row.set_stat("position", PositionState.LYING, sync=True)
+                self._persist_death_location_stats(player, death_location, room_name)
+                player_name = player.row.name
+        except PlayerNotFoundError:
+            logger.warning("Player not found for death handling", player_id=player_id)
+            return False
+        except (DatabaseError, SQLAlchemyError) as e:
+            log_exception_once(
+                logger, "error", "Error handling player death", exc=e, exc_info=True, player_id=player_id
+            )
+            return False
+
+        logger.info(
+            "Player died",
+            player_id=player_id,
+            player_name=player_name,
+            death_location=death_location,
+            killer_id=killer_info.get("killer_id") if killer_info else None,
+            killer_name=killer_info.get("killer_name") if killer_info else None,
+        )
+        await self._clear_player_combat_state(player_id)
+        self._publish_death_event(player_id, player_name, death_location, killer_info)
+        return True

@@ -982,7 +982,7 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     player.set_inventory(carried)
 
     with (
-        patch("server.game.instance_state._reset_lucidity", new=AsyncMock()) as reset_lucidity,
+        patch("server.game.instance_state._reset_dp_and_lucidity", new=AsyncMock()) as reset_lucidity,
         patch(
             "server.realtime.player_presence_tracker.clear_instance_scoped_effects", new=AsyncMock(return_value=1)
         ) as clear_effects,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -23,13 +24,13 @@ from server.game.first_exposure import (
 )
 from server.game.instance_state import StrippedInventory
 from server.game.items.constants import INSTANCE_BOUND_FLAG
-from server.game.player_registry import LucidityData, PlayerRegistry
+from server.game.player_registry import LucidityData, PlayerAggregate, PlayerRegistry
 from server.game.scripted_actions import QuestActionService, ScriptedActionContext
 from server.models.corruption import CorruptionUpdateResult, compute_tier
 from server.models.player import Player
 from server.schemas.scripted_actions import CorruptionAtLeastAction, StartQuestAction, parse_scripted_actions
 from server.services.lucidity_service import resolve_tier
-from server.tests.fixtures.shared.player_registry import FakeDatabase, lucidity_registry
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, lucidity_registry, raw_row
 
 
 def _stack(item_id: str, *flags: str) -> dict[str, object]:
@@ -51,40 +52,54 @@ def _tutorial_player(instance_id: str | None = "instance-abc") -> Player:
 # --- the in-session end state -----------------------------------------------------------------------------------
 
 
+def _tutorial_aggregate(instance_id: str | None = "instance-abc") -> PlayerAggregate:
+    """The tutorial player as the delirium respawn's registry unit holds them (ADR-029 step 6a)."""
+    return aggregate(
+        raw_row(
+            uuid.uuid4(),
+            current_room_id=f"instance_{uuid.uuid4()}_vault",
+            tutorial_instance_id=instance_id,
+            stats={"current_dp": 1, "max_dp": 100},
+            inventory=json.dumps([_stack("lantern"), _stack("jade_amulet", INSTANCE_BOUND_FLAG)]),
+        )
+    )
+
+
 def test_the_end_state_leaves_a_tutorial_player_whole_and_in_the_ward() -> None:
-    player = _tutorial_player()
+    player = _tutorial_aggregate()
 
     applied = apply_first_exposure_end_state(player)
 
     assert applied is True
-    assert player.current_room_id == RECOVERY_WARD_ROOM_ID
-    assert player.tutorial_instance_id is None
-    assert player.get_stats()["current_dp"] == player.get_stats()["max_dp"]
+    assert player.row.current_room_id == RECOVERY_WARD_ROOM_ID
+    assert player.row.tutorial_instance_id is None
+    assert player.row.stats["current_dp"] == player.row.stats["max_dp"]
+    assert player.row.sync_required  # it commits with the respawn
 
 
 def test_the_end_state_leaves_the_inventory_to_the_finisher() -> None:
-    """The amulet is stripped through the player registry after the respawn commits (FirstExposureFinisher); inside
-    the respawn's own session a registry write of the same players row could wait on that session for ever."""
-    player = _tutorial_player()
+    """The amulet is stripped by FirstExposureFinisher, after the respawn's unit has committed."""
+    player = _tutorial_aggregate()
 
     _ = apply_first_exposure_end_state(player)
 
-    assert [stack["item_id"] for stack in player.get_inventory()] == ["lantern", "jade_amulet"]
+    assert [stack["item_id"] for stack in player.inventory.carried] == ["lantern", "jade_amulet"]
+    assert not player.inventory.dirty
 
 
 def test_the_end_state_does_nothing_for_a_player_who_is_not_in_the_tutorial() -> None:
-    player = _tutorial_player(instance_id=None)
-    room_before = player.current_room_id
+    player = _tutorial_aggregate(instance_id=None)
+    room_before = player.row.current_room_id
 
     applied = apply_first_exposure_end_state(player)
 
     assert applied is False
-    assert player.current_room_id == room_before
-    assert len(player.get_inventory()) == 2
+    assert player.row.current_room_id == room_before
+    assert not player.row.dirty
 
 
 def test_the_end_state_is_idempotent() -> None:
-    player = _tutorial_player()
+    player = _tutorial_aggregate()
 
     _ = apply_first_exposure_end_state(player)
     second = apply_first_exposure_end_state(player)

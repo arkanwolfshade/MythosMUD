@@ -23,6 +23,7 @@ from server.container.async_persistence_access import get_container_async_persis
 from server.models.player import Player
 from server.services.corruption_service import CorruptionService
 from server.services.corruption_tier_cache import corruption_tier_cache
+from server.services.player_health_service import PlayerHealthService
 from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
@@ -148,48 +149,36 @@ async def test_gain_occult_knowledge_delegates(async_persistence_layer: AsyncPer
     )
 
 
-@pytest.mark.asyncio
-async def test_heal_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test heal_player delegates to HealthRepository."""
-    mock_player = MagicMock(spec=Player)
-    async_persistence_layer._health_repo.heal_player = AsyncMock()
-
-    await async_persistence_layer.heal_player(mock_player, 20)
-
-    async_persistence_layer._health_repo.heal_player.assert_awaited_once_with(mock_player, 20)
+def _stored_player(player_id: uuid.UUID, stats: dict[str, object]) -> Player:
+    return Player(player_id=str(player_id), user_id=str(uuid.uuid4()), name="Healthy", stats=stats)
 
 
 @pytest.mark.asyncio
-async def test_async_heal_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test async_heal_player delegates to HealthRepository."""
-    mock_player = MagicMock(spec=Player)
-    async_persistence_layer._health_repo.heal_player = AsyncMock()
+async def test_damage_and_heal_run_the_wired_health_service(async_persistence_layer: AsyncPersistenceLayer):
+    """DP changed through the layer goes through PlayerHealthService on the registry (ADR-029 step 6a), and the
+    caller's Player copy gets the new value too (the status-effect tick publishes from it)."""
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 20, "max_dp": 20})
+    async_persistence_layer.set_health_service(PlayerHealthService(harness.registry))
+    player = _stored_player(player_id, {"current_dp": 20, "max_dp": 20})
 
-    await async_persistence_layer.async_heal_player(mock_player, 20)
+    await async_persistence_layer.damage_player(player, 15, "physical")
+    assert harness.stats(player_id)["current_dp"] == 5
+    assert player.get_stats()["current_dp"] == 5
 
-    async_persistence_layer._health_repo.heal_player.assert_awaited_once_with(mock_player, 20)
-
-
-@pytest.mark.asyncio
-async def test_damage_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test damage_player delegates to HealthRepository."""
-    mock_player = MagicMock(spec=Player)
-    async_persistence_layer._health_repo.damage_player = AsyncMock()
-
-    await async_persistence_layer.damage_player(mock_player, 15, "physical")
-
-    async_persistence_layer._health_repo.damage_player.assert_awaited_once_with(mock_player, 15, "physical")
+    await async_persistence_layer.heal_player(player, 30)  # capped at max DP
+    assert harness.stats(player_id)["current_dp"] == 20
+    assert player.get_stats()["current_dp"] == 20
+    assert harness.db.executed, "each change commits (sync)"
 
 
 @pytest.mark.asyncio
-async def test_async_damage_player_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test async_damage_player delegates to HealthRepository."""
-    mock_player = MagicMock(spec=Player)
-    async_persistence_layer._health_repo.damage_player = AsyncMock()
+async def test_damage_without_the_health_service_refuses(async_persistence_layer: AsyncPersistenceLayer):
+    """No fallback to writing stats directly: upsert_player no longer writes an existing player's DP."""
+    async_persistence_layer.set_health_service(None)
 
-    await async_persistence_layer.async_damage_player(mock_player, 15, "magical")
-
-    async_persistence_layer._health_repo.damage_player.assert_awaited_once_with(mock_player, 15, "magical")
+    with pytest.raises(RuntimeError, match="Health service not wired"):
+        await async_persistence_layer.damage_player(_stored_player(uuid.uuid4(), {"current_dp": 20}), 3)
 
 
 @pytest.mark.asyncio

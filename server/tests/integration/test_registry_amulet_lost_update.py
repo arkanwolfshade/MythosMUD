@@ -108,7 +108,7 @@ async def test_a_tick_save_of_a_copy_loaded_before_a_pickup_keeps_the_amulet(
             player.inventory.set_carried([lantern, coin, amulet])  # `get amulet`
 
         stats = tick_copy.get_stats()
-        stats["current_dp"] = 42  # heal_player
+        stats["magic_points"] = 42  # MP regeneration (still a legacy full save until step 6b)
         tick_copy.set_stats(stats)
         await persistence.save_player(tick_copy)
 
@@ -117,7 +117,7 @@ async def test_a_tick_save_of_a_copy_loaded_before_a_pickup_keeps_the_amulet(
         assert [stack["item_instance_id"] for stack in carried] == ids
         assert [stack["item_instance_id"] for stack in carried_json] == ids
         assert equipped == {}
-        assert saved_stats["current_dp"] == 42  # the tick's own column still saved
+        assert saved_stats["magic_points"] == 42  # the tick's own stats change still saved
     finally:
         await _cleanup(session_factory, player_id, user_id)
 

@@ -222,6 +222,18 @@ class LucidityHarness:
         assert player is not None, f"player {player_id} is not loaded"
         return player.exposure.encounter_count(entity_archetype)
 
+    def stats(self, player_id: uuid.UUID) -> Mapping[str, object]:
+        """The player's live ``stats`` (DP, posture, corruption, ...)."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.row.stats
+
+    def room(self, player_id: uuid.UUID) -> str:
+        """The player's live ``current_room_id``."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.row.current_room_id
+
     def corruption(self, player_id: uuid.UUID) -> object:
         """The player's live ``stats.corruption`` (None if it was never set)."""
         player = self.registry.peek(player_id)
@@ -256,20 +268,25 @@ def lucidity_registry(
     cooldowns: Mapping[str, datetime] | None = None,
     exposures: Mapping[str, Exposure] | None = None,
     corruption_cooldowns: Mapping[str, datetime] | None = None,
+    row: Mapping[str, object] | None = None,
 ) -> LucidityHarness:
     """A registry with these players (lucidity None = the starting values); any other id is no such player.
 
     ``cooldowns`` and ``exposures`` seed every player's cooldowns and encounter counts (ADR-029 step 5b-ii), and
-    ``corruption_cooldowns`` their corruption cooldowns (step 5c). Seed corruption itself through ``stats``.
+    ``corruption_cooldowns`` their corruption cooldowns (step 5c). Seed corruption and DP through ``stats``, and
+    ``players`` columns (room, respawn room, tutorial instance, name) through ``row`` (step 6a).
     """
     db = FakeDatabase()
 
     async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
         if player_id not in players:
             return None
-        row = raw_row(player_id, stats=dict(stats) if stats is not None else {"current_dp": 20, "max_dp": 20})
+        columns = dict(row or {})
+        seeded = raw_row(
+            player_id, stats=dict(stats) if stats is not None else {"current_dp": 20, "max_dp": 20}, **columns
+        )
         return aggregate(
-            row,
+            seeded,
             lucidity=players[player_id],
             cooldowns=PlayerCooldownsPart(player_id, cooldowns),
             exposure=PlayerExposurePart(player_id, exposures),

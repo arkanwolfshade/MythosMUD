@@ -12,8 +12,8 @@ DROP FUNCTION IF EXISTS :schema_name.get_active_players_by_user_id(uuid); -- noq
 DROP FUNCTION IF EXISTS :schema_name.list_players(); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.get_players_in_room(text); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.get_players_batch(uuid[]); -- noqa: PRS
--- ADR-029 step 5c renamed update_player_row's p_stats to p_stats_changes (a merge, not the whole stats), and
--- CREATE OR REPLACE cannot rename a parameter.
+-- ADR-029 step 6a replaced update_player_row's per-column parameters with p_changes (changed columns only). A new
+-- signature would be an overload, so drop the old one.
 DROP PROCEDURE IF EXISTS :schema_name.update_player_row( -- noqa: PRS
     uuid, character varying, character varying, character varying, integer, integer, integer, bigint,
     timestamp with time zone, jsonb, boolean, timestamp with time zone, character varying
@@ -549,8 +549,9 @@ $$;
 -- All params required for full upsert; Python prepares data before calling.
 -- The inventory params (p_inventory, p_inventory_json, p_equipped_json) are written only when the player is new:
 -- after that only the player registry writes them (update_player_inventory, ADR-029 step 4c-iii), so a save of a
--- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise stats.corruption: once
--- stored, only the registry writes it (ADR-029 step 5c), so a save keeps the stored value.
+-- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise the stats keys only the
+-- registry writes (corruption since step 5c; DP and the death room since step 6a): a save keeps the stored values,
+-- and never brings back a key the registry removed.
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -595,11 +596,13 @@ BEGIN
         is_admin = EXCLUDED.is_admin,
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,
-        stats = CASE
-            WHEN players.stats ? 'corruption'
-                THEN EXCLUDED.stats || jsonb_build_object('corruption', players.stats -> 'corruption')
-            ELSE EXCLUDED.stats
-        END,
+        stats = (EXCLUDED.stats - ARRAY['corruption', 'current_dp', 'death_room_id', 'death_location'])
+            || jsonb_strip_nulls(jsonb_build_object(
+                'corruption', players.stats -> 'corruption',
+                'current_dp', players.stats -> 'current_dp',
+                'death_room_id', players.stats -> 'death_room_id',
+                'death_location', players.stats -> 'death_location'
+            )),
         -- A soft delete is one-way: a save of a copy loaded before the delete committed must not undo it.
         is_deleted = players.is_deleted OR EXCLUDED.is_deleted,
         deleted_at = CASE WHEN players.is_deleted THEN players.deleted_at ELSE EXCLUDED.deleted_at END,
@@ -634,43 +637,43 @@ BEGIN
 END;
 $$;
 
--- update_player_row: the player registry's players-row write (ADR-029 step 4). Every column the row part owns, and
--- nothing about inventory (update_player_inventory) or the immutable identity columns (player_id, user_id,
--- created_at). The registry only writes players it loaded, so this is an UPDATE, never an insert.
--- p_stats_changes holds only the stats keys the write changed (step 5c): they are merged in, so a write cannot put
--- back a stale copy of keys other writers own (DP and MP, until step 6).
+-- update_player_row: the player registry's players-row write (ADR-029 step 4). It sets only what a unit changed
+-- (step 6a): p_changes holds the changed columns (current_room_id, respawn_room_id, experience_points, level,
+-- last_active, tutorial_instance_id) and p_stats_changes the changed stats keys, merged in. Other writers still
+-- save players outside the registry, so a write must never put back the aggregate's copy of anything it did not
+-- change. The registry only writes players it loaded, so this is an UPDATE, never an insert.
 CREATE OR REPLACE PROCEDURE :schema_name.update_player_row(
     p_player_id UUID,
-    p_name VARCHAR(50),
-    p_current_room_id VARCHAR(255),
-    p_respawn_room_id VARCHAR(100),
-    p_experience_points INT,
-    p_level INT,
-    p_is_admin INT,
-    p_profession_id BIGINT,
-    p_last_active TIMESTAMP WITH TIME ZONE,
-    p_stats_changes JSONB,
-    p_is_deleted BOOLEAN,
-    p_deleted_at TIMESTAMP WITH TIME ZONE,
-    p_tutorial_instance_id VARCHAR(255)
+    p_changes JSONB,
+    p_stats_changes JSONB
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
     UPDATE players SET
-        name = p_name,
-        current_room_id = p_current_room_id,
-        respawn_room_id = p_respawn_room_id,
-        experience_points = p_experience_points,
-        level = p_level,
-        is_admin = p_is_admin,
-        profession_id = p_profession_id,
-        last_active = p_last_active,
-        stats = stats || COALESCE(p_stats_changes, '{}'::jsonb),
-        -- One-way, as in upsert_player: an aggregate loaded before a soft delete must not undo it.
-        is_deleted = is_deleted OR p_is_deleted,
-        deleted_at = CASE WHEN is_deleted THEN deleted_at ELSE p_deleted_at END,
-        tutorial_instance_id = p_tutorial_instance_id
+        current_room_id = CASE
+            WHEN p_changes ? 'current_room_id' THEN p_changes ->> 'current_room_id' ELSE current_room_id
+        END,
+        respawn_room_id = CASE
+            WHEN p_changes ? 'respawn_room_id' THEN p_changes ->> 'respawn_room_id' ELSE respawn_room_id
+        END,
+        experience_points = CASE
+            WHEN p_changes ? 'experience_points' THEN (p_changes ->> 'experience_points')::INT
+            ELSE experience_points
+        END,
+        level = CASE WHEN p_changes ? 'level' THEN (p_changes ->> 'level')::INT ELSE level END,
+        last_active = CASE
+            WHEN p_changes ? 'last_active' THEN (p_changes ->> 'last_active')::TIMESTAMPTZ ELSE last_active
+        END,
+        tutorial_instance_id = CASE
+            WHEN p_changes ? 'tutorial_instance_id' THEN p_changes ->> 'tutorial_instance_id'
+            ELSE tutorial_instance_id
+        END,
+        -- A changed key sent as JSON null was removed (the respawn clears the death room).
+        stats = (stats || COALESCE(p_stats_changes, '{}'::JSONB)) - ARRAY(
+            SELECT change.key FROM jsonb_each(COALESCE(p_stats_changes, '{}'::JSONB)) AS change
+            WHERE change.value = 'null'::JSONB
+        )
     WHERE player_id = p_player_id;
 END;
 $$;

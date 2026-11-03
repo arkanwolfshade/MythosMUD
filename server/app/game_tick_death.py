@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 import uuid
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, cast
 
 from fastapi import FastAPI
@@ -94,7 +95,7 @@ async def _create_bleed_out_corpse(container: _TickContainer, player_uuid: uuid.
 
 
 async def _handle_player_death_threshold(
-    container: _TickContainer, player: Player, session: AsyncSession, new_dp: int, stats: dict[str, object]
+    container: _TickContainer, player: Player, new_dp: int, stats: Mapping[str, object]
 ) -> None:
     """Move player to limbo and publish authoritative DP when death threshold is reached."""
     logger.info(
@@ -110,9 +111,9 @@ async def _handle_player_death_threshold(
     respawn_service = container.player_respawn_service
     player_uuid = uuid.UUID(str(player.player_id))
     death_room_id = str(player.current_room_id)
-    _ = await death_service.handle_player_death(player_uuid, death_room_id, None, session)
+    _ = await death_service.handle_player_death(player_uuid, death_room_id, None)
     await _create_bleed_out_corpse(container, player_uuid, death_room_id)
-    _ = await respawn_service.move_player_to_limbo(player_uuid, death_room_id, session)
+    _ = await respawn_service.move_player_to_limbo(player_uuid, death_room_id)
 
     if not container.event_bus:
         return
@@ -127,12 +128,13 @@ async def _handle_player_death_threshold(
     )
 
 
-async def _process_mortally_wounded_player(container: _TickContainer, player: Player, session: AsyncSession) -> None:
+async def _process_mortally_wounded_player(container: _TickContainer, player: Player) -> None:
     """
     Process a single mortally wounded player's DP decay and death check.
 
     CRITICAL: Skip DP decay if player is in active combat - NPCs should deal damage instead.
     DP decay should only occur when player is mortally wounded but NOT in combat.
+    ``player`` is the candidate query's row: the decay itself reads and writes the registry (ADR-029 step 6a).
     """
     if not container.player_death_service:
         return
@@ -141,12 +143,10 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
         return
 
     death_service = container.player_death_service
-    old_dp = coerce_int(player.get_stats().get("current_dp", 0), default=0)
-    _ = await death_service.process_mortally_wounded_tick(uuid.UUID(str(player.player_id)), session)
-
-    await session.refresh(player)
-    stats = player.get_stats()
-    new_dp = coerce_int(stats.get("current_dp", 0), default=0)
+    change = await death_service.process_mortally_wounded_tick(uuid.UUID(str(player.player_id)))
+    if change is None:
+        return
+    old_dp, new_dp = change.old_dp, change.new_dp
 
     if container.combat_service:
         _ = await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
@@ -162,7 +162,7 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
         )
 
     if new_dp <= -10:
-        await _handle_player_death_threshold(container, player, session, new_dp, stats)
+        await _handle_player_death_threshold(container, player, new_dp, {"max_dp": change.max_dp})
 
 
 def is_game_second_tick(tick_count: int) -> bool:
@@ -193,7 +193,7 @@ async def _process_mortally_wounded_players(container: _TickContainer, session: 
     )
 
     for player in mortally_wounded:
-        await _process_mortally_wounded_player(container, player, session)
+        await _process_mortally_wounded_player(container, player)
 
 
 async def _process_passive_lucidity_flux(container: _TickContainer, session: AsyncSession, tick_count: int) -> None:
@@ -329,7 +329,7 @@ async def _process_dead_players(container: _TickContainer, session: AsyncSession
             )
 
             _ = await respawn_service.move_player_to_limbo(
-                uuid.UUID(str(player.player_id)), str(player.current_room_id), session
+                uuid.UUID(str(player.player_id)), str(player.current_room_id)
             )
 
 

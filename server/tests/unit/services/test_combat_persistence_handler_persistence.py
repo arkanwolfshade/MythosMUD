@@ -1,16 +1,22 @@
 """
 Unit tests for combat persistence handler - persistence operations.
 
-Tests player DP persistence, verification, and background task handling.
+Tests player DP persistence through the player registry, and background task handling.
 """
+
+# pyright: reportPrivateUsage=false
+# Reason: these tests drive the handler's private DP persistence helpers directly.
 
 import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
+from server.models.game import PositionState
 from server.services.combat_persistence_handler import CombatPersistenceHandler
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -28,165 +34,75 @@ def persistence_handler(mock_combat_service):
     return CombatPersistenceHandler(mock_combat_service)
 
 
-@pytest.fixture
-def mock_player():
-    """Create mock player."""
-    player = MagicMock()
-    player.player_id = uuid.uuid4()
-    player.name = "TestPlayer"
-    player.stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
-    player.get_stats = MagicMock(return_value={"current_dp": 50, "max_dp": 100, "position": "standing"})
-    player.set_stats = MagicMock()
-    player.apply_dp_change = MagicMock(return_value=(50, False, False))
-    return player
-
-
 @pytest.mark.asyncio
-async def test_verify_player_save_success(persistence_handler):
-    """Test _verify_player_save verifies player save successfully."""
+async def test_persist_player_dp_sync_writes_dp_and_posture_through_the_registry(
+    persistence_handler: CombatPersistenceHandler,
+):
+    """A combat hit's DP goes through the player registry as one sync unit (ADR-029 step 6a)."""
     player_id = uuid.uuid4()
-    mock_persistence = AsyncMock()
-    mock_player = MagicMock()
-    mock_player.name = "TestPlayer"
-    mock_player.get_stats.return_value = {"current_dp": 30}
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    await persistence_handler._verify_player_save(mock_persistence, player_id, "TestPlayer", 50, 30)
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 5, "max_dp": 20, "position": "standing"})
+
+    with patch.object(persistence_handler, "_get_player_registry", return_value=harness.registry):
+        await persistence_handler._persist_player_dp_sync(player_id, -2)
+
+    assert harness.stats(player_id)["current_dp"] == -2
+    assert harness.stats(player_id)["position"] == PositionState.LYING  # mortally wounded lies down
+    assert harness.db.executed, "committed before returning"
 
 
 @pytest.mark.asyncio
-async def test_verify_player_save_player_not_found(persistence_handler):
-    """Test _verify_player_save handles player not found."""
-    player_id = uuid.uuid4()
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    # Should not raise, just log error
-    await persistence_handler._verify_player_save(mock_persistence, player_id, "TestPlayer", 50, 30)
+async def test_persist_player_dp_sync_without_a_registry_does_nothing(persistence_handler: CombatPersistenceHandler):
+    with patch.object(persistence_handler, "_get_player_registry", return_value=None):
+        await persistence_handler._persist_player_dp_sync(uuid.uuid4(), 30)  # logs, never raises
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_sync_success(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync persists DP successfully."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
+async def test_persist_player_dp_sync_unknown_player_is_skipped(persistence_handler: CombatPersistenceHandler):
+    harness = lucidity_registry({})
+
+    with patch.object(persistence_handler, "_get_player_registry", return_value=harness.registry):
+        await persistence_handler._persist_player_dp_sync(uuid.uuid4(), 30)
+
+    assert not harness.db.executed
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_sync_no_persistence(persistence_handler):
-    """Test _persist_player_dp_sync handles no persistence layer."""
-    player_id = uuid.uuid4()
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=None):
-        # Should not raise, just log warning
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
+async def test_persist_player_dp_sync_raises_a_failed_commit(persistence_handler: CombatPersistenceHandler):
+    """The background task needs the error to send its correction event."""
+    with (
+        patch.object(persistence_handler, "_get_player_registry", return_value=MagicMock()),
+        patch(
+            "server.services.combat_persistence_handler.PlayerHealthService.set_dp",
+            new_callable=AsyncMock,
+            side_effect=SQLAlchemyError("commit failed"),
+        ),
+    ):
+        with pytest.raises(SQLAlchemyError):
+            await persistence_handler._persist_player_dp_sync(uuid.uuid4(), 30)
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_sync_player_not_found(persistence_handler):
-    """Test _persist_player_dp_sync handles player not found."""
-    player_id = uuid.uuid4()
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        # Should not raise, just log warning
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
+async def test_persist_player_dp_background_corrects_the_client_after_a_failed_commit(
+    persistence_handler: CombatPersistenceHandler,
+):
+    with (
+        patch.object(
+            persistence_handler,
+            "_persist_player_dp_sync",
+            new_callable=AsyncMock,
+            side_effect=SQLAlchemyError("commit failed"),
+        ),
+        patch.object(persistence_handler, "_publish_player_dp_correction_event", new_callable=AsyncMock) as correction,
+    ):
+        persistence_handler._persist_player_dp_background(uuid.uuid4(), 30, 50, 100, "room_001", "combat_001")
+        await asyncio.sleep(0)  # let the background task run
+        await asyncio.sleep(0)
+
+    correction.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_sync_error(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync handles errors gracefully."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(side_effect=ValueError("Database error"))
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        # Should not raise, just log error
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_verify_player_save_called(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync calls _verify_player_save."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        with patch.object(persistence_handler, "_verify_player_save", new_callable=AsyncMock) as mock_verify:
-            await persistence_handler._persist_player_dp_sync(player_id, 30)
-            mock_verify.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_save_error(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync handles save_player error."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock(side_effect=ValueError("Save error"))
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        # Should not raise, just log error
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_complete_flow(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync completes full flow with verification and logging."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        with patch.object(persistence_handler, "_verify_player_save", new_callable=AsyncMock) as mock_verify:
-            with patch.object(persistence_handler, "_log_death_state_changes") as mock_log:
-                await persistence_handler._persist_player_dp_sync(player_id, 30)
-                mock_verify.assert_awaited_once()
-                mock_log.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_get_stats_error(persistence_handler):
-    """Test _persist_player_dp_sync handles get_stats error."""
-    player_id = uuid.uuid4()
-    mock_player = MagicMock()
-    mock_player.get_stats = MagicMock(side_effect=AttributeError("No stats"))
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        # Should not raise, just log error
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_complete_flow_with_verification_new(persistence_handler, mock_player):
-    """Test _persist_player_dp_sync complete flow including verification."""
-    player_id = mock_player.player_id
-    mock_persistence = AsyncMock()
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mock_persistence.save_player = AsyncMock()
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        with patch.object(persistence_handler, "_verify_player_save", new_callable=AsyncMock) as mock_verify:
-            await persistence_handler._persist_player_dp_sync(player_id, 30)
-            mock_persistence.save_player.assert_awaited_once()
-            mock_verify.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_sync_get_stats_error_new(persistence_handler):
-    """Test _persist_player_dp_sync handles get_stats error gracefully."""
-    player_id = uuid.uuid4()
-    mock_persistence = AsyncMock()
-    mock_player = MagicMock()
-    mock_player.get_stats = MagicMock(side_effect=AttributeError("No get_stats"))
-    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    with patch.object(persistence_handler, "_get_persistence_layer", return_value=mock_persistence):
-        # Should not raise, just log error
-        await persistence_handler._persist_player_dp_sync(player_id, 30)
-
-
-@pytest.mark.asyncio
-async def test_persist_player_dp_background(persistence_handler):
+async def test_persist_player_dp_background(persistence_handler: CombatPersistenceHandler):
     """Test _persist_player_dp_background schedules background task."""
     player_id = uuid.uuid4()
     # Track created tasks to ensure they're awaited
@@ -214,7 +130,7 @@ async def test_persist_player_dp_background(persistence_handler):
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_background_task_error(persistence_handler):
+async def test_persist_player_dp_background_task_error(persistence_handler: CombatPersistenceHandler):
     """Test _persist_player_dp_background handles background task creation error."""
     player_id = uuid.uuid4()
     # Patch to raise error, which should be caught and logged
@@ -240,7 +156,7 @@ async def test_persist_player_dp_background_task_error(persistence_handler):
 
 
 @pytest.mark.asyncio
-async def test_persist_player_dp_background_persistence_failure(persistence_handler):
+async def test_persist_player_dp_background_persistence_failure(persistence_handler: CombatPersistenceHandler):
     """Test _persist_player_dp_background sends correction event on persistence failure."""
     player_id = uuid.uuid4()
     with patch.object(

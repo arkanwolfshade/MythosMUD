@@ -1,7 +1,8 @@
 """
 Combat persistence handling logic.
 
-Handles player DP persistence, verification, and event publishing.
+Handles player DP persistence and event publishing. A player's DP is written through the player registry
+(PlayerHealthService, ADR-029 step 6a) in a background task, so a hit never waits on the database.
 """
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Persistence handling requires many parameters and intermediate variables for complex persistence logic. Combat persistence handler requires extensive persistence logic for comprehensive DP management.
@@ -10,13 +11,18 @@ import asyncio
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
+from sqlalchemy.exc import SQLAlchemyError
+
+from server.game.player_registry import PlayerNotFoundError
 from server.services.nats_exceptions import NATSError
+from server.services.player_health_service import PlayerHealthService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     # Runtime import stays inline (in the two publish methods) to avoid a circular import;
     # this one is type-checking only and never executes.
     from server.events.event_types import PlayerDPUpdated
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -87,18 +93,13 @@ class CombatPersistenceHandler:
                 exc_info=True,
             )
 
-    def _get_persistence_layer(self) -> Any | None:
-        """
-        Get persistence layer from application container.
-
-        Returns:
-            Persistence layer instance or None if unavailable
-        """
+    def _get_player_registry(self) -> "PlayerRegistry | None":
+        """The application container's player registry, or None if unavailable."""
         try:
             from ..container import ApplicationContainer
 
             container = ApplicationContainer.get_instance()
-            return getattr(container, "async_persistence", None) if container else None
+            return getattr(container, "player_registry", None) if container else None
         except (
             ImportError,
             AttributeError,
@@ -109,37 +110,8 @@ class CombatPersistenceHandler:
             ConnectionError,
             KeyError,
         ) as e:
-            logger.warning("Could not get persistence from container", error=str(e))
+            logger.warning("Could not get the player registry from container", error=str(e))
             return None
-
-    async def _verify_player_save(
-        self, persistence: Any, player_id: UUID, player_name: str, old_dp: int, current_dp: int
-    ) -> None:
-        """
-        Verify that player save was successful by reading back from database.
-
-        Args:
-            persistence: Persistence layer instance
-            player_id: ID of the player
-            player_name: Name of the player
-            old_dp: Previous DP value
-            current_dp: New DP value
-        """
-        verification_player = await persistence.get_player_by_id(player_id)
-        if verification_player:
-            verification_stats = verification_player.get_stats()
-            verification_dp = verification_stats.get("current_dp", -999)
-            logger.info(
-                "Player DP persisted to database - VERIFICATION",
-                player_id=player_id,
-                player_name=player_name,
-                old_dp=old_dp,
-                new_dp=current_dp,
-                verified_dp_from_db=verification_dp,
-                save_successful=verification_dp == current_dp,
-            )
-        else:
-            logger.error("Could not verify player save - player not found after save", player_id=player_id)
 
     def _log_death_state_changes(self, player_id: UUID, player_name: str, current_dp: int, old_dp: int) -> None:
         """
@@ -182,69 +154,34 @@ class CombatPersistenceHandler:
 
     async def _persist_player_dp_sync(self, player_id: UUID, current_dp: int) -> None:
         """
-        Synchronously persist player DP to database.
+        Write the player's combat DP (and the posture it implies) through the player registry, as one sync unit.
 
-        This is the actual persistence logic, called from the background task.
-        Separated from the old _persist_player_dp to allow background execution.
+        Called from the background task; a failed write raises, so that task sends the correction event.
 
         Args:
             player_id: ID of the player whose DP changed
             current_dp: New current DP value
         """
+        registry = self._get_player_registry()
+        if registry is None:
+            logger.warning("No player registry available for DP persistence", player_id=player_id)
+            return
         try:
-            logger.info("_persist_player_dp_sync called", player_id=player_id, current_dp=current_dp)
-
-            # Get persistence layer from application container
-            persistence = self._get_persistence_layer()
-            if not persistence:
-                logger.warning("No persistence layer available for DP persistence", player_id=player_id)
-                return
-
-            # Get player from database
-            player = await persistence.get_player_by_id(player_id)
-            if not player:
-                logger.warning("Player not found for DP persistence", player_id=player_id)
-                return
-
-            # Delegate DP and posture updates to Player domain model
-            old_dp, became_mortally_wounded, _became_dead = player.apply_dp_change(current_dp)
-            if became_mortally_wounded:
-                logger.info(
-                    "Player posture changed to lying (unconscious in combat)",
-                    player_id=player_id,
-                    player_name=player.name,
-                    dp=current_dp,
-                )
-
-            # Save player to database
-            await persistence.save_player(player)
-
-            # Verify save was successful
-            await self._verify_player_save(persistence, player_id, player.name, old_dp, current_dp)
-
-            # NOTE: DP update event is now published IMMEDIATELY in process_attack()
-            # before this persistence method is called. This method only handles database persistence.
-            # The event was already sent for real-time UI updates.
-
-            # Log death state changes
-            self._log_death_state_changes(player_id, player.name, current_dp, old_dp)
-
-        except (
-            NATSError,
-            ValueError,
-            RuntimeError,
-            AttributeError,
-            ConnectionError,
-            TypeError,
-            KeyError,
-        ) as e:
-            logger.error(
-                "Error persisting player DP to database",
+            change = await PlayerHealthService(registry).set_dp(player_id, current_dp)
+        except PlayerNotFoundError:
+            logger.warning("Player not found for DP persistence", player_id=player_id)
+            return
+        player = registry.peek(player_id)
+        player_name = player.row.name if player is not None else str(player_id)
+        if change.became_mortally_wounded:
+            logger.info(
+                "Player posture changed to lying (unconscious in combat)",
                 player_id=player_id,
-                current_dp=current_dp,
-                error=str(e),
-                exc_info=True,
+                player_name=player_name,
+                dp=current_dp,
             )
+        # The DP update event was already published in process_attack(), before this write.
+        self._log_death_state_changes(player_id, player_name, current_dp, change.old_dp)
 
     def _persist_player_dp_background(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: DP persistence requires many parameters for context and persistence operations
         self,
@@ -289,6 +226,7 @@ class CombatPersistenceHandler:
                 ImportError,
                 KeyError,
                 NATSError,
+                SQLAlchemyError,
             ) as e:
                 logger.error(
                     "Background DP persistence failed - sending correction event",

@@ -177,7 +177,6 @@ removed without a matching update here fails that test.
 | --- | --- | --- |
 | `PlayerRepository` | Player CRUD/query — get/save/delete, batch fetch, room validation | Split across `player_repository.py` + `_mappers.py`/`_room.py`/`_save.py`; retry with exponential backoff |
 | `RoomRepository` | Room lookup | In-memory cache loaded at startup; no queries after that |
-| `HealthRepository` | Player HP | Atomic JSONB field updates — see §3.3 |
 | `ExperienceRepository` | XP and stat fields | Atomic updates; whitelist-based field validation |
 | `ProfessionRepository` | Profession catalog lookup | Simple async queries, no dependencies |
 | `ContainerRepository` | Container CRUD | Wraps `container_persistence.py` via `asyncio.to_thread()` |
@@ -205,17 +204,17 @@ violation; see the persistence rule in
 **Direct usage:**
 
 ```python
-from server.persistence.repositories import PlayerRepository, HealthRepository
+from server.persistence.repositories import ProfessionRepository
 
-player_repo = PlayerRepository(room_cache=async_persistence._room_cache, event_bus=event_bus)
-health_repo = HealthRepository(event_bus=event_bus)
+profession_repo = ProfessionRepository()
 
-async def process_combat(attacker_id: UUID, target_id: UUID, damage: int):
-    attacker = await player_repo.get_player_by_id(attacker_id)
-    target = await player_repo.get_player_by_id(target_id)
-    await health_repo.damage_player(target, damage, "combat")
-    await player_repo.save_player(target)
+async def list_professions():
+    return await profession_repo.get_all_professions()
 ```
+
+Player state (DP, corruption, lucidity, inventory, quests) is not changed through a repository: it lives in the
+player registry ([ADR-029](decisions/ADR-029-authoritative-player-registry.md)). DP goes through
+`PlayerHealthService`, for example, and `AsyncPersistenceLayer.damage_player` delegates to it.
 
 **FastAPI dependency injection:**
 
@@ -238,8 +237,8 @@ async def get_player(player_id: UUID, player_repo: PlayerRepository = Depends(ge
 ### 3.3 Atomic updates
 
 **[SPEC]**
-`HealthRepository` and `ExperienceRepository` update a single JSONB field without loading and
-rewriting the whole row, preventing lost-update races under concurrent combat/XP events:
+`ExperienceRepository` updates a single JSONB field without loading and rewriting the whole row,
+preventing lost-update races under concurrent XP events (DP moved to the player registry, ADR-029 step 6a):
 
 ```sql
 UPDATE players

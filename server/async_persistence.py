@@ -48,7 +48,6 @@ from .persistence.protocols import PlayerRepositoryProtocol, RoomRepositoryProto
 from .persistence.repositories import (
     ContainerRepository,
     ExperienceRepository,
-    HealthRepository,
     ItemRepository,
     PlayerEffectRepository,
     PlayerRepository,
@@ -60,6 +59,7 @@ from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from .models.corruption import CorruptionAdjusting, CorruptionUpdateResult
+    from .models.player_dp import DpAdjusting
     from .models.room import Room
 
 # (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
@@ -76,12 +76,7 @@ __all__ = [
 
 
 class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-many-instance-attributes  # Reason: Persistence layer requires multiple repository instances and caches
-    """
-    Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operations.
-
-    This provides async database operations that don't block the event loop.
-    Uses SQLAlchemy ORM with async sessions for type-safe, maintainable queries.
-    """
+    """Async persistence layer: async PostgreSQL operations (SQLAlchemy async sessions) that never block the loop."""
 
     _event_bus: EventBus | None
     _logger: BoundLogger
@@ -93,7 +88,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _player_repo: PlayerRepositoryProtocol
     _profession_repo: ProfessionRepository
     _experience_repo: ExperienceRepository
-    _health_repo: HealthRepository
+    _health_service: DpAdjusting | None
     _container_repo: ContainerRepository
     _item_repo: ItemRepository
     _player_effect_repo: PlayerEffectRepository
@@ -130,7 +125,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._player_repo = PlayerRepository(self._room_cache, event_bus)
         self._profession_repo = ProfessionRepository()
         self._experience_repo = ExperienceRepository(event_bus=event_bus)
-        self._health_repo = HealthRepository(event_bus=event_bus)
+        self._health_service = None
         self._container_repo = ContainerRepository()
         self._item_repo = ItemRepository()
         self._player_effect_repo = PlayerEffectRepository()
@@ -145,11 +140,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._instance_manager = instance_manager
 
     def set_lucidity_adjuster(self, adjuster: LucidityAdjuster | None) -> None:
-        """Set how lucidity changes made through this layer are applied: LucidityService with the catatonia registry.
-
-        Injected (by the combat bundle, which builds both) rather than imported: the lucidity services reach the
-        realtime and container layers, which import this module.
-        """
+        """Set how lucidity changes here are applied (LucidityService); injected by the combat bundle, not imported."""
         self._lucidity_adjuster = adjuster
 
     def set_lucidity_reader(self, reader: LucidityReader | None) -> None:
@@ -159,6 +150,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     def set_corruption_service(self, service: CorruptionAdjusting | None) -> None:
         """Set the CorruptionService (on the player registry) ``adjust_corruption`` runs; injected like the adjuster."""
         self._corruption_service = service
+
+    def set_health_service(self, service: DpAdjusting | None) -> None:
+        """Set the PlayerHealthService (on the player registry) that damage and healing run; injected likewise."""
+        self._health_service = service
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -372,21 +367,21 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         """Award XP and recompute level atomically. Delegates to ExperienceRepository. Returns (new_xp, old_level, new_level)."""
         return await self._experience_repo.award_player_xp(player_id, amount, source)
 
-    async def heal_player(self, player: Player, amount: int) -> None:
-        """Heal a player. Delegates to HealthRepository."""
-        await self._health_repo.heal_player(player, amount)
+    def _health(self) -> DpAdjusting:
+        if self._health_service is None:  # never fall back to writing stats directly
+            raise RuntimeError("Health service not wired (the combat bundle sets it); cannot change DP")
+        return self._health_service
 
-    async def async_heal_player(self, player: Player, amount: int) -> None:
-        """Async alias for heal_player. Delegates to HealthRepository."""
-        await self._health_repo.heal_player(player, amount)
+    async def heal_player(self, player: Player, amount: int) -> None:
+        """Heal a player through PlayerHealthService, mirroring the new DP onto ``player``."""
+        change = await self._health().heal(uuid.UUID(str(player.player_id)), amount)
+        player.apply_stat_changes(change.changes)
 
     async def damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
-        """Damage a player. Delegates to HealthRepository."""
-        await self._health_repo.damage_player(player, amount, damage_type)
+        """Damage a player through PlayerHealthService, mirroring the new DP onto ``player``."""
+        change = await self._health().damage(uuid.UUID(str(player.player_id)), amount, damage_type)
+        player.apply_stat_changes(change.changes)
 
-    async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
-        """Async alias for damage_player. Delegates to HealthRepository."""
-        await self._health_repo.damage_player(player, amount, damage_type)
 
     # Player effects (ADR-019, ADR-029 step 3b-i)
     async def add_player_effect(

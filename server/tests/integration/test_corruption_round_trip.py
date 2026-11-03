@@ -129,7 +129,7 @@ async def test_a_stale_full_row_save_keeps_the_stored_corruption(
             )
 
         stats = stale.get_stats()
-        stats["current_dp"] = 12  # the stale copy's own change (a legacy DP writer)
+        stats["luck"] = 12  # the stale copy's own change, to a stat the registry does not own yet
         stale.set_stats(stats)
         preparer = PlayerSavePreparer(structlog.get_logger())
         async with session_factory() as session:
@@ -138,6 +138,6 @@ async def test_a_stale_full_row_save_keeps_the_stored_corruption(
 
         after = await _stats(session_factory, player_id)
         assert after["corruption"] == 7  # not the stale copy's 0
-        assert after["current_dp"] == 12
+        assert after["luck"] == 12
     finally:
         corruption_tier_cache.clear(player_id)
