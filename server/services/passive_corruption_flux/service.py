@@ -29,7 +29,7 @@ from ...config import get_config
 from ...models.corruption import CorruptionTier, compute_tier
 from ...structured_logging.enhanced_logging_config import get_logger
 from ...utils.int_coercion import coerce_int
-from ..corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from ..corruption_service import CorruptionService
 from .config import (
     DEFAULT_ENVIRONMENT_CONFIG,
     CorruptionFluxServiceConfig,
@@ -42,6 +42,7 @@ from .rate_overrides import build_override_key, load_corruption_overrides
 
 if TYPE_CHECKING:
     from ...async_persistence import AsyncPersistenceLayer
+    from ...game.player_registry import PlayerRegistry
     from ...models.player import Player
 
 logger = get_logger(__name__)
@@ -87,6 +88,7 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
     """Converges lingering players' corruption toward each room's target, each ~0.6s tick."""
 
     _persistence: AsyncPersistenceLayer | None
+    _player_registry: PlayerRegistry | None
     _default_rate: float
     _default_target: float
     _environment_rate_defaults: dict[str, dict[str, float]]
@@ -107,9 +109,11 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
         persistence: AsyncPersistenceLayer | None = None,
         *,
         config: CorruptionFluxServiceConfig | None = None,
+        player_registry: PlayerRegistry | None = None,
     ) -> None:
         cfg = config or CorruptionFluxServiceConfig()
         self._persistence = persistence
+        self._player_registry = player_registry
         env_cfg = cfg.environment_config or DEFAULT_ENVIRONMENT_CONFIG
         self._default_rate = _as_float(env_cfg.get("default_rate"))
         self._default_target = _as_float(env_cfg.get("default_target"))
@@ -350,14 +354,9 @@ class PassiveCorruptionFluxService:  # pylint: disable=too-few-public-methods
         if not actual_delta:
             return {"delta": 0}
 
-        if self._persistence is None:  # pragma: no cover - _resolve_player_and_context already guarded this
-            return {"delta": 0}
-        # Cast needed: AsyncPersistenceLayer.save_player(player: Player) doesn't structurally
-        # satisfy CorruptionPersistenceProtocol's (player: CorruptionPersistencePlayer) parameter
-        # under strict contravariance, even though Player satisfies CorruptionPersistencePlayer --
-        # same cast as game/mechanics.py's apply_corruption.
-        persistence = cast(CorruptionPersistenceProtocol, cast(object, self._persistence))
-        result = await CorruptionService(persistence).apply_corruption_adjustment(
+        if self._player_registry is None:
+            return {"delta": 0}  # corruption is written only through the player registry (ADR-029 step 5c)
+        result = await CorruptionService(self._player_registry).apply_corruption_adjustment(
             player_id,
             actual_delta,
             reason_code="room_flux",

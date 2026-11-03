@@ -12,7 +12,7 @@ from server.game.magic.spell_registry import SpellRegistry
 from server.game.player_service import PlayerService
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
-from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from server.services.corruption_service import CorruptionPersistence
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -57,9 +57,9 @@ class SpellLearningService:
         # #804: route through CorruptionService, not a direct stats["corruption"] mutation --
         # it clamps 0..100, logs the ledger row, and updates the tier cache. `player`/
         # `persistence` are typed Any (pre-existing); cast() avoids reportAny on each.
-        persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
+        persistence = cast(CorruptionPersistence, self.player_service.persistence)
         player_uuid = cast(uuid.UUID, player.player_id)
-        _ = await CorruptionService(persistence).apply_corruption_adjustment(
+        _ = await persistence.adjust_corruption(
             player_uuid,
             spell.corruption_on_learn,
             reason_code="spell_learn",

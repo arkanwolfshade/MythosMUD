@@ -12,7 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from server.game.player_service import PlayerService
 from server.models.player import Player
 from server.models.spell import Spell
-from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from server.services.corruption_service import CorruptionPersistence
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -58,8 +58,8 @@ class SpellCostsService:
         if not (spell.is_mythos() and spell.corruption_on_cast > 0):
             return
         # `self.player_service.persistence` is typed Any (pre-existing); cast() avoids reportAny.
-        persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
-        _ = await CorruptionService(persistence).apply_corruption_adjustment(
+        persistence = cast(CorruptionPersistence, self.player_service.persistence)
+        _ = await persistence.adjust_corruption(
             player_id,
             spell.corruption_on_cast,
             reason_code="spell_cast",

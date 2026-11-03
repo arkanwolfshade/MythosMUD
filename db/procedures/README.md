@@ -40,21 +40,22 @@ only:
 1. `account_sanctions.sql` - account_sanctions (table DDL now baselined in `db/schema.sql`, #811)
 2. `calendar.sql` - calendar_holidays, calendar_npc_schedules (reads only)
 3. `containers.sql` - containers, container_contents
-4. `dialogues.sql` - dialogue_definitions
-5. `emotes.sql` - emotes, emote_aliases (reads only)
-6. `experience.sql` - players table updates
-7. `exploration.sql` - player_exploration, coordinate-generation reads over rooms/subzones/zones
-8. `health.sql` - players table updates (depends on players from DDL)
-9. `items.sql` - item_prototypes, item_instances
-10. `lucidity.sql` - zones/subzones special_rules reads
-11. `npcs.sql` - npc_definitions, npc_spawn_rules, zone/subzone config reads
-12. `player_effects.sql` - player_effects
-13. `players.sql` - users, players, player_inventories, invites
-14. `professions.sql` - professions
-15. `quests.sql` - quest_definitions, quest_offers, quest_instances
-16. `rooms.sql` - rooms, room_links, subzones, zones
-17. `skills.sql` - skills
-18. `spells.sql` - spells
+4. `corruption.sql` - corruption_cooldowns, corruption_adjustment_log (the player registry, ADR-029 step 5c)
+5. `dialogues.sql` - dialogue_definitions
+6. `emotes.sql` - emotes, emote_aliases (reads only)
+7. `experience.sql` - players table updates
+8. `exploration.sql` - player_exploration, coordinate-generation reads over rooms/subzones/zones
+9. `health.sql` - players table updates (depends on players from DDL)
+10. `items.sql` - item_prototypes, item_instances
+11. `lucidity.sql` - zones/subzones special_rules reads
+12. `npcs.sql` - npc_definitions, npc_spawn_rules, zone/subzone config reads
+13. `player_effects.sql` - player_effects
+14. `players.sql` - users, players, player_inventories, invites
+15. `professions.sql` - professions
+16. `quests.sql` - quest_definitions, quest_offers, quest_instances
+17. `rooms.sql` - rooms, room_links, subzones, zones
+18. `skills.sql` - skills
+19. `spells.sql` - spells
 
 ## Schema Notes
 

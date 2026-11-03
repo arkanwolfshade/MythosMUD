@@ -56,11 +56,6 @@ async def test_apply_costs_spends_mp(costs_service, player_service):
     player_service.persistence.save_player.assert_awaited_once()
 
 
-async def _async_session_gen(session: AsyncMock):
-    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
-    yield session
-
-
 @pytest.mark.asyncio
 async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_service):
     player = MagicMock()
@@ -72,9 +67,11 @@ async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_
         "max_dp": 10,
     }
     lucidity_loss = AsyncMock()
+    adjust_corruption = AsyncMock()
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock(return_value=player)
     persistence.apply_lucidity_loss = lucidity_loss
+    persistence.adjust_corruption = adjust_corruption
     persistence.save_player = AsyncMock()
     player_service.persistence = persistence
     spell = _spell(
@@ -82,19 +79,16 @@ async def test_apply_costs_mythos_lucidity_and_corruption(costs_service, player_
         lucidity_cost=10,
         corruption_on_cast=2,
     )
-    session = AsyncMock()
-    with (
-        patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            return_value=_async_session_gen(session),
-        ),
-    ):
-        await costs_service.apply_costs(uuid.uuid4(), spell)
+    player_id = uuid.uuid4()
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock):
+        await costs_service.apply_costs(player_id, spell)
     stats = player.get_stats()
     assert "lucidity" not in stats  # lucidity is spent in player_lucidity, through LucidityService
     lucidity_loss.assert_awaited_once_with(player, 10, f"spell_cast:{spell.spell_id}")
-    assert stats["corruption"] == 3
+    # Corruption goes through CorruptionService on the registry (the layer's adjust_corruption, ADR-029 step 5c).
+    adjust_corruption.assert_awaited_once_with(
+        player_id, 2, reason_code="spell_cast", metadata={"spell_id": spell.spell_id}
+    )
 
 
 @pytest.mark.asyncio

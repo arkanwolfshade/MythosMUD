@@ -2,7 +2,10 @@
 The core part of a PlayerAggregate: the ``players`` row and its ``stats`` jsonb (ADR-029 §3.2).
 
 It is read through ``get_player_by_id``, the same row the inventory part reads, and written through
-``update_player_row``, which sets this part's columns and nothing else. Every change here is lazy.
+``update_player_row``, which sets this part's columns and nothing else. Of ``stats`` it writes only the keys a change
+touched, merged into the stored jsonb (step 5c): DP and MP still have writers outside the registry, so a write must
+never put back this part's copy of keys it did not change. Changes are lazy unless a mutator says otherwise
+(corruption is sync).
 
 Carried and equipped stacks are the inventory part (player_inventory.py), written on their own (step 4). Status
 effects and lucidity are not here either: they live in ``player_effects`` (step 3b) and ``player_lucidity`` (step 3a).
@@ -13,7 +16,7 @@ from __future__ import annotations
 import copy
 import json
 import uuid
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import cast, override
@@ -38,7 +41,7 @@ UPDATE_PLAYER_ROW_SQL = text(
     """
     CALL update_player_row(
         :player_id, :name, :current_room_id, :respawn_room_id, :experience_points, :level, :is_admin,
-        :profession_id, :last_active, :stats, :is_deleted, :deleted_at, :tutorial_instance_id
+        :profession_id, :last_active, :stats_changes, :is_deleted, :deleted_at, :tutorial_instance_id
     )
     """
 )
@@ -106,8 +109,8 @@ class PlayerRowData:  # pylint: disable=too-many-instance-attributes  # Reason: 
             stats=as_json_object(row.get("stats")),
         )
 
-    def update_params(self) -> dict[str, object]:
-        """Parameters for ``update_player_row``, with PlayerSavePreparer's defaults."""
+    def update_params(self, changed_stats: Iterable[str] = ()) -> dict[str, object]:
+        """Parameters for ``update_player_row``, with PlayerSavePreparer's defaults; only ``changed_stats`` are sent."""
         return {
             "player_id": str(self.player_id),
             "name": self.name,
@@ -118,7 +121,7 @@ class PlayerRowData:  # pylint: disable=too-many-instance-attributes  # Reason: 
             "is_admin": self.is_admin,
             "profession_id": self.profession_id,
             "last_active": _utc(self.last_active) or datetime.now(UTC),
-            "stats": json.dumps(self.stats, default=json_default),
+            "stats_changes": json.dumps({key: self.stats[key] for key in changed_stats}, default=json_default),
             "is_deleted": self.is_deleted,
             "deleted_at": _utc(self.deleted_at),
             "tutorial_instance_id": self.tutorial_instance_id,
@@ -134,13 +137,17 @@ async def fetch_player_row(session: DbSession, player_id: uuid.UUID) -> Mapping[
 class PlayerRowPart(Part):
     """The ``players`` row, with typed read access and lazy mutators."""
 
-    __slots__: tuple[str, ...] = ("_data",)
+    __slots__: tuple[str, ...] = ("_changed_stats", "_data", "_in_flight_stats")
 
     _data: PlayerRowData
+    _changed_stats: set[str]
+    _in_flight_stats: set[str]
 
     def __init__(self, data: PlayerRowData) -> None:
         super().__init__()
         self._data = data
+        self._changed_stats = set()
+        self._in_flight_stats = set()
 
     # ---- reads (the read-only view exposes these) ----
 
@@ -206,12 +213,13 @@ class PlayerRowPart(Part):
 
     # ---- mutators ----
 
-    def set_stat(self, key: str, value: object) -> None:
-        """Set one stats entry (lazy)."""
+    def set_stat(self, key: str, value: object, *, sync: bool = False) -> None:
+        """Set one stats entry (lazy, unless ``sync``)."""
         if key in self._data.stats and self._data.stats[key] == value:
             return
         self._data.stats[key] = value
-        self.mark_dirty()
+        self._changed_stats.add(key)
+        self.mark_dirty(sync=sync)
 
     def set_current_room_id(self, room_id: str) -> None:
         """Move the player's saved room (lazy)."""
@@ -247,18 +255,26 @@ class PlayerRowPart(Part):
 
     @override
     def _copy_state(self) -> object:
-        return copy.deepcopy(self._data)
+        return copy.deepcopy(self._data), set(self._changed_stats)
 
     @override
     def _restore_state(self, state: object) -> None:
-        if isinstance(state, PlayerRowData):
-            self._data = state
+        if isinstance(state, tuple):
+            self._data, self._changed_stats = cast(tuple[PlayerRowData, set[str]], state)
 
     @override
     def capture_write(self) -> PartWrite:
-        params = self._data.update_params()
+        params = self._data.update_params(self._changed_stats)
+        self._in_flight_stats, self._changed_stats = self._changed_stats, set()
 
         async def write(session: DbSession) -> None:
             _ = await session.execute(UPDATE_PLAYER_ROW_SQL, params)
 
         return write
+
+    @override
+    def write_failed(self) -> None:
+        """A lazy flush failed: its stats keys are still unwritten, so the retry sends them again."""
+        self._changed_stats |= self._in_flight_stats
+        self._in_flight_stats = set()
+        super().write_failed()

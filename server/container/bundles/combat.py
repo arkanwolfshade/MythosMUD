@@ -183,6 +183,10 @@ class CombatBundle:
             observer = cast("CatatoniaObserverProtocol", self.catatonia_registry)
             persistence.set_lucidity_adjuster(make_lucidity_adjuster(player_registry, observer))
             persistence.set_lucidity_reader(make_lucidity_reader(player_registry))
+            # Corruption changed through the persistence layer (spells, mechanics) too (step 5c).
+            from server.services.corruption_service import CorruptionService
+
+            persistence.set_corruption_service(CorruptionService(player_registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,
@@ -198,7 +202,9 @@ class CombatBundle:
         # namespace shared by every bundle); it is always a real AsyncPersistenceLayer by
         # construction -- same precedent as container/bundles/npc.py's event_bus cast.
         async_persistence = cast("AsyncPersistenceLayer", container.async_persistence)
-        self.passive_corruption_flux_service = PassiveCorruptionFluxService(persistence=async_persistence)
+        self.passive_corruption_flux_service = PassiveCorruptionFluxService(
+            persistence=async_persistence, player_registry=player_registry
+        )
         logger.info("Passive corruption flux service initialized")
 
         logger.info("All combat services initialized")

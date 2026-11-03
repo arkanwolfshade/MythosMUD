@@ -9,9 +9,11 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
+from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from sqlalchemy import BigInteger, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -61,6 +63,39 @@ def compute_tier(value: int) -> CorruptionTier:
     if value >= 1:
         return CorruptionTier.TOUCHED
     return CorruptionTier.PURE
+
+
+@dataclass
+class CorruptionUpdateResult:
+    """Normalized response describing the outcome of a corruption adjustment."""
+
+    player_id: uuid.UUID
+    previous_value: int
+    new_value: int
+    previous_tier: CorruptionTier
+    new_tier: CorruptionTier
+    delta: int
+
+
+class CorruptionAdjusting(Protocol):
+    """What applies a corruption adjustment: ``CorruptionService`` (on the player registry, ADR-029 step 5c).
+
+    Here, beside the result it returns, so the persistence layer can hold one without importing the service
+    (which reaches the realtime and container layers, and so back to persistence).
+    """
+
+    async def apply_corruption_adjustment(
+        self,
+        player_id: uuid.UUID,
+        delta: int,
+        *,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
+    ) -> CorruptionUpdateResult:
+        """Apply one adjustment and announce it."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
 class CorruptionAdjustmentLog(Base):

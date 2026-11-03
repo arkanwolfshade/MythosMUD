@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.11** · MythosMUD · 2026-11-02
+**Version 1.0.12** · MythosMUD · 2026-11-03
 
 ---
 
@@ -94,7 +94,10 @@ saves player-keyed rows.
 | owned items | player-owned `containers` (wearable, bank box) and `item_instances` with `owner_type='player'` |
 
 - Outside the aggregate: append-only ledgers (`lucidity_adjustment_log`, `corruption_adjustment_log`,
-  `skill_use_log`). They are written in the same transaction as the flush that applies the change they record.
+  `skill_use_log`). They are written in the same transaction as the flush that applies the change they record:
+  a part queues the rows (lucidity's own, or a generic ledger part for corruption) and its write inserts them.
+- The core part writes only the `stats` keys a unit changed, merged into the stored jsonb (`stats || changes`),
+  so a write cannot put back a stale copy of keys other writers still own (DP and MP, until step 6).
 - Duplicate stores are removed: `player_lucidity` and `player_effects` win. A DDL migration drops
   `players.stats.lucidity` and `players.status_effects`, with a DML migration in the data repo if values need
   carrying over.
@@ -138,7 +141,7 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
 | Lazy | DP, MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
@@ -269,11 +272,17 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
            player's whole set, so a cleared code is deleted. A check and its new cooldown are one unit (a recovery,
            a hallucination roll, a flee), as are an encounter's count and its loss, and a delirium respawn's
            lucidity reset and its `DEBRIEF_PENDING`. `LucidityRepository` is deleted.
-     - 5c: corruption (`stats` in the row part, `corruption_cooldowns`).
+     - 5c: corruption (`stats.corruption` in the row part, `corruption_cooldowns`, `corruption_adjustment_log`).
+       Corruption is sync: `CorruptionService` runs each change as one unit, committing the value, its ledger row
+       and any cleanse cooldown before it returns, so the readers that still load players from the database see
+       it. Writers that hold only `persistence` (spells, mechanics) call its `adjust_corruption`, which runs the
+       service injected at startup.
        Until step 8 raises the idle TTL, a lazily dirty part keeps its player in memory until the sweep, so its
-       row part can trail writers that still use `upsert_player`. 5c writes `stats` through the row part and must
-       not write from such a stale copy. Out-of-band scripts (`e2e_reset_players.py`, `e2e_player_state.py`) can
-       race a resident dirty player in that window too, until step 8 replaces them with server endpoints.
+       row part can trail writers that still use `upsert_player`. 5c closes that for corruption in two ways: the
+       row part writes only the `stats` keys a unit changed (`update_player_row` merges them), and `upsert_player`
+       keeps an existing player's stored corruption, so the registry is its only writer. Out-of-band scripts
+       (`e2e_reset_players.py`, `e2e_player_state.py`) can still race a resident dirty player in that window,
+       until step 8 replaces them with server endpoints.
 6. Ticks and periodic writers, combat, death and respawn.
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
@@ -295,6 +304,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.12 | 2026-11-03 | §3.2: the core part writes only changed `stats` keys (merged); ledgers are queued on a part. §3.4: corruption is sync. §6: step 5c as shipped (`upsert_player` keeps stored corruption; `adjust_corruption` on the persistence layer) |
 | 1.0.11 | 2026-11-02 | §3.2: exposure is its own part. §3.4: cooldowns and encounter counts are sync. §6: step 5b-ii as shipped (one load function, replace-set cooldown writes, checks and their cooldowns in one unit) |
 | 1.0.10 | 2026-10-30 | §6: step 5b splits into 5b-i (the lazy lucidity part and its ledger, every reader and writer, ticks and the run restart's reset included) and 5b-ii (exposure state and cooldowns, sync); 5c is corruption only; the TTL-0 residency hazard for 5c and the e2e scripts is recorded |
 | 1.0.9 | 2026-10-30 | §3.4: every quest change is sync, progress counters included. §6: step 5 splits into 5a (quests), 5b (lucidity, cooldowns, debrief) and 5c (corruption, run restart) |

@@ -5,17 +5,12 @@
 # precisely would need a fake Protocol with no runtime value in this mock-driven suite.
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from server.exceptions import ValidationError
 from server.game.mechanics import GameMechanicsService
-
-
-async def _async_session_gen(session: AsyncMock):
-    """Yield a single fake session -- mirrors get_async_session's shape for CorruptionService."""
-    yield session
 
 
 @pytest.fixture
@@ -25,7 +20,7 @@ def persistence() -> MagicMock:
     p.save_player = AsyncMock()
     p.apply_lucidity_loss = AsyncMock()
     p.apply_fear = AsyncMock()
-    p.apply_corruption = AsyncMock()
+    p.adjust_corruption = AsyncMock()
     p.gain_occult_knowledge = AsyncMock()
     p.heal_player = AsyncMock()
     p.damage_player = AsyncMock()
@@ -78,15 +73,10 @@ async def test_apply_fear_success(service: GameMechanicsService, persistence: Ma
 async def test_apply_corruption_success(service: GameMechanicsService, persistence: MagicMock) -> None:
     player = _player()
     persistence.get_player_by_id.return_value = player
-    session = AsyncMock()
-    with patch(
-        "server.services.corruption_service.get_async_session",
-        return_value=_async_session_gen(session),
-    ):
-        ok, msg = await service.apply_corruption(str(player.player_id), 2)
+    ok, msg = await service.apply_corruption(str(player.player_id), 2)
     assert ok is True
     assert "corruption" in msg
-    assert player.get_stats()["corruption"] == 2
+    persistence.adjust_corruption.assert_awaited_once_with(uuid.UUID(str(player.player_id)), 2, reason_code="unknown")
 
 
 @pytest.mark.asyncio

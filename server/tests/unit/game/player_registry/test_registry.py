@@ -104,7 +104,7 @@ async def test_lazy_change_is_written_by_the_sweep_not_the_unit() -> None:
     assert published and published[0].event_type == "PlayerEnteredRoom"  # published once the unit succeeded
     assert await registry.flush_dirty() == 1
     assert db.commits == 1
-    assert '"current_dp": 5' in str(_last_write(db)["stats"])
+    assert '"current_dp": 5' in str(_last_write(db)["stats_changes"])
     assert await registry.flush_dirty() == 0  # nothing left to write
 
 
@@ -459,8 +459,8 @@ async def test_a_tick_and_a_pickup_interleaved_keep_both_changes() -> None:
     # The two parts write separately, each its own columns: neither write carries a stale copy of the other's.
     writes = [params for params in db.executed if params is not None]
     assert any("Jade Amulet" in str(params.get("inventory_json")) for params in writes)
-    assert any('"current_dp": 25' in str(params.get("stats")) for params in writes)
-    assert all("stats" not in params for params in writes if "inventory_json" in params)
+    assert any('"current_dp": 25' in str(params.get("stats_changes")) for params in writes)
+    assert all("stats_changes" not in params for params in writes if "inventory_json" in params)
 
 
 # ---- the sweep ----
@@ -483,7 +483,7 @@ async def test_failed_lazy_flush_stays_dirty_backs_off_and_alerts() -> None:
         clock.now += 4.0
         assert await registry.flush_dirty() == 1
 
-    assert '"current_dp": 4' in str(_last_write(db)["stats"])
+    assert '"current_dp": 4' in str(_last_write(db)["stats_changes"])
 
 
 async def test_schedule_sweep_skips_while_one_is_running() -> None:

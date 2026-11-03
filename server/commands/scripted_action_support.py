@@ -10,7 +10,7 @@ from ..game.player_registry import PlayerRegistry
 from ..game.scripted_actions import QuestActionService, ScriptedActionContext, run_scripted_actions
 from ..models.player import Player
 from ..schemas.scripted_actions import on_put_actions
-from ..services.corruption_service import CorruptionPersistenceProtocol
+from ..services.corruption_service import CorruptionPersistence
 from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -31,7 +31,7 @@ def container_context(
         return None
     return ScriptedActionContext(
         player=player,
-        persistence=cast(CorruptionPersistenceProtocol, persistence),
+        persistence=cast(CorruptionPersistence, persistence),
         quest_service=cast(QuestActionService | None, getattr(container, "quest_service", None)),
         catatonia_observer=cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None)),
         player_registry=cast(PlayerRegistry | None, getattr(container, "player_registry", None)),

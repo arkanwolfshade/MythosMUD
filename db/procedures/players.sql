@@ -12,6 +12,12 @@ DROP FUNCTION IF EXISTS :schema_name.get_active_players_by_user_id(uuid); -- noq
 DROP FUNCTION IF EXISTS :schema_name.list_players(); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.get_players_in_room(text); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.get_players_batch(uuid[]); -- noqa: PRS
+-- ADR-029 step 5c renamed update_player_row's p_stats to p_stats_changes (a merge, not the whole stats), and
+-- CREATE OR REPLACE cannot rename a parameter.
+DROP PROCEDURE IF EXISTS :schema_name.update_player_row( -- noqa: PRS
+    uuid, character varying, character varying, character varying, integer, integer, integer, bigint,
+    timestamp with time zone, jsonb, boolean, timestamp with time zone, character varying
+);
 DROP FUNCTION IF EXISTS :schema_name.get_players_not_clearly_alive(); -- noqa: PRS
 DROP PROCEDURE IF EXISTS :schema_name.upsert_player( -- noqa: PRS
     uuid, uuid, character varying, text, text, character varying, character varying, integer, integer, integer,
@@ -543,7 +549,8 @@ $$;
 -- All params required for full upsert; Python prepares data before calling.
 -- The inventory params (p_inventory, p_inventory_json, p_equipped_json) are written only when the player is new:
 -- after that only the player registry writes them (update_player_inventory, ADR-029 step 4c-iii), so a save of a
--- copy loaded before a registry inventory commit cannot write the old stacks back.
+-- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise stats.corruption: once
+-- stored, only the registry writes it (ADR-029 step 5c), so a save keeps the stored value.
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -588,7 +595,11 @@ BEGIN
         is_admin = EXCLUDED.is_admin,
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,
-        stats = EXCLUDED.stats,
+        stats = CASE
+            WHEN players.stats ? 'corruption'
+                THEN EXCLUDED.stats || jsonb_build_object('corruption', players.stats -> 'corruption')
+            ELSE EXCLUDED.stats
+        END,
         -- A soft delete is one-way: a save of a copy loaded before the delete committed must not undo it.
         is_deleted = players.is_deleted OR EXCLUDED.is_deleted,
         deleted_at = CASE WHEN players.is_deleted THEN players.deleted_at ELSE EXCLUDED.deleted_at END,
@@ -626,6 +637,8 @@ $$;
 -- update_player_row: the player registry's players-row write (ADR-029 step 4). Every column the row part owns, and
 -- nothing about inventory (update_player_inventory) or the immutable identity columns (player_id, user_id,
 -- created_at). The registry only writes players it loaded, so this is an UPDATE, never an insert.
+-- p_stats_changes holds only the stats keys the write changed (step 5c): they are merged in, so a write cannot put
+-- back a stale copy of keys other writers own (DP and MP, until step 6).
 CREATE OR REPLACE PROCEDURE :schema_name.update_player_row(
     p_player_id UUID,
     p_name VARCHAR(50),
@@ -636,7 +649,7 @@ CREATE OR REPLACE PROCEDURE :schema_name.update_player_row(
     p_is_admin INT,
     p_profession_id BIGINT,
     p_last_active TIMESTAMP WITH TIME ZONE,
-    p_stats JSONB,
+    p_stats_changes JSONB,
     p_is_deleted BOOLEAN,
     p_deleted_at TIMESTAMP WITH TIME ZONE,
     p_tutorial_instance_id VARCHAR(255)
@@ -653,7 +666,7 @@ BEGIN
         is_admin = p_is_admin,
         profession_id = p_profession_id,
         last_active = p_last_active,
-        stats = p_stats,
+        stats = stats || COALESCE(p_stats_changes, '{}'::jsonb),
         -- One-way, as in upsert_player: an aggregate loaded before a soft delete must not undo it.
         is_deleted = is_deleted OR p_is_deleted,
         deleted_at = CASE WHEN is_deleted THEN deleted_at ELSE p_deleted_at END,

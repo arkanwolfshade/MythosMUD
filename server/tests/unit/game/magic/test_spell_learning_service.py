@@ -80,29 +80,20 @@ async def test_learn_mythos_spell_applies_corruption(learning_service: SpellLear
     player_id = uuid.uuid4()
     player = MagicMock()
     player.player_id = player_id
-    stats: dict[str, object] = {"corruption": 1}
-    player.get_stats = MagicMock(return_value=stats)
-    player.set_stats = MagicMock(side_effect=stats.update)
+    player.get_stats = MagicMock(return_value={"corruption": 1})
+    adjust_corruption = AsyncMock()
     cast(MagicMock, learning_service.spell_registry).get_spell.return_value = spell
     cast(MagicMock, learning_service.player_service).persistence.get_player_by_id = AsyncMock(return_value=player)
-    cast(MagicMock, learning_service.player_service).persistence.save_player = AsyncMock()
+    cast(MagicMock, learning_service.player_service).persistence.adjust_corruption = adjust_corruption
 
-    async def _async_session_gen(session: AsyncMock):
-        yield session
-
-    session = AsyncMock()
-    with (
-        patch.object(learning_service, "_validate_prerequisites", new_callable=AsyncMock, return_value={"valid": True}),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            return_value=_async_session_gen(session),
-        ),
+    with patch.object(
+        learning_service, "_validate_prerequisites", new_callable=AsyncMock, return_value={"valid": True}
     ):
         result = await learning_service.learn_spell(player_id, "s1", source="test")
 
     assert result["success"] is True
     assert result["corruption_applied"] == 4
-    assert stats["corruption"] == 5
+    adjust_corruption.assert_awaited_once_with(player_id, 4, reason_code="spell_learn", metadata={"spell_id": "s1"})
 
 
 @pytest.mark.asyncio

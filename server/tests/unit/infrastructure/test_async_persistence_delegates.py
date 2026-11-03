@@ -21,6 +21,9 @@ from server.async_persistence import (
 )
 from server.container.async_persistence_access import get_container_async_persistence
 from server.models.player import Player
+from server.services.corruption_service import CorruptionService
+from server.services.corruption_tier_cache import corruption_tier_cache
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
 def test_validate_and_fix_player_room_delegates(async_persistence_layer: AsyncPersistenceLayer):
@@ -102,21 +105,28 @@ async def test_apply_fear_delegates(async_persistence_layer: AsyncPersistenceLay
 
 
 @pytest.mark.asyncio
-async def test_apply_corruption_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test apply_corruption delegates to ExperienceRepository."""
-    mock_player = MagicMock(spec=Player)
+async def test_adjust_corruption_runs_the_wired_corruption_service(async_persistence_layer: AsyncPersistenceLayer):
+    """Corruption changed through the layer goes through CorruptionService on the registry (ADR-029 step 5c)."""
     player_id = uuid.uuid4()
-    mock_player.player_id = player_id
-    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 20, "max_dp": 20, "corruption": 4})
+    async_persistence_layer.set_corruption_service(CorruptionService(harness.registry))
 
-    await async_persistence_layer.apply_corruption(mock_player, 3, "test_source")
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock):
+        result = await async_persistence_layer.adjust_corruption(player_id, 3, reason_code="test_source")
 
-    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        player_id,
-        "corruption",
-        3,
-        "test_source: corruption increase",
-    )
+    assert (result.previous_value, result.new_value) == (4, 7)
+    assert harness.corruption(player_id) == 7
+    assert [row["reason_code"] for row in harness.ledger()] == ["test_source"]
+    corruption_tier_cache.clear(player_id)
+
+
+@pytest.mark.asyncio
+async def test_adjust_corruption_without_the_service_refuses(async_persistence_layer: AsyncPersistenceLayer):
+    """No fallback to writing stats directly: that would bypass the ledger and the registry."""
+    async_persistence_layer.set_corruption_service(None)
+
+    with pytest.raises(RuntimeError, match="Corruption service not wired"):
+        _ = await async_persistence_layer.adjust_corruption(uuid.uuid4(), 3, reason_code="test_source")
 
 
 @pytest.mark.asyncio

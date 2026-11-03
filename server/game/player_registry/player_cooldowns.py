@@ -1,10 +1,11 @@
 """
-The cooldowns part of a PlayerAggregate: the player's ``lucidity_cooldowns`` rows (ADR-029 §3.2, step 5b-ii).
+The cooldowns parts of a PlayerAggregate: the player's ``lucidity_cooldowns`` rows (ADR-029 §3.2, step 5b-ii) and
+their ``corruption_cooldowns`` rows (step 5c), one part each, told apart by the statement that writes them.
 
 A cooldown is an action code and the time it expires: recovery rites, consumables, involuntary flee, hallucination
-timers, and the debrief's long-lived ``DEBRIEF_PENDING`` flag. Every change is synchronous: a cooldown gates the next
-command, so it must be in the database before the command that set it returns. A write replaces the player's whole
-set (``replace_lucidity_cooldowns``), so a retried write never needs to know which cooldown changed.
+timers, the debrief's long-lived ``DEBRIEF_PENDING`` flag, and corruption's cleanse. Every change is synchronous: a
+cooldown gates the next command, so it must be in the database before the command that set it returns. A write
+replaces the player's whole set, so a retried write never needs to know which cooldown changed.
 """
 
 from __future__ import annotations
@@ -15,11 +16,13 @@ from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from typing import cast, override
 
-from sqlalchemy import text
+from sqlalchemy import TextClause, text
 
 from .part import DbSession, Part, PartWrite
 
 REPLACE_COOLDOWNS_SQL = text("CALL replace_lucidity_cooldowns(:player_id, CAST(:cooldowns AS jsonb))")
+REPLACE_CORRUPTION_COOLDOWNS_SQL = text("CALL replace_corruption_cooldowns(:player_id, CAST(:cooldowns AS jsonb))")
+LOAD_CORRUPTION_COOLDOWNS_SQL = text("SELECT get_player_corruption_cooldowns(:id) AS cooldowns")
 
 
 def parse_timestamp(raw: object) -> datetime:
@@ -29,23 +32,34 @@ def parse_timestamp(raw: object) -> datetime:
 
 
 class PlayerCooldownsPart(Part):
-    """The player's lucidity cooldowns by action code, with read access and synchronous mutators."""
+    """One table's cooldowns by action code, with read access and synchronous mutators."""
 
-    __slots__: tuple[str, ...] = ("_cooldowns", "_player_id")
+    __slots__: tuple[str, ...] = ("_cooldowns", "_player_id", "_write_sql")
 
     _player_id: uuid.UUID
     _cooldowns: dict[str, datetime]
+    _write_sql: TextClause
 
-    def __init__(self, player_id: uuid.UUID, cooldowns: Mapping[str, datetime] | None = None) -> None:
+    def __init__(
+        self,
+        player_id: uuid.UUID,
+        cooldowns: Mapping[str, datetime] | None = None,
+        *,
+        write_sql: TextClause = REPLACE_COOLDOWNS_SQL,
+    ) -> None:
         super().__init__()
         self._player_id = player_id
         self._cooldowns = dict(cooldowns or {})
+        self._write_sql = write_sql
 
     @classmethod
-    def from_json(cls, player_id: uuid.UUID, rows: object) -> PlayerCooldownsPart:
-        """Build from the ``cooldowns`` column of ``get_player_lucidity_state`` ([{action_code, expires_at}])."""
+    def from_json(
+        cls, player_id: uuid.UUID, rows: object, *, write_sql: TextClause = REPLACE_COOLDOWNS_SQL
+    ) -> PlayerCooldownsPart:
+        """Build from a JSON array of ``{action_code, expires_at}`` (or its text), as the load functions return it."""
         entries = cast(Sequence[Mapping[str, object]], json.loads(rows) if isinstance(rows, str) else rows or [])
-        return cls(player_id, {str(row["action_code"]): parse_timestamp(row["expires_at"]) for row in entries})
+        cooldowns = {str(row["action_code"]): parse_timestamp(row["expires_at"]) for row in entries}
+        return cls(player_id, cooldowns, write_sql=write_sql)
 
     # ---- reads ----
 
@@ -84,7 +98,7 @@ class PlayerCooldownsPart(Part):
         return len(doomed)
 
     def write_params(self) -> dict[str, object]:
-        """``replace_lucidity_cooldowns`` parameters: the player and every cooldown they hold."""
+        """The replace procedure's parameters: the player and every cooldown they hold."""
         rows = [{"action_code": code, "expires_at": at.isoformat()} for code, at in sorted(self._cooldowns.items())]
         return {"player_id": str(self._player_id), "cooldowns": json.dumps(rows)}
 
@@ -104,6 +118,6 @@ class PlayerCooldownsPart(Part):
         params = self.write_params()
 
         async def write(session: DbSession) -> None:
-            _ = await session.execute(REPLACE_COOLDOWNS_SQL, params)
+            _ = await session.execute(self._write_sql, params)
 
         return write

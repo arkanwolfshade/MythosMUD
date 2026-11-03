@@ -1,8 +1,9 @@
 """
 PlayerAggregate: everything the server knows about one player, held once in memory (ADR-029 §3.2).
 
-The aggregate is a set of parts. Today that is the ``players`` row, the inventory, the quests, lucidity, the
-lucidity cooldowns and exposure; later ADR-029 steps add effects and the rest as their subsystems move onto the registry. Callers only ever reach it through
+The aggregate is a set of parts. Today that is the ``players`` row (corruption included, in its stats), the
+inventory, the quests, lucidity, the lucidity cooldowns and exposure, and the corruption cooldowns and ledger; later
+ADR-029 steps add effects and the rest as their subsystems move onto the registry. Callers only ever reach it through
 PlayerRegistry: ``mutate()`` hands out the aggregate itself, ``peek()`` hands out a PlayerView.
 """
 
@@ -15,9 +16,10 @@ from typing import Protocol
 
 from ...events.event_types import BaseEvent
 from .part import Part, PartWrite
-from .player_cooldowns import PlayerCooldownsPart
+from .player_cooldowns import REPLACE_CORRUPTION_COOLDOWNS_SQL, PlayerCooldownsPart
 from .player_exposure import PlayerExposurePart
 from .player_inventory import PlayerInventoryPart
+from .player_ledger import PlayerLedgerPart
 from .player_lucidity import LucidityData, PlayerLucidityPart
 from .player_quests import PlayerQuestsPart, QuestInstanceData
 from .player_row import PlayerRowPart
@@ -194,11 +196,26 @@ class PlayerView(Protocol):
         """Encounter counts by entity archetype."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
+    @property
+    def corruption_cooldowns(self) -> PlayerCooldownsView:
+        """Corruption recovery cooldowns by action code."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
 
 class PlayerAggregate:
     """One player's in-memory state: its parts and the domain events its current unit of work has queued."""
 
-    __slots__: tuple[str, ...] = ("_cooldowns", "_events", "_exposure", "_inventory", "_lucidity", "_quests", "_row")
+    __slots__: tuple[str, ...] = (
+        "_cooldowns",
+        "_corruption_cooldowns",
+        "_corruption_ledger",
+        "_events",
+        "_exposure",
+        "_inventory",
+        "_lucidity",
+        "_quests",
+        "_row",
+    )
 
     _row: PlayerRowPart
     _inventory: PlayerInventoryPart
@@ -206,6 +223,8 @@ class PlayerAggregate:
     _lucidity: PlayerLucidityPart
     _cooldowns: PlayerCooldownsPart
     _exposure: PlayerExposurePart
+    _corruption_cooldowns: PlayerCooldownsPart
+    _corruption_ledger: PlayerLedgerPart
     _events: list[BaseEvent]
 
     def __init__(
@@ -216,6 +235,7 @@ class PlayerAggregate:
         lucidity: PlayerLucidityPart | None = None,
         cooldowns: PlayerCooldownsPart | None = None,
         exposure: PlayerExposurePart | None = None,
+        corruption_cooldowns: PlayerCooldownsPart | None = None,
     ) -> None:
         self._row = row
         self._inventory = inventory
@@ -223,6 +243,12 @@ class PlayerAggregate:
         self._lucidity = lucidity if lucidity is not None else PlayerLucidityPart(row.player_id)
         self._cooldowns = cooldowns if cooldowns is not None else PlayerCooldownsPart(row.player_id)
         self._exposure = exposure if exposure is not None else PlayerExposurePart(row.player_id)
+        self._corruption_cooldowns = (
+            corruption_cooldowns
+            if corruption_cooldowns is not None
+            else PlayerCooldownsPart(row.player_id, write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL)
+        )
+        self._corruption_ledger = PlayerLedgerPart(row.player_id)  # starts empty: rows are only queued, never loaded
         self._events = []
 
     @property
@@ -260,9 +286,28 @@ class PlayerAggregate:
         """Encounter counts by entity archetype."""
         return self._exposure
 
+    @property
+    def corruption_cooldowns(self) -> PlayerCooldownsPart:
+        """Corruption recovery cooldowns by action code."""
+        return self._corruption_cooldowns
+
+    @property
+    def corruption_ledger(self) -> PlayerLedgerPart:
+        """``corruption_adjustment_log`` rows waiting for the unit's write."""
+        return self._corruption_ledger
+
     def parts(self) -> tuple[Part, ...]:
         """Every part, in write order."""
-        return (self._row, self._inventory, self._quests, self._lucidity, self._cooldowns, self._exposure)
+        return (
+            self._row,
+            self._inventory,
+            self._quests,
+            self._lucidity,
+            self._cooldowns,
+            self._exposure,
+            self._corruption_cooldowns,
+            self._corruption_ledger,
+        )
 
     def emit(self, event: BaseEvent) -> None:
         """Queue a domain event; it is published only if the unit of work commits."""
