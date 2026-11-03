@@ -337,15 +337,21 @@ async def test_the_registry_part_writes_each_touch_only_their_own_columns(
         _ = await session.execute(UPDATE_PLAYER_INVENTORY_SQL, inventory.write_params())
         after_inventory = await _inventory_and_stats(session, player_id)
 
+        # Another writer changes a key the row part does not touch, after the part loaded (DP and MP still have
+        # writers outside the registry, step 5c): the row write merges only its own key, so this survives.
+        _ = await session.execute(
+            text("""UPDATE players SET stats = stats || '{"magic_points": 3}'::jsonb WHERE player_id = :id"""),
+            {"id": str(player_id)},
+        )
         row = PlayerRowData.from_row(loaded)
         row.stats["current_dp"] = 12
-        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params())
+        _ = await session.execute(UPDATE_PLAYER_ROW_SQL, row.update_params(["current_dp"]))
         after_row = await _inventory_and_stats(session, player_id)
 
     assert "Jade Amulet" in str(after_inventory["inventory"])
     assert after_inventory["inventory"] == after_inventory["inventory_json"]
     assert after_inventory["stats"] == stats  # the inventory write left stats alone
-    assert after_row["stats"] == {"current_dp": 12, "max_dp": 20}
+    assert after_row["stats"] == {"current_dp": 12, "max_dp": 20, "magic_points": 3}
     assert after_row["inventory"] == after_inventory["inventory"]  # the row write left the inventory alone
 
 

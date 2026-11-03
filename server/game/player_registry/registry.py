@@ -33,7 +33,7 @@ from ...monitoring.exception_tracker import track_exception
 from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
 from .part import DbSession, PartWrite
-from .player_cooldowns import PlayerCooldownsPart
+from .player_cooldowns import LOAD_CORRUPTION_COOLDOWNS_SQL, REPLACE_CORRUPTION_COOLDOWNS_SQL, PlayerCooldownsPart
 from .player_exposure import PlayerExposurePart
 from .player_inventory import PlayerInventoryPart
 from .player_lucidity import LOAD_LUCIDITY_SQL, LucidityData, PlayerLucidityPart
@@ -63,6 +63,7 @@ async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> Pla
     quest_rows = await session.execute(LIST_QUEST_INSTANCES_SQL, {"id": str(player_id)})
     quests = PlayerQuestsPart.from_rows(player_id, quest_rows.mappings().all())
     state = (await session.execute(LOAD_LUCIDITY_SQL, {"id": str(player_id)})).mappings().first() or {}
+    corruption = (await session.execute(LOAD_CORRUPTION_COOLDOWNS_SQL, {"id": str(player_id)})).mappings().first() or {}
     return PlayerAggregate(
         PlayerRowPart(PlayerRowData.from_row(row)),
         PlayerInventoryPart.from_row(row),
@@ -70,6 +71,9 @@ async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> Pla
         PlayerLucidityPart(player_id, LucidityData.from_row(state)),
         PlayerCooldownsPart.from_json(player_id, state.get("cooldowns")),
         PlayerExposurePart.from_json(player_id, state.get("exposures")),
+        PlayerCooldownsPart.from_json(
+            player_id, corruption.get("cooldowns"), write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL
+        ),
     )
 
 

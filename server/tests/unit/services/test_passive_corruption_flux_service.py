@@ -16,10 +16,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.config import get_config
-from server.models.corruption import CorruptionTier
-from server.services.corruption_service import CorruptionUpdateResult
+from server.models.corruption import CorruptionTier, CorruptionUpdateResult
 from server.services.passive_corruption_flux.config import CorruptionFluxServiceConfig, CorruptionOverride
 from server.services.passive_corruption_flux.service import FluxRoom, PassiveCorruptionFluxService
+from server.tests.fixtures.shared.player_registry import lucidity_registry
 
 
 def test_package_reexports_public_surface() -> None:
@@ -44,7 +44,7 @@ def _make_service(
         process_interval_seconds=ticks_per_run * get_config().game.server_tick_rate,
         corruption_overrides=corruption_overrides or {},
     )
-    return PassiveCorruptionFluxService(config=config)
+    return PassiveCorruptionFluxService(config=config, player_registry=lucidity_registry({}).registry)
 
 
 def _room(

@@ -20,7 +20,7 @@ from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
 from ..realtime.envelope import build_event
 from ..realtime.posture_notify import attach_posture_self_message, emit_posture_change, normalize_posture
-from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from ..services.corruption_service import CorruptionService
 from ..services.lucidity_helpers import CatatoniaObserverProtocol, PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -225,8 +225,7 @@ async def _apply_corruption_via_service(ctx: AdminSetStatApplyContext) -> dict[s
         return command_error(f"Player '{ctx.target_player}' has no valid id.")
 
     delta = ctx.value - old_value
-    persistence = cast(CorruptionPersistenceProtocol, cast(object, ctx.persistence))
-    _ = await CorruptionService(persistence).apply_corruption_adjustment(
+    _ = await CorruptionService(player_registry()).apply_corruption_adjustment(
         player_id,
         delta,
         reason_code="admin_set",

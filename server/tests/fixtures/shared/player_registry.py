@@ -36,6 +36,7 @@ from server.game.player_registry import (
     PlayerRowPart,
     QuestInstanceData,
 )
+from server.game.player_registry.player_cooldowns import REPLACE_CORRUPTION_COOLDOWNS_SQL
 from server.game.player_registry.player_row import json_default
 
 ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -74,9 +75,10 @@ def aggregate(
     *,
     cooldowns: PlayerCooldownsPart | None = None,
     exposure: PlayerExposurePart | None = None,
+    corruption_cooldowns: PlayerCooldownsPart | None = None,
 ) -> PlayerAggregate:
-    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, ``lucidity``, ``cooldowns``
-    and ``exposure``, as load_player_aggregate builds them."""
+    """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, ``lucidity``, ``cooldowns``,
+    ``exposure`` and ``corruption_cooldowns``, as load_player_aggregate builds them."""
     player_id = uuid.UUID(str(row["player_id"]))
     return PlayerAggregate(
         PlayerRowPart(PlayerRowData.from_row(row)),
@@ -85,6 +87,7 @@ def aggregate(
         PlayerLucidityPart(player_id, lucidity),
         cooldowns,
         exposure,
+        corruption_cooldowns,
     )
 
 
@@ -219,6 +222,18 @@ class LucidityHarness:
         assert player is not None, f"player {player_id} is not loaded"
         return player.exposure.encounter_count(entity_archetype)
 
+    def corruption(self, player_id: uuid.UUID) -> object:
+        """The player's live ``stats.corruption`` (None if it was never set)."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.row.stats.get("corruption")
+
+    def corruption_cooldowns(self, player_id: uuid.UUID) -> PlayerCooldownsView:
+        """The player's live corruption cooldowns."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.corruption_cooldowns
+
     def lucidity(self, player_id: uuid.UUID) -> LucidityData:
         """The player's live lucidity (what the registry holds, flushed or not)."""
         player = self.registry.peek(player_id)
@@ -226,7 +241,7 @@ class LucidityHarness:
         return player.lucidity.data
 
     def ledger(self) -> list[Mapping[str, object]]:
-        """Every ``lucidity_adjustment_log`` row written so far (flush first: lucidity is lazy)."""
+        """Every ledger row written so far (lucidity's or corruption's; flush first for lucidity: it is lazy)."""
         return [params for params in self.db.executed if params is not None and "reason_code" in params]
 
     async def flush(self) -> int:
@@ -240,10 +255,12 @@ def lucidity_registry(
     stats: Mapping[str, object] | None = None,
     cooldowns: Mapping[str, datetime] | None = None,
     exposures: Mapping[str, Exposure] | None = None,
+    corruption_cooldowns: Mapping[str, datetime] | None = None,
 ) -> LucidityHarness:
     """A registry with these players (lucidity None = the starting values); any other id is no such player.
 
-    ``cooldowns`` and ``exposures`` seed every player's cooldowns and encounter counts (ADR-029 step 5b-ii).
+    ``cooldowns`` and ``exposures`` seed every player's cooldowns and encounter counts (ADR-029 step 5b-ii), and
+    ``corruption_cooldowns`` their corruption cooldowns (step 5c). Seed corruption itself through ``stats``.
     """
     db = FakeDatabase()
 
@@ -256,6 +273,9 @@ def lucidity_registry(
             lucidity=players[player_id],
             cooldowns=PlayerCooldownsPart(player_id, cooldowns),
             exposure=PlayerExposurePart(player_id, exposures),
+            corruption_cooldowns=PlayerCooldownsPart(
+                player_id, corruption_cooldowns, write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL
+            ),
         )
 
     return LucidityHarness(PlayerRegistry(db.session, loader=load), db)

@@ -17,9 +17,8 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from server.game.player_registry import PlayerRegistry, RegistrySettings, SessionFactory
-from server.models.player import Player
-from server.models.user import User
 from server.services.lucidity_service import LucidityService
+from server.tests.fixtures.integration.players import create_test_player, delete_test_user
 
 
 @pytest.fixture
@@ -29,37 +28,7 @@ async def cleanup_test_user(session_factory: async_sessionmaker[AsyncSession]):
     lucidity_cooldowns/lucidity_exposure_state."""
     user_id = uuid.uuid4()
     yield user_id
-    async with session_factory() as session:
-        _ = await session.execute(text("DELETE FROM users WHERE id = :id"), {"id": str(user_id)})
-        await session.commit()
-
-
-async def _create_player(session_factory: async_sessionmaker[AsyncSession], user_id: uuid.UUID) -> uuid.UUID:
-    player_id = uuid.uuid4()
-    async with session_factory() as session:
-        session.add(
-            User(
-                id=str(user_id),
-                email=f"test_{user_id}@example.com",
-                username=f"testuser_{str(user_id)[:8]}",
-                display_name=f"Test User {str(user_id)[:8]}",
-                hashed_password="hashed",
-                is_active=True,
-                is_superuser=False,
-                is_verified=True,
-            )
-        )
-        await session.flush()
-        session.add(
-            Player(
-                player_id=str(player_id),
-                user_id=str(user_id),
-                name=f"testplayer_{str(player_id)[:8]}",
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
-            )
-        )
-        await session.commit()
-    return player_id
+    await delete_test_user(session_factory, user_id)
 
 
 async def _stored(session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID) -> tuple[object, ...] | None:
@@ -88,7 +57,7 @@ async def _ledger(session_factory: async_sessionmaker[AsyncSession], player_id: 
 async def test_lucidity_adjustment_round_trip(
     session_factory: async_sessionmaker[AsyncSession], cleanup_test_user: uuid.UUID
 ):
-    player_id = await _create_player(session_factory, cleanup_test_user)
+    player_id = await create_test_player(session_factory, cleanup_test_user)
     registry = PlayerRegistry(cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0))
     service = LucidityService(registry)
 
@@ -131,7 +100,7 @@ async def test_cooldowns_and_exposure_round_trip(
     """Cooldowns and exposure are sync parts (ADR-029 step 5b-ii): the unit commits them, and a fresh registry reads
     them back through ``get_player_lucidity_state``. A cooldown write replaces the whole set, so a cleared code is
     deleted."""
-    player_id = await _create_player(session_factory, cleanup_test_user)
+    player_id = await create_test_player(session_factory, cleanup_test_user)
     expires_at = datetime(2030, 1, 1, 12, 0, tzinfo=UTC)
 
     def new_registry() -> PlayerRegistry:

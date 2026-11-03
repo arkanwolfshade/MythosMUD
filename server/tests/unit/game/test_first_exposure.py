@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
@@ -24,6 +25,7 @@ from server.game.instance_state import StrippedInventory
 from server.game.items.constants import INSTANCE_BOUND_FLAG
 from server.game.player_registry import LucidityData, PlayerRegistry
 from server.game.scripted_actions import QuestActionService, ScriptedActionContext
+from server.models.corruption import CorruptionUpdateResult, compute_tier
 from server.models.player import Player
 from server.schemas.scripted_actions import CorruptionAtLeastAction, StartQuestAction, parse_scripted_actions
 from server.services.lucidity_service import resolve_tier
@@ -128,8 +130,18 @@ class FakePersistence:
         _ = player_id
         return self._rig.player
 
-    async def save_player(self, player: object) -> None:  # pragma: no cover - the runner is faked
-        _ = player
+    async def adjust_corruption(  # pragma: no cover - the runner (the corruption floor's caller) is faked
+        self,
+        player_id: uuid.UUID,
+        delta: int,
+        *,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
+    ) -> CorruptionUpdateResult:
+        _ = reason_code, metadata, location_id, bypass_permanence_floor
+        return CorruptionUpdateResult(player_id, 0, delta, compute_tier(0), compute_tier(delta), delta)
 
 
 class FakeFlush:

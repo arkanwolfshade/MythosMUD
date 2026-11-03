@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Protocol, cast
 from ..constants.spawn_defaults import RECOVERY_WARD_ROOM_ID
 from ..models.player import Player
 from ..schemas.scripted_actions import CorruptionAtLeastAction, ScriptedAction, StartQuestAction
-from ..services.corruption_service import CorruptionPersistenceProtocol
+from ..services.corruption_service import CorruptionPersistence
 from ..services.lucidity_service import resolve_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 from .effect_store import clear_instance_scoped_effects
@@ -52,8 +52,12 @@ FINISH_ACTIONS: tuple[ScriptedAction, ...] = (
 )
 
 
-class FinishPersistence(CorruptionPersistenceProtocol, Protocol):
-    """Player persistence the finisher needs: what the corruption write needs, which also loads the player."""
+class FinishPersistence(CorruptionPersistence, Protocol):
+    """Player persistence the finisher needs: the corruption write (its finish actions) and loading the player."""
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> object | None:
+        """The player, or None."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
 class InstanceFlush(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub

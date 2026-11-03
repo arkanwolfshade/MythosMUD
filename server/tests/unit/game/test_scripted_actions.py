@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import cast
 
@@ -12,6 +13,7 @@ from pydantic import ValidationError
 from server.game import scripted_actions as runner
 from server.game.player_registry import PlayerRegistry
 from server.game.scripted_actions import ScriptedActionContext, run_scripted_actions
+from server.models.corruption import CorruptionUpdateResult, compute_tier
 from server.models.player import Player
 from server.schemas.scripted_actions import (
     ApplyEffectAction,
@@ -23,7 +25,6 @@ from server.schemas.scripted_actions import (
     on_put_actions,
     parse_scripted_actions,
 )
-from server.services.corruption_service import CorruptionPersistencePlayer
 from server.services.debrief_service import DebriefOutcome
 from server.services.lucidity_service import CatatoniaObserverProtocol
 
@@ -32,15 +33,24 @@ HOT_EFFECT: dict[str, object] = {"type": "heal_over_time", "healing": 4, "durati
 
 @dataclass
 class FakePersistence:
-    saved: list[CorruptionPersistencePlayer] = field(
-        default_factory=lambda: cast(list[CorruptionPersistencePlayer], [])
-    )
+    """The corruption write the runner calls (CorruptionService on the registry, in the real layer)."""
 
-    async def get_player_by_id(self, player_id: uuid.UUID) -> None:  # pragma: no cover - the service is faked
-        _ = player_id
+    adjustments: list[int] = field(default_factory=lambda: cast(list[int], []))
 
-    async def save_player(self, player: CorruptionPersistencePlayer) -> None:
-        self.saved.append(player)
+    async def adjust_corruption(
+        self,
+        player_id: uuid.UUID,
+        delta: int,
+        *,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
+    ) -> CorruptionUpdateResult:
+        _ = reason_code, metadata, location_id, bypass_permanence_floor
+        self.adjustments.append(delta)
+        new_value = max(1, delta)
+        return CorruptionUpdateResult(player_id, 0, new_value, compute_tier(0), compute_tier(new_value), delta)
 
 
 @dataclass
@@ -65,7 +75,6 @@ class Rig:
     persistence: FakePersistence
     quests: FakeQuests
     narrated: list[str]
-    adjustments: list[int]
     debriefs: list[tuple[Player, bool, object | None]]
     stored_effects: list[tuple[uuid.UUID, dict[str, object]]]
 
@@ -84,25 +93,14 @@ def _player(corruption: int = 0) -> Player:
 @pytest.fixture(name="rig")
 def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     narrated: list[str] = []
-    adjustments: list[int] = []
 
     async def fake_deliver(player_id: uuid.UUID | str, message: str) -> dict[str, object]:
         _ = player_id
         narrated.append(message)
         return {}
 
-    class FakeCorruptionService:
-        def __init__(self, persistence: object) -> None:
-            _ = persistence
-
-        async def apply_corruption_adjustment(self, player_id: uuid.UUID, delta: int, *, reason_code: str) -> object:
-            _ = player_id, reason_code
-            adjustments.append(delta)
-            return type("Result", (), {"new_value": max(1, delta)})()
-
     monkeypatch.setattr(runner, "deliver_personal_system", fake_deliver)  # the debrief's staff recap
     monkeypatch.setattr(runner, "deliver_personal_quest", fake_deliver)  # `narrate`: quest narration
-    monkeypatch.setattr(runner, "CorruptionService", FakeCorruptionService)
     debriefs: list[tuple[Player, bool, object | None]] = []
 
     async def fake_debrief(
@@ -121,7 +119,7 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
 
     # apply_effect stores a player_effects row (ADR-029 step 3b-i); a unit test must not reach the database.
     monkeypatch.setattr(runner, "add_content_effect", fake_add_content_effect)
-    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, adjustments, debriefs, stored_effects)
+    return Rig(_player(), FakePersistence(), FakeQuests(), narrated, debriefs, stored_effects)
 
 
 # --- vocabulary -------------------------------------------------------------------------------------------------
@@ -202,7 +200,6 @@ async def test_apply_effect_stores_the_effect_for_the_player_without_a_player_sa
     await run_scripted_actions([ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
     assert rig.stored_effects == [(uuid.UUID(str(rig.player.player_id)), HOT_EFFECT)]
-    assert rig.persistence.saved == []  # a player_effects row, not a player save
 
 
 @pytest.mark.asyncio
@@ -219,7 +216,7 @@ async def test_each_apply_effect_is_its_own_row_and_leaves_the_action_untouched(
 async def test_corruption_at_least_raises_a_clean_soul_to_the_floor(rig: Rig) -> None:
     await run_scripted_actions([CorruptionAtLeastAction(value=1)], rig.context())
 
-    assert rig.adjustments == [1]
+    assert rig.persistence.adjustments == [1]
     assert rig.player.get_stats()["corruption"] == 1
 
 
@@ -229,7 +226,7 @@ async def test_corruption_at_least_is_idempotent_and_never_adds(rig: Rig) -> Non
 
     await run_scripted_actions([CorruptionAtLeastAction(value=1), CorruptionAtLeastAction(value=3)], rig.context())
 
-    assert rig.adjustments == []
+    assert rig.persistence.adjustments == []
     assert rig.player.get_stats()["corruption"] == 3
 
 
@@ -239,7 +236,6 @@ async def test_an_apply_effect_after_a_corruption_floor_writes_no_stale_player(r
     await run_scripted_actions([CorruptionAtLeastAction(value=2), ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
     assert rig.player.get_stats()["corruption"] == 2
-    assert rig.persistence.saved == []
     assert len(rig.stored_effects) == 1
 
 

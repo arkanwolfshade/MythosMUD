@@ -1,343 +1,202 @@
-"""Unit tests for CorruptionService (#804)."""
+"""Unit tests for CorruptionService (#804) on a real player registry (ADR-029 step 5c).
 
-# pyright: reportAny=false
-# TEST_MOCK: MagicMock/AsyncMock attribute and call chains (persistence.get_player_by_id,
-# mock_repo.add_adjustment_log, .await_args, .assert_awaited_once, ...) resolve to Any throughout
-# this file, mirroring test_lucidity_service.py's identical, already-baselined pattern for the
-# same session/repository mocking shape -- this file is new, so it has no baseline entry of its
-# own for the same, otherwise-unavoidable mock-typing noise.
+The value is the row part's ``stats.corruption``; the ledger row and any cleanse cooldown are parts of the same
+aggregate. Each operation is one sync unit, so it commits (one commit) before it returns, and the announcements
+(client event, tier cache, tier-crossing message) follow it.
+"""
 
+from __future__ import annotations
+
+import json
 import uuid
+from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from server.exceptions import ValidationError
 from server.models.corruption import CorruptionTier
-from server.services.corruption_service import (
-    CorruptionActionOnCooldownError,
-    CorruptionService,
-)
+from server.services.corruption_service import CorruptionActionError, CorruptionActionOnCooldownError, CorruptionService
 from server.services.corruption_tier_cache import corruption_tier_cache
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
-
-async def _async_session_gen(session: AsyncMock):
-    yield session
-
-
-def _player(corruption: int = 0) -> MagicMock:
-    player = MagicMock()
-    stats: dict[str, object] = {"corruption": corruption}
-    player.get_stats = MagicMock(return_value=stats)
-    player.set_stats = MagicMock(side_effect=stats.update)
-    return player
+PID = uuid.uuid4()
 
 
 @pytest.fixture(autouse=True)
-def _clear_tier_cache():  # pytest autouse fixture, used implicitly
-    """The tier cache is a module-level singleton -- reset it around each test."""
-    yield
-    corruption_tier_cache._tiers.clear()  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
+def _quiet() -> Iterator[AsyncMock]:
+    """The client event and tier-crossing message (asserted where they matter); the tier cache is reset after."""
+    with (
+        patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock),
+        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
+    ):
+        yield notify
+    corruption_tier_cache.clear(PID)
 
 
-@pytest.fixture
-def persistence() -> MagicMock:
-    p = MagicMock()
-    p.get_player_by_id = AsyncMock()
-    p.save_player = AsyncMock()
-    return p
-
-
-@pytest.fixture
-def mock_repo() -> MagicMock:
-    return MagicMock(
-        add_adjustment_log=AsyncMock(),
-        get_cooldown=AsyncMock(return_value=None),
-        set_cooldown=AsyncMock(),
+def _harness(corruption: int = 0, *, cleanse_until: datetime | None = None) -> LucidityHarness:
+    return lucidity_registry(
+        {PID: None},
+        stats={"current_dp": 20, "max_dp": 20, "corruption": corruption},
+        corruption_cooldowns={"cleanse": cleanse_until} if cleanse_until else None,
     )
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_positive_delta(persistence: MagicMock, mock_repo: MagicMock) -> None:
-    player = _player(corruption=10)
-    persistence.get_player_by_id.return_value = player
-    player_id = uuid.uuid4()
-
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(
-            player_id, 5, reason_code="spell_cast"
-        )
-
-    assert result.previous_value == 10
-    assert result.new_value == 15
-    assert result.delta == 5
-    persistence.save_player.assert_awaited_once()
-    mock_repo.add_adjustment_log.assert_awaited_once_with(player_id, 5, "spell_cast", "{}", None)
+def _stats_writes(harness: LucidityHarness) -> list[dict[str, object]]:
+    """The ``stats_changes`` of every players-row write."""
+    return [
+        json.loads(str(params["stats_changes"]))
+        for params in harness.db.executed
+        if params is not None and "stats_changes" in params
+    ]
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_pushes_a_player_update_event(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
+async def test_an_adjustment_commits_the_value_and_its_ledger_row_in_one_unit() -> None:
+    harness = _harness(10)
+
+    result = await CorruptionService(harness.registry).apply_corruption_adjustment(
+        PID, 5, reason_code="spell_cast", metadata={"spell_id": "x"}, location_id="room-1"
+    )
+
+    assert (result.previous_value, result.new_value, result.delta) == (10, 15, 5)
+    assert harness.corruption(PID) == 15
+    assert harness.db.commits == 1  # sync: written before the call returned
+    assert _stats_writes(harness) == [{"corruption": 15}]  # only the key it changed, never DP
+    [row] = harness.ledger()
+    assert (row["delta"], row["reason_code"], row["location_id"]) == (5, "spell_cast", "room-1")
+    assert json.loads(str(row["metadata"])) == {"spell_id": "x"}
+
+
+async def test_an_adjustment_pushes_a_player_update_event() -> None:
     """A live client only ever learns its own corruption changed via this event -- nothing else
     pushes it (no dedicated wire event, per SUBSYSTEM_CORRUPTION_DESIGN.md §4)."""
-    player = _player(corruption=10)
-    persistence.get_player_by_id.return_value = player
-    player_id = uuid.uuid4()
+    harness = _harness(10)
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-        patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as send_event,
-    ):
-        _ = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="spell_cast")
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as send_event:
+        _ = await CorruptionService(harness.registry).apply_corruption_adjustment(PID, 5, reason_code="spell_cast")
 
-    send_event.assert_awaited_once_with(player_id, "player_update", {"stats": {"corruption": 15}})
+    send_event.assert_awaited_once_with(PID, "player_update", {"stats": {"corruption": 15}})
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_clamps_to_100(persistence: MagicMock, mock_repo: MagicMock) -> None:
-    player_id = uuid.uuid4()
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        persistence.get_player_by_id.return_value = _player(corruption=98)
-        high = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 50, reason_code="test")
-        assert high.new_value == 100
+async def test_a_failed_commit_rolls_the_value_back_and_announces_nothing(_quiet: AsyncMock) -> None:
+    harness = _harness(48)
+    harness.db.fail_commits = 1
+
+    with pytest.raises(RuntimeError):
+        _ = await CorruptionService(harness.registry).apply_corruption_adjustment(PID, 5, reason_code="test")
+
+    assert harness.corruption(PID) == 48
+    assert corruption_tier_cache.get_tier(PID) is CorruptionTier.PURE  # never written: the miss default
+    _quiet.assert_not_awaited()  # the marked -> corrupted crossing was never narrated
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_stays_at_0_when_never_touched(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    """#815: a player who has never been corrupted has no floor -- 0 is a real, reachable value."""
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=0)
-
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, -50, reason_code="test")
-
-    assert result.new_value == 0
+async def test_an_unknown_player_is_a_validation_error() -> None:
+    with pytest.raises(ValidationError, match="Player not found"):
+        _ = await CorruptionService(lucidity_registry({}).registry).apply_corruption_adjustment(
+            PID, 5, reason_code="test"
+        )
 
 
 @pytest.mark.parametrize(
     ("starting_value", "delta", "expected_new_value"),
     [
-        (5, -8, 1),  # a partial cleanse cannot fully cleanse
+        (98, 50, 100),  # clamped to 100
+        (0, -5, 0),  # #815: never touched, so no floor -- 0 is a real, reachable value
+        (5, -8, 1),  # #815: a partial cleanse cannot fully cleanse
         (1, -8, 1),  # the scar holds even when already at the floor
         (50, -1000, 1),  # no negative delta, however large, crosses back to 0
     ],
 )
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_floors_at_1_once_touched(
-    persistence: MagicMock, mock_repo: MagicMock, starting_value: int, delta: int, expected_new_value: int
+async def test_an_adjustment_is_clamped_and_floored_once_touched(
+    starting_value: int, delta: int, expected_new_value: int
 ) -> None:
-    """#815: once corruption exceeds 0, this service can never take it back below 1."""
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=starting_value)
+    harness = _harness(starting_value)
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, delta, reason_code="test")
+    result = await CorruptionService(harness.registry).apply_corruption_adjustment(PID, delta, reason_code="test")
 
-    assert result.new_value == expected_new_value
+    assert result.new_value == expected_new_value == harness.corruption(PID)
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_bypass_permanence_floor_allows_zero(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
+async def test_bypass_permanence_floor_allows_zero_and_still_logs() -> None:
     """#816: admin setstat may wipe corruption to 0 via bypass_permanence_floor."""
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=40)
+    harness = _harness(40)
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(
-            player_id, -40, reason_code="admin_set", bypass_permanence_floor=True
-        )
+    result = await CorruptionService(harness.registry).apply_corruption_adjustment(
+        PID, -40, reason_code="admin_set", bypass_permanence_floor=True
+    )
 
-    assert result.new_value == 0
-    assert result.previous_value == 40
-    mock_repo.add_adjustment_log.assert_awaited_once()
-    assert corruption_tier_cache.get_tier(player_id) == CorruptionTier.PURE
+    assert (result.previous_value, result.new_value) == (40, 0)
+    assert [row["reason_code"] for row in harness.ledger()] == ["admin_set"]
+    assert corruption_tier_cache.get_tier(PID) is CorruptionTier.PURE
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_notifies_on_first_taint(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    """#815: the very first point of corruption is a real tier crossing (pure -> touched) and
-    must narrate exactly once, same as any other crossing."""
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=0)
+async def test_the_first_taint_is_a_tier_crossing_narrated_once(_quiet: AsyncMock) -> None:
+    """#815: the very first point of corruption is a real tier crossing (pure -> touched)."""
+    result = await CorruptionService(_harness(0).registry).apply_corruption_adjustment(PID, 3, reason_code="test")
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 3, reason_code="test")
-
-    assert result.previous_tier is CorruptionTier.PURE
-    assert result.new_tier is CorruptionTier.TOUCHED
-    notify.assert_awaited_once()
+    assert (result.previous_tier, result.new_tier) == (CorruptionTier.PURE, CorruptionTier.TOUCHED)
+    _quiet.assert_awaited_once()
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_writes_through_the_tier_cache(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    """#804: mirrors lucidity's write-through-cache test -- every adjustment updates the cache."""
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=10)
+async def test_a_tier_crossing_writes_the_cache_and_notifies_the_player(_quiet: AsyncMock) -> None:
+    result = await CorruptionService(_harness(48).registry).apply_corruption_adjustment(PID, 5, reason_code="test")
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="test")
-
-    assert corruption_tier_cache.get_tier(player_id) == result.new_tier
+    assert (result.previous_tier, result.new_tier) == (CorruptionTier.MARKED, CorruptionTier.CORRUPTED)
+    assert corruption_tier_cache.get_tier(PID) is CorruptionTier.CORRUPTED
+    _quiet.assert_awaited_once()
+    assert _quiet.await_args is not None and _quiet.await_args.args[0] == PID
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_notifies_on_tier_crossing(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=48)
+async def test_no_notification_within_a_tier(_quiet: AsyncMock) -> None:
+    result = await CorruptionService(_harness(10).registry).apply_corruption_adjustment(PID, 5, reason_code="test")
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
-    ):
-        result = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="test")
-
-    assert result.previous_tier is CorruptionTier.MARKED
-    assert result.new_tier is CorruptionTier.CORRUPTED
-    notify.assert_awaited_once()
-    await_args = notify.await_args
-    assert await_args is not None
-    assert await_args.args[0] == player_id
+    assert corruption_tier_cache.get_tier(PID) == result.new_tier  # #804: every adjustment writes the cache
+    _quiet.assert_not_awaited()
 
 
-@pytest.mark.asyncio
-async def test_apply_corruption_adjustment_no_notification_within_a_tier(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=10)
-
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-        patch("server.game.chat_npc_system.deliver_personal_system", new_callable=AsyncMock) as notify,
-    ):
-        _ = await CorruptionService(persistence).apply_corruption_adjustment(player_id, 5, reason_code="test")
-
-    notify.assert_not_awaited()
+# ---- recovery (cleanse) ----
 
 
-@pytest.mark.asyncio
-async def test_perform_recovery_action_cleanse_reduces_corruption(persistence: MagicMock, mock_repo: MagicMock) -> None:
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=20)
+async def test_cleanse_reduces_corruption_and_starts_its_cooldown_in_one_commit() -> None:
+    harness = _harness(20)
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).perform_recovery_action(player_id, action_code="cleanse")
+    result = await CorruptionService(harness.registry).perform_recovery_action(
+        PID, action_code="CLEANSE", location_id="room-1"
+    )
 
     assert result.new_value == 12  # 20 - 8
-    mock_repo.set_cooldown.assert_awaited_once()
-    ledger_call = mock_repo.add_adjustment_log.await_args
-    assert ledger_call.args[2] == "ritual_cleanse"
+    expires_at = harness.corruption_cooldowns(PID).expires_at("cleanse")
+    assert expires_at is not None and expires_at > datetime.now(UTC) + timedelta(hours=5)
+    assert harness.db.commits == 1
+    assert [row["reason_code"] for row in harness.ledger()] == ["ritual_cleanse"]
 
 
-@pytest.mark.asyncio
-async def test_perform_recovery_action_rejects_on_cooldown(persistence: MagicMock, mock_repo: MagicMock) -> None:
-    player_id = uuid.uuid4()
-    mock_repo.get_cooldown = AsyncMock(
-        return_value=MagicMock(cooldown_expires_at=datetime.now(UTC) + timedelta(hours=1))
-    )
+async def test_cleanse_during_its_cooldown_changes_nothing() -> None:
+    until = datetime.now(UTC) + timedelta(hours=1)
+    harness = _harness(20, cleanse_until=until)
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        with pytest.raises(CorruptionActionOnCooldownError):
-            _ = await CorruptionService(persistence).perform_recovery_action(player_id, action_code="cleanse")
+    with pytest.raises(CorruptionActionOnCooldownError):
+        _ = await CorruptionService(harness.registry).perform_recovery_action(PID, action_code="cleanse")
 
-    persistence.get_player_by_id.assert_not_awaited()
+    assert harness.corruption(PID) == 20
+    assert harness.db.commits == 0
+    assert await CorruptionService(harness.registry).get_cooldown_expiry(PID, "cleanse") == until
 
 
-@pytest.mark.asyncio
-async def test_perform_recovery_action_allows_after_cooldown_expires(
-    persistence: MagicMock, mock_repo: MagicMock
-) -> None:
-    player_id = uuid.uuid4()
-    persistence.get_player_by_id.return_value = _player(corruption=20)
-    mock_repo.get_cooldown = AsyncMock(
-        return_value=MagicMock(cooldown_expires_at=datetime.now(UTC) - timedelta(hours=1))
-    )
+async def test_cleanse_is_allowed_once_its_cooldown_expires() -> None:
+    harness = _harness(20, cleanse_until=datetime.now(UTC) - timedelta(hours=1))
 
-    with (
-        patch("server.services.corruption_service.CorruptionRepository", return_value=mock_repo),
-        patch(
-            "server.services.corruption_service.get_async_session",
-            side_effect=lambda: _async_session_gen(AsyncMock()),
-        ),
-    ):
-        result = await CorruptionService(persistence).perform_recovery_action(player_id, action_code="cleanse")
+    result = await CorruptionService(harness.registry).perform_recovery_action(PID, action_code="cleanse")
 
     assert result.new_value == 12
+
+
+async def test_an_unknown_recovery_action_is_refused() -> None:
+    with pytest.raises(CorruptionActionError, match="Unknown corruption recovery action"):
+        _ = await CorruptionService(_harness(20).registry).perform_recovery_action(PID, action_code="pray")
+
+
+async def test_get_cooldown_expiry_for_no_cooldown_or_no_player_is_none() -> None:
+    assert await CorruptionService(_harness(20).registry).get_cooldown_expiry(PID, "cleanse") is None
+    assert await CorruptionService(lucidity_registry({}).registry).get_cooldown_expiry(PID, "cleanse") is None

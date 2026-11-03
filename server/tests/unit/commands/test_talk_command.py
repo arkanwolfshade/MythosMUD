@@ -21,7 +21,7 @@ from server.game.dialogue.dialogue_service import (
 from server.game.scripted_actions import ScriptedActionContext
 from server.models.player import Player
 from server.schemas.scripted_actions import NarrateAction, ScriptedAction
-from server.services.corruption_service import CorruptionPersistenceProtocol
+from server.services.corruption_service import CorruptionPersistence
 
 
 def test_resolve_player_id_uuid() -> None:
@@ -146,7 +146,7 @@ class ActionRig:
     ctx: ScriptedActionContext = field(
         default_factory=lambda: ScriptedActionContext(
             player=Player(player_id=str(uuid.uuid4()), name="Ctx"),
-            persistence=cast(CorruptionPersistenceProtocol, object()),
+            persistence=cast(CorruptionPersistence, object()),
         )
     )
 

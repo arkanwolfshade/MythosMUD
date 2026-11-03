@@ -34,6 +34,7 @@ from .async_persistence_room_facade import AsyncPersistenceRoomFacade
 from .async_persistence_room_loader import RoomCacheLoader
 from .async_persistence_types import (
     ContainerCreateKwargs,
+    CorruptionAdjustOptions,
     InstanceRoomLookup,
     PlayerEffectOptions,
 )
@@ -58,6 +59,7 @@ from .persistence.repositories.player_effect_repository import AddEffectInput
 from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
+    from .models.corruption import CorruptionAdjusting, CorruptionUpdateResult
     from .models.room import Room
 
 # (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
@@ -98,6 +100,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _instance_manager: InstanceRoomLookup | None
     _lucidity_adjuster: LucidityAdjuster | None
     _lucidity_reader: LucidityReader | None
+    _corruption_service: CorruptionAdjusting | None
     _room_loader: RoomCacheLoader
 
     def __init__(
@@ -107,30 +110,20 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         event_bus: EventBus | None = None,
         _skip_room_cache: bool = False,
     ) -> None:
-        """
-        Initialize the async persistence layer.
-
-        This facade delegates to focused async repositories for better maintainability.
+        """Initialize the async persistence layer: a facade over focused async repositories.
 
         Args:
-            _db_path: Deprecated - kept for backward compatibility only
-            _log_path: Deprecated - kept for backward compatibility only
+            _db_path: Deprecated - kept for backward compatibility only (SQLAlchemy manages the connection)
+            _log_path: Deprecated - kept for backward compatibility only (enhanced_logging_config logs)
             event_bus: Optional event bus for publishing events
-            _skip_room_cache: Deprecated - room cache is now loaded lazily via warmup_room_cache()
-                             or on first async access. This parameter is kept for backward compatibility.
+            _skip_room_cache: Deprecated - the room cache loads lazily (warmup_room_cache() or first access)
         """
-        # Parameters prefixed with _ are kept for backward compatibility but not used
-        # Database connection is managed by SQLAlchemy via get_async_session()
-        # Logging is managed by enhanced_logging_config
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
         self._room_cache = {}
         self._room_mappings = {}
         self._room_cache_loaded = False
         self._room_cache_loading = None  # Will be created on first async access
-        # Don't load room cache during __init__ - use lazy loading instead
-        # Room cache will be loaded on first access or via warmup_room_cache()
-        # The _skip_room_cache parameter is deprecated but kept for backward compatibility
 
         # Initialize repositories (facade pattern). Typed to protocols for dependency inversion (ADR-005).
         self._room_repo = RoomRepository(self._room_cache)
@@ -144,6 +137,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._instance_manager = None
         self._lucidity_adjuster = None
         self._lucidity_reader = None
+        self._corruption_service = None
         self._room_loader = RoomCacheLoader(self._room_cache, self._room_mappings, self._logger, event_bus)
 
     def set_instance_manager(self, instance_manager: InstanceRoomLookup) -> None:
@@ -161,6 +155,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     def set_lucidity_reader(self, reader: LucidityReader | None) -> None:
         """Set how this layer reads a player's LCD: from the player registry. Injected like the adjuster."""
         self._lucidity_reader = reader
+
+    def set_corruption_service(self, service: CorruptionAdjusting | None) -> None:
+        """Set the CorruptionService (on the player registry) ``adjust_corruption`` runs; injected like the adjuster."""
+        self._corruption_service = service
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -353,11 +351,14 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
         await self._experience_repo.update_player_stat_field(player_id, "fear", amount, f"{source}: fear increase")
 
-    async def apply_corruption(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Apply corruption to a player. Delegates to ExperienceRepository."""
-        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
-        await self._experience_repo.update_player_stat_field(
-            player_id, "corruption", amount, f"{source}: corruption increase"
+    async def adjust_corruption(
+        self, player_id: uuid.UUID, delta: int, *, reason_code: str, **options: Unpack[CorruptionAdjustOptions]
+    ) -> CorruptionUpdateResult:
+        """Change a player's corruption through CorruptionService (clamp, permanence floor, ledger, tier cache)."""
+        if self._corruption_service is None:  # never fall back to writing stats directly
+            raise RuntimeError("Corruption service not wired (the combat bundle sets it); cannot change corruption")
+        return await self._corruption_service.apply_corruption_adjustment(
+            player_id, delta, reason_code=reason_code, **options
         )
 
     async def gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown") -> None:

@@ -12,6 +12,7 @@ import pytest
 
 from server.game.instance_manager import TemplateRoomEntryError
 from server.game.magic.spell_effects import SpellEffects, SpellEffectsDeps
+from server.models.corruption import CorruptionTier, CorruptionUpdateResult
 from server.models.spell import Spell, SpellEffectType
 from server.schemas.shared import TargetMatch, TargetType
 
@@ -437,31 +438,22 @@ async def test_process_lucidity_adjust_success_and_loss(spell_effects, mock_targ
 
 @pytest.mark.asyncio
 async def test_process_corruption_adjust_success(spell_effects, mock_target_match):
-    player = MagicMock()
-    player.get_stats.return_value = {"corruption": 10}
-    player.set_stats = MagicMock()
+    adjust_corruption = AsyncMock(
+        return_value=CorruptionUpdateResult(uuid.uuid4(), 10, 15, CorruptionTier.TOUCHED, CorruptionTier.TOUCHED, 5)
+    )
     persistence = MagicMock()
-    persistence.get_player_by_id = AsyncMock(return_value=player)
-    persistence.save_player = AsyncMock()
+    persistence.adjust_corruption = adjust_corruption
     spell_effects.player_service.persistence = persistence
 
     spell = MagicMock()
     spell.effect_data = {"adjust_amount": 5}
 
-    async def _async_session_gen(_session: AsyncMock):
-        yield _session
-
-    with patch(
-        "server.services.corruption_service.get_async_session",
-        return_value=_async_session_gen(AsyncMock()),
-    ):
-        # TEST_MOCK: same spell_effects fixture as the rest of this already-baselined file; this
-        # finding only appears because the line below moved inside a `with` for the
-        # get_async_session patch.
-        result = await spell_effects._process_corruption_adjust(spell, mock_target_match, 1.0)  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+    # TEST_MOCK: same spell_effects fixture as the rest of this already-baselined file.
+    result = await spell_effects._process_corruption_adjust(spell, mock_target_match, 1.0)  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
     assert result["success"] is True
     assert result["new_corruption"] == 15
-    persistence.save_player.assert_awaited()
+    assert adjust_corruption.await_args is not None
+    assert adjust_corruption.await_args.args[1] == 5  # the spell's adjust_amount, at mastery 1.0
 
     spell.effect_data = {"adjust_amount": 0}
     assert (await spell_effects._process_corruption_adjust(spell, mock_target_match, 1.0))["success"] is False

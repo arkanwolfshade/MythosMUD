@@ -1,16 +1,15 @@
 """
-Corruption service -- the single write path for player corruption (#804, #145).
+Corruption service -- the single write path for player corruption (#804, #145), on the player registry (ADR-029
+step 5c).
 
-Mirrors `LucidityService` structurally (adjustment + ledger + tier cache), but corruption has
-no dedicated table the way `PlayerLucidity` gives lucidity: the raw value lives in
-`players.stats->>'corruption'` (`server/models/game.py:174`). So this service reads/writes that
-stat directly via the `persistence` object every caller already holds, and opens its own
-short-lived session (mirroring `lucidity_recovery_commands.py`'s `_run_recovery_session` pattern)
-only for the ledger and cooldown tables, which do need SQLAlchemy ORM access.
+The value is ``stats.corruption`` in the aggregate's row part; its ledger rows (``corruption_adjustment_log``) and the
+recovery cooldowns (``corruption_cooldowns``) are parts of the aggregate too. Each operation is one registry unit,
+and a sync one: the value, its ledger row and any cooldown commit together before the call returns, so the many
+readers that still load players from the database see the new value. The client event, the tier cache and the
+tier-crossing message come after the unit, so nothing is announced for a change that rolled back.
 
-Callers must route ALL corruption changes through `apply_corruption_adjustment` -- direct
-`stats["corruption"] = ...` mutation or calls to `persistence.apply_corruption` bypass the ledger
-and tier cache, which then go stale.
+Callers must route ALL corruption changes through this service -- a direct ``stats["corruption"] = ...`` bypasses the
+ledger and tier cache, and ``upsert_player`` no longer writes an existing player's corruption at all.
 """
 
 # pylint: disable=missing-function-docstring  # Reason: Protocol method stubs; contracts live in class docstrings
@@ -22,17 +21,19 @@ import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Protocol
+from typing import TYPE_CHECKING, NoReturn, Protocol
 
-from ..database import get_async_session
 from ..exceptions import ValidationError
-from ..models.corruption import CorruptionTier, compute_tier
+from ..game.player_registry import PlayerAggregate, PlayerNotFoundError
+from ..models.corruption import CorruptionTier, CorruptionUpdateResult, compute_tier
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
 from ..utils.int_coercion import coerce_int
-from .corruption_repository import CorruptionRepository
 from .corruption_tier_cache import corruption_tier_cache
 from .lucidity_helpers import normalize_metadata
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -57,38 +58,28 @@ _TIER_FALL_MESSAGES: dict[CorruptionTier, str] = {
 }
 
 
-class CorruptionPersistencePlayer(Protocol):
-    """Structural shape a player object must expose for corruption adjustment."""
-
-    def get_stats(self) -> dict[str, object]: ...
-    def set_stats(self, stats: dict[str, object]) -> None: ...
-
-
-class CorruptionPersistenceProtocol(Protocol):
-    """Structural shape of the persistence object every corruption writer already holds."""
-
-    async def get_player_by_id(self, player_id: uuid.UUID) -> CorruptionPersistencePlayer | None: ...
-    async def save_player(self, player: CorruptionPersistencePlayer) -> None: ...
-
-
-@dataclass
-class CorruptionUpdateResult:
-    """Normalized response describing the outcome of a corruption adjustment."""
-
-    player_id: uuid.UUID
-    previous_value: int
-    new_value: int
-    previous_tier: CorruptionTier
-    new_tier: CorruptionTier
-    delta: int
-
-
 class CorruptionActionError(RuntimeError):
     """Base error for corruption action operations."""
 
 
 class CorruptionActionOnCooldownError(CorruptionActionError):
     """Raised when a corruption recovery action is attempted during its cooldown."""
+
+
+class CorruptionPersistence(Protocol):
+    """The slice of the persistence layer that corruption writers holding only ``persistence`` call: its
+    ``adjust_corruption`` runs ``CorruptionService.apply_corruption_adjustment`` (injected at startup)."""
+
+    async def adjust_corruption(
+        self,
+        player_id: uuid.UUID,
+        delta: int,
+        *,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
+    ) -> CorruptionUpdateResult: ...
 
 
 @dataclass(frozen=True)
@@ -109,10 +100,56 @@ class CorruptionService:
         "cleanse": RecoveryActionProfile(corruption_delta=-8, cooldown=timedelta(hours=6)),
     }
 
-    _persistence: CorruptionPersistenceProtocol
+    _registry: PlayerRegistry
 
-    def __init__(self, persistence: CorruptionPersistenceProtocol) -> None:
-        self._persistence = persistence
+    def __init__(self, registry: PlayerRegistry) -> None:
+        self._registry = registry
+
+    def apply_in(
+        self,
+        player: PlayerAggregate,
+        delta: int,
+        *,
+        reason_code: str,
+        metadata: Mapping[str, object] | str | None = None,
+        location_id: str | None = None,
+        bypass_permanence_floor: bool = False,
+    ) -> CorruptionUpdateResult:
+        """Apply a corruption delta inside the caller's unit: clamp it, set it and queue its ledger row (both sync).
+
+        For composite units (a recovery rite and its cooldown); call ``announce`` with the result after the unit.
+        ``bypass_permanence_floor=True`` is reserved for admin setstat (#816) so GMs can wipe to 0.
+        """
+        previous_value = coerce_int(player.row.stats.get("corruption", 0), default=0)
+        # #815: once a soul has been touched at all, it can never fall back to 0 through this
+        # service -- the floor is derived from the current value, not tracked separately, so a
+        # player who has never been corrupted is unaffected.
+        floor = 0 if bypass_permanence_floor else (1 if previous_value > 0 else 0)
+        new_value = max(floor, min(100, previous_value + delta))
+        player.row.set_stat("corruption", new_value, sync=True)
+        player.corruption_ledger.log(delta, reason_code, normalize_metadata(metadata), location_id, sync=True)
+        return CorruptionUpdateResult(
+            player_id=player.player_id,
+            previous_value=previous_value,
+            new_value=new_value,
+            previous_tier=compute_tier(previous_value),
+            new_tier=compute_tier(new_value),
+            delta=delta,
+        )
+
+    async def announce(self, result: CorruptionUpdateResult) -> None:
+        """After the unit has committed: the client event, the tier cache, and the tier-crossing message."""
+        await self._send_corruption_update_event(result.player_id, result.new_value)
+        corruption_tier_cache.set_tier(result.player_id, result.new_tier)
+        logger.info(
+            "Corruption adjustment applied",
+            player_id=result.player_id,
+            delta=result.delta,
+            tier_before=result.previous_tier,
+            tier_after=result.new_tier,
+        )
+        if result.previous_tier != result.new_tier:
+            await self._notify_tier_crossing(result.player_id, result.previous_tier, result.new_tier)
 
     async def apply_corruption_adjustment(
         self,
@@ -124,67 +161,21 @@ class CorruptionService:
         location_id: str | None = None,
         bypass_permanence_floor: bool = False,
     ) -> CorruptionUpdateResult:
-        """Apply a corruption delta, clamp it, log it, update the tier cache, notify on crossing.
-
-        `bypass_permanence_floor=True` is reserved for admin setstat (#816) so GMs can wipe to 0
-        while still writing the ledger, tier cache, and tier-crossing notifications.
-        """
-        player = await self._persistence.get_player_by_id(player_id)
-        if player is None:
-            log_and_raise_enhanced(
-                ValidationError,
-                f"Player not found: {player_id}",
-                player_id=str(player_id),
-                operation="apply_corruption_adjustment",
-                details={"player_id": str(player_id)},
-                user_friendly="Player not found",
-            )
-
-        stats = player.get_stats()
-        previous_value = coerce_int(stats.get("corruption", 0), default=0)
-        # #815: once a soul has been touched at all, it can never fall back to 0 through this
-        # service -- the floor is derived from the current value, not tracked separately, so a
-        # player who has never been corrupted is unaffected.
-        # #816: only admin setstat passes bypass_permanence_floor=True (sole caller of that flag).
-        floor = 0 if bypass_permanence_floor else (1 if previous_value > 0 else 0)
-        new_value = max(floor, min(100, previous_value + delta))
-        stats["corruption"] = new_value
-        player.set_stats(stats)
-        await self._persistence.save_player(player)
-        await self._send_corruption_update_event(player_id, new_value)
-
-        previous_tier = compute_tier(previous_value)
-        new_tier = compute_tier(new_value)
-
-        metadata_payload = normalize_metadata(metadata)
-        async for session in get_async_session():
-            repo = CorruptionRepository(session)
-            _ = await repo.add_adjustment_log(player_id, delta, reason_code, metadata_payload, location_id)
-            await session.commit()
-            break
-
-        corruption_tier_cache.set_tier(player_id, new_tier)
-
-        logger.info(
-            "Corruption adjustment applied",
-            player_id=player_id,
-            delta=delta,
-            reason=reason_code,
-            tier_before=previous_tier,
-            tier_after=new_tier,
-        )
-
-        if previous_tier != new_tier:
-            await self._notify_tier_crossing(player_id, previous_tier, new_tier)
-
-        return CorruptionUpdateResult(
-            player_id=player_id,
-            previous_value=previous_value,
-            new_value=new_value,
-            previous_tier=previous_tier,
-            new_tier=new_tier,
-            delta=delta,
-        )
+        """Apply a corruption delta as one unit, then announce it (see ``apply_in``)."""
+        try:
+            async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                result = self.apply_in(
+                    player,
+                    delta,
+                    reason_code=reason_code,
+                    metadata=metadata,
+                    location_id=location_id,
+                    bypass_permanence_floor=bypass_permanence_floor,
+                )
+        except PlayerNotFoundError:
+            _player_not_found(player_id, "apply_corruption_adjustment")
+        await self.announce(result)
+        return result
 
     async def _send_corruption_update_event(self, player_id: uuid.UUID, new_value: int) -> None:
         """Push the new corruption value to the client. Client reads it via the existing
@@ -212,12 +203,9 @@ class CorruptionService:
             _ = await deliver_personal_system(player_id, message)
 
     async def get_cooldown_expiry(self, player_id: uuid.UUID, action_code: str) -> datetime | None:
-        """Fetch the cooldown expiry for a recovery action, or None if not on cooldown."""
-        async for session in get_async_session():
-            repo = CorruptionRepository(session)
-            cooldown = await repo.get_cooldown(player_id, action_code)
-            return cooldown.cooldown_expires_at if cooldown else None
-        return None
+        """The cooldown expiry for a recovery action, or None if it is not on cooldown (or there is no such player)."""
+        player = await self._registry.get(player_id)
+        return player.corruption_cooldowns.expires_at(action_code) if player is not None else None
 
     async def perform_recovery_action(
         self,
@@ -226,33 +214,29 @@ class CorruptionService:
         action_code: str,
         location_id: str | None = None,
     ) -> CorruptionUpdateResult:
-        """Perform a corruption recovery rite (e.g. `/cleanse`) and enforce its cooldown."""
+        """Perform a corruption recovery rite (e.g. `/cleanse`): the cooldown check, the change and the new cooldown
+        are one unit."""
         action_key = action_code.lower()
         profile = self.RECOVERY_ACTIONS.get(action_key)
         if profile is None:
             raise CorruptionActionError(f"Unknown corruption recovery action: {action_code}")
 
         now = datetime.now(UTC)
-        expiry = await self.get_cooldown_expiry(player_id, action_key)
-        if expiry is not None:
-            expiry_aware = expiry if expiry.tzinfo is not None else expiry.replace(tzinfo=UTC)
-            if expiry_aware > now:
-                raise CorruptionActionOnCooldownError(action_key)
-
-        result = await self.apply_corruption_adjustment(
-            player_id,
-            profile.corruption_delta,
-            reason_code=f"ritual_{action_key}",
-            metadata={"recovery_action": action_key},
-            location_id=location_id,
-        )
-
-        expires_at = (now + profile.cooldown).replace(tzinfo=None)
-        async for session in get_async_session():
-            repo = CorruptionRepository(session)
-            _ = await repo.set_cooldown(player_id, action_key, expires_at)
-            await session.commit()
-            break
+        try:
+            async with self._registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                if player.corruption_cooldowns.active(action_key, now):
+                    raise CorruptionActionOnCooldownError(action_key)
+                result = self.apply_in(
+                    player,
+                    profile.corruption_delta,
+                    reason_code=f"ritual_{action_key}",
+                    metadata={"recovery_action": action_key},
+                    location_id=location_id,
+                )
+                player.corruption_cooldowns.set(action_key, now + profile.cooldown)
+        except PlayerNotFoundError:
+            _player_not_found(player_id, "perform_recovery_action")
+        await self.announce(result)
 
         logger.info(
             "Corruption recovery action performed",
@@ -264,12 +248,12 @@ class CorruptionService:
         return result
 
 
-__all__ = [
-    "CorruptionActionError",
-    "CorruptionActionOnCooldownError",
-    "CorruptionPersistencePlayer",
-    "CorruptionPersistenceProtocol",
-    "CorruptionService",
-    "CorruptionUpdateResult",
-    "RecoveryActionProfile",
-]
+def _player_not_found(player_id: uuid.UUID, operation: str) -> NoReturn:
+    log_and_raise_enhanced(
+        ValidationError,
+        f"Player not found: {player_id}",
+        player_id=str(player_id),
+        operation=operation,
+        details={"player_id": str(player_id)},
+        user_friendly="Player not found",
+    )

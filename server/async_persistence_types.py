@@ -32,6 +32,14 @@ class ContainerCreateKwargs(TypedDict, total=False):
     metadata_json: dict[str, object] | None
 
 
+class CorruptionAdjustOptions(TypedDict, total=False):
+    """Optional keywords of a corruption adjustment (CorruptionService.apply_corruption_adjustment)."""
+
+    metadata: Mapping[str, object] | str | None
+    location_id: str | None
+    bypass_permanence_floor: bool
+
+
 class PlayerEffectOptions(TypedDict, total=False):
     """Optional fields for add_player_effect beyond the required scalars."""
 

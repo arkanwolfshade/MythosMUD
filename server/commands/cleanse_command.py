@@ -10,38 +10,28 @@ from datetime import UTC, datetime
 from typing import Protocol, cast
 
 from ..alias_storage import AliasStorage
-from ..services.corruption_service import (
-    CorruptionActionOnCooldownError,
-    CorruptionPersistencePlayer,
-    CorruptionService,
-)
+from ..services.corruption_service import CorruptionActionOnCooldownError, CorruptionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from .inventory_command_helpers import player_registry
 
 logger = get_logger(__name__)
 
 _ACTION_CODE = "cleanse"
 
 
-class CleanseTargetPlayer(CorruptionPersistencePlayer, Protocol):
-    """Player surface needed by the cleanse command, beyond corruption stat access."""
+class CleanseTargetPlayer(Protocol):
+    """Player surface needed by the cleanse command: who they are and where."""
 
     player_id: uuid.UUID | str
     current_room_id: str | None
 
 
 class CleansePersistence(Protocol):
-    """Persistence surface the cleanse command and `CorruptionService` both need.
-
-    `get_player_by_id`/`save_player` are typed against `CorruptionPersistencePlayer` (not the
-    richer `CleanseTargetPlayer`) so this Protocol matches `CorruptionPersistenceProtocol`
-    exactly on the members they share -- narrowing those parameter types here would make this
-    Protocol structurally incompatible with the one `CorruptionService.__init__` expects.
-    """
+    """Persistence surface the cleanse command needs: finding the player by name. The rite itself runs on the
+    player registry (ADR-029 step 5c)."""
 
     async def get_player_by_name(self, name: str) -> CleanseTargetPlayer | None: ...
-    async def get_player_by_id(self, player_id: uuid.UUID) -> CorruptionPersistencePlayer | None: ...
-    async def save_player(self, player: CorruptionPersistencePlayer) -> None: ...
 
 
 class CleanseContainer(Protocol):
@@ -115,7 +105,8 @@ async def handle_cleanse_command(
         return {"result": "Your identity wavers in the void. Try again after stabilizing your presence."}
 
     room_id = player.current_room_id
-    service = CorruptionService(persistence)
+    # The cooldown check, the change and the new cooldown are one registry unit (ADR-029 step 5c).
+    service = CorruptionService(player_registry())
     try:
         result = await service.perform_recovery_action(
             uuid.UUID(str(player.player_id)),

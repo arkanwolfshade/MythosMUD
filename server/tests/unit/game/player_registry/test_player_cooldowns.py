@@ -1,4 +1,4 @@
-"""Unit tests for the cooldowns and exposure parts (ADR-029 step 5b-ii) and their load with the lucidity row."""
+"""Unit tests for the cooldowns and exposure parts (ADR-029 steps 5b-ii, 5c) and how the loader builds them."""
 
 from __future__ import annotations
 
@@ -14,7 +14,13 @@ from server.game.player_registry import (
     PlayerExposurePart,
     load_player_aggregate,
 )
-from server.game.player_registry.player_cooldowns import REPLACE_COOLDOWNS_SQL, parse_timestamp
+from server.game.player_registry.part import DbSession
+from server.game.player_registry.player_cooldowns import (
+    LOAD_CORRUPTION_COOLDOWNS_SQL,
+    REPLACE_COOLDOWNS_SQL,
+    REPLACE_CORRUPTION_COOLDOWNS_SQL,
+    parse_timestamp,
+)
 from server.game.player_registry.player_exposure import UPSERT_EXPOSURES_SQL
 from server.game.player_registry.player_lucidity import LOAD_LUCIDITY_SQL
 from server.game.player_registry.player_quests import LIST_QUEST_INSTANCES_SQL
@@ -95,6 +101,31 @@ async def test_a_cooldown_write_replaces_the_whole_set() -> None:
     assert "replace_lucidity_cooldowns" in str(REPLACE_COOLDOWNS_SQL)
 
 
+async def test_a_corruption_cooldowns_part_writes_with_its_own_statement() -> None:
+    """One part class, two tables: the statement it was built with says which (step 5c)."""
+    part = PlayerCooldownsPart.from_json(
+        uuid.uuid4(),
+        [{"action_code": "cleanse", "expires_at": "2026-11-02T12:00:00+00:00"}],
+        write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL,
+    )
+    assert part.expires_at("cleanse") == T0
+    part.set("cleanse", T0 + timedelta(hours=6))
+    write = part.take_write()
+    assert write is not None
+
+    statements: list[object] = []
+
+    class _Session:
+        async def execute(self, statement: object, params: Mapping[str, object] | None = None) -> None:
+            _ = params
+            statements.append(statement)
+
+    await write(cast(DbSession, cast(object, _Session())))
+
+    assert statements == [REPLACE_CORRUPTION_COOLDOWNS_SQL]
+    assert "replace_corruption_cooldowns" in str(REPLACE_CORRUPTION_COOLDOWNS_SQL)
+
+
 def test_recording_an_encounter_counts_up_and_is_synchronous() -> None:
     part = PlayerExposurePart(uuid.uuid4(), {"ghoul": Exposure(2, T0)})
 
@@ -129,7 +160,7 @@ async def test_an_exposure_write_upserts_every_archetype() -> None:
     assert "upsert_lucidity_exposures" in str(UPSERT_EXPOSURES_SQL)
 
 
-async def test_the_default_loader_builds_lucidity_cooldowns_and_exposure_from_one_row() -> None:
+async def test_the_default_loader_builds_lucidity_cooldowns_exposure_and_corruption_cooldowns() -> None:
     player_id = uuid.uuid4()
     state: dict[str, object] = {
         "current_lcd": None,  # no player_lucidity row yet
@@ -151,6 +182,8 @@ async def test_the_default_loader_builds_lucidity_cooldowns_and_exposure_from_on
             _ = params
             if statement is LOAD_LUCIDITY_SQL:
                 self.answer = [state]
+            elif statement is LOAD_CORRUPTION_COOLDOWNS_SQL:
+                self.answer = [{"cooldowns": [{"action_code": "cleanse", "expires_at": "2026-11-02T12:00:00+00:00"}]}]
             elif statement is LIST_QUEST_INSTANCES_SQL:
                 self.answer = []
             else:
@@ -178,3 +211,5 @@ async def test_the_default_loader_builds_lucidity_cooldowns_and_exposure_from_on
     assert loaded.lucidity.lcd == 100  # the starting value
     assert loaded.cooldowns.expires_at("debrief_pending") == T0
     assert loaded.exposure.encounter_count("ghoul") == 4
+    assert loaded.corruption_cooldowns.expires_at("cleanse") == T0  # step 5c: loaded beside lucidity
+    assert loaded.cooldowns.expires_at("cleanse") is None  # the two cooldown tables stay apart

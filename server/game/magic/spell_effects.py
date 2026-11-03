@@ -43,7 +43,7 @@ from server.persistence.repositories.player_spell_repository import PlayerSpellR
 from server.schemas.shared import TargetMatch, TargetType
 from server.services.combat_service import CombatService
 from server.services.combat_service_npc import get_combat_id_for_npc, resolve_npc_participant_id_in_combat
-from server.services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from server.services.corruption_service import CorruptionPersistence
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger: BoundLogger = get_logger(__name__)
@@ -398,8 +398,8 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             # stats["corruption"] mutation. It clamps 0..100, logs the ledger row, and updates
             # the tier cache; a negative `adjust_amount` here is this spell effect type's own
             # existing bidirectional-adjustment design, unrelated to the `/cleanse` recovery rite.
-            persistence = cast(CorruptionPersistenceProtocol, self.player_service.persistence)
-            result = await CorruptionService(persistence).apply_corruption_adjustment(
+            persistence = cast(CorruptionPersistence, self.player_service.persistence)
+            result = await persistence.adjust_corruption(
                 target_id,
                 adjust_amount,
                 reason_code="spell_effect",

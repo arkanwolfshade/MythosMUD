@@ -21,7 +21,7 @@ from ..schemas.scripted_actions import (
     ScriptedAction,
     StartQuestAction,
 )
-from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from ..services.corruption_service import CorruptionPersistence
 from ..services.debrief_service import perform_debrief
 from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -51,7 +51,7 @@ class ScriptedActionContext:
     """Who the script acts on and the services it may touch."""
 
     player: Player
-    persistence: CorruptionPersistenceProtocol
+    persistence: CorruptionPersistence
     quest_service: QuestActionService | None = None
     catatonia_observer: CatatoniaObserverProtocol | None = None
     player_registry: PlayerRegistry | None = None
@@ -66,11 +66,11 @@ async def _corruption_at_least(action: CorruptionAtLeastAction, ctx: ScriptedAct
     current = coerce_int(ctx.player.get_stats().get("corruption", 0), default=0)
     if current >= action.value:
         return
-    result = await CorruptionService(ctx.persistence).apply_corruption_adjustment(
+    result = await ctx.persistence.adjust_corruption(
         uuid.UUID(str(ctx.player.player_id)), action.value - current, reason_code=action.reason
     )
-    # The service edits and saves its own copy of the player; mirror the new value onto ours so a later save
-    # (apply_effect) does not write the old corruption back.
+    # The service changes the registry's copy of the player; mirror the new value onto ours so the rest of the
+    # script reads it.
     stats = ctx.player.get_stats()
     stats["corruption"] = result.new_value
     ctx.player.set_stats(stats)

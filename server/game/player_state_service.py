@@ -8,7 +8,7 @@ import uuid
 from typing import Any, cast
 
 from ..exceptions import ValidationError
-from ..services.corruption_service import CorruptionPersistenceProtocol, CorruptionService
+from ..services.corruption_service import CorruptionPersistence
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
 
@@ -117,11 +117,11 @@ class PlayerStateService:
                 user_friendly="Player not found",
             )
 
-        # #804: route through CorruptionService, not persistence.apply_corruption directly --
-        # it clamps 0..100, logs the ledger row, and updates the tier cache. `self.persistence`
-        # is typed Any (pre-existing); cast() rather than a bare arg avoids reportAny.
-        persistence = cast(CorruptionPersistenceProtocol, self.persistence)
-        _ = await CorruptionService(persistence).apply_corruption_adjustment(player_id, amount, reason_code=source)
+        # #804: through CorruptionService (the layer's adjust_corruption, ADR-029 step 5c) -- it clamps 0..100,
+        # logs the ledger row, and updates the tier cache. `self.persistence` is typed Any (pre-existing); cast()
+        # rather than a bare call avoids reportAny.
+        persistence = cast(CorruptionPersistence, self.persistence)
+        _ = await persistence.adjust_corruption(player_id, amount, reason_code=source)
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
