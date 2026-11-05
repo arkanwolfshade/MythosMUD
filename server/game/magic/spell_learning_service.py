@@ -56,9 +56,10 @@ class SpellLearningService:
             return 0
         # #804: route through CorruptionService, not a direct stats["corruption"] mutation --
         # it clamps 0..100, logs the ledger row, and updates the tier cache. `player`/
-        # `persistence` are typed Any (pre-existing); cast() avoids reportAny on each.
+        # `persistence` is typed Any (pre-existing); cast() avoids reportAny. The Player's id is a str, and the
+        # registry keys players by UUID.
         persistence = cast(CorruptionPersistence, self.player_service.persistence)
-        player_uuid = cast(uuid.UUID, player.player_id)
+        player_uuid = uuid.UUID(str(cast(object, player.player_id)))
         _ = await persistence.adjust_corruption(
             player_uuid,
             spell.corruption_on_learn,

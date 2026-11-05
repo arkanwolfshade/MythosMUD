@@ -141,9 +141,6 @@ class PlayerSchemaConverter:
             if "max_lucidity" not in out:
                 out["max_lucidity"] = edu
 
-            # Initialize magic_points to max if it's 0 (full MP at character creation)
-            if not out.get("magic_points", 0) and out.get("max_magic_points", 0) > 0:
-                out["magic_points"] = out["max_magic_points"]
             return out
         except (DatabaseError, AttributeError) as e:
             logger.error(
@@ -178,7 +175,7 @@ class PlayerSchemaConverter:
 
         # convert_player_to_schema sends dicts to create_player_read_from_dict, so this is a Player row.
         player_row = cast(Player, player)
-        # The derived fields only add max_* and magic_points, so position reads the same from the copy.
+        # The derived fields only add max_*, so position reads the same from the copy.
         stats = self.compute_derived_stats_fields(player_row.get_stats())
         inventory = player_row.get_inventory()
 

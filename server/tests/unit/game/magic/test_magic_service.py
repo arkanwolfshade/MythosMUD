@@ -144,7 +144,21 @@ async def test_get_player_and_normalized_stats(magic_service: MagicService, play
     magic_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     _, stats_no_max = await magic_service._get_player_and_normalized_stats(player_id)
     assert stats_no_max["max_magic_points"] == 10
-    assert stats_no_max["magic_points"] == 10
+    assert stats_no_max["magic_points"] == 0  # 0 MP means drained, not full
+
+
+@pytest.mark.asyncio
+async def test_a_drained_player_cannot_cast(
+    magic_service: MagicService, player_id: uuid.UUID, base_spell: Spell
+) -> None:
+    stats = {"power": 50, "magic_points": 0, "max_magic_points": 10}
+    drained = MagicMock(get_stats=MagicMock(return_value=stats))
+    persistence = MagicMock(get_player_by_id=AsyncMock(return_value=drained))
+    magic_service.player_service.persistence = persistence
+
+    ok, msg = await magic_service.can_cast_spell(player_id, base_spell)
+
+    assert ok is False and "Not enough magic points" in msg
 
 
 @pytest.mark.asyncio

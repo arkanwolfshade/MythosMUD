@@ -34,6 +34,22 @@ def _saved(save_player: AsyncMock) -> Player:
     return player
 
 
+def _rolled_stats() -> Stats:
+    """Stats as the character creation flow rolls them: nothing sets magic_points, so it defaults to 0."""
+    return Stats(power=60)
+
+
+@pytest.mark.asyncio
+async def test_a_new_character_is_stored_with_full_mp() -> None:
+    """From here on 0 MP means drained, so creation must not leave a new character at 0."""
+    service, save_player = _service()
+
+    _ = await service.create_player_with_stats("Newcomer", _rolled_stats(), starting_room_id=DOWNTOWN_ID)
+
+    stats = _saved(save_player).get_stats()
+    assert stats["magic_points"] == stats["max_magic_points"] == 12  # ceil(60 * 0.2)
+
+
 @pytest.mark.asyncio
 async def test_create_player_marks_a_tutorial_character_pending_in_a_world_room() -> None:
     """The instance is built on first connect, so creation stores the pending marker and a real, enterable room."""

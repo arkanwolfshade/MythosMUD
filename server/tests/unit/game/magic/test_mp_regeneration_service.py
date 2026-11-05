@@ -1,325 +1,251 @@
 """
 Unit tests for MP regeneration service.
 
-Tests the MPRegenerationService class for magic point regeneration.
+MP changes run on a real player registry (ADR-029 step 6b); the tick's per-tick read is the persistence layer's row.
 """
 
+import json
 import uuid
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock
+from collections.abc import Mapping
+from types import SimpleNamespace
+from typing import cast
+from unittest.mock import AsyncMock, patch
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
-from server.game.magic.mp_regeneration_service import MPRegenerationService
+from server.game.magic.mp_regeneration_service import (
+    MEDITATION_MP_REGEN_MULTIPLIER,
+    REST_MP_REGEN_MULTIPLIER,
+    MPRegenerationService,
+)
+from server.game.player_service import PlayerService
+from server.models.player import Player
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
-# pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
-# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
-
-
-@pytest.fixture
-def mock_player_service():
-    """Create a mock player service."""
-    service = MagicMock()
-    service.persistence = MagicMock()
-    return service
-
-
-@pytest.fixture
-def mp_regeneration_service(mock_player_service):
-    """Create an MPRegenerationService instance."""
-    return MPRegenerationService(mock_player_service)
+PLAYER_ID = uuid.uuid4()
+BELOW_MAX: dict[str, object] = {"magic_points": 5, "max_magic_points": 10, "current_dp": 20, "max_dp": 20}
 
 
-@pytest.fixture
-def sample_player_id():
-    """Create a sample player ID."""
-    return uuid.uuid4()
+class _Reader:
+    """The persistence layer as the tick reads it: this player's row, whatever the registry has written since."""
+
+    def __init__(self, stats: dict[str, object] | None) -> None:
+        self._stats: dict[str, object] | None = stats
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
+        if self._stats is None:
+            return None
+        player = Player(player_id=str(player_id), name="Tester")
+        player.set_stats(dict(self._stats))
+        return player
 
 
-@pytest.fixture
-def mock_player():
-    """Create a mock player."""
-    player = MagicMock()
-    player.get_stats = MagicMock(return_value={})
-    return player
+def _service(
+    stats: dict[str, object] | None = None, *, regen_rate: float = 0.01, registry: bool = True
+) -> tuple[MPRegenerationService, LucidityHarness]:
+    harness = lucidity_registry({PLAYER_ID: None} if stats is not None else {}, stats=stats)
+    player_service = cast(PlayerService, cast(object, SimpleNamespace(persistence=_Reader(stats))))
+    service = MPRegenerationService(player_service, regen_rate, harness.registry if registry else None)
+    return service, harness
 
 
-def test_mp_regeneration_service_init(mock_player_service):
-    """Test MPRegenerationService initialization."""
-    service = MPRegenerationService(mock_player_service)
-    assert service.player_service == mock_player_service
-    assert service.regen_rate == 0.01  # Default rate
+def _restored(result: Mapping[str, object]) -> int:
+    return int(str(result["mp_restored"]))
 
 
-def test_mp_regeneration_service_init_custom_rate(mock_player_service):
-    """Test MPRegenerationService initialization with custom regen_rate."""
-    service = MPRegenerationService(mock_player_service, regen_rate=0.02)
-    assert service.regen_rate == 0.02
+def _mp(harness: LucidityHarness) -> object:
+    return harness.stats(PLAYER_ID)["magic_points"]
+
+
+def test_the_default_rate_is_one_mp_per_hundred_ticks() -> None:
+    service, _ = _service()
+    assert service.regen_rate == 0.01
 
 
 @pytest.mark.asyncio
-async def test_process_tick_regeneration_player_not_found(mp_regeneration_service, sample_player_id):
-    """Test process_tick_regeneration() returns zero when player not found."""
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
+async def test_tick_for_an_unknown_player_is_a_no_op() -> None:
+    service, _ = _service(None)
+
+    assert await service.process_tick_regeneration(PLAYER_ID) == {"mp_restored": 0, "current_mp": 0, "max_mp": 0}
+
+
+@pytest.mark.asyncio
+async def test_tick_at_max_writes_nothing() -> None:
+    service, harness = _service({"magic_points": 10, "max_magic_points": 10}, regen_rate=1.0)
+
+    result = await service.process_tick_regeneration(PLAYER_ID)
+
+    assert result == {"mp_restored": 0, "current_mp": 10, "max_mp": 10}
+    assert harness.db.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_ticks_write_only_when_a_whole_mp_has_accrued() -> None:
+    """The point of the accrual: 10 Hz of ticks, one commit per MP (it used to be a full save every tick)."""
+    service, harness = _service(dict(BELOW_MAX))
+
+    results = [await service.process_tick_regeneration(PLAYER_ID) for _ in range(110)]
+
+    assert harness.db.commits == 1
+    assert sum(_restored(result) for result in results) == 1
+    assert _mp(harness) == 6
+
+
+@pytest.mark.asyncio
+async def test_a_regenerated_mp_tells_the_client() -> None:
+    service, _ = _service(dict(BELOW_MAX), regen_rate=1.0)
+
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as send:
+        result = await service.process_tick_regeneration(PLAYER_ID)
+
+    assert result == {"mp_restored": 1, "current_mp": 6, "max_mp": 10}
+    send.assert_awaited_once_with(PLAYER_ID, "player_update", {"stats": {"magic_points": 6, "max_magic_points": 10}})
+
+
+@pytest.mark.asyncio
+async def test_tick_computes_max_from_power() -> None:
+    service, harness = _service({"magic_points": 5, "power": 80}, regen_rate=1.0)  # ceil(80 * 0.2) = 16
+
+    result = await service.process_tick_regeneration(PLAYER_ID)
+
+    assert result["max_mp"] == 16
+    assert _mp(harness) == 6
+
+
+@pytest.mark.asyncio
+async def test_tick_without_a_registry_writes_nothing() -> None:
+    service, harness = _service(dict(BELOW_MAX), regen_rate=1.0, registry=False)
+
+    result = await service.process_tick_regeneration(PLAYER_ID)
+
     assert result["mp_restored"] == 0
-    assert result["current_mp"] == 0
-    assert result["max_mp"] == 0
+    assert harness.db.commits == 0
 
 
 @pytest.mark.asyncio
-async def test_process_tick_regeneration_at_max(mp_regeneration_service, sample_player_id, mock_player):
-    """Test process_tick_regeneration() returns zero when MP already at max."""
-    mock_player.get_stats.return_value = {"magic_points": 10, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    assert result["mp_restored"] == 0
-    assert result["current_mp"] == 10
-    assert result["max_mp"] == 10
+async def test_a_failed_write_keeps_the_accrued_mp_for_the_next_tick() -> None:
+    service, harness = _service(dict(BELOW_MAX), regen_rate=1.0)
+    harness.db.fail_commits, harness.db.commit_error = 1, SQLAlchemyError("db down")
+
+    failed = await service.process_tick_regeneration(PLAYER_ID)
+    retried = await service.process_tick_regeneration(PLAYER_ID)
+
+    assert failed["mp_restored"] == 0
+    assert retried["mp_restored"] == 2  # the failed MP and this tick's
 
 
 @pytest.mark.asyncio
-async def test_process_tick_regeneration_restores_mp(mp_regeneration_service, sample_player_id, mock_player):
-    """Test process_tick_regeneration() restores MP."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10, "position": "standing"}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    assert result["mp_restored"] >= 0
-    assert result["current_mp"] >= 5
-    assert result["max_mp"] == 10
+async def test_a_write_removes_the_old_stored_fraction() -> None:
+    service, harness = _service({**BELOW_MAX, "_mp_fractional": 0.4}, regen_rate=1.0)
+
+    _ = await service.process_tick_regeneration(PLAYER_ID)
+
+    assert "_mp_fractional" not in harness.stats(PLAYER_ID)
+    written = [params for params in harness.db.executed if params is not None and "stats_changes" in params]
+    assert json.loads(str(written[-1]["stats_changes"])) == {"magic_points": 6, "_mp_fractional": None}
 
 
 @pytest.mark.asyncio
-async def test_process_tick_regeneration_calculates_max_from_power(
-    mp_regeneration_service, sample_player_id, mock_player
-):
-    """Test process_tick_regeneration() calculates max_mp from power if not present."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "power": 50}  # No max_magic_points
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    # max_mp should be calculated as ceil(50 * 0.2) = 10
-    assert result["max_mp"] == 10
+@pytest.mark.parametrize(("position", "whole_mp"), [("standing", 0), ("sitting", 1), ("lying", 1)])
+async def test_resting_postures_regenerate_faster(position: str, whole_mp: int) -> None:
+    service, _ = _service({**BELOW_MAX, "position": position}, regen_rate=0.34)  # sitting: 0.34 * 3 > 1
+
+    assert (await service.process_tick_regeneration(PLAYER_ID))["mp_restored"] == whole_mp
+
+
+@pytest.mark.parametrize(
+    ("stats", "expected"),
+    [
+        ({"position": "standing"}, 1.0),
+        ({"position": "sitting"}, REST_MP_REGEN_MULTIPLIER),
+        ({"position": "lying"}, REST_MP_REGEN_MULTIPLIER * 1.2),
+        ({}, 1.0),
+    ],
+)
+def test_get_regen_multiplier(stats: dict[str, object], expected: float) -> None:
+    service, _ = _service()
+    assert service._get_regen_multiplier(stats) == expected  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - the multiplier table is private to the tick  # Appropriate because: asserting it directly keeps the posture table readable without driving many ticks
 
 
 @pytest.mark.asyncio
-async def test_process_tick_regeneration_fractional_accumulation(
-    mp_regeneration_service, sample_player_id, mock_player
-):
-    """Test process_tick_regeneration() accumulates fractional MP."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10, "position": "standing"}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    # Run multiple ticks to accumulate fractional MP
-    result1 = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    result2 = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    # Should accumulate fractional MP across ticks
-    assert result2["current_mp"] >= result1["current_mp"]
+async def test_rest_restores_mp_through_the_registry() -> None:
+    service, harness = _service({"magic_points": 2, "max_magic_points": 10})
 
+    result = await service.restore_mp_from_rest(PLAYER_ID, 60)  # 0.01 * 3 * 60 = 1.8, whole MP kept
 
-def test_get_regen_multiplier_standing(mp_regeneration_service):
-    """Test _get_regen_multiplier() returns 1.0 for standing position."""
-    stats = {"position": "standing"}
-    multiplier = mp_regeneration_service._get_regen_multiplier(stats)
-    assert multiplier == 1.0
-
-
-def test_get_regen_multiplier_sitting(mp_regeneration_service):
-    """Test _get_regen_multiplier() returns REST multiplier for sitting."""
-    stats = {"position": "sitting"}
-    multiplier = mp_regeneration_service._get_regen_multiplier(stats)
-    assert multiplier == 3.0  # REST_MP_REGEN_MULTIPLIER
-
-
-def test_get_regen_multiplier_lying(mp_regeneration_service):
-    """Test _get_regen_multiplier() returns enhanced REST multiplier for lying."""
-    stats = {"position": "lying"}
-    multiplier = mp_regeneration_service._get_regen_multiplier(stats)
-    assert multiplier == pytest.approx(3.6)  # REST_MP_REGEN_MULTIPLIER * 1.2 (floating point)
-
-
-def test_get_regen_multiplier_default_position(mp_regeneration_service):
-    """Test _get_regen_multiplier() defaults to 1.0 when position not specified."""
-    stats: dict[str, Any] = {}
-    multiplier = mp_regeneration_service._get_regen_multiplier(stats)
-    assert multiplier == 1.0
-
-
-@pytest.mark.asyncio
-async def test_restore_mp_from_rest_player_not_found(mp_regeneration_service, sample_player_id):
-    """Test restore_mp_from_rest() returns error when player not found."""
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
-    result = await mp_regeneration_service.restore_mp_from_rest(sample_player_id)
-    assert result["success"] is False
-    assert "not found" in result["message"].lower()
-    assert result["mp_restored"] == 0
-
-
-@pytest.mark.asyncio
-async def test_restore_mp_from_rest_at_max(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_rest() returns message when MP already at max."""
-    mock_player.get_stats.return_value = {"magic_points": 10, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    result = await mp_regeneration_service.restore_mp_from_rest(sample_player_id)
     assert result["success"] is True
-    assert "already full" in result["message"].lower()
-    assert result["mp_restored"] == 0
+    assert (result["mp_restored"], result["current_mp"], result["max_mp"]) == (1, 3, 10)
+    assert result["message"] == "You rest and recover 1 magic points."
+    assert _mp(harness) == 3
+    assert harness.db.commits == 1
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_rest_restores_mp(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_rest() restores MP."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_rest(sample_player_id, duration_seconds=60)
-    assert result["success"] is True
-    assert result["mp_restored"] > 0
-    assert result["current_mp"] > 5
-    assert result["max_mp"] == 10
+async def test_meditation_restores_more_than_rest() -> None:
+    rest, _ = _service({"magic_points": 0, "max_magic_points": 50})
+    meditation, _ = _service({"magic_points": 0, "max_magic_points": 50})
+
+    rested = await rest.restore_mp_from_rest(PLAYER_ID, 200)
+    meditated = await meditation.restore_mp_from_meditation(PLAYER_ID, 200)
+
+    assert MEDITATION_MP_REGEN_MULTIPLIER > REST_MP_REGEN_MULTIPLIER
+    assert _restored(meditated) > _restored(rested)
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_rest_calculates_max_from_power(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_rest() calculates max_mp from power if not present."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "power": 50}  # No max_magic_points
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_rest(sample_player_id)
-    assert result["max_mp"] == 10  # ceil(50 * 0.2)
+async def test_rest_and_meditation_at_max_say_so() -> None:
+    service, _ = _service({"magic_points": 10, "max_magic_points": 10})
+    full = {"success": True, "message": "Your magic points are already full.", "mp_restored": 0}
+
+    assert await service.restore_mp_from_rest(PLAYER_ID) == full
+    assert await service.restore_mp_from_meditation(PLAYER_ID) == full
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_meditation_player_not_found(mp_regeneration_service, sample_player_id):
-    """Test restore_mp_from_meditation() returns error when player not found."""
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
-    result = await mp_regeneration_service.restore_mp_from_meditation(sample_player_id)
-    assert result["success"] is False
-    assert "not found" in result["message"].lower()
-    assert result["mp_restored"] == 0
+async def test_rest_and_meditation_for_an_unknown_player_fail() -> None:
+    service, _ = _service(None)
+
+    assert (await service.restore_mp_from_rest(PLAYER_ID))["success"] is False
+    assert (await service.restore_mp_from_meditation(PLAYER_ID))["success"] is False
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_meditation_at_max(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_meditation() returns message when MP already at max."""
-    mock_player.get_stats.return_value = {"magic_points": 10, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    result = await mp_regeneration_service.restore_mp_from_meditation(sample_player_id)
-    assert result["success"] is True
-    assert "already full" in result["message"].lower()
-    assert result["mp_restored"] == 0
+async def test_rest_without_a_registry_fails() -> None:
+    service, _ = _service(dict(BELOW_MAX), registry=False)
+
+    assert (await service.restore_mp_from_rest(PLAYER_ID))["success"] is False
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_meditation_restores_mp(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_meditation() restores MP."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_meditation(sample_player_id, duration_seconds=180)
-    assert result["success"] is True
-    assert result["mp_restored"] > 0
-    assert result["current_mp"] > 5
-    assert "meditation" in result["message"].lower()
+async def test_item_restores_mp_capped_at_max() -> None:
+    service, harness = _service({"magic_points": 8, "max_magic_points": 10})
+
+    result = await service.restore_mp_from_item(PLAYER_ID, 5)
+
+    assert (result["mp_restored"], result["current_mp"]) == (2, 10)
+    assert _mp(harness) == 10
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_meditation_higher_than_rest(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_meditation() restores more MP than rest."""
-    mock_player.get_stats.return_value = {"magic_points": 0, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    rest_result = await mp_regeneration_service.restore_mp_from_rest(sample_player_id, duration_seconds=60)
-    # Reset player stats
-    mock_player.get_stats.return_value = {"magic_points": 0, "max_magic_points": 10}
-    meditation_result = await mp_regeneration_service.restore_mp_from_meditation(sample_player_id, duration_seconds=60)
-    # Meditation should restore more MP (5x multiplier vs 3x for rest)
-    assert meditation_result["mp_restored"] > rest_result["mp_restored"]
+async def test_item_computes_max_from_power() -> None:
+    service, _ = _service({"magic_points": 0, "power": 50})
+
+    assert (await service.restore_mp_from_item(PLAYER_ID, 100))["max_mp"] == 10
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_item_player_not_found(mp_regeneration_service, sample_player_id):
-    """Test restore_mp_from_item() returns error when player not found."""
-    # Ensure magic_service is not set so it uses fallback path
-    mp_regeneration_service.player_service.magic_service = None
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=None)
-    result = await mp_regeneration_service.restore_mp_from_item(sample_player_id, amount=5)
-    assert result["success"] is False
-    assert "not found" in result["message"].lower()
-    assert result["mp_restored"] == 0
+async def test_item_for_an_unknown_player_fails() -> None:
+    service, _ = _service(None)
+
+    assert (await service.restore_mp_from_item(PLAYER_ID, 5))["success"] is False
 
 
 @pytest.mark.asyncio
-async def test_restore_mp_from_item_restores_mp(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_item() restores MP."""
-    # Ensure magic_service is not set so it uses fallback path
-    mp_regeneration_service.player_service.magic_service = None
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_item(sample_player_id, amount=3)
-    assert result["success"] is True
-    assert result["mp_restored"] == 3
-    assert result["current_mp"] == 8
+async def test_item_prefers_the_magic_service() -> None:
+    restore_mp = AsyncMock(return_value={"success": True, "mp_restored": 3})
+    player_service = SimpleNamespace(persistence=_Reader(None), magic_service=SimpleNamespace(restore_mp=restore_mp))
+    service = MPRegenerationService(cast(PlayerService, cast(object, player_service)))
 
-
-@pytest.mark.asyncio
-async def test_restore_mp_from_item_respects_max(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_item() respects max_mp limit."""
-    # Ensure magic_service is not set so it uses fallback path
-    mp_regeneration_service.player_service.magic_service = None
-    mock_player.get_stats.return_value = {"magic_points": 9, "max_magic_points": 10}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_item(sample_player_id, amount=5)
-    assert result["success"] is True
-    assert result["current_mp"] == 10  # Capped at max
-    assert result["mp_restored"] == 1  # Only restored 1 (from 9 to 10)
-
-
-@pytest.mark.asyncio
-async def test_restore_mp_from_item_uses_magic_service(mp_regeneration_service, sample_player_id):
-    """Test restore_mp_from_item() uses magic_service if available."""
-    mock_magic_service = MagicMock()
-    mock_magic_service.restore_mp = AsyncMock(return_value={"success": True, "mp_restored": 5})
-    # Set magic_service explicitly
-    mp_regeneration_service.player_service.magic_service = mock_magic_service
-    result = await mp_regeneration_service.restore_mp_from_item(sample_player_id, amount=5)
-    assert result["success"] is True
-    assert result["mp_restored"] == 5
-    mock_magic_service.restore_mp.assert_awaited_once_with(sample_player_id, 5)
-
-
-@pytest.mark.asyncio
-async def test_restore_mp_from_item_calculates_max_from_power(mp_regeneration_service, sample_player_id, mock_player):
-    """Test restore_mp_from_item() calculates max_mp from power if not present."""
-    # Ensure magic_service is not set so it uses fallback path
-    mp_regeneration_service.player_service.magic_service = None
-    mock_player.get_stats.return_value = {"magic_points": 5, "power": 50}  # No max_magic_points
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.restore_mp_from_item(sample_player_id, amount=3)
-    assert result["max_mp"] == 10  # ceil(50 * 0.2)
-
-
-@pytest.mark.asyncio
-async def test_process_tick_regeneration_sitting_position(mp_regeneration_service, sample_player_id, mock_player):
-    """Test process_tick_regeneration() uses REST multiplier for sitting position."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10, "position": "sitting"}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    # Should restore more MP due to REST multiplier
-    assert result["mp_restored"] >= 0
-
-
-@pytest.mark.asyncio
-async def test_process_tick_regeneration_lying_position(mp_regeneration_service, sample_player_id, mock_player):
-    """Test process_tick_regeneration() uses enhanced REST multiplier for lying position."""
-    mock_player.get_stats.return_value = {"magic_points": 5, "max_magic_points": 10, "position": "lying"}
-    mp_regeneration_service.player_service.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-    mp_regeneration_service.player_service.persistence.save_player = AsyncMock()
-    result = await mp_regeneration_service.process_tick_regeneration(sample_player_id)
-    # Should restore MP
-    assert result["mp_restored"] >= 0
+    assert await service.restore_mp_from_item(PLAYER_ID, 3) == {"success": True, "mp_restored": 3}
+    restore_mp.assert_awaited_once_with(PLAYER_ID, 3)

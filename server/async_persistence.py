@@ -382,7 +382,6 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         change = await self._health().damage(uuid.UUID(str(player.player_id)), amount, damage_type)
         player.apply_stat_changes(change.changes)
 
-
     # Player effects (ADR-019, ADR-029 step 3b-i)
     async def add_player_effect(
         self,

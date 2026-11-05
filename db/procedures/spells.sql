@@ -152,6 +152,7 @@ $$;
 
 
 -- learn_spell: insert or return existing (ON CONFLICT DO UPDATE no-op to get RETURNING)
+-- The conflict target names the constraint: this function's RETURNS TABLE makes a bare player_id ambiguous.
 CREATE OR REPLACE FUNCTION :schema_name.learn_spell( -- noqa: PRS
     p_player_id UUID,
     p_spell_id character varying,
@@ -172,7 +173,7 @@ BEGIN
     RETURN QUERY
     INSERT INTO player_spells (player_id, spell_id, mastery, times_cast)
     VALUES (p_player_id, p_spell_id, LEAST(100, GREATEST(0, p_initial_mastery)), 0)
-    ON CONFLICT (player_id, spell_id) DO UPDATE SET mastery = player_spells.mastery
+    ON CONFLICT ON CONSTRAINT player_spells_player_id_spell_id_key DO UPDATE SET mastery = player_spells.mastery
     RETURNING
         player_spells.id,
         player_spells.player_id,

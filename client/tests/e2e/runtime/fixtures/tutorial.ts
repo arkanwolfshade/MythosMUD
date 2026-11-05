@@ -52,6 +52,9 @@ export interface E2ePlayerState {
   bank_items: string[];
   current_dp: number | null;
   corruption: number | null;
+  magic_points: number | null;
+  max_magic_points: number | null;
+  intelligence: number | null;
   /** Lucidity (LCD); null when the character has no lucidity record yet. */
   current_lcd: number | null;
   /** Names of the stacks in the character's inventory. */

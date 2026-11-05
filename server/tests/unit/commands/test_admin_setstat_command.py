@@ -425,6 +425,8 @@ async def test_handle_admin_set_stat_command_mp_above_maximum():
     mock_target_player.player_id = uuid.uuid4()
     # POW=50, max_mp = ceil(50 * 0.2) = 10
     mock_target_player.get_stats = MagicMock(return_value={"magic_points": 10, "power": 50})
+    save_player: AsyncMock = AsyncMock()
+    mock_persistence.save_player = save_player
     set_stats: MagicMock = MagicMock()
     mock_target_player.set_stats = set_stats
     mock_player_service.resolve_player_name = AsyncMock(side_effect=[mock_current_player, mock_target_player])
@@ -435,15 +437,22 @@ async def test_handle_admin_set_stat_command_mp_above_maximum():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await _handle_admin_set_stat_command(
-        {"args": ["MP", "TargetPlayer", "15"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
-    )
+    target_id = uuid.uuid4()
+    mock_target_player.player_id = target_id
+    harness = lucidity_registry({target_id: None}, stats={"magic_points": 10, "power": 50})
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=harness.registry):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["MP", "TargetPlayer", "15"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
+        )
 
     assert "result" in result
     assert "Set TargetPlayer's MP" in result["result"]
     assert "Warning" in result["result"]
     assert "exceeds calculated maximum" in result["result"]
-    set_stats.assert_called_once()
+    set_stats.assert_called_once()  # the copy the notification reads
+    assert harness.stats(target_id)["magic_points"] == 15  # MP's one writer is the registry (ADR-029 step 6b)
+    assert harness.db.commits == 1
+    save_player.assert_not_awaited()
 
 
 @pytest.mark.asyncio

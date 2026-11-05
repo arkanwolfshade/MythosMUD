@@ -550,8 +550,8 @@ $$;
 -- The inventory params (p_inventory, p_inventory_json, p_equipped_json) are written only when the player is new:
 -- after that only the player registry writes them (update_player_inventory, ADR-029 step 4c-iii), so a save of a
 -- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise the stats keys only the
--- registry writes (corruption since step 5c; DP and the death room since step 6a): a save keeps the stored values,
--- and never brings back a key the registry removed.
+-- registry writes (corruption since step 5c; DP and the death room since step 6a; MP since step 6b): a save keeps
+-- the stored values, and never brings back a key the registry removed.
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -596,10 +596,11 @@ BEGIN
         is_admin = EXCLUDED.is_admin,
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,
-        stats = (EXCLUDED.stats - ARRAY['corruption', 'current_dp', 'death_room_id', 'death_location'])
+        stats = (EXCLUDED.stats - ARRAY['corruption', 'current_dp', 'magic_points', 'death_room_id', 'death_location'])
             || jsonb_strip_nulls(jsonb_build_object(
                 'corruption', players.stats -> 'corruption',
                 'current_dp', players.stats -> 'current_dp',
+                'magic_points', players.stats -> 'magic_points',
                 'death_room_id', players.stats -> 'death_room_id',
                 'death_location', players.stats -> 'death_location'
             )),

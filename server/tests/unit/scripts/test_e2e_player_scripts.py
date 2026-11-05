@@ -28,7 +28,9 @@ ROW: dict[str, object] = {
     "respawn_room_id": FOYER,
     "tutorial_instance_id": None,
     "inventory": json.dumps([{"item_id": "sling", "item_name": "Sling", "quantity": 1}]),
-    "stats": json.dumps({"current_dp": 12, "max_dp": 20, "corruption": 1}),
+    "stats": json.dumps(
+        {"current_dp": 12, "max_dp": 20, "corruption": 1, "magic_points": 3, "max_magic_points": 10, "intelligence": 60}
+    ),
 }
 
 
@@ -134,6 +136,9 @@ async def test_state_reports_location_character_and_what_is_in_the_bank_box(
         "bank_items": ["Sling", "Oil Lamp"],
         "current_dp": 12,
         "corruption": 1,
+        "magic_points": 3,
+        "max_magic_points": 10,
+        "intelligence": 60,
         "current_lcd": 70,
         "inventory_items": ["Sling"],
         "quests": {"first_exposure_dusk": "completed"},

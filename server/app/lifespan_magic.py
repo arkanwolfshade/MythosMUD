@@ -3,6 +3,8 @@
 Extracted from lifespan_startup to keep module line count under limit.
 """
 
+from typing import cast
+
 from fastapi import FastAPI
 
 from ..container import ApplicationContainer
@@ -12,6 +14,7 @@ from ..game.magic.spell_effects import SpellEffects, SpellEffectsDeps
 from ..game.magic.spell_learning_service import SpellLearningService
 from ..game.magic.spell_registry import SpellRegistry
 from ..game.magic.spell_targeting import SpellTargetingService
+from ..game.player_service import PlayerService
 from ..persistence.repositories.player_spell_repository import PlayerSpellRepository
 from ..persistence.repositories.spell_repository import SpellRepository as SpellRepositoryClass
 from ..services.target_resolution_service import TargetResolutionService
@@ -72,6 +75,7 @@ def _initialize_spell_effects(app: FastAPI, container: ApplicationContainer) -> 
             get_room_by_id=get_room,
             connection_manager=getattr(container, "connection_manager", None),
             item_granter=container.item_granter,
+            player_registry=container.player_registry,
         ),
     )
     app.state.spell_effects = spell_effects
@@ -96,7 +100,10 @@ def _initialize_spell_learning_service(
 
 def _initialize_mp_regeneration_service(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize MPRegenerationService and attach to app.state."""
-    mp_regeneration_service = MPRegenerationService(player_service=container.player_service)
+    mp_regeneration_service = MPRegenerationService(
+        player_service=cast(PlayerService, container.player_service),
+        player_registry=container.player_registry,
+    )
     app.state.mp_regeneration_service = mp_regeneration_service
     logger.info("MPRegenerationService initialized")
 

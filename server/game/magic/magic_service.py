@@ -122,7 +122,9 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
         self.spell_learning_service = opt.get("spell_learning_service")
         self.casting_state_manager = opt.get("casting_state_manager") or CastingStateManager()
         self.combat_service = opt.get("combat_service")
-        self.spell_costs_service = opt.get("spell_costs_service") or SpellCostsService(player_service)
+        self.spell_costs_service = opt.get("spell_costs_service") or SpellCostsService(
+            player_service, opt.get("player_registry")
+        )
         self.spell_materials_service = opt.get("spell_materials_service") or SpellMaterialsService(
             player_service, opt.get("player_registry")
         )
@@ -142,8 +144,6 @@ class _MagicServiceCore(MagicServiceCompletionMixin, MagicServiceHealingMixin): 
         pow_val = _stat_int(stats, "power", 50)
         if "max_magic_points" not in stats:
             stats["max_magic_points"] = math.ceil(pow_val * 0.2)
-        if not _stat_int(stats, "magic_points", 0) and _stat_int(stats, "max_magic_points", 0) > 0:
-            stats["magic_points"] = stats["max_magic_points"]
         return player, stats
 
     def _check_mp_sufficient(self, stats: dict[str, object], spell: Spell) -> tuple[bool, str]:
