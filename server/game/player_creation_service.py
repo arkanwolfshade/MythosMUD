@@ -12,6 +12,7 @@ from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import ValidationError
 from ..models import Stats
 from ..models.player import Player
+from ..models.player_mp import max_mp_of, mp_of
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
@@ -188,6 +189,12 @@ class PlayerCreationService:
         else:
             # Dictionary
             player.set_stats(stats)  # type: ignore[arg-type]  # Reason: Type narrowing from hasattr check doesn't satisfy mypy. After checking that stats doesn't have model_dump, we know it's a dict, but mypy can't infer this pattern.
+
+        # A new character starts with full MP (Stats defaults it to 0): from here on, 0 MP means drained.
+        created_stats = player.get_stats()
+        if not mp_of(created_stats):
+            created_stats["magic_points"] = max_mp_of(created_stats)
+            player.set_stats(created_stats)
 
         # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
         if not getattr(player, "inventory", None):

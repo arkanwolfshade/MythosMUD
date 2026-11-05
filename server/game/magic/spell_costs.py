@@ -5,15 +5,20 @@ This module handles applying spell costs (MP, lucidity, corruption) to players.
 """
 
 import uuid
-from typing import Any, Protocol, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from server.game.player_registry import PlayerNotFoundError
 from server.game.player_service import PlayerService
 from server.models.player import Player
 from server.models.spell import Spell
 from server.services.corruption_service import CorruptionPersistence
+from server.services.player_mp_service import PlayerMpService
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -32,14 +37,21 @@ class SpellCostsService:
     Handles MP, lucidity, and corruption costs for spellcasting.
     """
 
-    def __init__(self, player_service: PlayerService) -> None:
+    def __init__(self, player_service: PlayerService, player_registry: "PlayerRegistry | None" = None) -> None:
         """
         Initialize the spell costs service.
 
         Args:
             player_service: Player service for accessing player data
+            player_registry: Holds the player's MP (ADR-029 step 6b)
         """
         self.player_service = player_service
+        self._player_registry: "PlayerRegistry | None" = player_registry
+
+    def _mp(self) -> PlayerMpService:
+        if self._player_registry is None:  # never fall back to writing stats directly
+            raise RuntimeError("Player registry not wired; cannot change MP")
+        return PlayerMpService(self._player_registry)
 
     async def _spend_lucidity_if_required(self, player: Player, spell: Spell) -> None:
         """Spend the lucidity cost of a Mythos spell that requires it, through player_lucidity (ADR-029 step 3a)."""
@@ -123,22 +135,13 @@ class SpellCostsService:
         # Appropriate because: same unsuppressed convention as this class's persistence casts.
         stats = cast(dict[str, Any], player.get_stats())  # pyright: ignore[reportAny, reportExplicitAny]
 
-        # Spend MP
-        current_mp = cast(int, stats.get("magic_points", 0))
-        new_mp = max(0, current_mp - spell.mp_cost)
-        stats["magic_points"] = new_mp
-        logger.debug("Spent MP", player_id=player_id, mp_cost=spell.mp_cost, remaining_mp=new_mp)
-
-        # Save player (MP). Lucidity and corruption are applied separately below, *after* this
-        # save -- CorruptionService.apply_corruption_adjustment does its own read-modify-write
-        # cycle on the persisted row, so applying it before this save would have this save's
-        # stale local `stats` dict immediately overwrite the corruption change. Lucidity lives in
-        # player_lucidity, which this save never touches.
-        await self.player_service.persistence.save_player(player)
+        # Spend MP, then lucidity and corruption: each is its own registry unit.
+        change = await self._mp().spend(player_id, spell.mp_cost)
+        logger.debug("Spent MP", player_id=player_id, mp_cost=spell.mp_cost, remaining_mp=change.new_mp)
 
         await self._spend_lucidity_if_required(cast(Player, player), spell)
         await self._apply_corruption_if_mythos(player_id, spell)
-        await self._notify_mp_update(player_id, spell, stats, current_mp, new_mp)
+        await self._notify_mp_update(player_id, spell, stats, change.old_mp, change.new_mp)
 
     async def restore_mp(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
         """
@@ -151,29 +154,14 @@ class SpellCostsService:
         Returns:
             dict: Result message
         """
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
+        try:
+            change = await self._mp().restore(player_id, amount)
+        except PlayerNotFoundError:
             return {"success": False, "message": "Player not found"}
-
-        stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-        max_mp = stats.get("max_magic_points", 10)  # Fallback if not computed
-
-        # Calculate max_mp from power if not present
-        if "max_magic_points" not in stats:
-            import math
-
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-
-        new_mp = min(max_mp, current_mp + amount)
-        stats["magic_points"] = new_mp
-
-        await self.player_service.persistence.save_player(player)
 
         return {
             "success": True,
-            "message": f"Restored {new_mp - current_mp} MP",
-            "current_mp": new_mp,
-            "max_mp": max_mp,
+            "message": f"Restored {change.gained} MP",
+            "current_mp": change.new_mp,
+            "max_mp": change.max_mp,
         }

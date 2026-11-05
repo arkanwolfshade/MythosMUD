@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.13** · MythosMUD · 2026-11-03
+**Version 1.0.14** · MythosMUD · 2026-11-03
 
 ---
 
@@ -142,8 +142,8 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, DP (until step 8), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
-| Lazy | DP (from step 8), MP, lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, DP and MP (until step 8), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Lazy | DP and MP (from step 8), lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
@@ -298,7 +298,17 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      lucidity could put back a room or XP that movement had saved meanwhile. `upsert_player` keeps an existing
      player's stored `current_dp`, `corruption`, `death_room_id` and `death_location` (present or absent), so the
      registry is their only writer. Posture (`position`) still has legacy writers (sit, stand, logout) until step 7.
-   - 6b: MP (regeneration, rest, meditation, spell costs).
+   - 6b: MP. `models/player_mp.py` holds the rules and `PlayerMpService` is the one write path for
+     `stats.magic_points`: spell costs, spell and item restores, rest, meditation, regeneration and admin `set MP`,
+     each one sync unit. `upsert_player` keeps an existing player's stored MP too. Regeneration runs every tick, and
+     a unit costs several reads and a commit, so the fraction accrues on `MPRegenerationService` (it used to be
+     `stats._mp_fractional`, saved with a full `save_player` at 10 Hz) and a unit opens only when a whole MP has
+     built up, about every 10 s. A restart loses less than one MP's progress. The tick still reads the player's row
+     each time, for the max check and the posture; step 8 can read the pinned aggregate instead.
+     Two MP bugs went with it. 0 MP used to read as full, in the cast check and the client's stats: new characters
+     were stored with 0, and those reads patched it. A new character is now stored with full MP and 0 means drained.
+     And a `stat_modify` effect can now change MP: Power Drain's `{"stat": "mp", "transfer_to_caster": true}` was
+     ignored, and now moves the MP to the caster in one transaction (player targets only).
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
@@ -319,6 +329,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.14 | 2026-11-03 | §3.4: MP is sync until step 8. §6: step 6b as shipped (MP rules, `PlayerMpService`, regeneration accrues in memory and writes per whole MP, `upsert_player` keeps MP; 0 MP means drained; Power Drain moves MP) |
 | 1.0.13 | 2026-11-03 | §3.2: the core part writes only changed columns and stats keys (a null key is removed). §3.4: DP is sync until step 8. §6: step 6a as shipped (DP rules, `PlayerHealthService`, death and respawn units, `upsert_player` keeps DP and the death room) |
 | 1.0.12 | 2026-11-03 | §3.2: the core part writes only changed `stats` keys (merged); ledgers are queued on a part. §3.4: corruption is sync. §6: step 5c as shipped (`upsert_player` keeps stored corruption; `adjust_corruption` on the persistence layer) |
 | 1.0.11 | 2026-11-02 | §3.2: exposure is its own part. §3.4: cooldowns and encounter counts are sync. §6: step 5b-ii as shipped (one load function, replace-set cooldown writes, checks and their cooldowns in one unit) |

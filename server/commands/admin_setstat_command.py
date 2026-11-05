@@ -24,6 +24,7 @@ from ..services.corruption_service import CorruptionService
 from ..services.lucidity_helpers import CatatoniaObserverProtocol, PlayerGoneError
 from ..services.lucidity_service import LucidityService
 from ..services.player_health_service import PlayerHealthService
+from ..services.player_mp_service import PlayerMpService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .admin_setlucidity_command import get_current_lcd
@@ -297,10 +298,12 @@ async def _apply_stat_change_and_build_result(
     old_value = stats.get(ctx.stat_key)
     warning_message, range_warning = calculate_stat_warnings(ctx.stat_key, ctx.value, stats)
     previous_position = _mutate_player_stat(ctx, stats)
+    # DP and MP have one writer, the player registry (ADR-029 steps 6a, 6b): upsert_player keeps the stored values.
+    target_id = uuid.UUID(str(ctx.target_player_obj.player_id))
     if ctx.stat_key == "current_dp":
-        # DP has one writer, the player registry (ADR-029 step 6a): upsert_player keeps the stored value.
-        target_id = uuid.UUID(str(ctx.target_player_obj.player_id))
         _ = await PlayerHealthService(player_registry()).set_dp(target_id, ctx.value)
+    elif ctx.stat_key == "magic_points":
+        _ = await PlayerMpService(player_registry()).set_mp(target_id, ctx.value)
     else:
         await ctx.persistence.save_player(ctx.target_player_obj)
     await _notify_player_stat_change(

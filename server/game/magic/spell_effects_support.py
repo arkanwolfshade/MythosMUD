@@ -7,10 +7,11 @@ Contains stat-modify and object-creation helpers, keeping the main engine focuse
 from __future__ import annotations
 
 import uuid
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from server.exceptions import DatabaseError
 from server.game.effect_store import SPELL_EFFECT_CATEGORY
 from server.game.items.item_factory import ItemFactoryError
 from server.game.items.item_giver import ItemGiver
@@ -18,12 +19,20 @@ from server.game.magic.spell_effect_types import SpellEffectsEngineEffectPort
 from server.game.magic.spell_effects_stats import apply_stat_modifications
 from server.game.player_registry import PlayerNotFoundError
 from server.models.game import StatusEffectType
+from server.models.player_mp import MpChange
 from server.models.spell import Spell
 from server.schemas.shared import InventorySchemaValidationError, TargetMatch, TargetType
 from server.services.inventory_service import InventoryCapacityError
+from server.services.player_mp_service import PlayerMpService, announce_mp
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
+
 logger = get_logger(__name__)
+
+# Effect data's names for magic points; MP has its own write path, PlayerMpService.
+_MP_STAT_NAMES = ("mp", "magic_points")
 
 
 def _build_stat_modifications(spell: Spell) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
@@ -109,11 +118,70 @@ async def _apply_stat_modify_to_player(
         }
 
 
+async def _change_target_mp(
+    service: PlayerMpService, target_id: uuid.UUID, amount: int, receiver_id: uuid.UUID | None
+) -> tuple[MpChange, MpChange | None]:
+    """Add ``amount`` to the target's MP; a negative amount goes to ``receiver_id``, if any, in one transaction."""
+    if amount >= 0:
+        return await service.restore(target_id, amount), None
+    if receiver_id is None:
+        return await service.spend(target_id, -amount), None
+    return await service.drain(target_id, receiver_id, -amount)
+
+
+async def _apply_mp_modify(
+    registry: PlayerRegistry | None,
+    spell: Spell,
+    target: TargetMatch,
+    amount: int,
+    caster_id: uuid.UUID | None,
+) -> dict[str, object]:
+    """Change a player's MP (Power Drain); with ``transfer_to_caster``, what they lost goes to the caster."""
+    if registry is None:
+        logger.error("No player registry; cannot change MP", spell_id=spell.spell_id)
+        return {"success": False, "message": "Failed to modify magic points", "effect_applied": False}
+    target_id = uuid.UUID(target.target_id)
+    transfers = bool(spell.effect_data.get("transfer_to_caster")) and caster_id != target_id
+    try:
+        changed, received = await _change_target_mp(
+            PlayerMpService(registry), target_id, amount, caster_id if transfers else None
+        )
+    except PlayerNotFoundError:
+        return {"success": False, "message": "Target player not found", "effect_applied": False}
+    except (DatabaseError, SQLAlchemyError) as e:
+        logger.error("Error modifying MP", target_id=target.target_id, error=str(e))
+        return {"success": False, "message": "Failed to modify magic points", "effect_applied": False}
+
+    if not changed.gained:
+        return {
+            "success": True,
+            "message": f"{target.target_name}'s magic points are unchanged.",
+            "effect_applied": False,
+        }
+    await announce_mp(target_id, changed)
+    if received is not None and caster_id is not None:
+        await announce_mp(caster_id, received)
+    drained = changed.gained < 0
+    return {
+        "success": True,
+        "message": (
+            f"Drained {-changed.gained} magic points from {target.target_name}"
+            if drained
+            else f"Restored {changed.gained} magic points to {target.target_name}"
+        ),
+        "effect_applied": True,
+        "stat_changes": {"magic_points": changed.gained},
+        "mp_transferred": received.gained if received is not None else 0,
+    }
+
+
 async def process_stat_modify_effect(
     engine: Any,
     spell: Spell,
     target: TargetMatch,
     mastery_modifier: float,
+    *,
+    caster_id: uuid.UUID | None = None,
 ) -> dict[str, Any]:
     """
     Process stat modification effect for a player target.
@@ -134,6 +202,13 @@ async def process_stat_modify_effect(
             "message": "Invalid stat modifications configuration",
             "effect_applied": False,
         }
+
+    # shortcut: an effect that changes MP changes only MP (every seeded one does); split them if a spell ever mixes.
+    for name in _MP_STAT_NAMES:
+        if name in stat_modifications:
+            registry = cast("PlayerRegistry | None", engine.player_registry)
+            amount = int(cast(float, stat_modifications[name]) * mastery_modifier)
+            return await _apply_mp_modify(registry, spell, target, amount, caster_id)
 
     duration = int(spell.effect_data.get("duration", 0))
 

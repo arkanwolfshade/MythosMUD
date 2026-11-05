@@ -319,7 +319,7 @@ async def test_process_stat_modify_invalid_target(spell_effects):
     invalid_target = TargetMatch(
         target_id="invalid", target_type=TargetType.ROOM, target_name="Room", room_id="room_001"
     )
-    result = await spell_effects._process_stat_modify(spell, invalid_target, 1.5)
+    result = await spell_effects._process_stat_modify(spell, invalid_target, uuid.uuid4(), 1.5)
     assert result["success"] is False
     assert "can only target players" in result.get("message", "").lower()
 

@@ -4,7 +4,7 @@ The core part of a PlayerAggregate: the ``players`` row and its ``stats`` jsonb 
 It is read through ``get_player_by_id``, the same row the inventory part reads, and written through
 ``update_player_row``, which sets only the columns and ``stats`` keys a unit changed (steps 5c and 6a). Players are
 still saved outside the registry (movement, logout), so a write must never put back this part's copy of anything it
-did not change. Changes are lazy unless a mutator says otherwise (corruption and DP are sync).
+did not change. Changes are lazy unless a mutator says otherwise (corruption, DP and MP are sync).
 
 Carried and equipped stacks are the inventory part (player_inventory.py), written on their own (step 4). Status
 effects and lucidity are not here either: they live in ``player_effects`` (step 3b) and ``player_lucidity`` (step 3a).

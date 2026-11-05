@@ -79,7 +79,7 @@ async def test_learn_mythos_spell_applies_corruption(learning_service: SpellLear
     spell.effect_data = {}
     player_id = uuid.uuid4()
     player = MagicMock()
-    player.player_id = player_id
+    player.player_id = str(player_id)  # as the ORM Player holds it; the registry keys players by UUID
     player.get_stats = MagicMock(return_value={"corruption": 1})
     adjust_corruption = AsyncMock()
     cast(MagicMock, learning_service.spell_registry).get_spell.return_value = spell

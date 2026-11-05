@@ -42,6 +42,7 @@ class _DecayEventPublisher(Protocol):  # pylint: disable=too-few-public-methods 
     def publish(self, event: PlayerDPDecayEvent) -> None:
         """Deliver a DP decay event."""
 
+
 # Mirrored in player_respawn_service — room of death for interstitial / login UI.
 DEATH_ROOM_ID_STAT = "death_room_id"
 DEATH_LOCATION_STAT = "death_location"

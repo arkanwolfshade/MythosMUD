@@ -37,6 +37,7 @@ from server.game.magic.spell_effects_support import (
 )
 from server.game.magic.spell_effects_threat import add_utility_threat_for_spell
 from server.game.movement_service import MovementService
+from server.game.player_registry import PlayerRegistry
 from server.game.player_service import PlayerService
 from server.models.spell import Spell, SpellEffectType
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
@@ -59,6 +60,7 @@ class SpellEffectsDeps:
     get_room_by_id: Callable[[str], object] | None = None
     connection_manager: object | None = None
     item_granter: ItemGiver | None = None
+    player_registry: PlayerRegistry | None = None
 
 
 class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility class with focused responsibility, minimal public interface
@@ -74,6 +76,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         self._get_room_by_id: Callable[[str], object] | None = deps.get_room_by_id
         self._connection_manager: object | None = deps.connection_manager
         self.item_granter: ItemGiver | None = deps.item_granter
+        self.player_registry: PlayerRegistry | None = deps.player_registry
         logger.info("SpellEffects initialized")
 
     def _spell_player_persistence(self) -> PlayerPersistenceSpellPort:
@@ -151,7 +154,7 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
             case SpellEffectType.STATUS_EFFECT:
                 return await self._process_status_effect(spell, target, mastery_modifier)
             case SpellEffectType.STAT_MODIFY:
-                return await self._process_stat_modify(spell, target, mastery_modifier)
+                return await self._process_stat_modify(spell, target, caster_id, mastery_modifier)
             case SpellEffectType.LUCIDITY_ADJUST:
                 return await self._process_lucidity_adjust(spell, target, mastery_modifier)
             case SpellEffectType.CORRUPTION_ADJUST:
@@ -332,10 +335,13 @@ class SpellEffects:  # pylint: disable=too-few-public-methods  # Reason: Utility
         return cast(dict[str, object], await run_status_effect(self, spell, target, mastery_modifier))
 
     async def _process_stat_modify(
-        self, spell: Spell, target: TargetMatch, mastery_modifier: float
+        self, spell: Spell, target: TargetMatch, caster_id: uuid.UUID, mastery_modifier: float
     ) -> dict[str, object]:
         """Process stat modification effect (delegated to support module)."""
-        return cast(dict[str, object], await process_stat_modify_effect(self, spell, target, mastery_modifier))
+        return cast(
+            dict[str, object],
+            await process_stat_modify_effect(self, spell, target, mastery_modifier, caster_id=caster_id),
+        )
 
     async def _process_lucidity_adjust(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float

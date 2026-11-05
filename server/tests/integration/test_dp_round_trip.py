@@ -38,7 +38,9 @@ def _registry(session_factory: async_sessionmaker[AsyncSession]) -> PlayerRegist
     return PlayerRegistry(cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0))
 
 
-async def _row(session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID) -> tuple[dict[str, object], str]:
+async def _row(
+    session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID
+) -> tuple[dict[str, object], str]:
     async with session_factory() as session:
         row = (
             await session.execute(
@@ -68,8 +70,9 @@ async def test_death_and_respawn_round_trip(
     change = await PlayerHealthService(registry).set_dp(player_id, -10)
     assert change.became_dead
     assert not registry.is_loaded(player_id)  # sync: committed, nothing left to sweep
-    stats, room = await _row(session_factory, player_id)
-    assert (stats["current_dp"], stats["position"], room) == (-10, "lying", STREET)
+    stats, _room = await _row(session_factory, player_id)
+    # Not the room: make test-playwright runs this on mythos_e2e, whose live server moves the dead to limbo on any tick.
+    assert (stats["current_dp"], stats["position"]) == (-10, "lying")
 
     respawn = PlayerRespawnService(player_registry=registry)
     assert await respawn.move_player_to_limbo(player_id, STREET) is True

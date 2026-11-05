@@ -109,7 +109,8 @@ class MagicCommandHandler:
 
         await self._interrupt_rest_for_cast(player, player_name, spell_name)
 
-        result = await self.magic_service.cast_spell(player.player_id, spell_name, target_name)
+        # The ORM Player's id is a str; casting state and the player registry are keyed by UUID.
+        result = await self.magic_service.cast_spell(uuid.UUID(str(player.player_id)), spell_name, target_name)
 
         return await self._build_cast_response(player, result, spell_name, target_name)
 
@@ -388,7 +389,7 @@ class MagicCommandHandler:
         if not svc:
             return {"result": "Spell learning system not initialized."}
         result = await svc.learn_spell(
-            context["player"].player_id,
+            uuid.UUID(str(context["player"].player_id)),
             context["spell_name"],
             source="command",
         )
@@ -454,7 +455,7 @@ class MagicCommandHandler:
             return {"result": "You are not recognized by the cosmic forces."}
 
         # Interrupt casting
-        result = await self.magic_service.interrupt_casting(player.player_id)
+        result = await self.magic_service.interrupt_casting(uuid.UUID(str(player.player_id)))
 
         if not result.get("success"):
             return {"result": str(result.get("message", "Failed to interrupt casting."))}

@@ -2,17 +2,26 @@
 MP regeneration service for passive and active magic point recovery.
 
 This module handles automatic MP regeneration over time and integration
-with rest/meditation commands for accelerated recovery.
+with rest/meditation commands for accelerated recovery. MP itself changes through the player registry
+(PlayerMpService, ADR-029 step 6b). Regeneration runs on every tick, so it accrues the fraction here and only writes
+when a whole MP has built up; a restart loses at most one MP's worth of progress.
 """
 
-import math
 import uuid
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
+from server.exceptions import DatabaseError
+from server.game.player_registry import PlayerNotFoundError
 from server.game.player_service import PlayerService
+from server.models.player import Player
+from server.models.player_mp import MpChange, max_mp_of, mp_of
+from server.services.player_mp_service import PlayerMpService, announce_mp
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -23,6 +32,13 @@ REST_MP_REGEN_MULTIPLIER = 3.0  # 3x faster when resting
 MEDITATION_MP_REGEN_MULTIPLIER = 5.0  # 5x faster when meditating
 
 
+class _PlayerReader(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
+    """The slice of the persistence layer the regeneration tick reads."""
+
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
+        """The player's row, or None."""
+
+
 class MPRegenerationService:
     """
     Service for managing MP regeneration.
@@ -31,21 +47,32 @@ class MPRegenerationService:
     during rest/meditation.
     """
 
-    def __init__(self, player_service: PlayerService, regen_rate: float = DEFAULT_MP_REGEN_RATE) -> None:
+    def __init__(
+        self,
+        player_service: PlayerService,
+        regen_rate: float = DEFAULT_MP_REGEN_RATE,
+        player_registry: "PlayerRegistry | None" = None,
+    ) -> None:
         """
         Initialize the MP regeneration service.
 
         Args:
             player_service: Player service for stat modifications
             regen_rate: Base MP regeneration rate per tick (default 0.1)
+            player_registry: Holds the player's MP; without it nothing regenerates or is restored
         """
         self.player_service = player_service
         self.regen_rate = regen_rate
+        self._mp: PlayerMpService | None = PlayerMpService(player_registry) if player_registry is not None else None
+        self._accrued: dict[uuid.UUID, float] = {}
         logger.info("MPRegenerationService initialized", regen_rate=regen_rate)
 
     async def process_tick_regeneration(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Process MP regeneration for a player on a game tick.
+
+        The row read is what this tick has always cost; a registry unit (several reads and a commit) only opens when
+        a whole MP has accrued.
 
         Args:
             player_id: Player ID
@@ -53,85 +80,49 @@ class MPRegenerationService:
         Returns:
             dict: Result with MP restored and current/max MP
         """
-        player = await self.player_service.persistence.get_player_by_id(player_id)
+        player = await cast(_PlayerReader, self.player_service.persistence).get_player_by_id(player_id)
         if not player:
+            _ = self._accrued.pop(player_id, None)
             return {"mp_restored": 0, "current_mp": 0, "max_mp": 0}
 
         stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-
-        # Calculate max_mp from power if not present
-        if "max_magic_points" not in stats:
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-        else:
-            max_mp = stats.get("max_magic_points", 10)
+        current_mp, max_mp = mp_of(stats), max_mp_of(stats)
 
         # Already at max, no regeneration needed
-        if current_mp >= max_mp:
+        if current_mp >= max_mp or self._mp is None:
+            _ = self._accrued.pop(player_id, None)
             return {"mp_restored": 0, "current_mp": current_mp, "max_mp": max_mp}
 
-        # Calculate regeneration rate (base rate, modified by position/activity)
         regen_multiplier = self._get_regen_multiplier(stats)
-        mp_to_restore = self.regen_rate * regen_multiplier
+        accrued = self._accrued.get(player_id, 0.0) + self.regen_rate * regen_multiplier
+        whole = int(accrued)
+        self._accrued[player_id] = accrued - whole
+        if whole < 1:
+            return {"mp_restored": 0, "current_mp": current_mp, "max_mp": max_mp}
 
-        # Get fractional MP from stats (stored as _mp_fractional for accumulation)
-        # If not present, initialize from current_mp (which might be fractional)
-        mp_fractional = stats.get("_mp_fractional", 0.0)
-        if isinstance(current_mp, float):
-            # If current_mp is already fractional, extract the fractional part
-            mp_fractional = current_mp - int(current_mp)
-            current_mp = int(current_mp)
+        try:
+            change = await self._mp.restore(player_id, whole)
+        except PlayerNotFoundError:
+            _ = self._accrued.pop(player_id, None)
+            return {"mp_restored": 0, "current_mp": 0, "max_mp": 0}
+        except (DatabaseError, SQLAlchemyError) as e:
+            self._accrued[player_id] += whole  # not written: the next tick tries again
+            logger.warning("Failed to write MP regeneration", player_id=player_id, error=str(e))
+            return {"mp_restored": 0, "current_mp": current_mp, "max_mp": max_mp}
 
-        # Add regeneration to fractional accumulator
-        mp_fractional += mp_to_restore
+        logger.debug(
+            "MP regenerated",
+            player_id=player_id,
+            mp_restored=change.gained,
+            current_mp=change.new_mp,
+            max_mp=change.max_mp,
+            multiplier=regen_multiplier,
+        )
 
-        # Calculate new MP: integer part + accumulated fractional part
-        mp_to_add = int(mp_fractional)  # Whole MP to add
-        mp_fractional = mp_fractional - mp_to_add  # Remaining fractional part
+        if change.gained > 0:
+            await announce_mp(player_id, change)
 
-        new_mp = min(max_mp, current_mp + mp_to_add)
-
-        # Store fractional part for next tick
-        stats["_mp_fractional"] = mp_fractional
-
-        # Only update if there's actual change (avoid unnecessary saves)
-        if new_mp > current_mp or mp_fractional > 0:
-            stats["magic_points"] = new_mp  # Store as integer (fractional part stored separately)
-            await self.player_service.persistence.save_player(player)
-
-            mp_restored = new_mp - current_mp
-            logger.debug(
-                "MP regenerated",
-                player_id=player_id,
-                mp_restored=mp_restored,
-                current_mp=new_mp,
-                max_mp=max_mp,
-                multiplier=regen_multiplier,
-                mp_fractional=mp_fractional,
-            )
-
-            # Send player_update event to notify client of MP change
-            if new_mp > current_mp:
-                try:
-                    from server.realtime.connection_manager_api import send_game_event
-
-                    await send_game_event(
-                        player_id,
-                        "player_update",
-                        {
-                            "stats": {
-                                "magic_points": new_mp,
-                                "max_magic_points": max_mp,
-                            },
-                        },
-                    )
-                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as e:
-                    logger.warning("Failed to send MP regeneration update event", player_id=player_id, error=str(e))
-
-            return {"mp_restored": mp_restored, "current_mp": new_mp, "max_mp": max_mp}
-
-        return {"mp_restored": 0, "current_mp": current_mp, "max_mp": max_mp}
+        return {"mp_restored": change.gained, "current_mp": change.new_mp, "max_mp": change.max_mp}
 
     def _get_regen_multiplier(self, stats: dict[str, Any]) -> float:
         """
@@ -158,6 +149,16 @@ class MPRegenerationService:
 
         return 1.0  # Base rate
 
+    async def _restore(self, player_id: uuid.UUID, amount: float) -> MpChange | None:
+        """Restore MP as one registry unit; None without a registry or with no such player."""
+        if self._mp is None:
+            logger.error("No player registry; cannot restore MP", player_id=player_id)
+            return None
+        try:
+            return await self._mp.restore(player_id, amount)
+        except PlayerNotFoundError:
+            return None
+
     async def restore_mp_from_rest(self, player_id: uuid.UUID, duration_seconds: int = 60) -> dict[str, Any]:
         """
         Restore MP from resting (accelerated regeneration).
@@ -169,44 +170,25 @@ class MPRegenerationService:
         Returns:
             dict: Result with MP restored
         """
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
+        change = await self._restore(player_id, self.regen_rate * REST_MP_REGEN_MULTIPLIER * duration_seconds)
+        if change is None:
             return {"success": False, "message": "Player not found", "mp_restored": 0}
-
-        stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-
-        # Calculate max_mp
-        if "max_magic_points" not in stats:
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-        else:
-            max_mp = stats.get("max_magic_points", 10)
-
-        if current_mp >= max_mp:
+        if change.old_mp >= change.max_mp:
             return {"success": True, "message": "Your magic points are already full.", "mp_restored": 0}
-
-        # Calculate MP to restore (rest multiplier * duration)
-        mp_to_restore = self.regen_rate * REST_MP_REGEN_MULTIPLIER * duration_seconds
-        new_mp = min(max_mp, current_mp + mp_to_restore)
-        mp_restored = new_mp - current_mp
-
-        stats["magic_points"] = int(new_mp)
-        await self.player_service.persistence.save_player(player)
 
         logger.info(
             "MP restored from rest",
             player_id=player_id,
-            mp_restored=mp_restored,
+            mp_restored=change.gained,
             duration=duration_seconds,
         )
 
         return {
             "success": True,
-            "message": f"You rest and recover {int(mp_restored)} magic points.",
-            "mp_restored": int(mp_restored),
-            "current_mp": int(new_mp),
-            "max_mp": max_mp,
+            "message": f"You rest and recover {change.gained} magic points.",
+            "mp_restored": change.gained,
+            "current_mp": change.new_mp,
+            "max_mp": change.max_mp,
         }
 
     async def restore_mp_from_meditation(self, player_id: uuid.UUID, duration_seconds: int = 180) -> dict[str, Any]:
@@ -220,44 +202,25 @@ class MPRegenerationService:
         Returns:
             dict: Result with MP restored
         """
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
+        change = await self._restore(player_id, self.regen_rate * MEDITATION_MP_REGEN_MULTIPLIER * duration_seconds)
+        if change is None:
             return {"success": False, "message": "Player not found", "mp_restored": 0}
-
-        stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-
-        # Calculate max_mp
-        if "max_magic_points" not in stats:
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-        else:
-            max_mp = stats.get("max_magic_points", 10)
-
-        if current_mp >= max_mp:
+        if change.old_mp >= change.max_mp:
             return {"success": True, "message": "Your magic points are already full.", "mp_restored": 0}
-
-        # Calculate MP to restore (meditation multiplier * duration)
-        mp_to_restore = self.regen_rate * MEDITATION_MP_REGEN_MULTIPLIER * duration_seconds
-        new_mp = min(max_mp, current_mp + mp_to_restore)
-        mp_restored = new_mp - current_mp
-
-        stats["magic_points"] = int(new_mp)
-        await self.player_service.persistence.save_player(player)
 
         logger.info(
             "MP restored from meditation",
             player_id=player_id,
-            mp_restored=mp_restored,
+            mp_restored=change.gained,
             duration=duration_seconds,
         )
 
         return {
             "success": True,
-            "message": f"Through meditation, you recover {int(mp_restored)} magic points.",
-            "mp_restored": int(mp_restored),
-            "current_mp": int(new_mp),
-            "max_mp": max_mp,
+            "message": f"Through meditation, you recover {change.gained} magic points.",
+            "mp_restored": change.gained,
+            "current_mp": change.new_mp,
+            "max_mp": change.max_mp,
         }
 
     async def restore_mp_from_item(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
@@ -275,31 +238,14 @@ class MPRegenerationService:
         if hasattr(self.player_service, "magic_service") and self.player_service.magic_service:
             return cast(dict[str, Any], await self.player_service.magic_service.restore_mp(player_id, amount))
 
-        # Fallback: direct restoration
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
+        change = await self._restore(player_id, amount)
+        if change is None:
             return {"success": False, "message": "Player not found", "mp_restored": 0}
-
-        stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-
-        # Calculate max_mp
-        if "max_magic_points" not in stats:
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-        else:
-            max_mp = stats.get("max_magic_points", 10)
-
-        new_mp = min(max_mp, current_mp + amount)
-        mp_restored = new_mp - current_mp
-
-        stats["magic_points"] = int(new_mp)
-        await self.player_service.persistence.save_player(player)
 
         return {
             "success": True,
-            "message": f"You restore {mp_restored} magic points.",
-            "mp_restored": mp_restored,
-            "current_mp": int(new_mp),
-            "max_mp": max_mp,
+            "message": f"You restore {change.gained} magic points.",
+            "mp_restored": change.gained,
+            "current_mp": change.new_mp,
+            "max_mp": change.max_mp,
         }

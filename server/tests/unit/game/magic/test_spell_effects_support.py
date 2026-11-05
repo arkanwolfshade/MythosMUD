@@ -3,18 +3,21 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
 from server.game.items.item_factory import ItemFactoryError
 from server.game.magic import spell_effects_support as support
 from server.game.player_registry import PlayerNotFoundError
 from server.schemas.shared import TargetMatch, TargetType
 from server.services.inventory_service import InventoryCapacityError
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 
 def _spell(**effect_data: object) -> MagicMock:
@@ -56,6 +59,161 @@ async def test_process_stat_modify_rejects_non_player() -> None:
     target = _target(target_type=TargetType.NPC)
     result = await support.process_stat_modify_effect(MagicMock(), spell, target, 1.0)
     assert result["success"] is False
+
+
+def _power_drain() -> MagicMock:
+    """The seeded effect data of Power Drain."""
+    return _spell(stat="mp", delta=-10, transfer_to_caster=True)
+
+
+async def _cast_at(
+    spell: MagicMock,
+    stats: dict[str, object],
+    *,
+    mastery: float = 1.0,
+    target_id: uuid.UUID | None = None,
+) -> tuple[Mapping[str, object], LucidityHarness, uuid.UUID, uuid.UUID]:
+    """Cast ``spell`` from one registry player at another; returns (result, harness, target id, caster id)."""
+    target, caster = target_id or uuid.uuid4(), uuid.uuid4()
+    harness = lucidity_registry({target: None, caster: None}, stats=stats)
+    engine = SimpleNamespace(player_registry=harness.registry)
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock):
+        result = await support.process_stat_modify_effect(
+            engine, spell, _target(target_id=str(target)), mastery, caster_id=caster
+        )
+    return result, harness, target, caster
+
+
+@pytest.mark.asyncio
+async def test_power_drain_moves_mp_to_the_caster_in_one_commit() -> None:
+    result, harness, target, caster = await _cast_at(_power_drain(), {"magic_points": 12, "max_magic_points": 30})
+
+    assert result["success"] is True and result["effect_applied"] is True
+    assert result["stat_changes"] == {"magic_points": -10}
+    assert result["mp_transferred"] == 10
+    assert harness.stats(target)["magic_points"] == 2
+    assert harness.stats(caster)["magic_points"] == 22
+    assert harness.db.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_power_drain_tells_both_players() -> None:
+    target, caster = uuid.uuid4(), uuid.uuid4()
+    harness = lucidity_registry({target: None, caster: None}, stats={"magic_points": 12, "max_magic_points": 30})
+    engine = SimpleNamespace(player_registry=harness.registry)
+
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock) as send:
+        _ = await support.process_stat_modify_effect(
+            engine, _power_drain(), _target(target_id=str(target)), 1.0, caster_id=caster
+        )
+
+    assert [call.args[0] for call in send.await_args_list] == [target, caster]
+
+
+@pytest.mark.asyncio
+async def test_power_drain_scales_with_mastery() -> None:
+    result, _, _, _ = await _cast_at(_power_drain(), {"magic_points": 12, "max_magic_points": 30}, mastery=0.5)
+
+    assert result["stat_changes"] == {"magic_points": -5}
+
+
+@pytest.mark.asyncio
+async def test_power_drain_takes_only_what_the_target_has() -> None:
+    result, harness, target, caster = await _cast_at(_power_drain(), {"magic_points": 3, "max_magic_points": 30})
+
+    assert result["mp_transferred"] == 3
+    assert harness.stats(target)["magic_points"] == 0
+    assert harness.stats(caster)["magic_points"] == 6
+
+
+@pytest.mark.asyncio
+async def test_power_drain_on_a_drained_target_does_nothing() -> None:
+    result, harness, _, _ = await _cast_at(_power_drain(), {"magic_points": 0, "max_magic_points": 30})
+
+    assert result["success"] is True and result["effect_applied"] is False
+    assert harness.db.commits == 0
+
+
+@pytest.mark.asyncio
+async def test_a_full_caster_still_drains_but_gains_nothing() -> None:
+    result, harness, target, caster = await _cast_at(_power_drain(), {"magic_points": 30, "max_magic_points": 30})
+
+    assert result["stat_changes"] == {"magic_points": -10}
+    assert result["mp_transferred"] == 0
+    assert harness.stats(target)["magic_points"] == 20
+    assert harness.stats(caster)["magic_points"] == 30
+
+
+@pytest.mark.asyncio
+async def test_power_drain_on_yourself_only_costs_you() -> None:
+    caster = uuid.uuid4()
+    harness = lucidity_registry({caster: None}, stats={"magic_points": 12, "max_magic_points": 30})
+    engine = SimpleNamespace(player_registry=harness.registry)
+
+    with patch("server.realtime.connection_manager_api.send_game_event", new_callable=AsyncMock):
+        result = await support.process_stat_modify_effect(
+            engine, _power_drain(), _target(target_id=str(caster)), 1.0, caster_id=caster
+        )
+
+    assert result["mp_transferred"] == 0
+    assert harness.stats(caster)["magic_points"] == 2
+
+
+@pytest.mark.asyncio
+async def test_an_mp_effect_without_a_transfer_only_changes_the_target() -> None:
+    result, harness, target, caster = await _cast_at(
+        _spell(stat="mp", delta=-4), {"magic_points": 12, "max_magic_points": 30}
+    )
+
+    assert result["mp_transferred"] == 0
+    assert harness.stats(target)["magic_points"] == 8
+    assert harness.registry.peek(caster) is None  # the caster was never touched
+
+
+@pytest.mark.asyncio
+async def test_a_positive_mp_effect_restores_the_target() -> None:
+    result, harness, target, _ = await _cast_at(
+        _spell(stat="magic_points", delta=4), {"magic_points": 2, "max_magic_points": 30}
+    )
+
+    assert result["stat_changes"] == {"magic_points": 4}
+    assert "Restored 4 magic points" in str(result["message"])
+    assert harness.stats(target)["magic_points"] == 6
+
+
+@pytest.mark.asyncio
+async def test_power_drain_on_an_unknown_player_fails() -> None:
+    engine = SimpleNamespace(player_registry=lucidity_registry({}).registry)
+
+    result = await support.process_stat_modify_effect(engine, _power_drain(), _target(), 1.0, caster_id=uuid.uuid4())
+
+    assert result == {"success": False, "message": "Target player not found", "effect_applied": False}
+
+
+@pytest.mark.asyncio
+async def test_power_drain_without_a_registry_fails() -> None:
+    engine = SimpleNamespace(player_registry=None)
+
+    result = await support.process_stat_modify_effect(engine, _power_drain(), _target(), 1.0, caster_id=uuid.uuid4())
+
+    assert result["success"] is False
+
+
+@pytest.mark.asyncio
+async def test_a_failed_power_drain_commit_changes_neither_player() -> None:
+    target, caster = uuid.uuid4(), uuid.uuid4()
+    harness = lucidity_registry({target: None, caster: None}, stats={"magic_points": 12, "max_magic_points": 30})
+    harness.db.fail_commits, harness.db.commit_error = 1, SQLAlchemyError("db down")
+    engine = SimpleNamespace(player_registry=harness.registry)
+
+    result = await support.process_stat_modify_effect(
+        engine, _power_drain(), _target(target_id=str(target)), 1.0, caster_id=caster
+    )
+
+    assert result["success"] is False
+    for player_id in (target, caster):
+        view = harness.registry.peek(player_id)
+        assert view is None or view.row.stats["magic_points"] == 12
 
 
 @pytest.mark.asyncio

@@ -4,7 +4,8 @@ Print one E2E character's state as JSON (read-only; for Playwright assertions).
 
 Usage: uv run python scripts/e2e_player_state.py <character name>
 Output: {"current_room_id": ..., "respawn_room_id": ..., "tutorial_instance_id": ..., "bank_items": [item name, ...],
-"current_dp": ..., "corruption": ..., "current_lcd": ..., "inventory_items": [item name, ...],
+"current_dp": ..., "corruption": ..., "magic_points": ..., "max_magic_points": ..., "intelligence": ...,
+"current_lcd": ..., "inventory_items": [item name, ...],
 "quests": {quest id: state}, "debrief_pending": bool}
 where bank_items is what is in the character's bank deposit box (empty when they have none).
 
@@ -79,6 +80,9 @@ async def _print_state(name: str) -> None:
     state["bank_items"] = [str(stack["item_name"]) for stack in stacks]
     state["current_dp"] = _stat(row["stats"], "current_dp")
     state["corruption"] = _stat(row["stats"], "corruption")
+    state["magic_points"] = _stat(row["stats"], "magic_points")
+    state["max_magic_points"] = _stat(row["stats"], "max_magic_points")
+    state["intelligence"] = _stat(row["stats"], "intelligence")
     state["current_lcd"] = lcd
     state["inventory_items"] = [
         str(stack.get("item_name", stack.get("item_id"))) for stack in _json_list(row["inventory"])

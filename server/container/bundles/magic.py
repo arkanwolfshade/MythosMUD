@@ -6,12 +6,14 @@ Depends on Core (async_persistence), Game (player_service), Combat (combat_servi
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.container.main import ApplicationContainer
+    from server.game.player_service import PlayerService
+    from server.services.combat_service import CombatService
 
 logger = get_logger(__name__)
 
@@ -69,7 +71,11 @@ async def _create_registry_and_targeting(bundle: MagicBundle, container: Applica
 
     bundle.spell_effects = SpellEffects(
         container.player_service,
-        SpellEffectsDeps(combat_service=container.combat_service, item_granter=container.item_granter),
+        SpellEffectsDeps(
+            combat_service=cast("CombatService | None", container.combat_service),
+            item_granter=container.item_granter,
+            player_registry=container.player_registry,
+        ),
     )
     logger.info("SpellEffects initialized")
 
@@ -91,7 +97,10 @@ def _create_learning_mp_regen_and_magic(
     )
     logger.info("SpellLearningService initialized")
 
-    bundle.mp_regeneration_service = MPRegenerationService(player_service=container.player_service)
+    bundle.mp_regeneration_service = MPRegenerationService(
+        player_service=cast("PlayerService", container.player_service),
+        player_registry=container.player_registry,
+    )
     logger.info("MPRegenerationService initialized")
 
     bundle.magic_service = MagicService(
