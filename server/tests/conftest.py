@@ -5,12 +5,10 @@ This module provides core fixtures and test isolation for the new test suite.
 """
 
 import asyncio
-import functools
 import importlib
 import os
 import random
 import socket
-import struct
 import sys
 from collections.abc import Callable, Generator, Mapping
 from pathlib import Path
@@ -134,34 +132,18 @@ def deterministic_random_seed() -> Generator[None, None, None]:
     # Seed is reset automatically per test
 
 
-type _SocketPair = tuple[socket.socket, socket.socket]
-
-# SO_LINGER (on, 0 s): close() sends RST instead of FIN, so the connection skips TIME_WAIT and frees its port at once.
-_ABORTIVE_CLOSE = struct.pack("ii", 1, 0)
-
-
-def _abortive_close_socketpair[**P](original: Callable[P, _SocketPair]) -> Callable[P, _SocketPair]:
-    """Wrap socket.socketpair() so both ends close with an RST (no TIME_WAIT); the signature is unchanged."""
-
-    @functools.wraps(original)
-    def socketpair(*args: P.args, **kwargs: P.kwargs) -> _SocketPair:
-        pair = original(*args, **kwargs)
-        for sock in pair:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, _ABORTIVE_CLOSE)
-        return pair
-
-    return socketpair
-
-
 if sys.platform == "win32":
+    from server.tests.socketpair import resilient_socketpair
+
     # Every event loop builds a self-pipe with socket.socketpair(), which Windows emulates with a loopback TCP
     # connection. A normal close parks the client port in TIME_WAIT for about two minutes, and
     # asyncio_default_fixture_loop_scope = "function" gives every test its own loop, so one full server run holds
-    # about 12,000 of the 16,384 ephemeral ports. A second run, the dev server or e2e traffic then exhausts the pool;
-    # CPython's fallback socketpair never notices the failed connect() and blocks forever in accept() (the
-    # pytest-timeout dump that ends in `_fallback_socketpair`). The self-pipe only carries wake-up bytes, so dropping
-    # unsent data on an abortive close is harmless. Installed at import time, before any test creates a loop.
-    socket.socketpair = _abortive_close_socketpair(socket.socketpair)
+    # about 12,000 of the 16,384 ephemeral ports. A second run, the dev server or e2e traffic then exhausts the pool.
+    # CPython's fallback socketpair never notices a failed connect() and blocks forever in accept(), which is also
+    # what follows a VPN client stopping mid-run; pytest-timeout then ends the whole run with a dump that ends in
+    # `_fallback_socketpair`. The self-pipe only carries wake-up bytes, so dropping unsent data on an abortive close
+    # is harmless. Installed at import time, before any test creates a loop.
+    socket.socketpair = resilient_socketpair(socket.socketpair)
 
 
 def _create_test_event_loop() -> asyncio.AbstractEventLoop:
