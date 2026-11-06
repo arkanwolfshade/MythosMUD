@@ -88,7 +88,6 @@ CONTAINER_GET_INSTANCE_ALLOWLIST: tuple[AllowlistEntry, ...] = (
     ),
     AllowlistEntry("server/services/combat_death_handler.py", 2, "constructed by CombatService, not a bundle"),
     AllowlistEntry("server/services/combat_cleanup_handler.py", 1, "constructed by CombatService, not a bundle"),
-    AllowlistEntry("server/services/combat_persistence_handler.py", 1, "constructed by CombatService, not a bundle"),
     AllowlistEntry("server/services/combat_messaging/base.py", 1, "mixin, never instantiated directly"),
     AllowlistEntry(
         "server/services/npc_combat_handlers.py", 1, "constructed by NPCCombatIntegrationService, not a bundle"

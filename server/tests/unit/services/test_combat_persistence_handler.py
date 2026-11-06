@@ -8,7 +8,7 @@ Tests initialization, persistence layer access, and DP/posture updates.
 # Reason: these tests drive the handler's private DP persistence helpers directly.
 
 import uuid
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -46,60 +46,3 @@ def mock_player():
 def test_persistence_handler_init(persistence_handler, mock_combat_service):
     """Test CombatPersistenceHandler initialization."""
     assert persistence_handler._combat_service == mock_combat_service
-
-
-def test_get_player_registry(persistence_handler: CombatPersistenceHandler):
-    """Test _get_player_registry gets the player registry from the container."""
-    mock_persistence = MagicMock()
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_instance.player_registry = mock_persistence
-        mock_container.get_instance.return_value = mock_instance
-        result = persistence_handler._get_player_registry()
-        assert result == mock_persistence
-
-
-def test_get_player_registry_no_container(persistence_handler: CombatPersistenceHandler):
-    """Test _get_player_registry returns None when container unavailable."""
-    with patch("server.container.ApplicationContainer.get_instance", side_effect=ImportError("No container")):
-        result = persistence_handler._get_player_registry()
-        assert result is None
-
-
-def test_get_player_registry_container_error(persistence_handler: CombatPersistenceHandler):
-    """Test _get_player_registry handles container errors."""
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_container.get_instance.side_effect = RuntimeError("Container error")
-        result = persistence_handler._get_player_registry()
-        assert result is None
-
-
-def test_get_player_registry_no_async_persistence(persistence_handler: CombatPersistenceHandler):
-    """Test _get_player_registry handles a container without a player registry."""
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_instance.player_registry = None
-        mock_container.get_instance.return_value = mock_instance
-        result = persistence_handler._get_player_registry()
-        assert result is None
-
-
-def test_log_death_state_changes_death_threshold(persistence_handler: CombatPersistenceHandler):
-    """Test _log_death_state_changes logs death threshold."""
-    player_id = uuid.uuid4()
-    # Should not raise, just log
-    persistence_handler._log_death_state_changes(player_id, "TestPlayer", -10, 5)
-
-
-def test_log_death_state_changes_mortally_wounded(persistence_handler: CombatPersistenceHandler):
-    """Test _log_death_state_changes logs mortally wounded."""
-    player_id = uuid.uuid4()
-    persistence_handler._log_death_state_changes(player_id, "TestPlayer", 0, 5)
-
-
-def test_persist_player_dp_background_public_api(persistence_handler: CombatPersistenceHandler):
-    """Test persist_player_dp_background public API method."""
-    player_id = uuid.uuid4()
-    with patch.object(persistence_handler, "_persist_player_dp_background") as mock_persist:
-        persistence_handler.persist_player_dp_background(player_id, 30, 50, 100)
-        mock_persist.assert_called_once_with(player_id, 30, 50, 100, None, None)

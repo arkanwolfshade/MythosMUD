@@ -179,6 +179,7 @@ class CombatTurnProcessor:
             current_tick: Current game tick
         """
         combat.update_activity(current_tick)
+        await self._combat_service.refresh_player_participants(combat)
         next_round = combat.combat_round + 1
         self._load_round_actions(combat, next_round)
         participants_by_initiative = combat.get_participants_by_initiative()

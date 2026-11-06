@@ -4,15 +4,27 @@ Combat attack processing logic.
 Handles attack validation, damage application, and attack event publishing.
 """
 
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 from uuid import UUID
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.config import get_config
+from server.exceptions import DatabaseError
+from server.game.player_registry import PlayerNotFoundError
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
+from server.models.player_dp import dp_of, set_to
 from server.realtime.login_grace_period import is_player_in_login_grace_period
+from server.services.player_health_service import PlayerHealthService
 from server.structured_logging.enhanced_logging_config import get_logger
 
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
+
 logger = get_logger(__name__)
+
+# RuntimeError: a commit can surface as one, and a LockOrderError (a unit that didn't take this player) is one.
+_PLAYER_DP_ERRORS: tuple[type[Exception], ...] = (SQLAlchemyError, DatabaseError, OSError, RuntimeError)
 
 
 class _AppStateWithConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
@@ -150,6 +162,58 @@ class CombatAttackHandler:
 
         combat.update_activity(0)
         return old_dp, target_died, target_mortally_wounded
+
+    async def apply_player_hit(
+        self, registry: "PlayerRegistry", combat: CombatInstance, target: CombatParticipant, damage: int
+    ) -> tuple[int, bool, bool]:
+        """
+        Land a hit on a player's live DP as one registry unit (ADR-029 step 6c).
+
+        Combat's own rules (armor, no_death rooms, the login ward) run on the participant, but it starts from the
+        registry's DP and the result commits before this returns: every other DP writer changes only the registry, so
+        a hit that trusted the participant's copy would overwrite them. A failed commit lands no damage at all.
+
+        Returns:
+            Tuple of (old_dp, target_died, target_mortally_wounded)
+        """
+        before = target.current_dp
+        try:
+            async with registry.mutate(target.participant_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                target.current_dp = dp_of(player.row.stats)
+                live_dp = target.current_dp
+                result = await self.apply_attack_damage(combat, target, damage)
+                if target.current_dp != live_dp:
+                    _ = PlayerHealthService.apply_in(player, set_to(player.row.stats, target.current_dp))
+            return result
+        except PlayerNotFoundError:
+            # The character was deleted mid-fight: there is nothing to write, but the fight can still finish.
+            logger.warning("Player not found for a combat hit", player_id=target.participant_id)
+            return await self.apply_attack_damage(combat, target, damage)
+        except _PLAYER_DP_ERRORS as e:
+            logger.error(
+                "Combat hit could not be committed; no damage landed",
+                player_id=target.participant_id,
+                combat_id=combat.combat_id,
+                error=str(e),
+                exc_info=True,
+            )
+            target.current_dp = before
+            return before, False, False
+
+    async def refresh_player_participants(self, registry: "PlayerRegistry", combat: CombatInstance) -> None:
+        """Bring each player participant's DP up to date, so who can act and who is targeted follow heals and damage."""
+        for participant in combat.participants.values():
+            if participant.participant_type != CombatParticipantType.PLAYER:
+                continue
+            try:
+                player = await registry.get(participant.participant_id)
+            except _PLAYER_DP_ERRORS as e:
+                logger.warning(
+                    "Could not refresh a combat participant's DP", player_id=participant.participant_id, error=str(e)
+                )
+                continue
+            if player is not None:
+                participant.current_dp = dp_of(player.row.stats)
 
     def _find_combat_target(self, combat: CombatInstance, target_id: UUID) -> CombatParticipant:
         target = combat.participants.get(target_id)

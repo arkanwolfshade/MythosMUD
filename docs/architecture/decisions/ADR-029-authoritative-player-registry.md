@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.14** · MythosMUD · 2026-11-03
+**Version 1.0.15** · MythosMUD · 2026-11-05
 
 ---
 
@@ -173,8 +173,10 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 **[SPEC]**
 
-- **Combat:** a player's `CombatParticipant` references the aggregate; DP has one home. `persist_player_dp_background`,
-  the player side of `combat_persistence_handler.py`, and the dead `combat_hp_sync.py` are deleted.
+- **Combat:** DP has one home, the aggregate. A hit on a player runs as one unit on the live DP, and a player's
+  `CombatParticipant` holds a copy refreshed each round: unpinned aggregates can be evicted until step 8, so it cannot
+  hold a reference. `persist_player_dp_background`, the player side of `combat_persistence_handler.py`, and the dead
+  `combat_hp_sync.py` are deleted.
 - **Ticks** (status effects, MP regeneration, DP decay, catatonia, corruption and lucidity flux) iterate pinned
   aggregates through lazy `mutate()`. No per-tick loads or full saves.
 - **Atomic bypass writers** become aggregate mutators. That covers `heal_player` / `damage_player`, `award_player_xp`,
@@ -309,6 +311,12 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      were stored with 0, and those reads patched it. A new character is now stored with full MP and 0 means drained.
      And a `stat_modify` effect can now change MP: Power Drain's `{"stat": "mp", "transfer_to_caster": true}` was
      ignored, and now moves the MP to the caster in one transaction (player targets only).
+   - 6c: combat DP. A hit on a player is one sync unit (`CombatAttackHandler.apply_player_hit`): it reads the live DP,
+     runs combat's rules (armor, `no_death` rooms, the login ward) and commits before the client's `PlayerDPUpdated`
+     goes out. 6a only moved the old write onto the registry: it still wrote the participant's copy as an absolute
+     value, from a background task, so a heal or damage over time during a fight was overwritten by the next hit. The
+     background task and its correction event are gone; a failed commit lands no damage. Each round starts by
+     refreshing players' copies, so who can act and who is targeted follow heals made between rounds.
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
@@ -329,6 +337,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.15 | 2026-11-05 | §3.5: a player's `CombatParticipant` holds a per-round copy of DP, not a reference. §6: step 6c as shipped (a hit is one sync unit on the live DP; background write and correction event removed) |
 | 1.0.14 | 2026-11-03 | §3.4: MP is sync until step 8. §6: step 6b as shipped (MP rules, `PlayerMpService`, regeneration accrues in memory and writes per whole MP, `upsert_player` keeps MP; 0 MP means drained; Power Drain moves MP) |
 | 1.0.13 | 2026-11-03 | §3.2: the core part writes only changed columns and stats keys (a null key is removed). §3.4: DP is sync until step 8. §6: step 6a as shipped (DP rules, `PlayerHealthService`, death and respawn units, `upsert_player` keeps DP and the death room) |
 | 1.0.12 | 2026-11-03 | §3.2: the core part writes only changed `stats` keys (merged); ledgers are queued on a part. §3.4: corruption is sync. §6: step 5c as shipped (`upsert_player` keeps stored corruption; `adjust_corruption` on the persistence layer) |
