@@ -1,28 +1,19 @@
 """
-Combat persistence handling logic.
-
-Handles player DP persistence and event publishing. A player's DP is written through the player registry
-(PlayerHealthService, ADR-029 step 6a) in a background task, so a hit never waits on the database.
+Publishes a combat hit's PlayerDPUpdated event. The DP itself is committed by the hit (CombatAttackHandler, ADR-029).
 """
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-lines  # Reason: Persistence handling requires many parameters and intermediate variables for complex persistence logic. Combat persistence handler requires extensive persistence logic for comprehensive DP management.
 
-import asyncio
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
-from sqlalchemy.exc import SQLAlchemyError
-
-from server.game.player_registry import PlayerNotFoundError
 from server.services.nats_exceptions import NATSError
-from server.services.player_health_service import PlayerHealthService
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    # Runtime import stays inline (in the two publish methods) to avoid a circular import;
+    # Runtime import stays inline (in the publish method) to avoid a circular import;
     # this one is type-checking only and never executes.
     from server.events.event_types import PlayerDPUpdated
-    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -40,7 +31,7 @@ class CombatPersistenceHandler:
         self._combat_service = combat_service
 
     # Exceptions from event_bus.publish()/nats_service.publish() that are logged and
-    # swallowed rather than propagated -- a DP event/correction failing to broadcast must
+    # swallowed rather than propagated -- a DP event failing to broadcast must
     # never fail the combat action that triggered it.
     _EVENT_PUBLISH_EXCEPTIONS: tuple[type[Exception], ...] = (
         NATSError,
@@ -55,12 +46,7 @@ class CombatPersistenceHandler:
     def _publish_dp_event_to_bus(
         self, event: "PlayerDPUpdated", player_id: UUID, event_label: str, success_extra: dict[str, object]
     ) -> None:
-        """Publish a PlayerDPUpdated(-shaped) event to the shared combat-service event bus.
-
-        Shared by _publish_player_dp_update_event_impl and _publish_player_dp_correction_event
-        (issue #787): both looked up the same event_bus and ran the identical
-        publish-or-log-and-swallow sequence, differing only in the log text/extra fields.
-        """
+        """Publish a PlayerDPUpdated event to the shared combat-service event bus; a failure is logged, not raised."""
         # Reason: SERIALIZATION_BOUNDARY - _combat_service is Any per this class's own
         # __init__(combat_service: Any); every method in this class resolves dependencies
         # off it the same way.
@@ -92,212 +78,6 @@ class CombatPersistenceHandler:
                 error=str(e),
                 exc_info=True,
             )
-
-    def _get_player_registry(self) -> "PlayerRegistry | None":
-        """The application container's player registry, or None if unavailable."""
-        try:
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            return getattr(container, "player_registry", None) if container else None
-        except (
-            ImportError,
-            AttributeError,
-            ValueError,
-            TypeError,
-            RuntimeError,
-            NATSError,
-            ConnectionError,
-            KeyError,
-        ) as e:
-            logger.warning("Could not get the player registry from container", error=str(e))
-            return None
-
-    def _log_death_state_changes(self, player_id: UUID, player_name: str, current_dp: int, old_dp: int) -> None:
-        """
-        Log death state changes (death threshold or mortally wounded).
-
-        Args:
-            player_id: ID of the player
-            player_name: Name of the player
-            current_dp: Current DP value
-            old_dp: Previous DP value
-        """
-        # Check if player has reached death threshold
-        # CRITICAL: Players at 0 DP or below should enter mortally wounded state immediately
-        # Players at -10 DP should trigger death handling and limbo transition
-        if current_dp <= -10 and old_dp > -10:
-            logger.info(
-                "Player reached death threshold in combat - triggering immediate death handling",
-                player_id=player_id,
-                player_name=player_name,
-                final_dp=current_dp,
-            )
-            # Immediately trigger death handling and move to limbo
-            # NOTE: The game tick loop will also check for dead players, but this provides immediate handling
-            # We'll let the game tick loop handle it since we don't have easy access to a database session here
-            # The tick loop runs every second, so the delay is minimal
-            logger.debug(
-                "Player reached death threshold - will be handled by game tick loop within 1 second",
-                player_id=player_id,
-                player_name=player_name,
-            )
-        elif current_dp <= 0 < old_dp:
-            # Player just became mortally wounded
-            logger.info(
-                "Player became mortally wounded in combat",
-                player_id=player_id,
-                player_name=player_name,
-                current_dp=current_dp,
-            )
-            # DP decay will be processed automatically by the tick loop
-
-    async def _persist_player_dp_sync(self, player_id: UUID, current_dp: int) -> None:
-        """
-        Write the player's combat DP (and the posture it implies) through the player registry, as one sync unit.
-
-        Called from the background task; a failed write raises, so that task sends the correction event.
-
-        Args:
-            player_id: ID of the player whose DP changed
-            current_dp: New current DP value
-        """
-        registry = self._get_player_registry()
-        if registry is None:
-            logger.warning("No player registry available for DP persistence", player_id=player_id)
-            return
-        try:
-            change = await PlayerHealthService(registry).set_dp(player_id, current_dp)
-        except PlayerNotFoundError:
-            logger.warning("Player not found for DP persistence", player_id=player_id)
-            return
-        player = registry.peek(player_id)
-        player_name = player.row.name if player is not None else str(player_id)
-        if change.became_mortally_wounded:
-            logger.info(
-                "Player posture changed to lying (unconscious in combat)",
-                player_id=player_id,
-                player_name=player_name,
-                dp=current_dp,
-            )
-        # The DP update event was already published in process_attack(), before this write.
-        self._log_death_state_changes(player_id, player_name, current_dp, change.old_dp)
-
-    def _persist_player_dp_background(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: DP persistence requires many parameters for context and persistence operations
-        self,
-        player_id: UUID,
-        current_dp: int,
-        old_dp: int,
-        max_dp: int,
-        room_id: str | None = None,
-        combat_id: str | None = None,
-    ) -> None:
-        """
-        Persist player DP to database in background (fire-and-forget).
-
-        This method runs database persistence asynchronously without blocking the combat flow.
-        If persistence fails, a correction event is sent to update the client with the correct DP.
-
-        Args:
-            player_id: ID of the player whose DP changed
-            current_dp: New current DP value
-            old_dp: Previous DP value (for correction events if save fails)
-            max_dp: Maximum DP value
-            room_id: Room ID where the change occurred (for error context)
-            combat_id: Combat ID for context
-        """
-
-        async def _persist_and_handle_errors() -> None:
-            """Background task to persist DP and handle errors."""
-            try:
-                await self._persist_player_dp_sync(player_id, current_dp)
-                logger.debug(
-                    "Background DP persistence completed successfully",
-                    player_id=player_id,
-                    current_dp=current_dp,
-                )
-            except (
-                AttributeError,
-                ValueError,
-                TypeError,
-                RuntimeError,
-                ConnectionError,
-                OSError,
-                ImportError,
-                KeyError,
-                NATSError,
-                SQLAlchemyError,
-            ) as e:
-                logger.error(
-                    "Background DP persistence failed - sending correction event",
-                    player_id=player_id,
-                    current_dp=current_dp,
-                    error=str(e),
-                    exc_info=True,
-                )
-                # Send correction event with old_dp to revert the optimistic update
-                # This ensures the client shows the correct DP if database save failed
-                try:
-                    await self._publish_player_dp_correction_event(
-                        player_id, old_dp, max_dp, room_id, combat_id, str(e)
-                    )
-                except (
-                    AttributeError,
-                    ValueError,
-                    TypeError,
-                    RuntimeError,
-                    ConnectionError,
-                    OSError,
-                    ImportError,
-                    KeyError,
-                    NATSError,
-                ) as correction_error:
-                    logger.error(
-                        "Failed to send DP correction event after persistence failure",
-                        player_id=player_id,
-                        error=str(correction_error),
-                        exc_info=True,
-                    )
-
-        # Create background task (fire-and-forget)
-        try:
-            asyncio.create_task(_persist_and_handle_errors())
-            logger.debug(
-                "Created background task for DP persistence",
-                player_id=player_id,
-                current_dp=current_dp,
-            )
-        except RuntimeError as e:
-            # No event loop available - log error but don't crash
-            logger.error(
-                "Cannot create background task - no event loop available",
-                player_id=player_id,
-                error=str(e),
-            )
-
-    def persist_player_dp_background(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: DP persistence requires many parameters for context and persistence operations
-        self,
-        player_id: UUID,
-        current_dp: int,
-        old_dp: int,
-        max_dp: int,
-        room_id: str | None = None,
-        combat_id: str | None = None,
-    ) -> None:
-        """
-        Persist player DP to database in background (fire-and-forget).
-
-        Public API method that wraps the internal implementation.
-
-        Args:
-            player_id: ID of the player whose DP changed
-            current_dp: New current DP value
-            old_dp: Previous DP value (for correction events if save fails)
-            max_dp: Maximum DP value
-            room_id: Room ID where the change occurred (for error context)
-            combat_id: Combat ID for context
-        """
-        self._persist_player_dp_background(player_id, current_dp, old_dp, max_dp, room_id, combat_id)
 
     async def publish_player_dp_update_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
         self,
@@ -445,62 +225,6 @@ class CombatPersistenceHandler:
                 player_id=player_id,
                 old_dp=old_dp,
                 new_dp=new_dp,
-                error=str(e),
-                exc_info=True,
-            )
-
-    async def _publish_player_dp_correction_event(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Event publishing requires many parameters for complete event context
-        self,
-        player_id: UUID,
-        correct_dp: int,
-        max_dp: int,
-        room_id: str | None = None,
-        combat_id: str | None = None,
-        error_message: str | None = None,
-    ) -> None:
-        """
-        Publish a correction event when database persistence fails.
-
-        This sends a PlayerDPUpdated event with the correct (previous) DP value
-        to revert an optimistic update that failed to persist.
-
-        Args:
-            player_id: ID of the player whose DP needs correction
-            correct_dp: The correct DP value (from before the failed update)
-            max_dp: Maximum DP value
-            room_id: Room ID where the change occurred
-            combat_id: Combat ID for context
-            error_message: Error message explaining why correction is needed
-        """
-        try:
-            logger.warning(
-                "Publishing DP correction event due to persistence failure",
-                player_id=player_id,
-                correct_dp=correct_dp,
-                error_message=error_message,
-            )
-            from server.events.event_types import PlayerDPUpdated
-
-            # Create correction event - damage_taken is 0 since we're reverting
-            correction_event = PlayerDPUpdated(
-                player_id=player_id,  # player_id is already UUID
-                old_dp=correct_dp,  # This will be the "new" DP shown to client
-                new_dp=correct_dp,  # Revert to correct DP
-                max_dp=max_dp,
-                damage_taken=0,  # No damage change, just correction
-                source_id=None,
-                combat_id=combat_id,
-                room_id=room_id,
-            )
-
-            self._publish_dp_event_to_bus(
-                correction_event, player_id, "DP correction event", {"correct_dp": correct_dp}
-            )
-
-        except self._EVENT_PUBLISH_EXCEPTIONS as e:
-            logger.error(
-                "Error publishing DP correction event",
-                player_id=player_id,
                 error=str(e),
                 exc_info=True,
             )

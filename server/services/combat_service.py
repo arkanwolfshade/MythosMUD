@@ -343,25 +343,6 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
 
         return await validate_melee_location_impl(self, combat, attacker, target)
 
-    async def _handle_player_dp_update(self, target: CombatParticipant, old_dp: int, combat: CombatInstance) -> None:
-        """Handle player DP update, persistence, and event publishing."""
-        await self._persistence_handler.publish_player_dp_update_event(
-            target.participant_id,
-            old_dp,
-            target.current_dp,
-            target.max_dp,
-            combat_id=str(combat.combat_id),
-            room_id=combat.room_id,
-        )
-        self._persistence_handler.persist_player_dp_background(
-            target.participant_id,
-            target.current_dp,
-            old_dp,
-            target.max_dp,
-            combat.room_id,
-            str(combat.combat_id),
-        )
-
     async def check_involuntary_flee(self, target: CombatParticipant, damage: int, combat: CombatInstance) -> bool:
         """Return True if player should involuntarily flee due to lucidity effects."""
         _ = combat  # Intentionally unused - reserved for future combat context needs
@@ -378,13 +359,28 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     async def apply_attack_damage(
         self, combat: CombatInstance, target: CombatParticipant, damage: int
     ) -> tuple[int, bool, bool]:
-        """Apply damage to target and update combat state."""
-        old_dp, target_died, target_mortally_wounded = await self._attack_handler.apply_attack_damage(
-            combat, target, damage
-        )
-        if target.participant_type == CombatParticipantType.PLAYER:
-            await self._handle_player_dp_update(target, old_dp, combat)
-        return old_dp, target_died, target_mortally_wounded
+        """Apply damage to target and update combat state; a player's DP is committed before the client hears of it."""
+        is_player = target.participant_type == CombatParticipantType.PLAYER
+        if is_player and self.player_registry is not None:
+            result = await self._attack_handler.apply_player_hit(self.player_registry, combat, target, damage)
+        else:
+            result = await self._attack_handler.apply_attack_damage(combat, target, damage)
+        old_dp = result[0]
+        if is_player and target.current_dp != old_dp:
+            await self._persistence_handler.publish_player_dp_update_event(
+                target.participant_id,
+                old_dp,
+                target.current_dp,
+                target.max_dp,
+                combat_id=str(combat.combat_id),
+                room_id=combat.room_id,
+            )
+        return result
+
+    async def refresh_player_participants(self, combat: CombatInstance) -> None:
+        """Bring player participants' DP up to date with the registry (run at the start of each round)."""
+        if self.player_registry is not None:
+            await self._attack_handler.refresh_player_participants(self.player_registry, combat)
 
     async def handle_target_state_changes(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: State change handling requires many parameters for context and state updates
         self,

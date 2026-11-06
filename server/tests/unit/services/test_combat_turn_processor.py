@@ -29,7 +29,9 @@ from server.services.combat_turn_processor import CombatTurnProcessor
 @pytest.fixture
 def mock_combat_service() -> MagicMock:
     """Create a mock combat service."""
-    return MagicMock()
+    service = MagicMock()
+    service.refresh_player_participants = AsyncMock()
+    return service
 
 
 @pytest.fixture

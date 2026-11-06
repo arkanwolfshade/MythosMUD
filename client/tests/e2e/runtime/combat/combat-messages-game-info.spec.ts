@@ -331,4 +331,54 @@ test.describe('Combat messages in Game Info', () => {
     await despawnSanitariumCultists(awContext.page);
     awContext.page = await ensurePlayableAlive(awContext.page, awContext.player.username, awContext.player.password);
   });
+
+  test('a hit counts from the live DP, not the DP combat started with (ADR-029 step 6c)', async () => {
+    test.setTimeout(240_000);
+    const awContext = contexts[0];
+    const username = awContext.player.username;
+    const readDp = async (): Promise<number> =>
+      Number(await awContext.page.getByTestId('health-meter').getByRole('meter').getAttribute('aria-valuenow'));
+
+    await ensurePlayerInGame(awContext, 30000);
+    awContext.page = await ensurePlayableAlive(awContext.page, username, awContext.player.password);
+    await despawnSanitariumCultists(awContext.page);
+    awContext.page = await ensurePlayableAlive(awContext.page, username, awContext.player.password);
+    await waitForEntryWardCleared(awContext.page, 60000);
+
+    try {
+      // The cultist hits for 25 and a fight ends at 0 DP, so a 20 DP player never takes a second hit.
+      const startDp = 200;
+      await executeCommand(awContext.page, `admin set DP ${username} ${startDp}`);
+      await expect.poll(readDp, { timeout: 15000, message: 'the admin set reaches the meter' }).toBe(startDp);
+
+      // An aggressive cultist starts the fight when it spawns, with an opening hit.
+      await executeCommand(awContext.page, `npc spawn ${SPAWN_NPC_ID}`);
+      await expect.poll(readDp, { timeout: 30000, message: 'the opening hit lands' }).toBeLessThan(startDp);
+
+      // Lower by more than one hit: a stale write (the DP combat knows, minus 25) sends the meter back above this.
+      const lowered = (await readDp()) - 50;
+      await executeCommand(awContext.page, `admin set DP ${username} ${lowered}`);
+      await expect
+        .poll(readDp, { timeout: 15000, message: 'the lowered DP reaches the meter' })
+        .toBeLessThanOrEqual(lowered);
+
+      const seen: number[] = [];
+      await expect
+        .poll(
+          async () => {
+            const dp = await readDp();
+            seen.push(dp);
+            return dp;
+          },
+          { timeout: 90000, message: 'the cultist lands the next hit' }
+        )
+        .toBeLessThan(lowered);
+      expect(Math.max(...seen)).toBeLessThanOrEqual(lowered);
+    } finally {
+      // Always: the player must not stay at above-max DP for later specs.
+      await ensureNotInCombat(awContext.page);
+      await despawnSanitariumCultists(awContext.page);
+      awContext.page = await ensurePlayableAlive(awContext.page, username, awContext.player.password);
+    }
+  });
 });
