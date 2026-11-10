@@ -32,6 +32,7 @@ if TYPE_CHECKING:
     from server.game.skill_service import SkillService
     from server.realtime.connection_manager import ConnectionManager
     from server.services.instance_flush_service import InstanceFlushService
+    from server.services.player_position_service import SupportsPlayerPersistence
     from server.services.user_manager import UserManager
 
 logger = get_logger(__name__)
@@ -218,13 +219,19 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             exploration_service=self.exploration_service,
             instance_manager=instance_manager,
             instance_flush=flusher,
+            player_registry=self.player_registry,
         )
         from server.game.follow_service import FollowService
         from server.services.player_position_service import PlayerPositionService
 
         connection_manager = getattr(container, "connection_manager", None)
         alias_storage = getattr(container, "alias_storage", None)
-        self.player_position_service = PlayerPositionService(async_persistence, connection_manager, alias_storage)
+        self.player_position_service = PlayerPositionService(
+            cast("SupportsPlayerPersistence", async_persistence),
+            connection_manager,
+            alias_storage,
+            self.player_registry,
+        )
         self.follow_service = FollowService(
             event_bus=event_bus,
             movement_service=self.movement_service,

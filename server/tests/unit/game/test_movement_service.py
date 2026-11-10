@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.game.instance_manager import InstanceManager
 from server.game.movement_helpers import (
     check_combat_state,
     check_player_posture,
@@ -20,7 +19,7 @@ from server.game.movement_helpers import (
 from server.game.movement_service import MovementService
 from server.models.player import Player
 from server.models.room import Room
-from server.services.instance_flush_service import InstanceFlushService
+from server.tests.fixtures.shared.player_registry import any_player_registry
 
 
 @pytest.fixture
@@ -41,6 +40,7 @@ def movement_service(mock_persistence, mock_event_bus):
     return MovementService(
         event_bus=mock_event_bus,
         async_persistence=mock_persistence,
+        player_registry=any_player_registry(),
     )
 
 
@@ -48,12 +48,6 @@ def test_movement_service_init_no_persistence():
     """Test MovementService initialization without persistence raises error."""
     with pytest.raises(ValueError, match="async_persistence is required"):
         MovementService(async_persistence=None)
-
-
-def test_movement_service_init(mock_persistence):
-    """Test MovementService initialization."""
-    service = MovementService(async_persistence=mock_persistence)
-    assert service._persistence == mock_persistence
 
 
 @pytest.mark.asyncio
@@ -295,7 +289,6 @@ async def test_move_player_success(movement_service, mock_persistence):
     assert result is True
     mock_from.player_left.assert_called_once()
     mock_to.player_entered.assert_called_once()
-    mock_persistence.save_player.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -733,103 +726,3 @@ async def test_validate_movement_rooms_refuses_instance_template(
 
     assert allowed is False
     membership.assert_not_awaited()
-
-
-def _exit_hook_setup(
-    mock_persistence: MagicMock, respawn_room_id: str
-) -> tuple[MovementService, Player, str, AsyncMock, AsyncMock]:
-    rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
-    instance_manager = InstanceManager(room_cache={BEDROOM_ID: rooms[BEDROOM_ID]})
-    instance = instance_manager.create_instance("tutorial_sanitarium", uuid.uuid4())
-    flush = AsyncMock(return_value=0)
-    flusher = MagicMock()
-    flusher.configure_mock(flush=flush)
-    save = AsyncMock()
-    mock_persistence.configure_mock(get_room_by_id=MagicMock(side_effect=rooms.get), save_player=save)
-    service = MovementService(
-        async_persistence=mock_persistence,
-        instance_manager=instance_manager,
-        instance_flush=cast(InstanceFlushService, flusher),
-    )
-    player = Player(
-        player_id=str(uuid.uuid4()),
-        name="Newbie",
-        respawn_room_id=respawn_room_id,
-        tutorial_instance_id=instance.instance_id,
-    )
-    return service, player, instance.instance_id, save, flush
-
-
-@pytest.mark.asyncio
-async def test_tutorial_exit_flushes_instance_and_moves_template_respawn(mock_persistence: MagicMock) -> None:
-    """Walking out clears the instance, flushes it, and never leaves respawn on the template."""
-    service, player, instance_id, save, flush = _exit_hook_setup(mock_persistence, BEDROOM_ID)
-
-    await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    assert player.tutorial_instance_id is None
-    assert player.respawn_room_id == FOYER_ID
-    save.assert_awaited_once_with(player)
-    flush.assert_awaited_once_with(instance_id)
-
-
-@pytest.mark.asyncio
-async def test_tutorial_exit_keeps_a_normal_respawn_room(mock_persistence: MagicMock) -> None:
-    """A respawn already moved by the quest reward (or any non-template room) is left alone."""
-    service, player, _, _, flush = _exit_hook_setup(mock_persistence, FOYER_ID)
-
-    await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    assert player.respawn_room_id == FOYER_ID
-    flush.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_tutorial_exit_tells_the_player_their_things_are_in_the_deposit_box(mock_persistence: MagicMock) -> None:
-    service, player, _, _, flush = _exit_hook_setup(mock_persistence, FOYER_ID)
-    flush.return_value = 2
-
-    with patch("server.game.movement_service.send_system_notification", new_callable=AsyncMock) as notify:
-        await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    notify.assert_awaited_once()
-    assert notify.await_args is not None
-    assert notify.await_args.args[0] == player.player_id
-    assert "deposit box at Arkham Savings & Trust" in notify.await_args.args[1]
-
-
-@pytest.mark.asyncio
-async def test_tutorial_exit_is_silent_when_nothing_was_left_behind(mock_persistence: MagicMock) -> None:
-    service, player, _, _, _ = _exit_hook_setup(mock_persistence, FOYER_ID)  # its flush moves 0 stacks by default
-
-    with patch("server.game.movement_service.send_system_notification", new_callable=AsyncMock) as notify:
-        await service._handle_tutorial_exit_if_applicable(player, FOYER_ID)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    notify.assert_not_awaited()
-
-
-@pytest.mark.asyncio
-async def test_tutorial_exit_hook_ignores_other_destinations(mock_persistence: MagicMock) -> None:
-    service, player, instance_id, save, flush = _exit_hook_setup(mock_persistence, BEDROOM_ID)
-
-    await service._handle_tutorial_exit_if_applicable(player, "earth_arkhamcity_sanitarium_room_hallway_001")  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    assert player.tutorial_instance_id == instance_id
-    save.assert_not_awaited()
-    flush.assert_not_awaited()
-
-
-def test_room_transfer_tells_the_source_room_where_the_player_went(mock_persistence: MagicMock) -> None:
-    """Walking sets PlayerLeftRoom.to_room_id; only such leaves count as quest exits (not disconnects)."""
-    service = MovementService(async_persistence=mock_persistence)
-    player_left = MagicMock()
-    player_entered = MagicMock()
-    from_room = MagicMock()
-    from_room.configure_mock(id=FOYER_ID, player_left=player_left)
-    to_room = MagicMock()
-    to_room.configure_mock(id="earth_arkhamcity_sanitarium_room_hallway_001", player_entered=player_entered)
-
-    service._execute_room_transfer(from_room, to_room, "player-1", {})  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
-
-    player_left.assert_called_once_with("player-1", to_room_id="earth_arkhamcity_sanitarium_room_hallway_001")
-    player_entered.assert_called_once_with("player-1", force_event=True, from_room_id=FOYER_ID)

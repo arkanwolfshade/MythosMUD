@@ -22,7 +22,6 @@ from ..utils.room_utils import extract_subzone_from_room_id
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
-    from ..game.movement_service import MovementService
     from ..models.room import Room
 
 logger: BoundLogger = get_logger(__name__)
@@ -63,14 +62,6 @@ class NPCMovementIntegration:
         if persistence is None:
             raise ValueError("persistence (async_persistence) is required for NPCMovementIntegration")
         self.persistence = persistence
-        # Lazy import to avoid circular dependency
-        # MovementService imports from services/ which imports npc_instance_service
-        # which imports from npc/__init__ which imports this module
-        self.movement_service: MovementService | None = None
-        if event_bus:
-            from ..game.movement_service import MovementService
-
-            self.movement_service = MovementService(event_bus=event_bus, async_persistence=persistence)
 
         logger.debug("NPC movement integration initialized")
 

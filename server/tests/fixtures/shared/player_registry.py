@@ -210,6 +210,16 @@ def install_player_registry(monkeypatch: pytest.MonkeyPatch, player: object) -> 
     return RegistryHarness(registry, db)
 
 
+def any_player_registry(db: FakeDatabase | None = None, *, room_id: str = "room_001") -> PlayerRegistry:
+    """A real registry that knows any player id, standing in ``room_id``; ``db`` (or a fresh one) is what it commits to."""
+    database = db or FakeDatabase()
+
+    async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate:
+        return aggregate(raw_row(player_id, current_room_id=room_id))
+
+    return PlayerRegistry(database.session, loader=load)
+
+
 @dataclass
 class LucidityHarness:
     """A real registry holding seeded players' lucidity, the database its flushes write to, and the events it published."""

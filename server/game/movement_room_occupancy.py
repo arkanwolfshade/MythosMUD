@@ -7,12 +7,11 @@ placement, logout, teleport bookkeeping, and occupancy lookups. Split out of mov
 """
 
 # pyright: reportUninitializedInstanceVariable=false
-# Reason: mixin; MovementService.__init__ sets _persistence, _lock and _logger.
+# Reason: mixin; MovementService.__init__ sets _persistence, _registry and _logger.
 # pylint: disable=too-few-public-methods  # Reason: mixin; its public methods are counted on MovementService
 
 from __future__ import annotations
 
-import threading
 import uuid
 from typing import TYPE_CHECKING
 
@@ -21,16 +20,18 @@ from structlog.stdlib import BoundLogger
 
 from ..exceptions import DatabaseError, ValidationError
 from ..utils.error_logging import log_and_raise
+from .player_registry import PlayerNotFoundError
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+    from .player_registry import PlayerRegistry
 
 
 class RoomOccupancyMixin:
-    """Room occupancy API; the host (MovementService) provides _persistence, _lock and _logger."""
+    """Room occupancy API; the host (MovementService) provides _persistence, _registry and _logger."""
 
     _persistence: AsyncPersistenceLayer
-    _lock: threading.RLock
+    _registry: PlayerRegistry
     _logger: BoundLogger
 
     def _validate_add_player_ids(self, player_id: uuid.UUID | str, room_id: str) -> None:
@@ -65,15 +66,10 @@ class RoomOccupancyMixin:
             player_uuid = player_id
 
         try:
-            player = await self._persistence.get_player_by_id(player_uuid)
-        except ValueError, AttributeError:
-            return
-
-        if not player:
-            return
-
-        setattr(player, "current_room_id", room_id)  # noqa: B010  # Reason: SQLAlchemy column descriptor
-        await self._persistence.save_player(player)
+            async with self._registry.mutate(player_uuid) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                player.row.set_current_room_id(room_id, sync=True)
+        except PlayerNotFoundError:
+            return  # no such player: nothing to place
 
     async def add_player_to_room(self, player_id: uuid.UUID | str, room_id: str) -> bool:
         """
@@ -88,34 +84,33 @@ class RoomOccupancyMixin:
         """
         self._validate_add_player_ids(player_id, room_id)
 
-        with self._lock:
-            try:
-                room = self._persistence.get_room_by_id(room_id)
-                if not room:
-                    self._logger.error("Room not found", room_id=room_id)
-                    return False
+        try:
+            room = self._persistence.get_room_by_id(room_id)
+            if not room:
+                self._logger.error("Room not found", room_id=room_id)
+                return False
 
-                if room.has_player(player_id):
-                    self._logger.warning("Player already in room", player_id=player_id, room_id=room_id)
-                    return True
-
-                room.add_player_silently(player_id)
-                await self._persist_added_player_room(player_id, room_id)
-
-                self._logger.info("Added player to room", player_id=player_id, room_id=room_id)
+            if room.has_player(player_id):
+                self._logger.warning("Player already in room", player_id=player_id, room_id=room_id)
                 return True
 
-            except (DatabaseError, SQLAlchemyError) as e:
-                self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
-                log_and_raise(
-                    DatabaseError,
-                    f"Error adding player {player_id} to room {room_id}: {e}",
-                    player_id=player_id,
-                    room_id=room_id,
-                    operation="add_player_to_room",
-                    details={"player_id": player_id, "room_id": room_id, "error": str(e)},
-                    user_friendly="Failed to add player to room",
-                )
+            room.add_player_silently(player_id)
+            await self._persist_added_player_room(player_id, room_id)
+
+            self._logger.info("Added player to room", player_id=player_id, room_id=room_id)
+            return True
+
+        except (DatabaseError, SQLAlchemyError) as e:
+            self._logger.error("Error adding player to room", player_id=player_id, room_id=room_id, error=str(e))
+            log_and_raise(
+                DatabaseError,
+                f"Error adding player {player_id} to room {room_id}: {e}",
+                player_id=player_id,
+                room_id=room_id,
+                operation="add_player_to_room",
+                details={"player_id": player_id, "room_id": room_id, "error": str(e)},
+                user_friendly="Failed to add player to room",
+            )
 
     def _validate_remove_player_params(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """Validate parameters for remove_player_from_room operation."""
@@ -151,37 +146,34 @@ class RoomOccupancyMixin:
         """
         self._validate_remove_player_params(player_id, room_id)
 
-        with self._lock:
-            try:
-                room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
-                if not room:
-                    self._logger.error("Room not found", room_id=room_id)
-                    return False
+        try:
+            room = self._persistence.get_room_by_id(room_id)  # Sync method, uses cache
+            if not room:
+                self._logger.error("Room not found", room_id=room_id)
+                return False
 
-                # Check if player is in the room
-                if not room.has_player(player_id):
-                    self._logger.warning("Player not in room", player_id=player_id, room_id=room_id)
-                    return True  # Consider this a success
+            # Check if player is in the room
+            if not room.has_player(player_id):
+                self._logger.warning("Player not in room", player_id=player_id, room_id=room_id)
+                return True  # Consider this a success
 
-                # Remove player from room
-                room.player_left(player_id)
+            # Remove player from room
+            room.player_left(player_id)
 
-                self._logger.info("Removed player from room", player_id=player_id, room_id=room_id)
-                return True
+            self._logger.info("Removed player from room", player_id=player_id, room_id=room_id)
+            return True
 
-            except (DatabaseError, SQLAlchemyError) as e:
-                self._logger.error(
-                    "Error removing player from room", player_id=player_id, room_id=room_id, error=str(e)
-                )
-                log_and_raise(
-                    DatabaseError,
-                    f"Error removing player {player_id} from room {room_id}: {e}",
-                    player_id=player_id,
-                    room_id=room_id,
-                    operation="remove_player_from_room",
-                    details={"player_id": player_id, "room_id": room_id, "error": str(e)},
-                    user_friendly="Failed to remove player from room",
-                )
+        except (DatabaseError, SQLAlchemyError) as e:
+            self._logger.error("Error removing player from room", player_id=player_id, room_id=room_id, error=str(e))
+            log_and_raise(
+                DatabaseError,
+                f"Error removing player {player_id} from room {room_id}: {e}",
+                player_id=player_id,
+                room_id=room_id,
+                operation="remove_player_from_room",
+                details={"player_id": player_id, "room_id": room_id, "error": str(e)},
+                user_friendly="Failed to remove player from room",
+            )
 
     async def get_player_room(self, player_id: uuid.UUID | str) -> str | None:
         """

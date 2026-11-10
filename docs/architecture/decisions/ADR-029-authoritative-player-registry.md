@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.16** · MythosMUD · 2026-11-10
+**Version 1.0.17** · MythosMUD · 2026-11-10
 
 ---
 
@@ -333,7 +333,22 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      batched statement, which would leave a resident copy of the rows stale (an expired effect would keep running),
      so the part now counts down its own copy and queues the same procedure for the one player in the unit. A
      player with only count-down effects costs one unit a second until pinning (step 8) lets the counters be lazy.
-7. Movement, magic, skills and spells, social, exploration.
+7. Movement, magic, skills and spells, social, exploration. Split by area (7a to 7d), each its own PR.
+   - 7a: movement and posture. `MovementService.move_player` is one unit of work on the moving player: it resolves
+     the player (by id or name), holds their registry lock from validation to the commit, writes the new room (and,
+     on leaving a tutorial instance, `tutorial_instance_id` and a template `respawn_room_id`) as one sync write of
+     only the changed columns, and flushes the exited instance after the commit. The flush opens its own container
+     unit, so it cannot run inside the player's. This replaces the `threading.RLock` held across awaits, which
+     excluded nothing between coroutines: two moves of one player validated at once, each saved the whole loaded
+     row, and either could put back a posture or XP change the other had just made. `add_player_to_room` writes
+     its room through a unit the same way, and the sync occupancy methods lose the lock (they hold it across no
+     awaits). `PlayerPositionService` writes `stats.position` as a unit, so sitting, standing and resting no
+     longer save the player. Both services require the registry; there is no fallback to `save_player`.
+     Still open until step 8: `upsert_player` writes the room, `last_active` and most stats from whatever copy a
+     legacy saver holds (logout, the tutorial reconnect, admin set stat, quest rewards, communication), and the
+     reconnect relies on that to place a player in a fresh instance. A save from a copy loaded before a move or
+     a posture change can still put the old value back; making `upsert_player` keep an existing player's room and
+     posture waits for those writers to move.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
 
@@ -353,6 +368,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.17 | 2026-11-10 | §6: step 7 is split into 7a to 7d. Step 7a as shipped (a move is one unit on the moving player, replacing the `RLock`; room, tutorial exit and posture are changed-column sync writes; the instance flush follows the commit; `upsert_player` still takes the room from legacy savers until step 8) |
 | 1.0.16 | 2026-11-10 | §3.4: effects and their countdown are sync until step 8 (counters lazy then). §6: step 6d as shipped (`PlayerEffectsPart`, row-level sync writes with part-named ids, loaded by `get_player_lucidity_state`; `PlayerEffects` service; the tick is one unit per player with effects and sends damage-over-time DP updates; the countdown moves from a batched statement into the unit) |
 | 1.0.15 | 2026-11-05 | §3.5: a player's `CombatParticipant` holds a per-round copy of DP, not a reference. §6: step 6c as shipped (a hit is one sync unit on the live DP; background write and correction event removed) |
 | 1.0.14 | 2026-11-03 | §3.4: MP is sync until step 8. §6: step 6b as shipped (MP rules, `PlayerMpService`, regeneration accrues in memory and writes per whole MP, `upsert_player` keeps MP; 0 MP means drained; Power Drain moves MP) |
