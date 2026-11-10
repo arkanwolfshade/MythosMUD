@@ -186,6 +186,12 @@ async def _start_rest_countdown(
     connection_manager.resting_players[player_id] = task
 
 
+def _player_registry_of(app: Any) -> Any:
+    """The player registry on the app's container (None when the app has none, as in a partial test app)."""
+    container = getattr(getattr(app, "state", None), "container", None)
+    return getattr(container, "player_registry", None)
+
+
 async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: Any) -> None:
     """/rest sits the player; interrupting rest must restore standing so sessions are not stuck Sitting."""
     persistence = getattr(connection_manager, "async_persistence", None)
@@ -206,7 +212,8 @@ async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: 
         return
 
     try:
-        position_service = PlayerPositionService(persistence, connection_manager, None)
+        registry = _player_registry_of(getattr(connection_manager, "app", None))
+        position_service = PlayerPositionService(persistence, connection_manager, None, registry)
         result = await position_service.change_position(player_name, "standing")
         if result.get("success"):
             _ = await emit_posture_change(
@@ -340,9 +347,10 @@ async def _begin_seated_rest_countdown(
     persistence: Any,
     connection_manager: Any,
     alias_storage: AliasStorage | None,
+    player_registry: Any,
 ) -> dict[str, Any]:
     """Set sitting position if needed, then start rest countdown and build client payload."""
-    position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
+    position_service = PlayerPositionService(persistence, connection_manager, alias_storage, player_registry)
     position_result = await position_service.change_position(player_name, "sitting")
 
     if not position_result.get("success") and position_result.get("position") != "sitting":
@@ -405,7 +413,9 @@ async def _execute_rest_flow(
         _ = asyncio.create_task(_delayed_disconnect_player_intentionally(player_id, connection_manager, persistence))
         return {"result": "You rest peacefully and disconnect from the game."}
 
-    return await _begin_seated_rest_countdown(player_id, player_name, persistence, connection_manager, alias_storage)
+    return await _begin_seated_rest_countdown(
+        player_id, player_name, persistence, connection_manager, alias_storage, _player_registry_of(app)
+    )
 
 
 async def handle_rest_command(

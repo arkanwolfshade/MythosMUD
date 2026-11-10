@@ -11,12 +11,18 @@ fall out of alignment with the eldritch record.
 from __future__ import annotations
 
 import uuid
-from typing import Protocol, TypedDict
+from typing import TYPE_CHECKING, Protocol, TypedDict
+
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
 from ..exceptions import DatabaseError
+from ..game.player_registry import PlayerNotFoundError
 from ..structured_logging.enhanced_logging_config import get_logger
 from .position_messages import POSITION_MESSAGES
+
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -56,8 +62,6 @@ class SupportsPlayerPersistence(Protocol):  # pylint: disable=too-few-public-met
 
     async def get_player_by_name(self, name: str) -> PositionPlayer | None: ...
 
-    async def save_player(self, player: PositionPlayer) -> None: ...
-
 
 class SupportsConnectionManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
     """Live presence surface used to mirror posture into online player records."""
@@ -75,8 +79,10 @@ class PlayerPositionService:
         persistence: SupportsPlayerPersistence | None,
         connection_manager: SupportsConnectionManager | None,
         alias_storage: AliasStorage | None,
+        player_registry: PlayerRegistry | None,
     ) -> None:
         self._persistence: SupportsPlayerPersistence | None = persistence
+        self._registry: PlayerRegistry | None = player_registry
         self._connection_manager: SupportsConnectionManager | None = connection_manager
         self._alias_storage: AliasStorage | None = alias_storage
 
@@ -161,16 +167,26 @@ class PlayerPositionService:
     async def _update_player_position(
         self, player: PositionPlayer, stats: dict[str, object], normalized_position: str, player_name: str
     ) -> bool:
-        """Update player position in persistence."""
-        if self._persistence is None:
+        """Write the new posture as one registry unit (ADR-029 step 7a), and mirror it onto the caller's copy."""
+        if self._registry is None:
+            logger.error("No player registry; cannot persist posture", player_name=player_name)
             return False
         stats["position"] = normalized_position
         player.set_stats(stats)
 
         try:
-            await self._persistence.save_player(player)
+            async with self._registry.mutate(uuid.UUID(str(player.player_id))) as live:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                live.row.set_stat("position", normalized_position, sync=True)
             return True
-        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
+        except (
+            DatabaseError,
+            SQLAlchemyError,
+            PlayerNotFoundError,
+            OSError,
+            ValueError,
+            AttributeError,
+            TypeError,
+        ) as exc:
             logger.error(
                 "Failed to persist player position",
                 player_name=player_name,

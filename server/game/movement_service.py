@@ -12,7 +12,6 @@ that dimensional shifts are properly recorded.
 
 # pylint: disable=too-many-return-statements,too-many-lines  # Reason: Movement service methods require multiple return statements for early validation returns (movement validation, permission checks, error handling). Movement service requires extensive logic for complex movement operations and state management.
 
-import threading
 import time
 import uuid
 from typing import TYPE_CHECKING, Any, cast
@@ -35,8 +34,9 @@ from .movement_helpers import (
     validate_exit,
     validate_player_room_membership,
 )
-from .movement_monitor import get_movement_monitor
+from .movement_monitor import MovementMonitor, get_movement_monitor
 from .movement_room_occupancy import RoomOccupancyMixin
+from .player_registry import PlayerNotFoundError
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -44,6 +44,7 @@ if TYPE_CHECKING:
     from ..services.instance_flush_service import InstanceFlushService
     from ..services.player_combat_service import PlayerCombatService
     from .instance_manager import InstanceManager
+    from .player_registry import PlayerAggregate, PlayerRegistry
 
 
 class MovementService(RoomOccupancyMixin):
@@ -67,6 +68,7 @@ class MovementService(RoomOccupancyMixin):
         exploration_service: Any | None = None,
         instance_manager: Any | None = None,
         instance_flush: "InstanceFlushService | None" = None,
+        player_registry: "PlayerRegistry | None" = None,
     ) -> None:
         """
         Initialize the movement service.
@@ -79,14 +81,18 @@ class MovementService(RoomOccupancyMixin):
             instance_manager: Optional InstanceManager for tutorial exit handling
             instance_flush: Optional InstanceFlushService; on tutorial exit the instance's floor
                 items go to the lost-and-found (without it the instance is just destroyed)
+            player_registry: The player registry (required): a move runs as one unit of work on the moving player, which
+                is what keeps two moves of the same player from interleaving (ADR-029 step 7a)
         """
         self._event_bus = event_bus
         if async_persistence is None:
             raise ValueError("async_persistence is required for MovementService")
         self._persistence = async_persistence
+        if player_registry is None:
+            raise ValueError("player_registry is required for MovementService")
+        self._registry: PlayerRegistry = player_registry
         self._instance_manager = instance_manager
         self._instance_flush: InstanceFlushService | None = instance_flush
-        self._lock = threading.RLock()
         self._logger = get_logger("MovementService")
         self._player_combat_service = player_combat_service
         self._exploration_service = exploration_service
@@ -153,7 +159,7 @@ class MovementService(RoomOccupancyMixin):
 
     async def _resolve_player_for_movement(
         self, player_id: uuid.UUID | str, timing_breakdown: dict[str, float]
-    ) -> tuple[Any, uuid.UUID | str]:
+    ) -> tuple["Player", uuid.UUID | str]:
         """Resolve player by ID or name and return player object and resolved ID."""
         self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
         player_lookup_start = time.time()
@@ -227,45 +233,49 @@ class MovementService(RoomOccupancyMixin):
         room_update_end = time.time()
         timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
 
-    async def _persist_player_location(self, player: Any, to_room_id: str, timing_breakdown: dict[str, float]) -> None:
-        """Update player location in database."""
+    def _persist_player_location(
+        self, aggregate: "PlayerAggregate", to_room_id: str, timing_breakdown: dict[str, float]
+    ) -> None:
+        """Record the new room on the player's aggregate; the unit commits it (sync) when the move block ends."""
         db_write_start = time.time()
-        self._logger.debug("Updating player room in database", player_id=player.player_id, room_id=to_room_id)
-        setattr(player, "current_room_id", to_room_id)  # noqa: B010  # Reason: Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors, at runtime this attribute behaves as a string despite mypy seeing Column[str]
-        await self._persistence.save_player(player)
-        db_write_end = time.time()
-        timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
+        self._logger.debug("Updating player room", player_id=aggregate.player_id, room_id=to_room_id)
+        aggregate.row.set_current_room_id(to_room_id, sync=True)
+        timing_breakdown["db_write_ms"] = (time.time() - db_write_start) * 1000
 
-    async def _handle_tutorial_exit_if_applicable(self, player: Any, to_room_id: str) -> None:
-        """If player exited tutorial instance (moved to fixed exit room), clear and flush instance."""
+    def _apply_tutorial_exit(self, aggregate: "PlayerAggregate", to_room_id: str) -> str | None:
+        """If the player just left their tutorial instance (reached its fixed exit room), clear it from their row.
+
+        Returns the instance id to flush once the unit has committed, else None.
+        """
         instance_manager = cast("InstanceManager | None", self._instance_manager)
-        tutorial_player = cast("Player", player)
-        instance_id = tutorial_player.tutorial_instance_id
+        instance_id = aggregate.row.tutorial_instance_id
         if instance_manager is None or not instance_id:
-            return
+            return None
         exit_room_id = instance_manager.get_exit_room_id(instance_id)
         if to_room_id != exit_room_id:
-            return
-        tutorial_player.tutorial_instance_id = None
+            return None
+        aggregate.row.set_tutorial_instance_id(None)
         # Safety net: a player whose respawn point is a template room (an old tutorial, an unfinished quest
         # reward) must never keep respawning into the template.
-        respawn_room_id = tutorial_player.respawn_room_id
+        respawn_room_id = aggregate.row.respawn_room_id
         if respawn_room_id and is_template_room(self._persistence.get_room_by_id(respawn_room_id)):
-            tutorial_player.respawn_room_id = exit_room_id
-        await self._persistence.save_player(tutorial_player)
+            aggregate.row.set_respawn_room_id(exit_room_id)
+        return instance_id
+
+    async def _flush_exited_instance(self, player_id: uuid.UUID, instance_id: str) -> None:
+        """After the player's exit has committed: bank the instance's floor items, or just destroy the instance."""
+        instance_manager = cast("InstanceManager | None", self._instance_manager)
+        if instance_manager is None:
+            return
         if self._instance_flush is not None:
             if await self._instance_flush.flush(instance_id):
                 await send_system_notification(
-                    tutorial_player.player_id,
+                    str(player_id),
                     "The things you left behind will be waiting in your deposit box at Arkham Savings & Trust.",
                 )
         else:
             instance_manager.destroy_instance(instance_id)
-        self._logger.info(
-            "Tutorial exit: cleared instance",
-            player_id=tutorial_player.player_id,
-            instance_id=instance_id,
-        )
+        self._logger.info("Tutorial exit: cleared instance", player_id=player_id, instance_id=instance_id)
 
     def _mark_room_explored(self, resolved_player_id: uuid.UUID | str, to_room_id: str) -> None:
         """Mark destination room as explored (non-blocking). Instance rooms are private copies and are skipped."""
@@ -340,20 +350,23 @@ class MovementService(RoomOccupancyMixin):
             attempt["player_id"], attempt["from_room_id"], attempt["to_room_id"], False, duration_ms
         )
 
-    async def _execute_move_locked(
+    async def _execute_move_locked(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: the move's context: who, where, the unit's aggregate and the timing/monitor sinks
         self,
+        player: "Player",
+        aggregate: "PlayerAggregate",
+        resolved_player_id: uuid.UUID | str,
         player_id: uuid.UUID | str,
         from_room_id: str,
         to_room_id: str,
-        start_time: float,
         timing_breakdown: dict[str, float],
-        monitor: Any,
-    ) -> bool:
-        """Run movement logic while holding the service lock."""
-        lock_acquisition_time = time.time()
-        timing_breakdown["lock_wait_ms"] = (lock_acquisition_time - start_time) * 1000
+        monitor: MovementMonitor,
+        start_time: float,
+    ) -> tuple[bool, str | None]:
+        """Run the movement inside the player's unit of work.
 
-        player, resolved_player_id = await self._resolve_player_for_movement(player_id, timing_breakdown)
+        Returns:
+            (whether the player moved, the tutorial instance they just left, if any: to flush once the unit commits)
+        """
         attempt = {
             "player_id": player_id,
             "resolved_player_id": resolved_player_id,
@@ -366,7 +379,7 @@ class MovementService(RoomOccupancyMixin):
         if not await self._validate_movement(player, from_room_id, to_room_id):
             timing_breakdown["validation_ms"] = (time.time() - validation_start) * 1000
             self._record_move_validation_failure(monitor, attempt, timing_breakdown)
-            return False
+            return False, None
         timing_breakdown["validation_ms"] = (time.time() - validation_start) * 1000
 
         from_room, to_room = self._get_rooms_for_movement(
@@ -374,8 +387,46 @@ class MovementService(RoomOccupancyMixin):
         )
 
         self._execute_room_transfer(from_room, to_room, resolved_player_id, timing_breakdown)
-        await self._persist_player_location(player, to_room_id, timing_breakdown)
-        await self._handle_tutorial_exit_if_applicable(player, to_room_id)
+        self._persist_player_location(aggregate, to_room_id, timing_breakdown)
+        return True, self._apply_tutorial_exit(aggregate, to_room_id)
+
+    async def _move_in_unit(
+        self,
+        player_id: uuid.UUID | str,
+        from_room_id: str,
+        to_room_id: str,
+        start_time: float,
+        timing_breakdown: dict[str, float],
+        monitor: MovementMonitor,
+    ) -> bool:
+        """Resolve the player, then move them as one unit of work on their aggregate (ADR-029 step 7a).
+
+        The player's registry lock is held from validation to the commit, so two moves of one player cannot
+        interleave; the instance flush and the notification wait until the unit has committed.
+        """
+        player, resolved_player_id = await self._resolve_player_for_movement(player_id, timing_breakdown)
+        player_uuid = uuid.UUID(str(resolved_player_id))
+        lock_start = time.time()
+        try:
+            async with self._registry.mutate(player_uuid) as aggregate:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                timing_breakdown["lock_wait_ms"] = (time.time() - lock_start) * 1000
+                moved, exited_instance_id = await self._execute_move_locked(
+                    player,
+                    aggregate,
+                    resolved_player_id,
+                    player_id,
+                    from_room_id,
+                    to_room_id,
+                    timing_breakdown,
+                    monitor,
+                    start_time,
+                )
+        except PlayerNotFoundError as e:
+            raise ValidationError(f"Player not found: {player_id}") from e
+        if not moved:
+            return False
+        if exited_instance_id is not None:
+            await self._flush_exited_instance(player_uuid, exited_instance_id)
 
         duration_ms = (time.time() - start_time) * 1000
         timing_breakdown["total_ms"] = duration_ms
@@ -437,23 +488,20 @@ class MovementService(RoomOccupancyMixin):
         monitor = get_movement_monitor()
         timing_breakdown: dict[str, float] = {}
 
-        with self._lock:
-            try:
-                moved = await self._execute_move_locked(
-                    player_id, from_room_id, to_room_id, start_time, timing_breakdown, monitor
-                )
-                if moved:
-                    await self._maybe_trigger_room_entry_hallucination(player_id, to_room_id)
-                return moved
+        try:
+            moved = await self._move_in_unit(player_id, from_room_id, to_room_id, start_time, timing_breakdown, monitor)
+            if moved:
+                await self._maybe_trigger_room_entry_hallucination(player_id, to_room_id)
+            return moved
 
-            except ValidationError as e:
-                duration_ms = (time.time() - start_time) * 1000
-                monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
-                self._logger.warning("Movement validation failed", player_id=player_id, error=str(e))
-                return False
-            except (DatabaseError, SQLAlchemyError) as e:
-                self._handle_movement_error(e, player_id, from_room_id, to_room_id, start_time, timing_breakdown)
-                return False
+        except ValidationError as e:
+            duration_ms = (time.time() - start_time) * 1000
+            monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
+            self._logger.warning("Movement validation failed", player_id=player_id, error=str(e))
+            return False
+        except (DatabaseError, SQLAlchemyError) as e:
+            self._handle_movement_error(e, player_id, from_room_id, to_room_id, start_time, timing_breakdown)
+            return False
 
     async def _maybe_trigger_room_entry_hallucination(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """

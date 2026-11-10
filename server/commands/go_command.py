@@ -176,6 +176,7 @@ def _movement_service_for_go_command(app: Any, persistence: Any) -> Any:
         event_bus,
         player_combat_service=player_combat_service,
         async_persistence=persistence,
+        player_registry=getattr(app.state, "player_registry", None) if app else None,
     )
 
 

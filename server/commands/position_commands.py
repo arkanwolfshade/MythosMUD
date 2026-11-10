@@ -10,7 +10,7 @@ keeping persistence and live state aligned.
 from __future__ import annotations
 
 import uuid
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from fastapi import Request
 
@@ -26,7 +26,18 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from .rest_command import cancel_rest_countdown, is_player_resting
 
+if TYPE_CHECKING:
+    from ..game.player_registry import PlayerRegistry
+
 logger = get_logger(__name__)
+
+
+def _get_position_player_registry(request: Request | None) -> PlayerRegistry | None:
+    """The player registry on the app's container, or None (no request, or a partial app without one)."""
+    app = cast(object | None, getattr(request, "app", None))
+    state = cast(object | None, getattr(app, "state", None))
+    container = cast(object | None, getattr(state, "container", None))
+    return cast("PlayerRegistry | None", getattr(container, "player_registry", None))
 
 
 def _get_position_command_services(
@@ -89,7 +100,9 @@ async def _handle_position_change(
     persistence, connection_manager = _get_position_command_services(request)
     target_player_name = player_name or get_username_from_user(current_user)
 
-    position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
+    position_service = PlayerPositionService(
+        persistence, connection_manager, alias_storage, _get_position_player_registry(request)
+    )
     result = await position_service.change_position(target_player_name, desired_position)
 
     # Always sync posture to client (including "already standing"): UI can show Sitting

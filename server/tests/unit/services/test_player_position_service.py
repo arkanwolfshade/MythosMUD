@@ -4,13 +4,36 @@ Unit tests for player position service.
 Tests the PlayerPositionService for coordinating player posture transitions.
 """
 
+import json
 import uuid
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from server.exceptions import DatabaseError
+from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry
 from server.services.player_position_service import PlayerPositionService
+from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
+
+
+def _registry() -> tuple[PlayerRegistry, FakeDatabase]:
+    """A real registry that knows any player id, and the in-memory database it commits to."""
+    db = FakeDatabase()
+
+    async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate:
+        return aggregate(raw_row(player_id))
+
+    return PlayerRegistry(db.session, loader=load), db
+
+
+def _committed(db: FakeDatabase) -> list[tuple[dict[str, object], dict[str, object]]]:
+    """(changed columns, changed stats) of every update_player_row the registry committed."""
+    return [
+        (json.loads(str(params["changes"])), json.loads(str(params["stats_changes"])))
+        for params in db.executed
+        if params is not None and "changes" in params
+    ]
 
 
 def test_player_position_service_init():
@@ -19,7 +42,7 @@ def test_player_position_service_init():
     connection_manager = MagicMock()
     alias_storage = MagicMock()
 
-    service = PlayerPositionService(persistence, connection_manager, alias_storage)
+    service = PlayerPositionService(persistence, connection_manager, alias_storage, None)
 
     assert service._persistence == persistence
     assert service._connection_manager == connection_manager
@@ -28,7 +51,7 @@ def test_player_position_service_init():
 
 def test_player_position_service_init_none_values():
     """Test PlayerPositionService initialization with None values."""
-    service = PlayerPositionService(None, None, None)
+    service = PlayerPositionService(None, None, None, None)
 
     assert service._persistence is None
     assert service._connection_manager is None
@@ -38,7 +61,7 @@ def test_player_position_service_init_none_values():
 @pytest.mark.asyncio
 async def test_ensure_default_aliases_no_storage():
     """Test ensure_default_aliases does nothing when no alias storage."""
-    service = PlayerPositionService(None, None, None)
+    service = PlayerPositionService(None, None, None, None)
 
     # Should not raise
     await service.ensure_default_aliases("testplayer")
@@ -51,7 +74,7 @@ async def test_ensure_default_aliases_creates_missing():
     alias_storage.get_alias = AsyncMock(return_value=None)  # Alias doesn't exist
     alias_storage.create_alias = AsyncMock()
 
-    service = PlayerPositionService(None, None, alias_storage)
+    service = PlayerPositionService(None, None, alias_storage, None)
     await service.ensure_default_aliases("testplayer")
 
     # Should create 3 aliases: sit, stand, lie
@@ -67,7 +90,7 @@ async def test_ensure_default_aliases_updates_incorrect():
     alias_storage.get_alias = AsyncMock(return_value=existing_alias)
     alias_storage.create_alias = AsyncMock()
 
-    service = PlayerPositionService(None, None, alias_storage)
+    service = PlayerPositionService(None, None, alias_storage, None)
     await service.ensure_default_aliases("testplayer")
 
     # Should update 3 aliases
@@ -83,7 +106,7 @@ async def test_ensure_default_aliases_keeps_correct():
     alias_storage.get_alias = AsyncMock(return_value=existing_alias)
     alias_storage.create_alias = AsyncMock()
 
-    service = PlayerPositionService(None, None, alias_storage)
+    service = PlayerPositionService(None, None, alias_storage, None)
     await service.ensure_default_aliases("testplayer")
 
     # Should not create if alias is correct
@@ -98,7 +121,7 @@ async def test_ensure_default_aliases_handles_errors():
     alias_storage.get_alias = AsyncMock(side_effect=Exception("Test error"))
     alias_storage.create_alias = AsyncMock()
 
-    service = PlayerPositionService(None, None, alias_storage)
+    service = PlayerPositionService(None, None, alias_storage, None)
 
     # Should not raise
     await service.ensure_default_aliases("testplayer")
@@ -107,7 +130,7 @@ async def test_ensure_default_aliases_handles_errors():
 @pytest.mark.asyncio
 async def test_change_position_invalid_position():
     """Test change_position raises ValueError for invalid position."""
-    service = PlayerPositionService(None, None, None)
+    service = PlayerPositionService(None, None, None, None)
 
     with pytest.raises(ValueError, match="Unsupported position"):
         await service.change_position("testplayer", "invalid_position")
@@ -116,7 +139,7 @@ async def test_change_position_invalid_position():
 @pytest.mark.asyncio
 async def test_change_position_no_persistence():
     """Test change_position returns error when no persistence."""
-    service = PlayerPositionService(None, None, None)
+    service = PlayerPositionService(None, None, None, None)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -130,7 +153,7 @@ async def test_change_position_player_not_found():
     persistence = MagicMock()
     persistence.get_player_by_name = AsyncMock(return_value=None)
 
-    service = PlayerPositionService(persistence, None, None)
+    service = PlayerPositionService(persistence, None, None, None)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -146,7 +169,7 @@ async def test_change_position_database_error():
     persistence = MagicMock()
     persistence.get_player_by_name = AsyncMock(side_effect=DatabaseError("Database error"))
 
-    service = PlayerPositionService(persistence, None, None)
+    service = PlayerPositionService(persistence, None, None, None)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -166,7 +189,7 @@ async def test_change_position_already_in_position():
     persistence = MagicMock()
     persistence.get_player_by_name = AsyncMock(return_value=player)
 
-    service = PlayerPositionService(persistence, None, None)
+    service = PlayerPositionService(persistence, None, None, None)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -190,7 +213,8 @@ async def test_change_position_success():
     persistence.get_player_by_name = AsyncMock(return_value=player)
     persistence.save_player = AsyncMock()
 
-    service = PlayerPositionService(persistence, None, None)
+    registry, registry_db = _registry()
+    service = PlayerPositionService(persistence, None, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -199,14 +223,12 @@ async def test_change_position_success():
     assert result["previous_position"] == "standing"
     assert "settle" in result["message"].lower()
     player.set_stats.assert_called_once()
-    persistence.save_player.assert_awaited_once()
+    assert _committed(registry_db) == [({}, {"position": "sitting"})]  # nothing but the posture is written
 
 
 @pytest.mark.asyncio
 async def test_change_position_save_error():
     """Test change_position handles save errors gracefully."""
-    from server.exceptions import DatabaseError
-
     player = MagicMock()
     player.player_id = uuid.uuid4()
     player.current_room_id = "test_room"
@@ -216,9 +238,11 @@ async def test_change_position_save_error():
 
     persistence = MagicMock()
     persistence.get_player_by_name = AsyncMock(return_value=player)
-    persistence.save_player = AsyncMock(side_effect=DatabaseError("Save error"))
 
-    service = PlayerPositionService(persistence, None, None)
+    registry, registry_db = _registry()
+    registry_db.fail_commits = 1
+    registry_db.commit_error = DatabaseError("Save error")
+    service = PlayerPositionService(persistence, None, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -240,7 +264,8 @@ async def test_change_position_no_get_stats():
     persistence.get_player_by_name = AsyncMock(return_value=player)
     persistence.save_player = AsyncMock()
 
-    service = PlayerPositionService(persistence, None, None)
+    registry, _ = _registry()
+    service = PlayerPositionService(persistence, None, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -264,7 +289,8 @@ async def test_change_position_get_stats_error():
     persistence.get_player_by_name = AsyncMock(return_value=player)
     persistence.save_player = AsyncMock()
 
-    service = PlayerPositionService(persistence, None, None)
+    registry, _ = _registry()
+    service = PlayerPositionService(persistence, None, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -296,7 +322,8 @@ async def test_change_position_does_not_invent_an_online_entry():
     persistence.get_player_by_name = AsyncMock(return_value=player)
     persistence.save_player = AsyncMock()
 
-    service = PlayerPositionService(persistence, connection_manager, None)
+    registry, _ = _registry()
+    service = PlayerPositionService(persistence, connection_manager, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -332,7 +359,8 @@ async def test_change_position_updates_existing_connection_info():
     persistence.get_player_by_name = AsyncMock(return_value=player)
     persistence.save_player = AsyncMock()
 
-    service = PlayerPositionService(persistence, connection_manager, None)
+    registry, _ = _registry()
+    service = PlayerPositionService(persistence, connection_manager, None, registry)
 
     result = await service.change_position("testplayer", "sitting")
 
@@ -362,7 +390,8 @@ async def test_change_position_all_positions():
         persistence.get_player_by_name = AsyncMock(return_value=player)
         persistence.save_player = AsyncMock()
 
-        service = PlayerPositionService(persistence, None, None)
+        registry, _ = _registry()
+        service = PlayerPositionService(persistence, None, None, registry)
 
         result = await service.change_position("testplayer", target_position)
 
@@ -373,7 +402,7 @@ async def test_change_position_all_positions():
 
 def test_update_connection_manager_no_manager():
     """Test _update_connection_manager does nothing when no manager."""
-    service = PlayerPositionService(None, None, None)
+    service = PlayerPositionService(None, None, None, None)
     player = MagicMock()
 
     # Should not raise
@@ -385,7 +414,7 @@ def test_update_connection_manager_no_online_players():
     connection_manager = MagicMock()
     del connection_manager.online_players  # No online_players attribute
 
-    service = PlayerPositionService(None, connection_manager, None)
+    service = PlayerPositionService(None, connection_manager, None, None)
     player = MagicMock()
 
     # Should not raise
@@ -403,7 +432,7 @@ def test_update_connection_manager_updates_by_display_name():
     connection_manager.online_players = {}
     connection_manager.get_online_player_by_display_name = MagicMock(return_value=player_info)
 
-    service = PlayerPositionService(None, connection_manager, None)
+    service = PlayerPositionService(None, connection_manager, None, None)
     service._update_connection_manager(player, "testplayer", "sitting")
 
     assert player_info["position"] == "sitting"
@@ -415,8 +444,50 @@ def test_update_connection_manager_handles_errors():
     connection_manager.online_players = {}
     connection_manager.get_online_player_by_display_name = MagicMock(side_effect=Exception("Test error"))
 
-    service = PlayerPositionService(None, connection_manager, None)
+    service = PlayerPositionService(None, connection_manager, None, None)
     player = MagicMock()
 
     # Should not raise
     service._update_connection_manager(player, "testplayer", "sitting")
+
+
+@pytest.mark.asyncio
+async def test_change_position_without_a_registry_cannot_persist():
+    """No fallback to save_player: with no registry the posture is refused, not written around it."""
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    player.current_room_id = "test_room"
+    player.name = "TestPlayer"
+    player.get_stats = MagicMock(return_value={"position": "standing"})
+    player.set_stats = MagicMock()
+    persistence = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+
+    result = await PlayerPositionService(persistence, None, None, None).change_position("testplayer", "sitting")
+
+    assert result["success"] is False
+    assert "unable" in result["message"].lower()
+
+
+@pytest.mark.asyncio
+async def test_change_position_for_a_player_the_registry_lost_is_refused():
+    """The character was deleted between the name lookup and the write: nothing is written."""
+    db = FakeDatabase()
+
+    async def nobody(_session: DbSession, _player_id: uuid.UUID) -> None:
+        return None
+
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    player.current_room_id = "test_room"
+    player.name = "TestPlayer"
+    player.get_stats = MagicMock(return_value={"position": "standing"})
+    player.set_stats = MagicMock()
+    persistence = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+
+    service = PlayerPositionService(persistence, None, None, PlayerRegistry(db.session, loader=nobody))
+    result = await service.change_position("testplayer", "sitting")
+
+    assert result["success"] is False
+    assert db.commits == 0
