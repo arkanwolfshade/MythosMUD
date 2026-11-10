@@ -182,7 +182,7 @@ class FirstExposureFinisher:  # pylint: disable=too-few-public-methods  # Reason
             logger.error("First Exposure finish actions failed", player_id=str(player_id), error=str(e))
         try:
             # The drain ends itself at its floor; anything instance-scoped left over must not follow them out.
-            _ = await clear_instance_scoped_effects(player_id)
+            _ = await clear_instance_scoped_effects(self._registry, player_id)
         except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: as above; the respawn already committed
             logger.error("First Exposure instance-scoped effect clear failed", player_id=str(player_id), error=str(e))
         try:

@@ -61,9 +61,13 @@ $$;
 -- Replaced by get_player_lucidity_state (ADR-029 step 5b-ii).
 DROP FUNCTION IF EXISTS :schema_name.get_player_lucidity(uuid); -- noqa: PRS
 
--- get_player_lucidity_state: everything the player registry holds about one player's lucidity, in one row (ADR-029
--- steps 5b-i and 5b-ii): the player_lucidity columns (NULL when the player has none yet; the registry then uses the
--- starting values), and their lucidity_cooldowns and lucidity_exposure_state rows as JSON arrays.
+-- The returned columns changed (effects, ADR-029 step 6d), which CREATE OR REPLACE cannot do.
+DROP FUNCTION IF EXISTS :schema_name.get_player_lucidity_state(uuid); -- noqa: PRS
+
+-- get_player_lucidity_state: everything the player registry loads beside the player's row, quests and corruption
+-- cooldowns, in one round trip (ADR-029 steps 5b-i, 5b-ii and 6d): the player_lucidity columns (NULL when the player
+-- has none yet; the registry then uses the starting values), and their lucidity_cooldowns, lucidity_exposure_state
+-- and player_effects rows as JSON arrays. Only effects with time left (or no limit) are returned, oldest first.
 CREATE OR REPLACE FUNCTION :schema_name.get_player_lucidity_state(p_player_id UUID) -- noqa: PRS
 RETURNS TABLE (
     current_lcd integer,
@@ -72,7 +76,8 @@ RETURNS TABLE (
     last_updated_at timestamp with time zone,
     catatonia_entered_at timestamp with time zone,
     cooldowns jsonb,
-    exposures jsonb
+    exposures jsonb,
+    effects jsonb
 )
 LANGUAGE plpgsql
 AS $$
@@ -105,7 +110,29 @@ BEGIN
                 WHERE e.player_id = p_player_id
             ),
             '[]'::jsonb
-        ) AS exposures
+        ) AS exposures,
+        COALESCE(
+            (
+                SELECT jsonb_agg(
+                    jsonb_build_object(
+                        'id', pe.id,
+                        'effect_type', pe.effect_type,
+                        'category', pe.category,
+                        'remaining_seconds', pe.remaining_seconds,
+                        'payload', pe.payload,
+                        'instance_scoped', pe.instance_scoped,
+                        'intensity', pe.intensity,
+                        'source', pe.source,
+                        'visibility_level', pe.visibility_level
+                    )
+                    ORDER BY pe.created_at, pe.id
+                )
+                FROM player_effects pe
+                WHERE pe.player_id = p_player_id
+                  AND (pe.remaining_seconds IS NULL OR pe.remaining_seconds > 0)
+            ),
+            '[]'::jsonb
+        ) AS effects
     FROM (SELECT p_player_id AS player_id) AS k
     LEFT JOIN player_lucidity pl ON pl.player_id = k.player_id;
 END;

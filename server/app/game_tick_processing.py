@@ -42,7 +42,7 @@ from .game_tick_status_effects import (
     _process_damage_over_time_effect,
     _process_heal_over_time_effect,
     _process_player_status_effects,
-    _process_single_effect,
+    _run_effect_second,
     _validate_app_state_for_status_effects,
     process_status_effects,
 )
@@ -61,7 +61,7 @@ __all__ = [
     "_process_passive_corruption_flux",
     "_process_passive_lucidity_flux",
     "_process_player_status_effects",
-    "_process_single_effect",
+    "_run_effect_second",
     "_process_single_player_mp_regeneration",
     "_process_single_player_room_flux",
     "_validate_app_state_for_status_effects",

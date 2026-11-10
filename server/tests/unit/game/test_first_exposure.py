@@ -181,7 +181,7 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
             raise RuntimeError("quest store down")
         rig.ran.append((tuple(actions), ctx))
 
-    async def fake_clear(player_id: uuid.UUID) -> int:
+    async def fake_clear(_registry: PlayerRegistry | None, player_id: uuid.UUID) -> int:
         rig.order.append("clear")
         if rig.clear_fails:
             raise RuntimeError("database down")

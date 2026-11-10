@@ -48,3 +48,26 @@ class PlayerEffectOptions(TypedDict, total=False):
     intensity: int
     source: str | None
     visibility_level: str
+
+
+class PlayerEffectsWriting(Protocol):
+    """Starting and ending a player's status effects, as the persistence layer delegates them (PlayerEffects).
+
+    Injected at startup like the health service: the implementation sits on the player registry, which this module
+    cannot import without a cycle.
+    """
+
+    async def add(
+        self,
+        player_id: uuid.UUID | str,
+        effect_type: str,
+        category: str,
+        remaining_seconds: int | None,
+        options: PlayerEffectOptions | None = None,
+    ) -> str:
+        """Start an effect lasting ``remaining_seconds`` online game seconds (None = until removed); returns its id."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+    async def remove_by_type(self, player_id: uuid.UUID | str, effect_type: str) -> int:
+        """End every effect of one type on the player; returns how many."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type

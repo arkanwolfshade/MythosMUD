@@ -20,10 +20,12 @@ from sqlalchemy import text
 from ...constants.lucidity import STARTING_LCD
 from .part import DbSession, Part, PartWrite
 
-# One row per player: the lucidity columns (NULL with no row yet) plus the cooldowns and exposures as JSON (5b-ii).
+# One row per player: the lucidity columns (NULL with no row yet) plus the cooldowns, exposures (5b-ii) and
+# effects (6d) as JSON.
 LOAD_LUCIDITY_SQL = text(
     """
-    SELECT current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at, cooldowns, exposures
+    SELECT
+        current_lcd, current_tier, liabilities, last_updated_at, catatonia_entered_at, cooldowns, exposures, effects
     FROM get_player_lucidity_state(:id)
     """
 )

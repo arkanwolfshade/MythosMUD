@@ -170,12 +170,15 @@ class CombatBundle:
             persistence.set_lucidity_adjuster(make_lucidity_adjuster(player_registry, observer))
             persistence.set_lucidity_reader(make_lucidity_reader(player_registry))
             # Corruption changed through the persistence layer (spells, mechanics) too (step 5c).
+            from server.game.effect_store import PlayerEffects
             from server.services.corruption_service import CorruptionService
             from server.services.player_health_service import PlayerHealthService
 
             persistence.set_corruption_service(CorruptionService(player_registry))
             # And DP: damage and healing from ticks, mechanics and spells (step 6a).
             persistence.set_health_service(PlayerHealthService(player_registry))
+            # And the status effects spells and the login ward add (step 6d).
+            persistence.set_effects_service(PlayerEffects(player_registry))
 
         self.passive_lucidity_flux_service = PassiveLucidityFluxService(
             persistence=container.async_persistence,

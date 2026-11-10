@@ -27,7 +27,7 @@ from ..services.lucidity_service import CatatoniaObserverProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .chat_npc_system import deliver_personal_quest, deliver_personal_system
-from .effect_store import add_content_effect
+from .effect_store import PlayerEffects
 
 if TYPE_CHECKING:
     from .player_registry import PlayerRegistry
@@ -58,8 +58,10 @@ class ScriptedActionContext:
 
 
 async def _apply_effect(action: ApplyEffectAction, ctx: ScriptedActionContext) -> None:
-    # A player_effects row (ADR-029 step 3b), not part of the players row, so no player save is needed.
-    _ = await add_content_effect(uuid.UUID(str(ctx.player.player_id)), action.effect)
+    if ctx.player_registry is None:
+        logger.warning("Apply-effect action skipped: no player registry", player_id=str(ctx.player.player_id))
+        return
+    _ = await PlayerEffects(ctx.player_registry).add_content(uuid.UUID(str(ctx.player.player_id)), action.effect)
 
 
 async def _corruption_at_least(action: CorruptionAtLeastAction, ctx: ScriptedActionContext) -> None:

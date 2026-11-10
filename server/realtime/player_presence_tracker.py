@@ -270,7 +270,7 @@ async def _start_fresh_instance(
     cleared = 0
     restarted = bool(lost_instance_id) and lost_instance_id != PENDING_INSTANCE_ID
     if restarted:
-        cleared = await clear_instance_scoped_effects(uuid.UUID(str(player.player_id)))
+        cleared = await clear_instance_scoped_effects(registry, uuid.UUID(str(player.player_id)))
         # Quest offers are keyed by the template's stable room ids, not this instance's prefixed ones.
         stable_room_ids = [room_id.removeprefix(f"{instance.instance_id}_") for room_id in instance.rooms]
         await restart_instance_run(player, stable_room_ids, quests, registry)

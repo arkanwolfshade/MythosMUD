@@ -17,19 +17,19 @@ state. Beats exist because passive flux checks run every 60 s, which rarely land
 from __future__ import annotations
 
 import uuid
-from typing import TYPE_CHECKING, Literal, cast
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, Field, ValidationError
-from sqlalchemy.exc import SQLAlchemyError
 
-from ..services.lucidity_helpers import PlayerGoneError, resolve_tier
+from ..services.lucidity_helpers import resolve_tier
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService
 from ..structured_logging.enhanced_logging_config import get_logger
-from .game_tick_protocols import _TickContainer
+from .game_tick_protocols import EffectSecond
 
 if TYPE_CHECKING:
-    from ..game.player_registry import PlayerRegistry
-    from ..models.player import Player
+    from collections.abc import Awaitable, Callable
+
+    from ..game.player_registry import PlayerAggregate, PlayerRegistry
 
 logger = get_logger("server.game_tick")
 
@@ -119,14 +119,24 @@ def _no_liability(player_id: str, previous_lcd: int, new_lcd: int, reason_code: 
     _ = player_id, previous_lcd, new_lcd, reason_code
 
 
-async def _drain_step(
-    container: _TickContainer, player_id: uuid.UUID, room_id: str | None, params: LucidityDrainParams
-) -> tuple[int, bool] | None:
-    """Apply one second's drain; returns (LCD now, whether LCD was changed), or None with no player registry."""
-    registry = cast("PlayerRegistry | None", container.player_registry)
-    if registry is None:
-        return None
-    observer = cast(CatatoniaObserverProtocol | None, getattr(container, "catatonia_registry", None))
+def drain_second(
+    registry: PlayerRegistry,
+    observer: CatatoniaObserverProtocol | None,
+    player: PlayerAggregate,
+    effect: dict[str, object],
+) -> EffectSecond:
+    """Run one second of a drain effect inside the player's unit of work (ADR-029 step 6d).
+
+    The LCD loss is made in the caller's unit, so it commits with the effect's own state (``elapsed``): a failed
+    commit rolls both back and the next second repeats the step, instead of draining twice for one ``elapsed``.
+    The notifications, narration and hallucination beats are in ``after``, for once the unit has committed. A
+    malformed effect is dropped.
+    """
+    try:
+        params = LucidityDrainParams.model_validate(effect)
+    except ValidationError as e:
+        logger.error("Malformed lucidity_drain_over_time effect dropped", error=str(e))
+        return EffectSecond(None, False)
     service = LucidityService(
         registry,
         None if params.grants_liabilities else _no_liability,
@@ -136,43 +146,27 @@ async def _drain_step(
     def step(current_lcd: int) -> int:
         return -min(params.rate_now(), current_lcd - params.floor) if current_lcd > params.floor else 0
 
-    result = await service.apply_lucidity_adjustment(
-        player_id, step, reason_code=DRAIN_REASON_CODE, location_id=room_id
-    )
-    return result.new_lcd, bool(result.delta)
+    room_id = player.row.current_room_id
+    adjustment = service.apply_in(player, step, reason_code=DRAIN_REASON_CODE, location_id=room_id)
+    lcd = player.lucidity.lcd
+    after: list[Callable[[], Awaitable[None]]] = []
+    if adjustment is not None:
+        player_id = player.player_id
 
+        lines = [line.text for line in params.narration if line.at == params.elapsed]
 
-async def process_lucidity_drain(
-    container: _TickContainer, player: Player, effect: dict[str, object]
-) -> tuple[dict[str, object] | None, bool]:
-    """Run one second of a drain effect.
+        async def announce() -> None:
+            await service.announce(adjustment)
 
-    Returns (updated effect or None once finished, whether the effect had an impact), like the other effect processors.
-    A database failure keeps the effect so the next second retries; a malformed effect is dropped.
-    """
-    try:
-        params = LucidityDrainParams.model_validate(effect)
-    except ValidationError as e:
-        logger.error("Malformed lucidity_drain_over_time effect dropped", error=str(e))
-        return None, False
-    player_id = uuid.UUID(str(player.player_id))
-    try:
-        outcome = await _drain_step(container, player_id, player.current_room_id, params)
-    except PlayerGoneError:
-        # Deleted or reset mid-drain (#1147): nothing to drain; the effect is left untouched so no stale save happens.
-        logger.debug("Lucidity drain skipped: player no longer exists", player_id=str(player_id))
-        return effect, False
-    except (SQLAlchemyError, ValueError, RuntimeError, OSError) as e:
-        logger.warning("Lucidity drain step failed; will retry next second", player_id=str(player_id), error=str(e))
-        return effect, False
-    if outcome is None:
-        return effect, False
-    new_lcd, applied = outcome
-    if applied:
-        for line in params.narration:
-            if line.at == params.elapsed:
-                await _narrate(player_id, line.text)
-        await _fire_hallucinations(player_id, player.current_room_id, params, new_lcd)
-    if new_lcd <= params.floor:
-        return None, applied
-    return {**effect, "elapsed": params.elapsed + 1}, True
+        async def narrate() -> None:
+            for text in lines:
+                await _narrate(player_id, text)
+
+        async def hallucinate() -> None:
+            await _fire_hallucinations(player_id, room_id, params, lcd)
+
+        after.extend((announce, narrate, hallucinate))
+    applied = adjustment is not None
+    if lcd <= params.floor:
+        return EffectSecond(None, applied, tuple(after))
+    return EffectSecond({**effect, "elapsed": params.elapsed + 1}, True, tuple(after))

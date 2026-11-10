@@ -20,6 +20,8 @@ from server.async_persistence import (
     AsyncPersistenceLayer,
 )
 from server.container.async_persistence_access import get_container_async_persistence
+from server.game.effect_store import PlayerEffects
+from server.game.player_registry.player_effects import ADD_EFFECT_SQL, DELETE_EFFECTS_BY_TYPE_SQL
 from server.models.player import Player
 from server.services.corruption_service import CorruptionService
 from server.services.corruption_tier_cache import corruption_tier_cache
@@ -179,6 +181,56 @@ async def test_damage_without_the_health_service_refuses(async_persistence_layer
 
     with pytest.raises(RuntimeError, match="Health service not wired"):
         await async_persistence_layer.damage_player(_stored_player(uuid.uuid4(), {"current_dp": 20}), 3)
+
+
+@pytest.mark.asyncio
+async def test_adding_and_removing_effects_run_the_wired_effects_service(
+    async_persistence_layer: AsyncPersistenceLayer,
+):
+    """Spells and the login ward add effects through the layer; they land on the registry as sync units (step 6d)."""
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: None})
+    async_persistence_layer.set_effects_service(PlayerEffects(harness.registry))
+
+    effect_id = await async_persistence_layer.add_player_effect(
+        player_id, "blinded", "spell", 20, {"intensity": 3, "source": "spell:evil_eye"}
+    )
+    assert any(statement is ADD_EFFECT_SQL for statement in harness.db.statements)
+    assert [params["effect_id"] for params in harness.db.executed if params and "effect_id" in params] == [effect_id]
+    assert harness.db.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_removing_effects_by_type_returns_how_many_the_player_had(
+    async_persistence_layer: AsyncPersistenceLayer,
+):
+    player_id = uuid.uuid4()
+    harness = lucidity_registry({player_id: None})
+    async_persistence_layer.set_effects_service(PlayerEffects(harness.registry))
+    _ = await async_persistence_layer.add_player_effect(player_id, "blinded", "spell", 20)
+    # This registry keeps the player resident, so the second unit sees the effect the first one added.
+    removed = await async_persistence_layer.remove_player_effects_by_type(player_id, "blinded")
+
+    assert removed == 1
+    assert any(statement is DELETE_EFFECTS_BY_TYPE_SQL for statement in harness.db.statements)
+
+
+@pytest.mark.asyncio
+async def test_effects_without_the_effects_service_refuse(async_persistence_layer: AsyncPersistenceLayer):
+    """No fallback to writing the rows directly: the registry is the only writer of a player's effects."""
+    async_persistence_layer.set_effects_service(None)
+
+    with pytest.raises(RuntimeError, match="Effects service not wired"):
+        _ = await async_persistence_layer.add_player_effect(uuid.uuid4(), "blinded", "spell", 20)
+
+
+@pytest.mark.asyncio
+async def test_the_effect_candidates_come_from_the_effect_repository(async_persistence_layer: AsyncPersistenceLayer):
+    online = [uuid.uuid4(), uuid.uuid4()]
+    async_persistence_layer._player_effect_repo.player_ids_with_active_effects = AsyncMock(return_value=[online[1]])
+
+    assert await async_persistence_layer.get_player_ids_with_effects(online) == [online[1]]
+    async_persistence_layer._player_effect_repo.player_ids_with_active_effects.assert_awaited_once_with(online)
 
 
 @pytest.mark.asyncio

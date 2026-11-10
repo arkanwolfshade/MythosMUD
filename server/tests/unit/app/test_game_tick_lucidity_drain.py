@@ -5,69 +5,57 @@ from __future__ import annotations
 import uuid
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
-from types import SimpleNamespace
 from typing import cast
 
 import pytest
 from pydantic import ValidationError
-from sqlalchemy.exc import SQLAlchemyError
 
 from server.app import game_tick_lucidity_drain as drain
 from server.app import game_tick_status_effects as tick
-from server.app.game_tick_protocols import _TickContainer
-from server.models.player import Player
-from server.services.lucidity_helpers import PlayerGoneError
+from server.app.game_tick_protocols import EffectSecond, _TickContainer
+from server.game.player_registry import LucidityData, PlayerAggregate
+from server.services.lucidity_helpers import decode_liabilities
+from server.services.lucidity_service import AppliedAdjustment, LucidityService
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 EFFECT_TYPE = "lucidity_drain_over_time"
+ROOM = "room-1"
 
 
 @dataclass
 class Rig:
-    lcd: int
-    deltas: list[int] = field(default_factory=lambda: cast(list[int], []))
+    harness: LucidityHarness
+    pid: uuid.UUID
     narrated: list[str] = field(default_factory=lambda: cast(list[str], []))
-    picker_kwargs: list[object] = field(default_factory=lambda: cast(list[object], []))
+    announced: list[AppliedAdjustment] = field(default_factory=lambda: cast(list[AppliedAdjustment], []))
     hallucinated: list[tuple[str, str, str, int]] = field(
         default_factory=lambda: cast(list[tuple[str, str, str, int]], [])
     )
-    fail: bool = False
-    gone: bool = False
     fail_hallucination: bool = False
 
+    @property
+    def lcd(self) -> int:
+        return self.harness.lucidity(self.pid).lcd
 
-@pytest.fixture(name="rig")
-def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
-    rig = Rig(lcd=100)
+    async def second(self, effect: dict[str, object]) -> EffectSecond:
+        """One second of the drain in its own registry unit, then what it left for after the commit."""
+        async with self.harness.registry.mutate(self.pid) as player:
+            outcome = drain.drain_second(self.harness.registry, None, player, effect)
+        for action in outcome.after:
+            await action()
+        return outcome
 
-    class FakeLucidityService:
-        def __init__(
-            self,
-            registry: object,
-            liability_picker: Callable[..., str | None] | None = None,
-            *,
-            catatonia_observer: object | None = None,
-        ) -> None:
-            _ = registry, catatonia_observer
-            rig.picker_kwargs.append(liability_picker)
+    def deltas(self) -> list[int]:
+        return [applied.result.delta for applied in self.announced]
 
-        async def apply_lucidity_adjustment(
-            self,
-            player_id: uuid.UUID,
-            delta: int | Callable[[int], int],
-            *,
-            reason_code: str,
-            location_id: str | None = None,
-        ) -> SimpleNamespace:
-            _ = reason_code, location_id
-            if rig.fail:
-                raise SQLAlchemyError("database unavailable")
-            if rig.gone:
-                raise PlayerGoneError(str(player_id))
-            step = delta(rig.lcd) if callable(delta) else delta  # evaluated on the live value, as the registry does
-            if step:
-                rig.deltas.append(step)
-                rig.lcd += step
-            return SimpleNamespace(new_lcd=rig.lcd, delta=step)
+
+def _make_rig(monkeypatch: pytest.MonkeyPatch, lcd: int) -> Rig:
+    pid = uuid.uuid4()
+    harness = lucidity_registry({pid: LucidityData(lcd=lcd)}, row={"current_room_id": ROOM})
+    rig = Rig(harness, pid)
+
+    async def announce(_self: LucidityService, applied: AppliedAdjustment) -> None:
+        rig.announced.append(applied)
 
     async def fake_deliver(player_id: uuid.UUID | str, message: str) -> dict[str, object]:
         _ = player_id
@@ -88,22 +76,15 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
         f"{hallucinations}.handle_room_text_overlay_hallucination", fake_hallucination("room_text_overlay")
     )
     monkeypatch.setattr(f"{hallucinations}.handle_phantom_hostile_hallucination", fake_hallucination("phantom_hostile"))
-    monkeypatch.setattr(drain, "LucidityService", FakeLucidityService)
+    monkeypatch.setattr(LucidityService, "announce", announce)
     # Authored drain narration is quest content: it goes out on the quest channel.
     monkeypatch.setattr("server.game.chat_npc_system.deliver_personal_quest", fake_deliver)
     return rig
 
 
-def _player() -> Player:
-    return Player(player_id=str(uuid.uuid4()), name="Tester")
-
-
-def _player_in_room() -> Player:
-    return Player(player_id=str(uuid.uuid4()), name="Tester", current_room_id="room-1")
-
-
-def _container(registry: object | None = None) -> _TickContainer:
-    return cast(_TickContainer, cast(object, SimpleNamespace(player_registry=registry or object())))
+@pytest.fixture(name="rig")
+def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
+    return _make_rig(monkeypatch, 100)
 
 
 def _effect(**params: object) -> dict[str, object]:
@@ -112,12 +93,12 @@ def _effect(**params: object) -> dict[str, object]:
 
 @pytest.mark.asyncio
 async def test_each_second_drains_the_rate_and_counts_the_second(rig: Rig) -> None:
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=2))
+    outcome = await rig.second(_effect(rate=2))
 
-    assert rig.deltas == [-2]
-    assert applied is True
-    assert updated is not None
-    assert updated["elapsed"] == 1
+    assert rig.deltas() == [-2] and rig.lcd == 98
+    assert outcome.applied is True
+    assert outcome.effect is not None
+    assert outcome.effect["elapsed"] == 1
 
 
 @pytest.mark.asyncio
@@ -125,111 +106,94 @@ async def test_each_second_drains_the_rate_and_counts_the_second(rig: Rig) -> No
 async def test_the_rate_accelerates_on_schedule(rig: Rig, elapsed: int, expected_rate: int) -> None:
     effect = _effect(rate=1, accelerate_every=30, accelerate_by=1, elapsed=elapsed)
 
-    _ = await drain.process_lucidity_drain(_container(), _player(), effect)
+    _ = await rig.second(effect)
 
-    assert rig.deltas == [-expected_rate]
-
-
-@pytest.mark.asyncio
-async def test_the_last_step_lands_exactly_on_the_floor_and_removes_the_effect(rig: Rig) -> None:
-    rig.lcd = 5
-
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=3, elapsed=0))
-    assert (rig.deltas, updated, applied) == ([-3], {"type": EFFECT_TYPE, "rate": 3, "elapsed": 1}, True)
-
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), cast(dict[str, object], updated))
-    assert rig.deltas == [-3, -3]  # 2 -> -1, not yet at the floor
-
-    rig.lcd = -8
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=3, elapsed=9))
-
-    assert rig.deltas[-1] == -2  # clamped: -8 + -2 == -10
-    assert rig.lcd == -10
-    assert updated is None
-    assert applied is True
+    assert rig.deltas() == [-expected_rate]
 
 
 @pytest.mark.asyncio
-async def test_a_player_already_at_the_floor_just_loses_the_effect(rig: Rig) -> None:
-    rig.lcd = -10
+async def test_the_last_step_lands_exactly_on_the_floor_and_removes_the_effect(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, 5)
 
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=3))
-
-    assert (updated, applied, rig.deltas) == (None, False, [])
-
-
-@pytest.mark.asyncio
-async def test_a_deleted_player_is_a_quiet_no_op(rig: Rig) -> None:
-    """#1147: the player vanished mid-drain; no write, and the effect is left for the tick to discard."""
-    rig.gone = True
-    effect = _effect(rate=3)
-
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), effect)
-
-    assert (updated, applied) == (effect, False)
-    assert rig.deltas == []
-
-
-@pytest.mark.asyncio
-async def test_without_a_player_registry_the_effect_waits_for_the_next_second(rig: Rig) -> None:
-    effect = _effect(rate=3)
-
-    updated, applied = await drain.process_lucidity_drain(
-        cast(_TickContainer, cast(object, SimpleNamespace(player_registry=None))), _player(), effect
+    outcome = await rig.second(_effect(rate=3, elapsed=0))
+    assert (rig.deltas(), outcome.effect, outcome.applied) == (
+        [-3],
+        {"type": EFFECT_TYPE, "rate": 3, "elapsed": 1},
+        True,
     )
 
-    assert (updated, applied, rig.deltas) == (effect, False, [])
+    outcome = await rig.second(cast(dict[str, object], outcome.effect))
+    assert rig.deltas() == [-3, -3]  # 2 -> -1, not yet at the floor
+
+    rig = _make_rig(monkeypatch, -8)
+    outcome = await rig.second(_effect(rate=3, elapsed=9))
+
+    assert rig.deltas() == [-2]  # clamped: -8 + -2 == -10
+    assert rig.lcd == -10
+    assert outcome.effect is None
+    assert outcome.applied is True
 
 
 @pytest.mark.asyncio
-async def test_the_floor_is_configurable(rig: Rig) -> None:
-    rig.lcd = 3
+async def test_a_player_already_at_the_floor_just_loses_the_effect(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, -10)
 
-    updated, _ = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=9, floor=0))
+    outcome = await rig.second(_effect(rate=3))
+
+    assert (outcome.effect, outcome.applied, rig.deltas()) == (None, False, [])
+
+
+@pytest.mark.asyncio
+async def test_the_floor_is_configurable(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, 3)
+
+    outcome = await rig.second(_effect(rate=9, floor=0))
 
     assert rig.lcd == 0
-    assert updated is None
+    assert outcome.effect is None
+
+
+@pytest.mark.asyncio
+async def test_the_lcd_loss_is_made_in_the_callers_unit_and_announced_only_after_it(rig: Rig) -> None:
+    async with rig.harness.registry.mutate(rig.pid) as player:
+        outcome = drain.drain_second(rig.harness.registry, None, player, _effect(rate=2))
+        assert rig.announced == []  # nothing is sent for a second that may still roll back
+        assert player.lucidity.lcd == 98
+    for action in outcome.after:
+        await action()
+
+    assert len(rig.announced) == 1
 
 
 @pytest.mark.asyncio
 async def test_narration_is_sent_once_on_its_second(rig: Rig) -> None:
     narration = [{"at": 1, "text": "The baying starts."}, {"at": 5, "text": "Closer."}]
 
-    _ = await drain.process_lucidity_drain(_container(), _player(), _effect(narration=narration, elapsed=0))
+    _ = await rig.second(_effect(narration=narration, elapsed=0))
     assert rig.narrated == []
-    _ = await drain.process_lucidity_drain(_container(), _player(), _effect(narration=narration, elapsed=1))
+    _ = await rig.second(_effect(narration=narration, elapsed=1))
     assert rig.narrated == ["The baying starts."]
-    _ = await drain.process_lucidity_drain(_container(), _player(), _effect(narration=narration, elapsed=2))
+    _ = await rig.second(_effect(narration=narration, elapsed=2))
 
     assert rig.narrated == ["The baying starts."]
 
 
 @pytest.mark.asyncio
-async def test_liabilities_are_suppressed_only_when_the_effect_says_so(rig: Rig) -> None:
-    _ = await drain.process_lucidity_drain(_container(), _player(), _effect(grants_liabilities=False))
-    _ = await drain.process_lucidity_drain(_container(), _player(), _effect())
+async def test_liabilities_are_suppressed_only_when_the_effect_says_so(monkeypatch: pytest.MonkeyPatch) -> None:
+    suppressing = _make_rig(monkeypatch, 100)
+    _ = await suppressing.second(_effect(rate=20, grants_liabilities=False))
+    granting = _make_rig(monkeypatch, 100)
+    _ = await granting.second(_effect(rate=20))
 
-    suppressing, default = rig.picker_kwargs
-    assert callable(suppressing)
-    assert suppressing("player", 50, 40, "reason") is None
-    assert default is None
-
-
-@pytest.mark.asyncio
-async def test_a_database_failure_keeps_the_effect_for_the_next_second(rig: Rig) -> None:
-    rig.fail = True
-    effect = _effect(rate=2, elapsed=7)
-
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), effect)
-
-    assert (updated, applied, rig.deltas) == (effect, False, [])
+    assert decode_liabilities(suppressing.harness.lucidity(suppressing.pid).liabilities) == []
+    assert decode_liabilities(granting.harness.lucidity(granting.pid).liabilities) != []
 
 
 @pytest.mark.asyncio
 async def test_a_malformed_effect_is_dropped_rather_than_retried_forever(rig: Rig) -> None:
-    updated, applied = await drain.process_lucidity_drain(_container(), _player(), _effect(rate=0))
+    outcome = await rig.second(_effect(rate=0))
 
-    assert (updated, applied, rig.deltas) == (None, False, [])
+    assert (outcome.effect, outcome.applied, rig.deltas()) == (None, False, [])
 
 
 # --- wiring into the tick -----------------------------------------------------------------------------------------
@@ -240,19 +204,21 @@ async def test_the_tick_routes_a_drain_effect_to_the_drain(monkeypatch: pytest.M
     """process_status_effects only runs effects on game seconds (test_game_tick_status_effects.py)."""
     calls: list[dict[str, object]] = []
 
-    async def fake_process(
-        container: _TickContainer, player: Player, effect: dict[str, object]
-    ) -> tuple[dict[str, object] | None, bool]:
-        _ = container, player
+    def fake_drain(
+        registry: object, observer: object, player: PlayerAggregate, effect: dict[str, object]
+    ) -> EffectSecond:
+        _ = registry, observer, player
         calls.append(effect)
-        return {**effect, "elapsed": 1}, True
+        return EffectSecond({**effect, "elapsed": 1}, True)
 
-    monkeypatch.setattr(tick, "process_lucidity_drain", fake_process)
+    monkeypatch.setattr(tick, "drain_second", fake_drain)
+    harness = lucidity_registry({(pid := uuid.uuid4()): None})
     effect = _effect(rate=1)
 
-    outcome = await tick._process_single_effect(_container(), _player(), effect)
+    async with harness.registry.mutate(pid) as player:
+        outcome = tick._run_effect_second(cast(_TickContainer, object()), harness.registry, player, effect)
 
-    assert outcome == ({**effect, "elapsed": 1}, True)
+    assert outcome == EffectSecond({**effect, "elapsed": 1}, True)
     assert calls == [effect]
 
 
@@ -262,17 +228,16 @@ BEATS = [{"at": 1, "kind": "room_text_overlay"}, {"at": 3, "kind": "phantom_host
 
 
 @pytest.mark.asyncio
-async def test_each_hallucination_beat_fires_once_on_its_second(rig: Rig) -> None:
-    rig.lcd = 30
-    player = _player_in_room()
+async def test_each_hallucination_beat_fires_once_on_its_second(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, 30)
 
     for elapsed in range(6):
-        _ = await drain.process_lucidity_drain(_container(), player, _effect(hallucinations=BEATS, elapsed=elapsed))
+        _ = await rig.second(_effect(hallucinations=BEATS, elapsed=elapsed))
 
     # LCD after each step is 29, 28, 27, 26, ...: the overlay at second 1, the phantom at second 3, nothing else.
     assert rig.hallucinated == [
-        ("room_text_overlay", "room-1", "fractured", 28),
-        ("phantom_hostile", "room-1", "fractured", 26),
+        ("room_text_overlay", ROOM, "fractured", 28),
+        ("phantom_hostile", ROOM, "fractured", 26),
     ]
 
 
@@ -280,69 +245,45 @@ async def test_each_hallucination_beat_fires_once_on_its_second(rig: Rig) -> Non
 @pytest.mark.parametrize(
     ("lcd_before", "tier"), [(100, "lucid"), (50, "uneasy"), (30, "fractured"), (10, "deranged"), (0, "catatonic")]
 )
-async def test_the_beat_uses_the_tier_of_the_players_lcd_right_now(rig: Rig, lcd_before: int, tier: str) -> None:
-    rig.lcd = lcd_before
+async def test_the_beat_uses_the_tier_of_the_players_lcd_right_now(
+    monkeypatch: pytest.MonkeyPatch, lcd_before: int, tier: str
+) -> None:
+    rig = _make_rig(monkeypatch, lcd_before)
 
-    _ = await drain.process_lucidity_drain(
-        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}])
-    )
+    _ = await rig.second(_effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}]))
 
-    assert rig.hallucinated == [("phantom_hostile", "room-1", tier, lcd_before - 1)]
-
-
-@pytest.mark.asyncio
-async def test_no_beat_fires_once_the_player_is_at_the_floor(rig: Rig) -> None:
-    rig.lcd = -10
-
-    updated, applied = await drain.process_lucidity_drain(
-        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
-    )
-
-    assert (updated, applied, rig.hallucinated) == (None, False, [])
+    assert rig.hallucinated == [("phantom_hostile", ROOM, tier, lcd_before - 1)]
 
 
 @pytest.mark.asyncio
-async def test_a_beat_after_the_drain_ends_never_fires(rig: Rig) -> None:
-    rig.lcd = 3
+async def test_no_beat_fires_once_the_player_is_at_the_floor(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, -10)
+
+    outcome = await rig.second(_effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}]))
+
+    assert (outcome.effect, outcome.applied, rig.hallucinated) == (None, False, [])
+
+
+@pytest.mark.asyncio
+async def test_a_beat_after_the_drain_ends_never_fires(monkeypatch: pytest.MonkeyPatch) -> None:
+    rig = _make_rig(monkeypatch, 3)
     effect: dict[str, object] | None = _effect(hallucinations=[{"at": 99, "kind": "room_text_overlay"}])
 
     while effect is not None:
-        effect, _applied = await drain.process_lucidity_drain(_container(), _player_in_room(), effect)
+        effect = (await rig.second(effect)).effect
 
     assert rig.lcd == -10
     assert rig.hallucinated == []
 
 
 @pytest.mark.asyncio
-async def test_a_failed_database_step_fires_no_beat_and_retries_the_same_second(rig: Rig) -> None:
-    rig.fail = True
-    effect = _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
-
-    updated, applied = await drain.process_lucidity_drain(_container(), _player_in_room(), effect)
-
-    assert (updated, applied, rig.hallucinated) == (effect, False, [])
-
-
-@pytest.mark.asyncio
-async def test_a_player_without_a_room_skips_the_beat_but_the_drain_advances(rig: Rig) -> None:
-    updated, applied = await drain.process_lucidity_drain(
-        _container(), _player(), _effect(hallucinations=[{"at": 0, "kind": "room_text_overlay"}])
-    )
-
-    assert rig.hallucinated == []
-    assert (applied, updated is not None and updated["elapsed"]) == (True, 1)
-
-
-@pytest.mark.asyncio
 async def test_a_failing_hallucination_is_skipped_and_the_drain_still_advances(rig: Rig) -> None:
     rig.fail_hallucination = True
 
-    updated, applied = await drain.process_lucidity_drain(
-        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}])
-    )
+    outcome = await rig.second(_effect(hallucinations=[{"at": 0, "kind": "phantom_hostile"}]))
 
-    assert rig.deltas == [-1]  # applied exactly once: a retry would drain this second twice
-    assert (applied, updated is not None and updated["elapsed"]) == (True, 1)
+    assert rig.deltas() == [-1]  # applied exactly once: a retry would drain this second twice
+    assert (outcome.applied, outcome.effect is not None and outcome.effect["elapsed"]) == (True, 1)
 
 
 def test_unknown_hallucination_kinds_are_rejected_at_validation() -> None:
@@ -354,8 +295,6 @@ def test_unknown_hallucination_kinds_are_rejected_at_validation() -> None:
 
 @pytest.mark.asyncio
 async def test_a_drain_with_an_unknown_kind_is_dropped_like_any_malformed_effect(rig: Rig) -> None:
-    updated, applied = await drain.process_lucidity_drain(
-        _container(), _player_in_room(), _effect(hallucinations=[{"at": 0, "kind": "fake_npc_tell"}])
-    )
+    outcome = await rig.second(_effect(hallucinations=[{"at": 0, "kind": "fake_npc_tell"}]))
 
-    assert (updated, applied, rig.deltas, rig.hallucinated) == (None, False, [], [])
+    assert (outcome.effect, outcome.applied, rig.deltas(), rig.hallucinated) == (None, False, [], [])

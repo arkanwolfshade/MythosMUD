@@ -34,6 +34,7 @@ from ...structured_logging.enhanced_logging_config import get_logger
 from .aggregate import PlayerAggregate, PlayerView
 from .part import DbSession, PartWrite
 from .player_cooldowns import LOAD_CORRUPTION_COOLDOWNS_SQL, REPLACE_CORRUPTION_COOLDOWNS_SQL, PlayerCooldownsPart
+from .player_effects import PlayerEffectsPart
 from .player_exposure import PlayerExposurePart
 from .player_inventory import PlayerInventoryPart
 from .player_lucidity import LOAD_LUCIDITY_SQL, LucidityData, PlayerLucidityPart
@@ -74,6 +75,7 @@ async def load_player_aggregate(session: DbSession, player_id: uuid.UUID) -> Pla
         PlayerCooldownsPart.from_json(
             player_id, corruption.get("cooldowns"), write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL
         ),
+        PlayerEffectsPart.from_json(player_id, state.get("effects")),
     )
 
 
