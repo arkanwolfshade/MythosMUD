@@ -58,18 +58,8 @@ class PlayerEffects:
         options: PlayerEffectOptions | None = None,
     ) -> str:
         """Start an effect lasting ``remaining_seconds`` online game seconds (None = until removed); returns its id."""
-        extra = options or {}
         async with self._registry.mutate(uuid.UUID(str(player_id))) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
-            effect_id = player.effects.add(
-                effect_type,
-                category,
-                remaining_seconds=remaining_seconds,
-                payload=extra.get("payload"),
-                instance_scoped=extra.get("instance_scoped", False),
-                intensity=extra.get("intensity", 1),
-                source=extra.get("source"),
-                visibility_level=extra.get("visibility_level", "visible"),
-            )
+            effect_id = player.effects.add(effect_type, category, remaining_seconds=remaining_seconds, options=options)
         return str(effect_id)
 
     async def add_content(self, player_id: uuid.UUID, effect: Mapping[str, object]) -> str:

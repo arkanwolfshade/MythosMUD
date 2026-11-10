@@ -61,7 +61,7 @@ async def _write_out(part: PlayerEffectsPart) -> _Recorder:
 def test_adding_an_effect_is_synchronous_and_names_its_id() -> None:
     part = PlayerEffectsPart(PLAYER)
 
-    effect_id = part.add("login_warded", "entry_ward", remaining_seconds=30, source="game_entry")
+    effect_id = part.add("login_warded", "entry_ward", remaining_seconds=30, options={"source": "game_entry"})
 
     [effect] = part.effects
     assert effect.id == effect_id and effect.effect_type == "login_warded" and effect.remaining_seconds == 30
@@ -71,7 +71,10 @@ def test_adding_an_effect_is_synchronous_and_names_its_id() -> None:
 async def test_an_added_effect_is_written_with_the_id_the_part_gave_it() -> None:
     part = PlayerEffectsPart(PLAYER)
     effect_id = part.add(
-        "heal_over_time", "scripted", remaining_seconds=15, payload={"healing": 5}, instance_scoped=True, intensity=2
+        "heal_over_time",
+        "scripted",
+        remaining_seconds=15,
+        options={"payload": {"healing": 5}, "instance_scoped": True, "intensity": 2},
     )
 
     recorder = await _write_out(part)

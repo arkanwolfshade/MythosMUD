@@ -23,8 +23,11 @@ from typing import cast, override
 
 from sqlalchemy import TextClause, text
 
+from ...async_persistence_types import PlayerEffectOptions
 from .part import DbSession, Part, PartWrite
 
+# text() is required to call these PG functions; each is a fixed literal with bound parameters, no built query.
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 ADD_EFFECT_SQL = text(
     """
     SELECT add_player_effect(
@@ -33,10 +36,15 @@ ADD_EFFECT_SQL = text(
     )
     """
 )
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 DELETE_EFFECT_SQL = text("SELECT delete_player_effect(:effect_id)")
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 DELETE_EFFECTS_BY_TYPE_SQL = text("SELECT delete_player_effects_by_type(:player_id, :effect_type)")
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 DELETE_INSTANCE_SCOPED_SQL = text("SELECT delete_instance_scoped_effects(:player_id)")
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 UPDATE_PAYLOAD_SQL = text("SELECT update_player_effect_payload(:effect_id, CAST(:payload AS jsonb))")
+# nosemgrep: python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text
 ADVANCE_EFFECTS_SQL = text("SELECT player_id, effect_type FROM advance_player_effects(CAST(:player_ids AS uuid[]))")
 
 type _Write = tuple[TextClause, Mapping[str, object]]
@@ -110,29 +118,29 @@ class PlayerEffectsPart(Part):
 
     # ---- mutators ----
 
-    def add(  # pylint: disable=too-many-arguments  # Reason: one effect's columns; the keyword-only ones all have defaults
+    def add(
         self,
         effect_type: str,
         category: str,
         *,
         remaining_seconds: int | None = None,
-        payload: Mapping[str, object] | None = None,
-        instance_scoped: bool = False,
-        intensity: int = 1,
-        source: str | None = None,
-        visibility_level: str = "visible",
+        options: PlayerEffectOptions | None = None,
     ) -> uuid.UUID:
-        """Start an effect and return its id. One with no time left (0 or less) is never stored: it would not run."""
+        """Start an effect and return its id. One with no time left (0 or less) is never stored: it would not run.
+
+        ``options`` are the optional columns: payload, instance_scoped, intensity, source and visibility_level.
+        """
+        extra = options or {}
         effect = EffectData(
             id=uuid.uuid4(),
             effect_type=effect_type,
             category=category,
             remaining_seconds=remaining_seconds,
-            payload=dict(payload or {}),
-            instance_scoped=instance_scoped,
-            intensity=intensity,
-            source=source,
-            visibility_level=visibility_level,
+            payload=dict(extra.get("payload") or {}),
+            instance_scoped=extra.get("instance_scoped", False),
+            intensity=extra.get("intensity", 1),
+            source=extra.get("source"),
+            visibility_level=extra.get("visibility_level", "visible"),
         )
         if remaining_seconds is not None and remaining_seconds <= 0:
             return effect.id

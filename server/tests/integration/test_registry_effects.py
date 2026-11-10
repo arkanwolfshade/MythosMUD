@@ -89,10 +89,12 @@ async def test_effects_round_trip_through_the_real_procedures(
     registry = _registry(session_factory)
     try:
         async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
-            _ = player.effects.add("login_warded", "entry_ward", remaining_seconds=2, source="game_entry")
+            _ = player.effects.add("login_warded", "entry_ward", remaining_seconds=2, options={"source": "game_entry"})
         async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
             _ = player.effects.add(
-                "lucidity_drain_over_time", "scripted", payload={"rate": 1, "elapsed": 0}, instance_scoped=True
+                "lucidity_drain_over_time",
+                "scripted",
+                options={"payload": {"rate": 1, "elapsed": 0}, "instance_scoped": True},
             )
 
         assert await _effects(registry, player_id) == [
@@ -175,7 +177,9 @@ async def test_the_status_effect_tick_racing_a_pickup_loses_neither(
             player.row.set_stat("max_dp", 20, sync=True)
             player.row.set_stat("current_dp", 5, sync=True)
             player.inventory.replace([_stack("lantern"), _stack("coin")], {})
-            _ = player.effects.add("heal_over_time", "scripted", remaining_seconds=30, payload={"healing": 1})
+            _ = player.effects.add(
+                "heal_over_time", "scripted", remaining_seconds=30, options={"payload": {"healing": 1}}
+            )
 
         async def pick_up(name: str) -> None:
             async with registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
