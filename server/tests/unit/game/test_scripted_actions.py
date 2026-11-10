@@ -80,7 +80,10 @@ class Rig:
 
     def context(self, *, with_quests: bool = True) -> ScriptedActionContext:
         return ScriptedActionContext(
-            player=self.player, persistence=self.persistence, quest_service=self.quests if with_quests else None
+            player=self.player,
+            persistence=self.persistence,
+            quest_service=self.quests if with_quests else None,
+            player_registry=cast(PlayerRegistry, object()),
         )
 
 
@@ -113,12 +116,16 @@ def _rig(monkeypatch: pytest.MonkeyPatch) -> Rig:
     monkeypatch.setattr(runner, "perform_debrief", fake_debrief)
     stored_effects: list[tuple[uuid.UUID, dict[str, object]]] = []
 
-    async def fake_add_content_effect(player_id: uuid.UUID, effect: dict[str, object]) -> str:
-        stored_effects.append((player_id, dict(effect)))
-        return str(uuid.uuid4())
+    class FakePlayerEffects:
+        def __init__(self, registry: object) -> None:
+            _ = registry
 
-    # apply_effect stores a player_effects row (ADR-029 step 3b-i); a unit test must not reach the database.
-    monkeypatch.setattr(runner, "add_content_effect", fake_add_content_effect)
+        async def add_content(self, player_id: uuid.UUID, effect: dict[str, object]) -> str:
+            stored_effects.append((player_id, dict(effect)))
+            return str(uuid.uuid4())
+
+    # apply_effect starts an effect on the player registry (ADR-029 step 6d); a unit test must not reach the database.
+    monkeypatch.setattr(runner, "PlayerEffects", FakePlayerEffects)
     return Rig(_player(), FakePersistence(), FakeQuests(), narrated, debriefs, stored_effects)
 
 
@@ -200,6 +207,15 @@ async def test_apply_effect_stores_the_effect_for_the_player_without_a_player_sa
     await run_scripted_actions([ApplyEffectAction(effect=HOT_EFFECT)], rig.context())
 
     assert rig.stored_effects == [(uuid.UUID(str(rig.player.player_id)), HOT_EFFECT)]
+
+
+@pytest.mark.asyncio
+async def test_apply_effect_without_a_player_registry_is_skipped(rig: Rig) -> None:
+    ctx = ScriptedActionContext(player=rig.player, persistence=rig.persistence)
+
+    await run_scripted_actions([ApplyEffectAction(effect=HOT_EFFECT)], ctx)
+
+    assert rig.stored_effects == []
 
 
 @pytest.mark.asyncio

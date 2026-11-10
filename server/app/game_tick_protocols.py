@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 import uuid
 from collections.abc import Awaitable, Callable, Mapping
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol, cast
 
 from fastapi import FastAPI
@@ -23,6 +24,7 @@ if TYPE_CHECKING:
     from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
 
 __all__ = [
+    "EffectSecond",
     "_TickCombatService",
     "_TickConnectionManager",
     "_TickContainer",
@@ -39,6 +41,20 @@ __all__ = [
     "_online_player_ids",
     "_tick_online_players",
 ]
+
+
+@dataclass(frozen=True, slots=True)
+class EffectSecond:
+    """What one second of one effect did inside the player's unit of work.
+
+    ``effect`` is the effect as it stands now, or None once it has finished. ``applied`` says whether it had an impact.
+    ``after`` is what to run once the unit has committed (notifications, narration): nothing is sent for a second that
+    rolled back, and nothing is sent while the player's lock is held.
+    """
+
+    effect: dict[str, object] | None
+    applied: bool
+    after: tuple[Callable[[], Awaitable[None]], ...] = ()
 
 
 class _TickConnectionManager(Protocol):

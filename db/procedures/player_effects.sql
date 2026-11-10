@@ -1,20 +1,26 @@
 -- Requires -v schema_name=<target_schema> (e.g. mythos_unit, mythos_dev).
 -- Apply with: psql -d <db> -v schema_name=<schema> -f player_effects.sql
 --
--- Player effect procedures (ADR-019, ADR-029 step 3b-i). Replaces ORM in PlayerEffectRepository.
+-- Player effect procedures (ADR-019, ADR-029 steps 3b-i and 6d). The player registry reads a player's effects with
+-- get_player_lucidity_state (lucidity.sql) and writes them with the procedures below, inside its units of work.
 -- remaining_seconds counts game seconds left while the player is online (NULL = until removed); payload holds the
 -- effect's parameters and mutable state.
 
--- Signatures from the tick-based schema: drop them so the reapply leaves no stale overloads behind.
+-- Signatures from earlier schemas: drop them so the reapply leaves no stale overloads behind.
 DROP FUNCTION IF EXISTS :schema_name.add_player_effect( -- noqa: PRS
     uuid, character varying, character varying, integer, integer, integer, character varying, character varying
+);
+DROP FUNCTION IF EXISTS :schema_name.add_player_effect( -- noqa: PRS
+    uuid, character varying, character varying, integer, jsonb, boolean, integer, character varying, character varying
 );
 DROP FUNCTION IF EXISTS :schema_name.get_active_effects_for_player(uuid, integer); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.get_effects_expiring_this_tick(integer); -- noqa: PRS
 DROP FUNCTION IF EXISTS :schema_name.expire_effects_for_tick(integer); -- noqa: PRS
+-- Replaced by the effects column of get_player_lucidity_state (ADR-029 step 6d).
 DROP FUNCTION IF EXISTS :schema_name.get_active_effects_for_player(uuid); -- noqa: PRS
 
--- add_player_effect: insert effect, return effect id
+-- add_player_effect: insert effect, return effect id. The registry names the id itself (p_effect_id), so its copy of
+-- the effect can be changed or removed later without reading the row back.
 CREATE OR REPLACE FUNCTION :schema_name.add_player_effect( -- noqa: PRS
     p_player_id UUID,
     p_effect_type character varying,
@@ -24,7 +30,8 @@ CREATE OR REPLACE FUNCTION :schema_name.add_player_effect( -- noqa: PRS
     p_instance_scoped boolean DEFAULT false,
     p_intensity integer DEFAULT 1,
     p_source character varying DEFAULT NULL,
-    p_visibility_level character varying DEFAULT 'visible'
+    p_visibility_level character varying DEFAULT 'visible',
+    p_effect_id uuid DEFAULT NULL
 )
 RETURNS uuid
 LANGUAGE plpgsql
@@ -33,12 +40,12 @@ DECLARE
     out_id uuid;
 BEGIN
     INSERT INTO player_effects (
-        player_id, effect_type, category, remaining_seconds, payload, instance_scoped,
+        id, player_id, effect_type, category, remaining_seconds, payload, instance_scoped,
         intensity, source, visibility_level
     )
     VALUES (
-        p_player_id, p_effect_type, p_category, p_remaining_seconds, COALESCE(p_payload, '{}'::jsonb),
-        COALESCE(p_instance_scoped, false), COALESCE(p_intensity, 1), p_source,
+        COALESCE(p_effect_id, gen_random_uuid()), p_player_id, p_effect_type, p_category, p_remaining_seconds,
+        COALESCE(p_payload, '{}'::jsonb), COALESCE(p_instance_scoped, false), COALESCE(p_intensity, 1), p_source,
         COALESCE(p_visibility_level, 'visible')
     )
     RETURNING id INTO out_id;
@@ -93,42 +100,19 @@ END;
 $$;
 
 
--- get_active_effects_for_player: effects with time left (or no limit), oldest first
-CREATE OR REPLACE FUNCTION :schema_name.get_active_effects_for_player(p_player_id uuid) -- noqa: PRS
-RETURNS TABLE (
-    id uuid,
-    player_id uuid,
-    effect_type character varying(64),
-    category character varying(64),
-    remaining_seconds integer,
-    payload jsonb,
-    instance_scoped boolean,
-    intensity integer,
-    source character varying(128),
-    visibility_level character varying(32),
-    created_at timestamp without time zone
-)
+-- get_player_ids_with_active_effects: which of these (online) players have an effect with time left (or no limit).
+-- The status-effect tick's candidates: one query a second for everyone, so only these players open a unit of work.
+CREATE OR REPLACE FUNCTION :schema_name.get_player_ids_with_active_effects(p_player_ids uuid []) -- noqa: PRS
+RETURNS TABLE (player_id uuid)
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT
-        pe.id,
-        pe.player_id,
-        pe.effect_type,
-        pe.category,
-        pe.remaining_seconds,
-        pe.payload,
-        pe.instance_scoped,
-        pe.intensity,
-        pe.source,
-        pe.visibility_level,
-        pe.created_at
+    SELECT DISTINCT pe.player_id
     FROM player_effects AS pe
     WHERE
-        pe.player_id = p_player_id
-        AND (pe.remaining_seconds IS NULL OR pe.remaining_seconds > 0)
-    ORDER BY pe.created_at, pe.id;
+        pe.player_id = ANY(p_player_ids)
+        AND (pe.remaining_seconds IS NULL OR pe.remaining_seconds > 0);
 END;
 $$;
 
@@ -148,7 +132,8 @@ $$;
 
 
 -- advance_player_effects: one game second passes for these (online) players. Timed effects lose a second; the ones
--- that run out are deleted and returned, so the caller can react (e.g. ending a login ward).
+-- that run out are deleted and returned. The registry runs it for one player inside the unit that ran the second's
+-- effects, and mirrors it on its own copy of the effects (PlayerEffectsPart.advance_second).
 CREATE OR REPLACE FUNCTION :schema_name.advance_player_effects(p_player_ids uuid []) -- noqa: PRS
 RETURNS TABLE (player_id uuid, effect_type character varying(64))
 LANGUAGE plpgsql

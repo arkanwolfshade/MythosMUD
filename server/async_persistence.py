@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from collections.abc import Awaitable, Callable, Mapping, Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from datetime import datetime
 from typing import TYPE_CHECKING, Unpack, cast
 
@@ -37,10 +37,10 @@ from .async_persistence_types import (
     CorruptionAdjustOptions,
     InstanceRoomLookup,
     PlayerEffectOptions,
+    PlayerEffectsWriting,
 )
 from .events import EventBus
 from .models.player import Player
-from .models.player_effect import PlayerEffect
 from .models.profession import Profession
 from .models.user import User
 from .persistence.container_create_params import ContainerCreateParams
@@ -54,7 +54,6 @@ from .persistence.repositories import (
     ProfessionRepository,
     RoomRepository,
 )
-from .persistence.repositories.player_effect_repository import AddEffectInput
 from .structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -89,6 +88,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _profession_repo: ProfessionRepository
     _experience_repo: ExperienceRepository
     _health_service: DpAdjusting | None
+    _effects_service: PlayerEffectsWriting | None
     _container_repo: ContainerRepository
     _item_repo: ItemRepository
     _player_effect_repo: PlayerEffectRepository
@@ -126,6 +126,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._profession_repo = ProfessionRepository()
         self._experience_repo = ExperienceRepository(event_bus=event_bus)
         self._health_service = None
+        self._effects_service = None
         self._container_repo = ContainerRepository()
         self._item_repo = ItemRepository()
         self._player_effect_repo = PlayerEffectRepository()
@@ -154,6 +155,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     def set_health_service(self, service: DpAdjusting | None) -> None:
         """Set the PlayerHealthService (on the player registry) that damage and healing run; injected likewise."""
         self._health_service = service
+
+    def set_effects_service(self, service: PlayerEffectsWriting | None) -> None:
+        """Set the PlayerEffects (on the player registry) that adding and removing effects run; injected likewise."""
+        self._effects_service = service
 
     async def close(self) -> None:
         """Close and cleanup resources.
@@ -382,7 +387,12 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         change = await self._health().damage(uuid.UUID(str(player.player_id)), amount, damage_type)
         player.apply_stat_changes(change.changes)
 
-    # Player effects (ADR-019, ADR-029 step 3b-i)
+    # Player effects (ADR-019, ADR-029 steps 3b-i and 6d): the player registry owns the rows
+    def _effects(self) -> PlayerEffectsWriting:
+        if self._effects_service is None:  # never fall back to writing the rows directly
+            raise RuntimeError("Effects service not wired (the combat bundle sets it); cannot change effects")
+        return self._effects_service
+
     async def add_player_effect(
         self,
         player_id: uuid.UUID | str,
@@ -392,38 +402,15 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         options: PlayerEffectOptions | None = None,
     ) -> str:
         """Add a player effect lasting ``remaining_seconds`` online game seconds (None = until removed). Returns its id."""
-        effect_options = options or {}
-        data: AddEffectInput = {
-            "effect_type": effect_type,
-            "category": category,
-            "remaining_seconds": remaining_seconds,
-            "payload": effect_options.get("payload", {}),
-            "instance_scoped": effect_options.get("instance_scoped", False),
-            "intensity": effect_options.get("intensity", 1),
-            "source": effect_options.get("source"),
-            "visibility_level": effect_options.get("visibility_level", "visible"),
-        }
-        return await self._player_effect_repo.add_effect(player_id, data)
-
-    async def remove_player_effect_by_id(self, effect_id: uuid.UUID | str) -> None:
-        """Remove a player effect by id."""
-        await self._player_effect_repo.delete_effect(effect_id)
+        return await self._effects().add(player_id, effect_type, category, remaining_seconds, options)
 
     async def remove_player_effects_by_type(self, player_id: uuid.UUID | str, effect_type: str) -> int:
         """Remove every effect of one type on a player; returns how many."""
-        return await self._player_effect_repo.delete_effects_by_type(player_id, effect_type)
+        return await self._effects().remove_by_type(player_id, effect_type)
 
-    async def get_active_player_effects(self, player_id: uuid.UUID | str) -> list[PlayerEffect]:
-        """A player's effects with time left (or no limit), oldest first."""
-        return await self._player_effect_repo.get_active_effects_for_player(player_id)
-
-    async def update_player_effect_payload(self, effect_id: uuid.UUID | str, payload: Mapping[str, object]) -> None:
-        """Replace an effect's payload (its mutable state, e.g. the drain's elapsed)."""
-        await self._player_effect_repo.update_effect_payload(effect_id, payload)
-
-    async def advance_player_effects(self, player_ids: Sequence[uuid.UUID]) -> list[tuple[str, str]]:
-        """One game second passes for these online players; returns the (player_id, effect_type) that ran out."""
-        return await self._player_effect_repo.advance_effects(player_ids)
+    async def get_player_ids_with_effects(self, player_ids: Sequence[uuid.UUID]) -> list[uuid.UUID]:
+        """Which of these players have an effect with time left (the status-effect tick's candidates)."""
+        return await self._player_effect_repo.player_ids_with_active_effects(player_ids)
 
     # Container methods
     async def create_container(

@@ -2,8 +2,8 @@
 PlayerAggregate: everything the server knows about one player, held once in memory (ADR-029 §3.2).
 
 The aggregate is a set of parts. Today that is the ``players`` row (corruption included, in its stats), the
-inventory, the quests, lucidity, the lucidity cooldowns and exposure, and the corruption cooldowns and ledger; later
-ADR-029 steps add effects and the rest as their subsystems move onto the registry. Callers only ever reach it through
+inventory, the quests, lucidity, the lucidity cooldowns and exposure, the effects, and the corruption cooldowns and
+ledger; later ADR-029 steps add the rest as their subsystems move onto the registry. Callers only ever reach it through
 PlayerRegistry: ``mutate()`` hands out the aggregate itself, ``peek()`` hands out a PlayerView.
 """
 
@@ -17,6 +17,7 @@ from typing import Protocol
 from ...events.event_types import BaseEvent
 from .part import Part, PartWrite
 from .player_cooldowns import REPLACE_CORRUPTION_COOLDOWNS_SQL, PlayerCooldownsPart
+from .player_effects import EffectData, PlayerEffectsPart
 from .player_exposure import PlayerExposurePart
 from .player_inventory import PlayerInventoryPart
 from .player_ledger import PlayerLedgerPart
@@ -158,6 +159,15 @@ class PlayerExposureView(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
+class PlayerEffectsView(Protocol):
+    """Read-only access to the effects part."""
+
+    @property
+    def effects(self) -> Sequence[EffectData]:
+        """The running effects, oldest first."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
+
 class PlayerView(Protocol):
     """What ``PlayerRegistry.peek()`` returns: the live aggregate, typed read-only."""
 
@@ -201,6 +211,11 @@ class PlayerView(Protocol):
         """Corruption recovery cooldowns by action code."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
+    @property
+    def effects(self) -> PlayerEffectsView:
+        """Running status effects."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
 
 class PlayerAggregate:
     """One player's in-memory state: its parts and the domain events its current unit of work has queued."""
@@ -209,6 +224,7 @@ class PlayerAggregate:
         "_cooldowns",
         "_corruption_cooldowns",
         "_corruption_ledger",
+        "_effects",
         "_events",
         "_exposure",
         "_inventory",
@@ -225,6 +241,7 @@ class PlayerAggregate:
     _exposure: PlayerExposurePart
     _corruption_cooldowns: PlayerCooldownsPart
     _corruption_ledger: PlayerLedgerPart
+    _effects: PlayerEffectsPart
     _events: list[BaseEvent]
 
     def __init__(
@@ -236,6 +253,7 @@ class PlayerAggregate:
         cooldowns: PlayerCooldownsPart | None = None,
         exposure: PlayerExposurePart | None = None,
         corruption_cooldowns: PlayerCooldownsPart | None = None,
+        effects: PlayerEffectsPart | None = None,
     ) -> None:
         self._row = row
         self._inventory = inventory
@@ -249,6 +267,7 @@ class PlayerAggregate:
             else PlayerCooldownsPart(row.player_id, write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL)
         )
         self._corruption_ledger = PlayerLedgerPart(row.player_id)  # starts empty: rows are only queued, never loaded
+        self._effects = effects if effects is not None else PlayerEffectsPart(row.player_id)
         self._events = []
 
     @property
@@ -292,6 +311,11 @@ class PlayerAggregate:
         return self._corruption_cooldowns
 
     @property
+    def effects(self) -> PlayerEffectsPart:
+        """Running status effects."""
+        return self._effects
+
+    @property
     def corruption_ledger(self) -> PlayerLedgerPart:
         """``corruption_adjustment_log`` rows waiting for the unit's write."""
         return self._corruption_ledger
@@ -306,6 +330,7 @@ class PlayerAggregate:
             self._cooldowns,
             self._exposure,
             self._corruption_cooldowns,
+            self._effects,
             self._corruption_ledger,
         )
 

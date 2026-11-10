@@ -3,6 +3,7 @@
 from .aggregate import (
     PlayerAggregate,
     PlayerCooldownsView,
+    PlayerEffectsView,
     PlayerExposureView,
     PlayerInventoryView,
     PlayerLucidityView,
@@ -12,6 +13,7 @@ from .aggregate import (
 )
 from .part import DbSession, Part, PartWrite
 from .player_cooldowns import REPLACE_CORRUPTION_COOLDOWNS_SQL, PlayerCooldownsPart
+from .player_effects import EffectData, PlayerEffectsPart
 from .player_exposure import Exposure, PlayerExposurePart
 from .player_inventory import InventoryData, PlayerInventoryPart
 from .player_ledger import PlayerLedgerPart
@@ -30,6 +32,7 @@ from .registry import (
 __all__ = [
     "REPLACE_CORRUPTION_COOLDOWNS_SQL",
     "DbSession",
+    "EffectData",
     "Exposure",
     "InventoryData",
     "LockOrderError",
@@ -39,6 +42,8 @@ __all__ = [
     "PlayerAggregate",
     "PlayerCooldownsPart",
     "PlayerCooldownsView",
+    "PlayerEffectsPart",
+    "PlayerEffectsView",
     "PlayerExposurePart",
     "PlayerExposureView",
     "PlayerLedgerPart",

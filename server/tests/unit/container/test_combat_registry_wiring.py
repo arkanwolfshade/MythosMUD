@@ -1,5 +1,6 @@
-"""The combat bundle wires corruption and DP onto the player registry (ADR-029 steps 5c, 6a): the persistence
-layer's ``adjust_corruption`` and damage and healing run services on it, and the corruption flux tick gets it too."""
+"""The combat bundle wires corruption and DP onto the player registry (ADR-029 steps 5c, 6a, 6d): the persistence
+layer's ``adjust_corruption``, damage and healing, and effects run services on it, and the corruption flux tick gets
+it too."""
 
 from __future__ import annotations
 
@@ -8,8 +9,10 @@ from typing import cast
 
 import pytest
 
+from server.async_persistence_types import PlayerEffectsWriting
 from server.container.bundles.combat import CombatBundle
 from server.container.main import ApplicationContainer
+from server.game.effect_store import PlayerEffects
 from server.models.corruption import CorruptionAdjusting
 from server.models.player_dp import DpAdjusting
 from server.services.corruption_service import CorruptionService
@@ -23,6 +26,7 @@ class RecordingPersistence:
     def __init__(self) -> None:
         self.corruption_service: CorruptionAdjusting | None = None
         self.health_service: DpAdjusting | None = None
+        self.effects_service: PlayerEffectsWriting | None = None
         self.wired_lucidity: bool = False
 
     def get_room_by_id(self, room_id: str) -> None:  # bound by the bundle as the respawn room lookup
@@ -40,6 +44,9 @@ class RecordingPersistence:
 
     def set_health_service(self, service: DpAdjusting | None) -> None:
         self.health_service = service
+
+    def set_effects_service(self, service: PlayerEffectsWriting | None) -> None:
+        self.effects_service = service
 
 
 @pytest.mark.asyncio
@@ -83,5 +90,6 @@ async def test_corruption_is_wired_onto_the_player_registry(monkeypatch: pytest.
     assert persistence.wired_lucidity
     assert isinstance(persistence.corruption_service, CorruptionService)
     assert isinstance(persistence.health_service, PlayerHealthService)  # DP from ticks and mechanics (step 6a)
+    assert isinstance(persistence.effects_service, PlayerEffects)  # effects spells and the ward add (step 6d)
     [kwargs] = flux_kwargs
     assert kwargs["player_registry"] is registry  # the tick writes room flux through the registry

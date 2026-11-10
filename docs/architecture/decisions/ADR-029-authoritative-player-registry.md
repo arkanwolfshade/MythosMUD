@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.15** · MythosMUD · 2026-11-05
+**Version 1.0.16** · MythosMUD · 2026-11-10
 
 ---
 
@@ -142,8 +142,8 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 
 | Mode | Parts / operations | Behaviour |
 | --- | --- | --- |
-| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, DP and MP (until step 8), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
-| Lazy | DP and MP (from step 8), lucidity, effect counters, position and posture, XP | Marked dirty; written by the sweep. |
+| Sync | inventory, equipped, owned items and containers (including the bank), currency, every quest change (start, progress, complete, abandon), cooldowns, encounter counts, corruption, effects and their countdown (until step 8), DP and MP (until step 8), death and respawn, character delete | Commits before the command returns. On failure the in-memory change is rolled back and the command fails. |
+| Lazy | DP and MP (from step 8), lucidity, effect counters (from step 8), position and posture, XP | Marked dirty; written by the sweep. |
 
 - A mutator can force sync (`mutate(pid, sync=True)`, for example admin set). A sync part is never written lazily.
 - **Flush unit:** one transaction per player, calling only the dirty parts' procedures, then one commit. A sync
@@ -317,6 +317,22 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      value, from a background task, so a heal or damage over time during a fight was overwritten by the next hit. The
      background task and its correction event are gone; a failed commit lands no damage. Each round starts by
      refreshing players' copies, so who can act and who is targeted follow heals made between rounds.
+   - 6d: status effects. A player's running `player_effects` rows are a part of the aggregate (`PlayerEffectsPart`),
+     loaded with the player by the same function as lucidity's cooldowns and exposures (`get_player_lucidity_state`
+     gained an `effects` column). Every change is sync and is one row-level write queued on the part: add, end by
+     id or type, end the instance-scoped ones, replace a payload, and the countdown. The part names its row ids
+     (`add_player_effect` takes an optional id), so a row added in one unit can be changed in a later one. Spells,
+     the login ward and scripted content add and end effects through `PlayerEffects`, the persistence layer's
+     injected effects service. The tick runs one unit per online player who has an effect (a single candidate query
+     a second, `get_player_ids_with_active_effects`): every effect's second, the DP and lucidity it moved, a changed
+     payload, and the countdown commit together, and the client's DP update is queued on the aggregate and sent
+     after the commit. That closes three seams: the lucidity drain's LCD loss and its `elapsed` were two commits,
+     so a failure between them replayed a second; an effect removed or added after the tick's snapshot still got
+     (or lost) a second; and damage over time sent no DP update, where healing did. The ORM load per second is gone.
+     The countdown stays sync here, against §3.4's lazy counters: `advance_player_effects` used to be a separate
+     batched statement, which would leave a resident copy of the rows stale (an expired effect would keep running),
+     so the part now counts down its own copy and queues the same procedure for the one player in the unit. A
+     player with only count-down effects costs one unit a second until pinning (step 8) lets the counters be lazy.
 7. Movement, magic, skills and spells, social, exploration.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
@@ -337,6 +353,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.16 | 2026-11-10 | §3.4: effects and their countdown are sync until step 8 (counters lazy then). §6: step 6d as shipped (`PlayerEffectsPart`, row-level sync writes with part-named ids, loaded by `get_player_lucidity_state`; `PlayerEffects` service; the tick is one unit per player with effects and sends damage-over-time DP updates; the countdown moves from a batched statement into the unit) |
 | 1.0.15 | 2026-11-05 | §3.5: a player's `CombatParticipant` holds a per-round copy of DP, not a reference. §6: step 6c as shipped (a hit is one sync unit on the live DP; background write and correction event removed) |
 | 1.0.14 | 2026-11-03 | §3.4: MP is sync until step 8. §6: step 6b as shipped (MP rules, `PlayerMpService`, regeneration accrues in memory and writes per whole MP, `upsert_player` keeps MP; 0 MP means drained; Power Drain moves MP) |
 | 1.0.13 | 2026-11-03 | §3.2: the core part writes only changed columns and stats keys (a null key is removed). §3.4: DP is sync until step 8. §6: step 6a as shipped (DP rules, `PlayerHealthService`, death and respawn units, `upsert_player` keeps DP and the death room) |

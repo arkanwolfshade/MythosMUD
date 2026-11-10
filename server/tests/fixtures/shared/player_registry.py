@@ -20,13 +20,17 @@ from typing import cast
 
 import pytest
 
+from server.events.event_types import BaseEvent
 from server.game.player_registry import (
     DbSession,
+    EffectData,
     Exposure,
     LucidityData,
     PlayerAggregate,
     PlayerCooldownsPart,
     PlayerCooldownsView,
+    PlayerEffectsPart,
+    PlayerEffectsView,
     PlayerExposurePart,
     PlayerInventoryPart,
     PlayerLucidityPart,
@@ -76,9 +80,10 @@ def aggregate(
     cooldowns: PlayerCooldownsPart | None = None,
     exposure: PlayerExposurePart | None = None,
     corruption_cooldowns: PlayerCooldownsPart | None = None,
+    effects: PlayerEffectsPart | None = None,
 ) -> PlayerAggregate:
     """The row and inventory parts from one ``get_player_by_id`` row, plus ``quests``, ``lucidity``, ``cooldowns``,
-    ``exposure`` and ``corruption_cooldowns``, as load_player_aggregate builds them."""
+    ``exposure``, ``corruption_cooldowns`` and ``effects``, as load_player_aggregate builds them."""
     player_id = uuid.UUID(str(row["player_id"]))
     return PlayerAggregate(
         PlayerRowPart(PlayerRowData.from_row(row)),
@@ -88,6 +93,7 @@ def aggregate(
         cooldowns,
         exposure,
         corruption_cooldowns,
+        effects,
     )
 
 
@@ -119,6 +125,7 @@ class FakeDatabase:
     """Records every statement; ``fail_commits`` makes that many commits raise ``commit_error``."""
 
     executed: list[Mapping[str, object] | None] = field(default_factory=list)
+    statements: list[object] = field(default_factory=list)
     commits: int = 0
     rollbacks: int = 0
     fail_commits: int = 0
@@ -142,7 +149,7 @@ class _FakeSession:
         self._db = db
 
     async def execute(self, statement: object, params: Mapping[str, object] | None = None) -> _Result:
-        _ = statement
+        self._db.statements.append(statement)
         self._db.executed.append(params)
         return _Result(self._db.row)
 
@@ -205,10 +212,11 @@ def install_player_registry(monkeypatch: pytest.MonkeyPatch, player: object) -> 
 
 @dataclass
 class LucidityHarness:
-    """A real registry holding seeded players' lucidity, and the database its flushes write to."""
+    """A real registry holding seeded players' lucidity, the database its flushes write to, and the events it published."""
 
     registry: PlayerRegistry
     db: FakeDatabase
+    published: list[BaseEvent] = field(default_factory=list)
 
     def cooldowns(self, player_id: uuid.UUID) -> PlayerCooldownsView:
         """The player's live cooldowns."""
@@ -240,6 +248,12 @@ class LucidityHarness:
         assert player is not None, f"player {player_id} is not loaded"
         return player.row.stats.get("corruption")
 
+    def effects(self, player_id: uuid.UUID) -> PlayerEffectsView:
+        """The player's live effects."""
+        player = self.registry.peek(player_id)
+        assert player is not None, f"player {player_id} is not loaded"
+        return player.effects
+
     def corruption_cooldowns(self, player_id: uuid.UUID) -> PlayerCooldownsView:
         """The player's live corruption cooldowns."""
         player = self.registry.peek(player_id)
@@ -268,15 +282,18 @@ def lucidity_registry(
     cooldowns: Mapping[str, datetime] | None = None,
     exposures: Mapping[str, Exposure] | None = None,
     corruption_cooldowns: Mapping[str, datetime] | None = None,
+    effects: Sequence[EffectData] | None = None,
     row: Mapping[str, object] | None = None,
 ) -> LucidityHarness:
     """A registry with these players (lucidity None = the starting values); any other id is no such player.
 
     ``cooldowns`` and ``exposures`` seed every player's cooldowns and encounter counts (ADR-029 step 5b-ii), and
     ``corruption_cooldowns`` their corruption cooldowns (step 5c). Seed corruption and DP through ``stats``, and
-    ``players`` columns (room, respawn room, tutorial instance, name) through ``row`` (step 6a).
+    ``players`` columns (room, respawn room, tutorial instance, name) through ``row`` (step 6a). ``effects`` seeds
+    every player's running effects (step 6d); ``published`` collects the events a committed unit published.
     """
     db = FakeDatabase()
+    published: list[BaseEvent] = []
 
     async def load(_session: DbSession, player_id: uuid.UUID) -> PlayerAggregate | None:
         if player_id not in players:
@@ -293,6 +310,7 @@ def lucidity_registry(
             corruption_cooldowns=PlayerCooldownsPart(
                 player_id, corruption_cooldowns, write_sql=REPLACE_CORRUPTION_COOLDOWNS_SQL
             ),
+            effects=PlayerEffectsPart(player_id, effects),
         )
 
-    return LucidityHarness(PlayerRegistry(db.session, loader=load), db)
+    return LucidityHarness(PlayerRegistry(db.session, loader=load, publish=published.append), db, published)
