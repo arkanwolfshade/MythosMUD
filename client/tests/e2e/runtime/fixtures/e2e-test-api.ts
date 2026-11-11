@@ -20,6 +20,8 @@ export interface E2ePlayerState {
   tutorial_instance_id: string | null;
   /** Names of the stacks in the character's bank deposit box (empty when they have none). */
   bank_items: string[];
+  /** `standing`, `sitting` or `lying`; null if the character has none recorded. */
+  position: string | null;
   current_dp: number | null;
   corruption: number | null;
   magic_points: number | null;

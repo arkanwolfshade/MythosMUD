@@ -50,6 +50,7 @@ class E2ePlayerState(BaseModel):
     respawn_room_id: str | None
     tutorial_instance_id: str | None
     bank_items: list[str]
+    position: str | None
     current_dp: int | None
     corruption: int | None
     magic_points: int | None
@@ -99,6 +100,11 @@ class _Rooms(Protocol):
 def _int_stat(view: PlayerView, key: str) -> int | None:
     value = view.row.stats.get(key)
     return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+def _str_stat(view: PlayerView, key: str) -> str | None:
+    value = view.row.stats.get(key)
+    return value if isinstance(value, str) else None
 
 
 def _as_mapping(raw: object) -> Mapping[str, object]:
@@ -212,6 +218,7 @@ class E2ePlayerSupport:
             respawn_room_id=view.row.respawn_room_id,
             tutorial_instance_id=view.row.tutorial_instance_id,
             bank_items=_stack_names(_as_stacks(bank.get("items_json"))) if bank is not None else [],
+            position=_str_stat(view, "position"),
             current_dp=_int_stat(view, "current_dp"),
             corruption=_int_stat(view, "corruption"),
             magic_points=_int_stat(view, "magic_points"),

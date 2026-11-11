@@ -28,6 +28,7 @@ STATE = E2ePlayerState(
     respawn_room_id=None,
     tutorial_instance_id=None,
     bank_items=["Ring"],
+    position="standing",
     current_dp=50,
     corruption=0,
     magic_points=None,
