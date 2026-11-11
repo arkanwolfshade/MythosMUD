@@ -442,3 +442,4 @@ client/.claude/hooks/state/edited-files.json
 client/tests/e2e/runtime/.claude/hooks/state/edited-files.json
 client/tests/e2e/.claude/hooks/state/edited-files.json
 .codacy-cli-v2/
+.github/instructions/codacy.instructions.md
