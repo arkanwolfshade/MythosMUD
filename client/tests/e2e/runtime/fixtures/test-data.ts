@@ -7,7 +7,7 @@
  * - ArkanWolfshade / Cthulhu1 / character name ArkanWolfshade (admin)
  * - Ithaqua / Cthulhu1 / character name Ithaqua (regular)
  * - E2ETutorial / Cthulhu1 / character name E2ETutorial (regular; tutorial specs reset it into
- *   the tutorial with `scripts/e2e_reset_players.py --tutorial`, see fixtures/tutorial.ts)
+ *   the tutorial through the server's reset-tutorial test endpoint, see fixtures/tutorial.ts)
  *
  * Playwright global-setup runs scripts/seed_e2e_users.py as an idempotent safety net.
  * Seeded players use DEFAULT_RESPAWN_ROOM (matches server.constants.spawn_defaults).

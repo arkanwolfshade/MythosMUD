@@ -187,7 +187,7 @@ view = registry.peek(player_id)   # live object, read-only Protocol type; no loc
 - **E2E harness:**
   - Test-only endpoints, mounted only under the e2e config flag, reset players through the registry and serve
     `GET /admin/test/players/{name}/state` in the `E2ePlayerState` shape.
-  - `scripts/e2e_reset_players.py` and `scripts/e2e_player_state.py` are retired.
+  - `scripts/e2e_reset_players.py`, `scripts/e2e_player_state.py` and `scripts/e2e_place_player.py` are retired.
 - **Enforcement:** the player repositories' load and save become private to the registry. A lint rule (in the style
   of `scripts/lint_raw_sql_in_python.py`) rejects direct use anywhere else.
 
@@ -284,8 +284,8 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
        row part can trail writers that still use `upsert_player`. 5c closes that for corruption in two ways: the
        row part writes only the `stats` keys a unit changed (`update_player_row` merges them), and `upsert_player`
        keeps an existing player's stored corruption, so the registry is its only writer. Out-of-band scripts
-       (`e2e_reset_players.py`, `e2e_player_state.py`) can still race a resident dirty player in that window,
-       until step 8 replaces them with server endpoints.
+       (`e2e_reset_players.py`, `e2e_player_state.py`) could still race a resident dirty player in that window;
+       step 8b replaced them with server endpoints.
 6. Ticks and periodic writers, combat, death and respawn.
    - 6a: DP. The DP rules are pure functions of a player's stats (`models/player_dp.py`), shared by the ORM
      `Player` and `PlayerHealthService`, the one write path for `stats.current_dp`. Damage and healing (status
@@ -362,6 +362,28 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      procedure). The `respawn_room` quest reward was the other `save_player` here: it is a unit that writes only
      `respawn_room_id`, and `QuestService` no longer takes `async_persistence`.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
+   Delivered in slices; making DP and MP lazy is deliberately not one of them (issue #1202: it needs every DP and MP
+   reader on the registry first, the death tick's SQL candidate queries included).
+   - 8a: lifecycle. Pin on connect and unpin when the grace period ends; reconnect placement, logout and the
+     shutdown save become registry units.
+   - 8b: the e2e harness. `/v1/admin/test/...` replaces the three scripts that wrote Postgres behind the registry:
+     `POST players/reset` (the shared players back in the default room at 50 DP), `POST players/{name}/reset-tutorial`,
+     `POST players/{name}/place` and `GET players/{name}/state` (the `E2ePlayerState` shape). Each reset is one sync
+     registry unit over the aggregate's own parts: room, DP, corruption and posture on the row part, the Sling through
+     `inventory.replace`, lucidity, cooldowns and effects (the login ward kept), and quests through a new
+     `PlayerQuestsPart.clear()` whose write calls `delete_quest_instances_by_player` before the upserts. Only the
+     lost-and-found chest and the deposit box, which are containers outside the aggregate, are emptied through the
+     persistence layer. The state read is the registry's view, not a database query, so it also shows what a lazy
+     write has not yet flushed. The router is mounted only when the logging environment is `e2e_test` and the
+     database is `mythos_e2e`, and checks the admin role itself rather than through `validate_permission`, whose
+     100-requests-per-five-minutes limit the specs' polling of the state endpoint would exhaust. The Playwright
+     fixtures sign in as the seeded admin (ArkanWolfshade) once per worker and await the calls; global setup resets
+     the shared players after the server checks, since the reset needs the server up. A reset still does not refuse
+     an online character, as the scripts did not: the spec logs them out first.
+   - 8c: the remaining writers of registry-owned values (fear and occult knowledge, admin set stat, `last_active`)
+     and the communication and spell-effect savers deferred from 7c and 7d.
+   - 8d: raise `player_registry_idle_ttl_seconds` above 0 once every writer is a unit, and make the effects countdown
+     lazy.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
 
 ## 7. Open Items
@@ -380,6 +402,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.19 | 2026-11-11 | �6: step 8 is sliced into 8a to 8d, with lazy DP and MP out of it (#1202). Step 8b as shipped (test-only `/v1/admin/test` endpoints on the e2e server replace `e2e_reset_players.py`, `e2e_player_state.py` and `e2e_place_player.py`; resets are registry units, `PlayerQuestsPart.clear()` and `delete_quest_instances_by_player` are new, the state read is the registry's view) |
 | 1.0.18 | 2026-11-11 | §6: step 7b as shipped (XP and level are a registry unit with the curve in Python, pinned to `level_for_xp`; `award_player_xp` removed; `upsert_player` keeps XP and level; the respawn-room quest reward is a unit) |
 | 1.0.17 | 2026-11-10 | §6: step 7 is split into 7a to 7d. Step 7a as shipped (a move is one unit on the moving player, replacing the `RLock`; room, tutorial exit and posture are changed-column sync writes; the instance flush follows the commit; `upsert_player` still takes the room from legacy savers until step 8) |
 | 1.0.16 | 2026-11-10 | §3.4: effects and their countdown are sync until step 8 (counters lazy then). §6: step 6d as shipped (`PlayerEffectsPart`, row-level sync writes with part-named ids, loaded by `get_player_lucidity_state`; `PlayerEffects` service; the tick is one unit per player with effects and sends damage-over-time DP updates; the countdown moves from a batched statement into the unit) |

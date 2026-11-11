@@ -33,7 +33,7 @@ test.describe('Basic Connection/Disconnection Flow', () => {
     test.setTimeout(300_000);
     // Co-locate first so AW is a room subscriber; then force a fresh enter via logout/login.
     // Cold solo-then-join can miss room subscription targets under Firefox serial load.
-    resetE2ePlayerRoomsInDatabase();
+    await resetE2ePlayerRoomsInDatabase();
     const contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     try {
       await waitForAllPlayersInGame(contexts, 60000);
@@ -97,7 +97,7 @@ test.describe('Basic Connection/Disconnection Flow', () => {
 
   test('AW should see Ithaqua left message when Ithaqua disconnects', async ({ browser }) => {
     test.setTimeout(300_000);
-    resetE2ePlayerRoomsInDatabase();
+    await resetE2ePlayerRoomsInDatabase();
     const contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', 'Ithaqua']);
     try {
       await waitForAllPlayersInGame(contexts, 60000);

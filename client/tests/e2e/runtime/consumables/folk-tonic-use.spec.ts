@@ -6,7 +6,7 @@
  *
  * ArkanWolfshade (admin) summons the tonics so the test does not depend on the nurses' station floor drop,
  * which is only seeded once per server start. The folk_tonic cooldown is cleared by
- * `scripts/e2e_reset_players.py` (run by global setup), so reruns can drink again.
+ * the shared-player reset (run by global setup through the server's test endpoint), so reruns can drink again.
  */
 
 import { expect, test } from '@playwright/test';

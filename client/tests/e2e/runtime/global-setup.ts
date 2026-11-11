@@ -5,9 +5,9 @@
  *
  * This file runs before all tests to:
  * - Seed E2E users and default characters via scripts/seed_e2e_users.py
- * - Reset E2E player rooms via scripts/e2e_reset_players.py
  * - Verify users exist in mythos_e2e (scripts/verify_e2e_users_seeded.py)
  * - Verify server health, username login (/v1/auth/login), and profession catalog
+ * - Reset the shared E2E players (rooms, DP) through the server's test endpoint (fixtures/e2e-test-api.ts)
  * - Verify client is accessible
  *
  * Does NOT reconverge mythos_e2e's schema/procedures/migrations. That is e2e.bat's job
@@ -33,24 +33,18 @@ import {
   loadE2eEnv,
   spawnOutputDetail,
 } from '../../../src/test/e2e-bootstrap';
+import { resetSharedE2ePlayers } from './fixtures/e2e-test-api';
 
 const E2E_TEST_USERNAME = 'Ithaqua';
 const E2E_TEST_PASSWORD = 'Cthulhu1';
 
-function runE2ePlayerRoomReset(): void {
-  const seedEnv = { ...process.env, ...loadE2eEnv() };
-  const resetResult = spawnSync('uv', ['run', '--no-sync', 'python', 'scripts/e2e_reset_players.py'], {
-    cwd: E2E_PROJECT_ROOT,
-    // shell:false: args+shell:true is DEP0190 and can hang Playwright on Windows.
-    shell: false,
-    stdio: 'pipe',
-    encoding: 'utf-8',
-    env: seedEnv,
-    timeout: 20000,
-  });
-  if (resetResult.status !== 0) {
-    failBootstrap('e2e_reset_players', `e2e_reset_players.py failed (exit ${resetResult.status}).`, [
-      spawnOutputDetail(resetResult.stdout, resetResult.stderr),
+/** The reset goes through the server's player registry, so it needs the server up: run it after the bootstrap checks. */
+async function resetSharedE2ePlayersViaServer(): Promise<void> {
+  try {
+    await resetSharedE2ePlayers();
+  } catch (err) {
+    failBootstrap('e2e_reset_players', 'Resetting the shared E2E players through the server failed.', [
+      err instanceof Error ? err.message : String(err),
     ]);
   }
 }
@@ -191,9 +185,9 @@ async function verifyClientAccessible(): Promise<void> {
 async function globalSetup(_config: FullConfig): Promise<void> {
   console.log('Starting global setup for E2E runtime tests...');
   runE2eSeed();
-  runE2ePlayerRoomReset();
   verifyE2eUsersInDatabase();
   await verifyServerBootstrap();
+  await resetSharedE2ePlayersViaServer();
   await verifyClientAccessible();
   console.log('Global setup complete.');
 }

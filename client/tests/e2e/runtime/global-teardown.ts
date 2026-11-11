@@ -2,17 +2,18 @@
  * Global Teardown for E2E Runtime Tests
  *
  * This file runs after all tests to:
- * - Reset test players (ArkanWolfshade, Ithaqua) to starting room and current_dp
+ * - Reset test players (ArkanWolfshade, Ithaqua) to starting room and current_dp, through the server's test endpoint
  * - Fail the run if the server's errors.log or DLQ is non-empty (#1053)
  * - Log test completion
  */
 /// <reference types="node" />
 
 import { type FullConfig } from '@playwright/test';
-import { spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+
+import { resetSharedE2ePlayers } from './fixtures/e2e-test-api';
 
 // In ESM, we need to synthesize __dirname from import.meta.url
 const __filename = fileURLToPath(import.meta.url);
@@ -24,16 +25,10 @@ const projectRoot = path.resolve(__dirname, '..', '..', '..', '..');
 async function globalTeardown(_config: FullConfig): Promise<void> {
   console.log('Starting global teardown for E2E runtime tests...');
 
-  const scriptPath = path.join(projectRoot, 'scripts', 'e2e_reset_players.py');
-  const result = spawnSync('uv', ['run', '--no-sync', 'python', scriptPath], {
-    cwd: projectRoot,
-    shell: false,
-    stdio: 'inherit',
-    timeout: 20000,
-  });
-
-  if (result.status !== 0) {
-    console.warn('e2e_reset_players.py exited with code', result.status, '- test players may not have been reset.');
+  try {
+    await resetSharedE2ePlayers();
+  } catch (error) {
+    console.warn('Resetting the test players failed - they may not have been reset:', error);
   }
 
   assertServerLogsClean();

@@ -111,6 +111,10 @@ class PlayerQuestsView(Protocol):
         """The player's instance of this quest, in any state, or None."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
+    def all(self) -> list[QuestInstanceData]:
+        """Every instance, in any state."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
+
     def active(self) -> list[QuestInstanceData]:
         """Active instances, oldest accepted first."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type

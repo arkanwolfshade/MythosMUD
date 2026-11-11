@@ -65,7 +65,7 @@ test.describe.serial('First Exposure instance lifecycle', () => {
 
   test.beforeAll(async ({ browser }) => {
     // E2ETutorial must be in tutorial state before its first login.
-    resetTutorialCharacterInDatabase();
+    await resetTutorialCharacterInDatabase();
     contexts = await createMultiPlayerContexts(browser, ['ArkanWolfshade', TUTORIAL_USERNAME]);
     [aw, tutorial] = contexts;
   });
@@ -80,12 +80,12 @@ test.describe.serial('First Exposure instance lifecycle', () => {
   });
 
   test('a new character gets their own instance at the square, with the first quest started and no way out', async () => {
-    const started = readE2ePlayerState(TUTORIAL_USERNAME);
+    const started = await readE2ePlayerState(TUTORIAL_USERNAME);
     expect(started.tutorial_instance_id).toBeTruthy();
     expect(started.tutorial_instance_id).not.toBe('pending');
     expect(started.current_room_id).toMatch(tutorialRoomPattern('independence_square'));
     await expect
-      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests, { timeout: 15000 })
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).quests, { timeout: 15000 })
       .toMatchObject({ first_exposure_dusk: 'active' });
 
     // Only the walk east: the tutorial has no exit, and delirium is the only way out.
@@ -98,7 +98,7 @@ test.describe.serial('First Exposure instance lifecycle', () => {
   });
 
   test('logging out in the tutorial gives a fresh instance on return; the floor items go to the deposit box', async () => {
-    const firstInstance = readE2ePlayerState(TUTORIAL_USERNAME).tutorial_instance_id;
+    const firstInstance = (await readE2ePlayerState(TUTORIAL_USERNAME)).tutorial_instance_id;
 
     await dropSlingAndRelog(tutorial);
     await executeCommand(tutorial.page, 'look');
@@ -107,17 +107,19 @@ test.describe.serial('First Exposure instance lifecycle', () => {
     expect(freshSquare).toMatch(EMPTY_FLOOR_CUE);
     expect(freshSquare).not.toMatch(/Sling/i);
 
-    const secondInstance = readE2ePlayerState(TUTORIAL_USERNAME).tutorial_instance_id;
+    const secondInstance = (await readE2ePlayerState(TUTORIAL_USERNAME)).tutorial_instance_id;
     expect(secondInstance).toBeTruthy();
     expect(secondInstance).not.toBe(firstInstance);
 
     // The first instance's Sling was flushed into the deposit box on logout, not into the shared chest.
-    await expect.poll(() => readE2ePlayerState(TUTORIAL_USERNAME).bank_items, { timeout: 15000 }).toEqual(['Sling']);
+    await expect
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).bank_items, { timeout: 15000 })
+      .toEqual(['Sling']);
     await awFindsNoSlingInChest(aw);
   });
 
   test('a fresh instance restarts the run: Dusk active again, full DP and lucidity, corruption kept (#1098)', async () => {
-    const fullDp = readE2ePlayerState(TUTORIAL_USERNAME).current_dp;
+    const fullDp = (await readE2ePlayerState(TUTORIAL_USERNAME)).current_dp;
 
     // Finish Act I so the Burying Ground act is running when the run is lost.
     await walk(tutorial, 'east', tutorialRoomPattern('gravel_walk'));
@@ -127,13 +129,13 @@ test.describe.serial('First Exposure instance lifecycle', () => {
     await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
     await executeCommand(tutorial.page, 'get newspaper');
     await expect
-      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).inventory_items, { timeout: 15000 })
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).inventory_items, { timeout: 15000 })
       .toContain('Arkham Advertiser');
     await say(tutorial, 'read newspaper', /GRAVES OPENED AGAIN/i);
     await walk(tutorial, 'east', tutorialRoomPattern('lane_off_the_square'));
     await walk(tutorial, 'east', tutorialRoomPattern('burying_ground_gate'));
     await expect
-      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests, { timeout: 15000 })
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).quests, { timeout: 15000 })
       .toMatchObject({ first_exposure_dusk: 'completed', first_exposure_burying_ground: 'active' });
 
     // What a failed run leaves behind: hurt, shaken, and touched by corruption.
@@ -144,9 +146,9 @@ test.describe.serial('First Exposure instance lifecycle', () => {
     await relogTutorialCharacter(tutorial, false);
 
     await expect
-      .poll(() => readE2ePlayerState(TUTORIAL_USERNAME).quests.first_exposure_dusk, { timeout: 15000 })
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).quests.first_exposure_dusk, { timeout: 15000 })
       .toBe('active');
-    const restarted = readE2ePlayerState(TUTORIAL_USERNAME);
+    const restarted = await readE2ePlayerState(TUTORIAL_USERNAME);
     expect(restarted.current_room_id).toMatch(tutorialRoomPattern('independence_square'));
     // The later acts are not running: never started, or reset to abandoned.
     for (const act of ['first_exposure_burying_ground', 'first_exposure_below']) {
@@ -160,7 +162,9 @@ test.describe.serial('First Exposure instance lifecycle', () => {
 
   test('the owner can list, withdraw and re-deposit what an instance banked, but only at a bank', async () => {
     await dropSlingAndRelog(tutorial);
-    await expect.poll(() => readE2ePlayerState(TUTORIAL_USERNAME).bank_items, { timeout: 15000 }).toEqual(['Sling']);
+    await expect
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).bank_items, { timeout: 15000 })
+      .toEqual(['Sling']);
 
     // The tutorial is not a bank: the commands refuse there.
     await executeCommand(tutorial.page, 'bank');
@@ -177,13 +181,17 @@ test.describe.serial('First Exposure instance lifecycle', () => {
 
     await executeCommand(tutorial.page, 'withdraw sling');
     await waitForMessage(tutorial.page, /The clerk returns 1x Sling from your deposit box/i, 15000);
-    await expect.poll(() => readE2ePlayerState(TUTORIAL_USERNAME).bank_items, { timeout: 15000 }).toEqual([]);
+    await expect
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).bank_items, { timeout: 15000 })
+      .toEqual([]);
 
     await executeCommand(tutorial.page, 'bank');
     await waitForMessage(tutorial.page, /Your deposit box at Arkham Savings & Trust is empty/i, 15000);
 
     await executeCommand(tutorial.page, 'deposit sling');
     await waitForMessage(tutorial.page, /The clerk files 1x Sling away in your deposit box/i, 15000);
-    await expect.poll(() => readE2ePlayerState(TUTORIAL_USERNAME).bank_items, { timeout: 15000 }).toEqual(['Sling']);
+    await expect
+      .poll(async () => (await readE2ePlayerState(TUTORIAL_USERNAME)).bank_items, { timeout: 15000 })
+      .toEqual(['Sling']);
   });
 });

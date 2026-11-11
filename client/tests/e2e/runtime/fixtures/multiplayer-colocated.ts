@@ -4,13 +4,9 @@
  * Multiplayer co-location: same-room checks, DB reset, admin teleport restore.
  */
 
-import { spawnSync } from 'child_process';
-import { join } from 'path';
-
 import './multiplayer-browser-window.d.ts';
 
 import type { Page } from '@playwright/test';
-import { E2E_PROJECT_ROOT, loadE2eEnv } from '../../../../src/test/e2e-bootstrap';
 import { MotdPage } from '../pages';
 import {
   assertNoRestDisconnectPollution,
@@ -20,6 +16,7 @@ import {
   loginPlayer,
   logoutPlayer,
 } from './auth';
+import { resetSharedE2ePlayers } from './e2e-test-api';
 import type { OccupantsSnapshot } from './multiplayer-browser-helpers';
 import { reopenPlayerPageIfClosed, type PlayerContext } from './multiplayer-contexts';
 import { ensurePlayerInGame, waitForAllPlayersInGame } from './multiplayer-ready';
@@ -220,23 +217,16 @@ async function waitForSharedLocation(contexts: PlayerContext[], timeoutMs: numbe
 }
 
 /**
- * Reset E2E player rows in mythos_e2e (same script as global-teardown).
- * In-memory server state is stale until players relog; pair with {@link resyncE2ePlayersAfterDatabaseReset}.
+ * Reset the shared E2E players (ArkanWolfshade, Ithaqua) through the server's test endpoint, as global-teardown does.
+ * A player who is logged in keeps their live session until they relog; pair with
+ * {@link resyncE2ePlayersAfterDatabaseReset}. A failed reset is logged, not thrown, so a flaky call cannot fail a test
+ * that would otherwise have passed.
  */
-export function resetE2ePlayerRoomsInDatabase(): void {
-  const seedEnv = { ...process.env, ...loadE2eEnv() };
-  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_players.py');
-  const result = spawnSync('uv', ['run', 'python', scriptPath], {
-    cwd: E2E_PROJECT_ROOT,
-    // shell:false so timeout is honored on Windows (shell:true has hung the Playwright worker).
-    shell: false,
-    stdio: 'pipe',
-    encoding: 'utf-8',
-    env: seedEnv,
-    timeout: 20000,
-  });
-  if (result.status !== 0) {
-    console.warn('[instrumentation] e2e_reset_players.py failed', result.status, result.stderr?.slice(0, 500) ?? '');
+export async function resetE2ePlayerRoomsInDatabase(): Promise<void> {
+  try {
+    await resetSharedE2ePlayers();
+  } catch (error) {
+    console.warn('[instrumentation] E2E player reset failed', error instanceof Error ? error.message : error);
   }
 }
 
@@ -351,7 +341,7 @@ async function runCoLocateTeleportAttempt(
   timeoutMs: number
 ): Promise<void> {
   if (attempt >= 2) {
-    resetE2ePlayerRoomsInDatabase();
+    await resetE2ePlayerRoomsInDatabase();
     await resyncE2ePlayersAfterDatabaseReset(contexts, timeoutMs);
   }
 

@@ -203,9 +203,9 @@ test.describe('collect_n quest ask/turnin', () => {
     resetCollectNQuestInstances();
   });
 
-  test.beforeEach(() => {
+  test.beforeEach(async () => {
     // E2E baseline (#956): each test logs in fresh, landing in the saved room, so reset it to Main Foyer.
-    resetE2ePlayerRoomsInDatabase();
+    await resetE2ePlayerRoomsInDatabase();
   });
 
   test('quest ask fails when the target NPC is not in the room', async ({ page }) => {
