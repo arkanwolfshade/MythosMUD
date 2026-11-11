@@ -192,7 +192,14 @@ async def test_an_unknown_character_is_refused(action: str) -> None:
 
 async def test_state_reports_what_the_registry_holds() -> None:
     support, _registry, _db, _persistence, _player_id = _harness(
-        stats={"current_dp": 12, "magic_points": 4, "max_magic_points": 9, "intelligence": 61, "corruption": 2},
+        stats={
+            "current_dp": 12,
+            "magic_points": 4,
+            "max_magic_points": 9,
+            "intelligence": 61,
+            "corruption": 2,
+            "position": "sitting",
+        },
         tutorial_instance_id="instance-1",
     )
 
@@ -202,6 +209,7 @@ async def test_state_reports_what_the_registry_holds() -> None:
     assert state.tutorial_instance_id == "instance-1"
     assert state.bank_items == ["Silver Coin", "Ring"]
     assert (state.current_dp, state.corruption, state.magic_points) == (12, 2, 4)
+    assert state.position == "sitting"
     assert (state.max_magic_points, state.intelligence, state.current_lcd) == (9, 61, -40)
     assert state.inventory_items == ["Sling"]
     assert state.quests == {"leave_the_tutorial": "active"}
@@ -214,3 +222,4 @@ async def test_state_leaves_missing_stats_null() -> None:
     state = await support.state("E2ETutorial")
 
     assert state.magic_points is None and state.intelligence is None and state.corruption is None
+    assert state.position is None
