@@ -33,6 +33,8 @@ UPSERT_QUEST_INSTANCE_SQL = text(
     """
 )
 
+DELETE_QUEST_INSTANCES_SQL = text("CALL delete_quest_instances_by_player(:player_id)")
+
 _EPOCH = datetime.min.replace(tzinfo=UTC)
 
 
@@ -63,15 +65,17 @@ class QuestInstanceData:
 class PlayerQuestsPart(Part):
     """The player's quest instances by quest id, with read access and synchronous mutators."""
 
-    __slots__: tuple[str, ...] = ("_instances", "_player_id")
+    __slots__: tuple[str, ...] = ("_cleared", "_instances", "_player_id")
 
     _player_id: uuid.UUID
     _instances: dict[str, QuestInstanceData]
+    _cleared: bool  # the next write deletes the player's rows first (``clear``)
 
     def __init__(self, player_id: uuid.UUID, instances: Sequence[QuestInstanceData] = ()) -> None:
         super().__init__()
         self._player_id = player_id
         self._instances = {instance.quest_id: instance for instance in instances}
+        self._cleared = False
 
     @classmethod
     def from_rows(cls, player_id: uuid.UUID, rows: Sequence[Mapping[str, object]]) -> PlayerQuestsPart:
@@ -83,6 +87,10 @@ class PlayerQuestsPart(Part):
     def get(self, quest_id: str) -> QuestInstanceData | None:
         """The player's instance of this quest, in any state, or None."""
         return self._instances.get(quest_id)
+
+    def all(self) -> list[QuestInstanceData]:
+        """Every instance, in any state (insertion order)."""
+        return list(self._instances.values())
 
     def active(self) -> list[QuestInstanceData]:
         """Active instances, oldest accepted first."""
@@ -125,6 +133,18 @@ class PlayerQuestsPart(Part):
             self.mark_dirty(sync=True)
         return updated
 
+    def clear(self) -> int:
+        """Forget every quest instance, accepted and completed alike (the e2e reset); returns how many.
+
+        The write deletes the player's rows, then upserts anything the same unit set afterwards.
+        """
+        removed = len(self._instances)
+        if removed:
+            self._instances = {}
+            self._cleared = True
+            self.mark_dirty(sync=True)
+        return removed
+
     def write_params(self) -> list[dict[str, object]]:
         """``upsert_quest_instance`` parameters for every instance."""
         return [
@@ -144,18 +164,23 @@ class PlayerQuestsPart(Part):
 
     @override
     def _copy_state(self) -> object:
-        return dict(self._instances)  # the instances are frozen, so a shallow copy is a snapshot
+        # the instances are frozen, so a shallow copy is a snapshot
+        return (dict(self._instances), self._cleared)
 
     @override
     def _restore_state(self, state: object) -> None:
-        if isinstance(state, dict):
-            self._instances = cast(dict[str, QuestInstanceData], state)
+        if isinstance(state, tuple):
+            instances, self._cleared = cast(tuple[dict[str, QuestInstanceData], bool], state)
+            self._instances = instances
 
     @override
     def capture_write(self) -> PartWrite:
         rows = self.write_params()
+        delete_first, self._cleared = self._cleared, False
 
         async def write(session: DbSession) -> None:
+            if delete_first:
+                _ = await session.execute(DELETE_QUEST_INSTANCES_SQL, {"player_id": str(self._player_id)})
             for params in rows:
                 _ = await session.execute(UPSERT_QUEST_INSTANCE_SQL, params)
 

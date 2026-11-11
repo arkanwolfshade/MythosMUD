@@ -4,8 +4,8 @@
  * One long serial test, because every step depends on the last: the walk and the dusk quest, the hostile
  * ghoul that cannot be beaten (it breaks off once the player is hurt enough), the friendly ghoul that mends
  * them and leaves corruption at 1, the jade amulet, the gated stair, the coffin that starts the Hound, delirium,
- * the Recovery Ward, and the debrief. Server state is asserted straight from Postgres at each milestone
- * (scripts/e2e_player_state.py), never inferred from what the client happens to render.
+ * the Recovery Ward, and the debrief. Server state is asserted from the server's player registry at each milestone
+ * (the state test endpoint, fixtures/e2e-test-api.ts), never inferred from what the client happens to render.
  */
 
 import { expect, test } from '@playwright/test';
@@ -33,7 +33,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
 
   test.beforeAll(async ({ browser }) => {
     // E2ETutorial must be reset before its first login.
-    resetTutorialCharacterInDatabase();
+    await resetTutorialCharacterInDatabase();
     contexts = await createMultiPlayerContexts(browser, [TUTORIAL_USERNAME]);
     [tutorial] = contexts;
   });
@@ -47,7 +47,9 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
 
     await test.step('Act I, Dusk: the square, the lamplighter, the newspaper, the lane', async () => {
       await startFreshTutorial(tutorial);
-      await expect.poll(() => state().quests, { timeout: 15000 }).toMatchObject({ first_exposure_dusk: 'active' });
+      await expect
+        .poll(async () => (await state()).quests, { timeout: 15000 })
+        .toMatchObject({ first_exposure_dusk: 'active' });
       // Quest notices arrive on the quest channel, not the system channel.
       await waitForMessage(tutorial.page, /\[QUEST\] Quest started: An Evening Walk/, 20000);
       // The Journal refreshes on progress without the player typing `journal`: the opening `look` met cmd_look.
@@ -61,7 +63,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       // The path is one way, and onward only once the lamplighter has been heard out (#1111).
       await say(tutorial, 'go west', /can't go that way/i);
       await say(tutorial, 'go east', /A word first/i);
-      expect(state().current_room_id).toMatch(tutorialRoomPattern('gravel_walk'));
+      expect((await state()).current_room_id).toMatch(tutorialRoomPattern('gravel_walk'));
       await say(tutorial, 'talk lamplighter', /Mind the gravel/i);
       await say(tutorial, 'reply 1', /Strays, the constable says/i);
       await waitForMessage(tutorial.page, /steps aside from the gravel/i, 20000);
@@ -69,14 +71,14 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await walk(tutorial, 'east', tutorialRoomPattern('beneath_the_limes'));
       await say(tutorial, 'go east', /keeps pulling at the corner of your eye/i); // not before the newspaper is read
       await executeCommand(tutorial.page, 'get newspaper');
-      await expect.poll(() => state().inventory_items, { timeout: 15000 }).toContain('Arkham Advertiser');
+      await expect.poll(async () => (await state()).inventory_items, { timeout: 15000 }).toContain('Arkham Advertiser');
       await say(tutorial, 'read newspaper', /GRAVES OPENED AGAIN/i);
 
       await walk(tutorial, 'east', tutorialRoomPattern('lane_off_the_square'));
       await walk(tutorial, 'east', tutorialRoomPattern('burying_ground_gate'));
       await waitForMessage(tutorial.page, /Quest completed: An Evening Walk/i, 20000);
       await expect
-        .poll(() => state().quests, { timeout: 15000 })
+        .poll(async () => (await state()).quests, { timeout: 15000 })
         .toMatchObject({ first_exposure_dusk: 'completed', first_exposure_burying_ground: 'active' });
     });
 
@@ -84,7 +86,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await walk(tutorial, 'east', tutorialRoomPattern('leaning_stones'));
       // The Ragged Ghoul attacks on sight and breaks off once the player is hurt enough: the fight is not winnable.
       await waitForMessage(tutorial.page, /drops into the earth between the stones/i, 150000);
-      const hurt = state();
+      const hurt = await state();
       expect(hurt.current_dp).toBeGreaterThanOrEqual(1); // the no_death floor
       expect(hurt.current_lcd).toBeLessThan(100); // first sight of a ghoul costs lucidity
       expect(hurt.corruption).toBe(0); // only the friendly ghoul touches corruption
@@ -94,9 +96,12 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await waitForMessage(tutorial.page, /lifts one hand, slowly/i, 20000);
       await say(tutorial, 'go east', /Hear me first/i); // not before the conversation is through
       await say(tutorial, 'talk 1', /Its long fingers close over your wrist/i);
-      await expect.poll(() => state().corruption, { timeout: 15000 }).toBe(1);
+      await expect.poll(async () => (await state()).corruption, { timeout: 15000 }).toBe(1);
       await expect
-        .poll(() => state().current_dp, { timeout: 40000, message: 'the heal-over-time effect restores DP' })
+        .poll(async () => (await state()).current_dp, {
+          timeout: 40000,
+          message: 'the heal-over-time effect restores DP',
+        })
         .toBeGreaterThan(hurt.current_dp ?? 0);
       await say(tutorial, 'talk 1', /Bring it down the stair/i);
       await waitForMessage(tutorial.page, /lets you pass/i, 20000);
@@ -105,7 +110,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       // The amulet gate sits here now, not on the stair: with no way back, the stair must not be a trap.
       await say(tutorial, 'go south', /Not with empty hands/i);
       await executeCommand(tutorial.page, 'get amulet');
-      await expect.poll(() => state().inventory_items, { timeout: 15000 }).toContain('Jade Amulet');
+      await expect.poll(async () => (await state()).inventory_items, { timeout: 15000 }).toContain('Jade Amulet');
       await waitForMessage(tutorial.page, /Quest completed: What the Robbers Stole/i, 20000);
     });
 
@@ -115,7 +120,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
       await walk(tutorial, 'east', tutorialRoomPattern('charnel_gallery'));
       await walk(tutorial, 'east', tutorialRoomPattern('vault_of_the_owner'));
       await say(tutorial, 'put amulet in coffin', /something begins to bay/i);
-      await expect.poll(() => state().inventory_items, { timeout: 15000 }).not.toContain('Jade Amulet');
+      await expect.poll(async () => (await state()).inventory_items, { timeout: 15000 }).not.toContain('Jade Amulet');
       await waitForMessage(tutorial.page, /Quest completed: Not With Empty Hands/i, 20000);
       // Lucidity falls to -10 in about a minute and a half, then delirium.
       await waitForMessage(tutorial.page, /You realise the sound is following something/i, 60000);
@@ -137,7 +142,7 @@ test.describe.serial('First Exposure: the whole tutorial', () => {
           corruption: 1,
           debrief_pending: true,
         });
-      const woken = state();
+      const woken = await state();
       expect(woken.inventory_items).toEqual(['Sling']); // the amulet is gone; nothing else was taken
       expect(woken.bank_items).toEqual([]); // and it did not end up in the bank
       expect(woken.quests).toMatchObject({

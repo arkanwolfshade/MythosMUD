@@ -15,6 +15,7 @@ from fastapi_users.schemas import BaseUserCreate
 
 from ..api import players as _player_api
 from ..api.admin import dialogue_router as admin_dialogue_router
+from ..api.admin import e2e_test_support_enabled, e2e_test_support_router
 from ..api.admin import npc_router as admin_npc_router
 from ..api.admin import subject_router as admin_subject_router
 from ..api.containers import container_router
@@ -284,6 +285,8 @@ def _register_v1_routers(app: FastAPI) -> None:
     v1_router.include_router(admin_npc_router)
     v1_router.include_router(admin_dialogue_router)
     v1_router.include_router(admin_subject_router, prefix="/api/admin")
+    if e2e_test_support_enabled():
+        v1_router.include_router(e2e_test_support_router)
     app.include_router(v1_router)
 
 

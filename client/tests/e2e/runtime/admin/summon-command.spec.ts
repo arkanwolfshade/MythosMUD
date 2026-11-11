@@ -72,7 +72,7 @@ test.describe('Administrative Summon Command', { tag: '@shared-session' }, () =>
     // eslint-disable-next-line playwright/no-conditional-in-test -- cleanup only applies when the summon succeeded
     if (messages.some(msg => /You summon\s+2x/i.test(msg))) {
       // Floor drops persist in server memory across specs (#985): take the codices off the shared
-      // foyer floor. The tutorial reset (e2e_reset_players.py --tutorial) empties the chest.
+      // foyer floor. The tutorial reset (the server's reset-tutorial test endpoint) empties the chest.
       await executeCommand(awContext.page, 'get codex');
       await waitForMessage(awContext.page, /You (get|pick up) 2x Codex of Whispered Secrets/i, 15000);
       await executeCommand(awContext.page, 'put codex into chest');

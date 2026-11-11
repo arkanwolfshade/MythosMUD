@@ -12,7 +12,11 @@ import pytest
 
 from server.game.player_registry import PlayerQuestsPart, QuestInstanceData, load_player_aggregate
 from server.game.player_registry.player_lucidity import LOAD_LUCIDITY_SQL
-from server.game.player_registry.player_quests import LIST_QUEST_INSTANCES_SQL, UPSERT_QUEST_INSTANCE_SQL
+from server.game.player_registry.player_quests import (
+    DELETE_QUEST_INSTANCES_SQL,
+    LIST_QUEST_INSTANCES_SQL,
+    UPSERT_QUEST_INSTANCE_SQL,
+)
 
 from .fakes import FakeDatabase, raw_row
 
@@ -186,3 +190,64 @@ async def test_the_default_loader_reads_the_players_quests_with_the_row() -> Non
 
     assert loaded is not None and [instance.quest_id for instance in loaded.quests.active()] == ["q"]
     assert session.quest_queries == [{"id": str(player_id)}]
+
+
+def test_clear_forgets_every_instance_and_is_synchronous() -> None:
+    part = PlayerQuestsPart(uuid.uuid4(), [_instance("a"), _instance("b", "completed")])
+
+    assert part.clear() == 2
+
+    assert part.get("a") is None and part.get("b") is None
+    assert part.dirty and part.sync_required
+
+
+def test_clearing_nothing_changes_nothing() -> None:
+    part = PlayerQuestsPart(uuid.uuid4())
+
+    assert part.clear() == 0
+
+    assert not part.dirty
+
+
+def test_rollback_after_clear_brings_the_instances_back_and_drops_the_delete() -> None:
+    part = PlayerQuestsPart(uuid.uuid4(), [_instance("a")])
+    part.begin()
+    _ = part.clear()
+    part.rollback()
+
+    assert part.get("a") is not None
+    assert not part.dirty
+    assert part.take_write() is None
+
+
+async def test_a_cleared_part_deletes_the_players_rows_then_upserts_what_was_set_afterwards() -> None:
+    player_id = uuid.uuid4()
+    part = PlayerQuestsPart(player_id, [_instance("a")])
+    _ = part.clear()
+    _ = part.set("b", state="active")
+    write = part.take_write()
+    assert write is not None
+
+    db = FakeDatabase()
+    async with db.session() as session:
+        await write(session)
+
+    assert db.statements == [DELETE_QUEST_INSTANCES_SQL, UPSERT_QUEST_INSTANCE_SQL]
+    assert db.executed[0] == {"player_id": str(player_id)}
+    assert db.executed[1] is not None and db.executed[1]["quest_id"] == "b"
+
+
+async def test_the_delete_is_written_once() -> None:
+    part = PlayerQuestsPart(uuid.uuid4(), [_instance("a")])
+    _ = part.clear()
+    first = part.take_write()
+    assert first is not None
+    _ = part.set("b", state="active")
+    second = part.take_write()
+    assert second is not None
+
+    db = FakeDatabase()
+    async with db.session() as session:
+        await second(session)
+
+    assert db.statements == [UPSERT_QUEST_INSTANCE_SQL]

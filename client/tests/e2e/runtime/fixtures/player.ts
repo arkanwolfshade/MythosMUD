@@ -150,10 +150,10 @@ export async function despawnSanitariumCultists(page: Page): Promise<void> {
 
 /**
  * Respawn after death via the in-app "Rejoin the earthly plane" button only -- retried, but
- * never falling back to ensurePlayableAlive's raw-SQL DB reset.
+ * never falling back to ensurePlayableAlive's saved-state reset.
  *
- * That reset (resetE2ePlayerRoomsInDatabase) fixes current_room_id directly in Postgres, bypassing
- * the server entirely; a container-proximity check right after it can still see the player as
+ * That reset (resetE2ePlayerRoomsInDatabase) changes the saved current_room_id through the server's
+ * test endpoint, not the live session; a container-proximity check right after it can still see the player as
  * being in "limbo_death_void_limbo_death_void" (the respawn button's own server round trip is what
  * actually relocates the player -- admin `set DP` only heals them, it never moves them out of the
  * void room). Use this instead of ensurePlayableAlive whenever the next step is proximity-sensitive
@@ -261,7 +261,7 @@ export async function openCorpseWithRetry(page: Page, itemText: string): Promise
 }
 
 /**
- * Log out, reset both E2E players' rooms to the spawn room in the database, and log back in.
+ * Log out, reset both E2E players' saved rooms to the spawn room, and log back in.
  * Lands the player in Main Foyer from anywhere, including Death > Void.
  *
  * Must be a real logout before the DB reset: a bare page.goto('/') only drops the WebSocket, the
@@ -280,7 +280,7 @@ async function relogInAtSpawn(page: Page, username: string, password: string): P
     })
     .catch(() => {});
   // Workers=1 default: safe to reset both E2E player rows mid-spec.
-  resetE2ePlayerRoomsInDatabase();
+  await resetE2ePlayerRoomsInDatabase();
   await loginPlayer(page, username, password);
   await waitForPlayableSession(page, 30000);
   await dismissDeathInterstitial(page);

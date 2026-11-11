@@ -61,6 +61,15 @@ BEGIN
 END;
 $$;
 
+-- delete_quest_instances_by_player: drops every quest instance of one player. The player registry's quest part
+-- writes it before its upserts after `clear()` (the e2e harness resets a character to "has not met any quest").
+CREATE OR REPLACE PROCEDURE :schema_name.delete_quest_instances_by_player(p_player_id UUID)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM quest_instances WHERE player_id = p_player_id;
+END;
+$$;
 
 -- get_quest_definition_by_id: fetch quest definition by id
 CREATE OR REPLACE FUNCTION :schema_name.get_quest_definition_by_id(p_quest_id TEXT) -- noqa: PRS
