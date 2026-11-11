@@ -551,7 +551,8 @@ $$;
 -- after that only the player registry writes them (update_player_inventory, ADR-029 step 4c-iii), so a save of a
 -- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise the stats keys only the
 -- registry writes (corruption since step 5c; DP and the death room since step 6a; MP since step 6b): a save keeps
--- the stored values, and never brings back a key the registry removed.
+-- the stored values, and never brings back a key the registry removed. XP and level are the registry's too (step 7b):
+-- an update leaves experience_points and level as stored.
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -591,8 +592,6 @@ BEGIN
         name = EXCLUDED.name,
         current_room_id = EXCLUDED.current_room_id,
         respawn_room_id = EXCLUDED.respawn_room_id,
-        experience_points = EXCLUDED.experience_points,
-        level = EXCLUDED.level,
         is_admin = EXCLUDED.is_admin,
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,

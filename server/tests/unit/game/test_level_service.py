@@ -1,87 +1,146 @@
 """
 Unit tests for LevelService: grant_xp and the level-up hook.
 
-Character creation revamp plan 4.1 (L3). #879: level is derived by
-persistence.award_player_xp (SQL-side curve), never computed in Python here.
+Character creation revamp plan 4.1 (L3). XP is granted as a unit of work on the player registry (ADR-029 step 7b); the
+level follows the curve in models.player_xp, which an integration test checks against the SQL function.
 """
 
-# pyright: reportUnknownMemberType=false, reportUnknownParameterType=false
-# pyright: reportMissingParameterType=false, reportUnusedParameter=false
-# TEST_MOCK: mock_persistence/mock_level_service are untyped MagicMocks (award_player_xp
-# has no real signature to check against); fixture params take the mock's inferred type.
-
+import json
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 
+from server.events.event_types import PlayerXPAwardEvent
 from server.game.level_service import LevelService
-
-# pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names must match fixture names
-
-
-@pytest.fixture
-def mock_persistence():
-    """Mock async persistence with award_player_xp returning (new_xp, old_level, new_level)."""
-    persistence = MagicMock()
-    persistence.award_player_xp = AsyncMock()
-    return persistence
+from server.tests.fixtures.shared.player_registry import LucidityHarness, lucidity_registry
 
 
-@pytest.fixture
-def level_service(mock_persistence):
-    """LevelService with mocked persistence."""
-    return LevelService(async_persistence=mock_persistence)
-
-
-@pytest.mark.asyncio
-async def test_grant_xp_zero_no_op(level_service, mock_persistence):
-    """grant_xp(amount=0) does not call persistence."""
-    await level_service.grant_xp(uuid.uuid4(), 0)
-    mock_persistence.award_player_xp.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_grant_xp_negative_raises(level_service):
-    """grant_xp(amount < 0) raises ValueError."""
-    with pytest.raises(ValueError, match="non-negative"):
-        await level_service.grant_xp(uuid.uuid4(), -1)
-
-
-@pytest.mark.asyncio
-async def test_grant_xp_player_not_found_propagates(level_service, mock_persistence):
-    """grant_xp propagates persistence's ValueError when player not found."""
-    mock_persistence.award_player_xp.side_effect = ValueError("Player not found")
-    player_id = uuid.uuid4()
-    with pytest.raises(ValueError, match="not found"):
-        await level_service.grant_xp(player_id, 50)
-    mock_persistence.award_player_xp.assert_awaited_once_with(player_id, 50, "grant_xp")
-
-
-@pytest.mark.asyncio
-async def test_grant_xp_no_level_change_does_not_call_hook(level_service, mock_persistence):
-    """When persistence reports old_level == new_level, the level-up hook is not invoked."""
+def _rig(
+    *, xp: int = 0, level: int = 1, known: bool = True
+) -> tuple[LevelService, LucidityHarness, uuid.UUID, AsyncMock]:
+    pid = uuid.uuid4()
+    harness = lucidity_registry({pid: None} if known else {}, row={"experience_points": xp, "level": level})
     hook = AsyncMock()
-    service_with_hook = LevelService(async_persistence=mock_persistence, level_up_hook=hook)
-    mock_persistence.award_player_xp.return_value = (50, 1, 1)
-    player_id = uuid.uuid4()
-    await service_with_hook.grant_xp(player_id, 50)
+    return LevelService(harness.registry, level_up_hook=hook), harness, pid, hook
+
+
+def _committed(harness: LucidityHarness) -> list[dict[str, object]]:
+    """The changed columns of every update_player_row the registry committed."""
+    return [
+        json.loads(str(params["changes"]))
+        for params in harness.db.executed
+        if params is not None and "changes" in params
+    ]
+
+
+def _xp_events(harness: LucidityHarness) -> list[PlayerXPAwardEvent]:
+    return [event for event in harness.published if isinstance(event, PlayerXPAwardEvent)]
+
+
+@pytest.mark.asyncio
+async def test_grant_xp_zero_is_a_no_op() -> None:
+    service, harness, pid, hook = _rig()
+
+    await service.grant_xp(pid, 0)
+
+    assert not harness.registry.is_loaded(pid)
+    assert harness.db.commits == 0
     hook.assert_not_awaited()
 
 
 @pytest.mark.asyncio
-async def test_grant_xp_level_up_calls_hook(mock_persistence):
-    """When persistence reports a level increase, the level-up hook is invoked with the new level."""
-    hook = AsyncMock()
-    service_with_hook = LevelService(async_persistence=mock_persistence, level_up_hook=hook)
-    mock_persistence.award_player_xp.return_value = (100, 1, 2)
-    player_id = uuid.uuid4()
-    await service_with_hook.grant_xp(player_id, 100)
-    hook.assert_awaited_once_with(player_id, 2)
+async def test_grant_xp_negative_raises() -> None:
+    service, _, pid, _ = _rig()
+
+    with pytest.raises(ValueError, match="non-negative"):
+        await service.grant_xp(pid, -1)
 
 
 @pytest.mark.asyncio
-async def test_grant_xp_without_hook_does_not_raise_on_level_up(level_service, mock_persistence):
-    """No level_up_hook configured: a level-up still completes without error."""
-    mock_persistence.award_player_xp.return_value = (300, 2, 3)
-    await level_service.grant_xp(uuid.uuid4(), 200)
+async def test_grant_xp_for_a_player_who_does_not_exist_raises_value_error() -> None:
+    service, harness, pid, hook = _rig(known=False)
+
+    with pytest.raises(ValueError, match="not found"):
+        await service.grant_xp(pid, 50)
+
+    assert harness.db.commits == 0
+    hook.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_an_award_adds_to_the_live_total_and_commits_only_xp_and_level() -> None:
+    service, harness, pid, _ = _rig(xp=20)
+
+    await service.grant_xp(pid, 30)
+
+    view = harness.registry.peek(pid)
+    assert view is not None and (view.row.experience_points, view.row.level) == (50, 1)
+    assert _committed(harness) == [{"experience_points": 50}]  # level 1 did not change, so it is not written
+    assert harness.db.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_an_award_tells_the_client_after_the_commit() -> None:
+    service, harness, pid, _ = _rig()
+
+    await service.grant_xp(pid, 100)
+
+    [event] = _xp_events(harness)
+    assert (event.player_id, event.xp_amount, event.new_level) == (pid, 100, 2)
+
+
+@pytest.mark.asyncio
+async def test_a_level_up_calls_the_hook_with_the_new_level() -> None:
+    service, harness, pid, hook = _rig(xp=50)
+
+    await service.grant_xp(pid, 50)  # 100 XP is level 2
+
+    hook.assert_awaited_once_with(pid, 2)
+    assert _committed(harness) == [{"experience_points": 100, "level": 2}]
+
+
+@pytest.mark.asyncio
+async def test_no_level_change_does_not_call_the_hook() -> None:
+    service, _, pid, hook = _rig(xp=0)
+
+    await service.grant_xp(pid, 50)
+
+    hook.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_a_level_never_goes_down() -> None:
+    """A character whose stored level is above the curve (an admin set it) keeps it."""
+    service, harness, pid, hook = _rig(xp=0, level=5)
+
+    await service.grant_xp(pid, 1)
+
+    view = harness.registry.peek(pid)
+    assert view is not None and view.row.level == 5
+    hook.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_without_a_hook_a_level_up_still_completes() -> None:
+    pid = uuid.uuid4()
+    harness = lucidity_registry({pid: None}, row={"experience_points": 250, "level": 2})
+
+    await LevelService(harness.registry).grant_xp(pid, 100)  # 350 XP is level 3
+
+    view = harness.registry.peek(pid)
+    assert view is not None and view.row.level == 3
+
+
+@pytest.mark.asyncio
+async def test_a_failed_commit_awards_nothing_and_tells_nobody() -> None:
+    service, harness, pid, hook = _rig(xp=50)
+    harness.db.fail_commits = 1
+
+    with pytest.raises(RuntimeError):
+        await service.grant_xp(pid, 50)
+
+    view = harness.registry.peek(pid)
+    assert view is not None and (view.row.experience_points, view.row.level) == (50, 1)
+    assert _xp_events(harness) == []
+    hook.assert_not_awaited()

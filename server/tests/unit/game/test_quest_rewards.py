@@ -1,5 +1,6 @@
 """Unit tests for QuestRewardsMixin (quest reward application, split out of QuestService)."""
 
+import json
 import uuid
 from collections.abc import Mapping
 from typing import final
@@ -9,6 +10,7 @@ import pytest
 from server.game.items.item_giver import ItemGiver
 from server.game.quest.quest_rewards import QuestRewardsMixin, SpellLearner, XpGranter
 from server.schemas.quest import QuestDefinitionSchema
+from server.tests.fixtures.shared.player_registry import FakeDatabase, any_player_registry
 
 
 class _Levels:
@@ -57,11 +59,12 @@ class _Host(QuestRewardsMixin):
         levels: XpGranter | None = None,
         spells: SpellLearner | None = None,
         inventory: ItemGiver | None = None,
+        db: FakeDatabase | None = None,
     ) -> None:
         self._level_service = levels
         self._spell_learning_service = spells
         self._item_granter = inventory
-        self._async_persistence = None
+        self._player_registry = any_player_registry(db)
 
 
 def _definition(rewards: list[dict[str, object]]) -> QuestDefinitionSchema:
@@ -108,7 +111,6 @@ async def test_malformed_or_unservable_rewards_are_skipped() -> None:
         {"type": "xp", "amount": 10},  # top-level amount: config is empty (the old tutorial shape)
         {"type": "spell", "config": {"spell_id": 7}},
         {"type": "item", "config": {"item_id": "pack_dark_ages.weapon.sling"}},
-        {"type": "respawn_room", "config": {"room_id": "earth_arkhamcity_sanitarium_room_foyer_001"}},
     ]
 
     await _Host(levels, spells, inventory)._apply_rewards(uuid.uuid4(), "test_quest", _definition(rewards))  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
@@ -133,3 +135,24 @@ async def test_turn_in_inventory_full_error_only_for_item_rewards() -> None:
     assert await full._turn_in_inventory_full_error(player_id, xp_only) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
     assert await _Host(inventory=_Inventory())._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
     assert await _Host()._turn_in_inventory_full_error(player_id, item) is None  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+
+@pytest.mark.asyncio
+async def test_a_respawn_room_reward_writes_only_the_respawn_room() -> None:
+    db = FakeDatabase()
+    reward = _definition([{"type": "respawn_room", "config": {"room_id": "room_elsewhere"}}])
+
+    await _Host(db=db)._apply_rewards(uuid.uuid4(), "test_quest", reward)  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    changes = [json.loads(str(params["changes"])) for params in db.executed if params and "changes" in params]
+    assert changes == [{"respawn_room_id": "room_elsewhere"}]
+    assert db.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_a_respawn_room_reward_without_a_room_writes_nothing() -> None:
+    db = FakeDatabase()
+
+    await _Host(db=db)._apply_rewards(uuid.uuid4(), "test_quest", _definition([{"type": "respawn_room", "config": {}}]))  # pyright: ignore[reportPrivateUsage] -- unit-tested directly
+
+    assert db.commits == 0

@@ -18,43 +18,9 @@ AS $$
     SELECT GREATEST(1, floor((1 + sqrt(1 + GREATEST(p_xp, 0) / 12.5)) / 2)::integer);
 $$;
 
--- award_player_xp: atomically add delta to experience_points and recompute level
--- from level_for_xp. Level never decreases (GREATEST against the current value).
--- Row-locked so concurrent awards can't race the level recomputation.
-CREATE OR REPLACE FUNCTION :schema_name.award_player_xp( -- noqa: PRS
-    p_player_id UUID,
-    p_delta integer
-)
-RETURNS TABLE(new_xp integer, old_level integer, new_level integer)
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    v_old_level integer;
-    v_new_xp integer;
-    v_new_level integer;
-BEGIN
-    IF p_delta < 0 THEN
-        RAISE EXCEPTION 'XP delta must be non-negative, got %', p_delta;
-    END IF;
-
-    SELECT level INTO v_old_level
-    FROM players
-    WHERE player_id = p_player_id
-    FOR UPDATE;
-
-    IF NOT FOUND THEN
-        RETURN;
-    END IF;
-
-    UPDATE players
-    SET experience_points = experience_points + p_delta,
-        level = GREATEST(level, level_for_xp(experience_points + p_delta))
-    WHERE player_id = p_player_id
-    RETURNING experience_points, level INTO v_new_xp, v_new_level;
-
-    RETURN QUERY SELECT v_new_xp, v_old_level, v_new_level;
-END;
-$$;
+-- XP is awarded by the player registry (ADR-029 step 7b), which holds the same curve in models/player_xp.py;
+-- an integration test checks that the two agree. The stored award_player_xp function is gone.
+DROP FUNCTION IF EXISTS :schema_name.award_player_xp(uuid, integer); -- noqa: PRS
 
 
 -- update_player_stat_field: atomically update a stat field in stats JSONB

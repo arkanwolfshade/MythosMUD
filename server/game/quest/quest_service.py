@@ -196,14 +196,12 @@ class QuestService(QuestRewardsMixin):
         level_service: Any = None,
         spell_learning_service: Any = None,
         item_granter: ItemGiver | None = None,
-        async_persistence: Any = None,
     ) -> None:
         self._def_repo: _DefinitionStore = quest_definition_repository
         self._player_registry: PlayerRegistry = player_registry
         self._level_service = level_service
         self._spell_learning_service = spell_learning_service
         self._item_granter: ItemGiver | None = item_granter
-        self._async_persistence = async_persistence
         logger.info("QuestService initialized")
 
     @staticmethod

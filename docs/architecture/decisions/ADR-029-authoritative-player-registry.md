@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.17** · MythosMUD · 2026-11-10
+**Version 1.0.18** · MythosMUD · 2026-11-11
 
 ---
 
@@ -349,6 +349,18 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      reconnect relies on that to place a player in a fresh instance. A save from a copy loaded before a move or
      a posture change can still put the old value back; making `upsert_player` keep an existing player's room and
      posture waits for those writers to move.
+   - 7b: XP and level. `LevelService.grant_xp` (combat and quest rewards both use it) is one sync unit on the
+     player: the XP is added to the live total, the level follows the curve and never falls, only those two columns
+     are written, and the client's `PlayerXPAwardEvent` is sent after the commit. It used to call the stored
+     function `award_player_xp`, a row-locked atomic update; a resident copy of the row would have gone stale
+     against that (the lesson of step 6d's countdown), so the function, its repository method and the persistence
+     delegate are gone. The curve lives in `models/player_xp.py` as integer arithmetic, and an integration test
+     checks it against the SQL `level_for_xp` for every level boundary (and the XP either side) up to level 5,999
+     and the top of the integer range, so the one remaining copy of the curve in SQL cannot drift. `upsert_player`
+     now leaves an existing player's `experience_points` and `level` as stored, as it does for DP and MP: a save of a
+     copy loaded before an award can no longer write the old XP back (the integration test fails on the old
+     procedure). The `respawn_room` quest reward was the other `save_player` here: it is a unit that writes only
+     `respawn_room_id`, and `QuestService` no longer takes `async_persistence`.
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
 
@@ -368,6 +380,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.18 | 2026-11-11 | §6: step 7b as shipped (XP and level are a registry unit with the curve in Python, pinned to `level_for_xp`; `award_player_xp` removed; `upsert_player` keeps XP and level; the respawn-room quest reward is a unit) |
 | 1.0.17 | 2026-11-10 | §6: step 7 is split into 7a to 7d. Step 7a as shipped (a move is one unit on the moving player, replacing the `RLock`; room, tutorial exit and posture are changed-column sync writes; the instance flush follows the commit; `upsert_player` still takes the room from legacy savers until step 8) |
 | 1.0.16 | 2026-11-10 | §3.4: effects and their countdown are sync until step 8 (counters lazy then). §6: step 6d as shipped (`PlayerEffectsPart`, row-level sync writes with part-named ids, loaded by `get_player_lucidity_state`; `PlayerEffects` service; the tick is one unit per player with effects and sends damage-over-time DP updates; the countdown moves from a batched statement into the unit) |
 | 1.0.15 | 2026-11-05 | §3.5: a player's `CombatParticipant` holds a per-round copy of DP, not a reference. §6: step 6c as shipped (a hit is one sync unit on the live DP; background write and correction event removed) |

@@ -236,18 +236,18 @@ class PlayerRowPart(Part):
         """Move the player's saved room (lazy, unless ``sync``)."""
         self._set_column("current_room_id", room_id, sync=sync)
 
-    def set_respawn_room_id(self, room_id: str | None) -> None:
-        """Change the respawn room (lazy)."""
-        self._set_column("respawn_room_id", room_id)
+    def set_respawn_room_id(self, room_id: str | None, *, sync: bool = False) -> None:
+        """Change the respawn room (lazy, unless ``sync``)."""
+        self._set_column("respawn_room_id", room_id, sync=sync)
 
     def set_tutorial_instance_id(self, instance_id: str | None) -> None:
         """Enter or leave a tutorial instance (lazy)."""
         self._set_column("tutorial_instance_id", instance_id)
 
-    def set_experience(self, experience_points: int, level: int) -> None:
-        """Set XP and level (lazy)."""
-        self._set_column("experience_points", experience_points)
-        self._set_column("level", level)
+    def set_experience(self, experience_points: int, level: int, *, sync: bool = False) -> None:
+        """Set XP and level (lazy, unless ``sync``)."""
+        self._set_column("experience_points", experience_points, sync=sync)
+        self._set_column("level", level, sync=sync)
 
     def touch_last_active(self, when: datetime) -> None:
         """Record activity (lazy)."""

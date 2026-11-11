@@ -1,19 +1,22 @@
 """
-Integration tests for db/procedures/experience.sql's #879 rewrite: level_for_xp() and
-award_player_xp(). Replaces the old update_player_xp() (XP-only, no level) --
-ExperienceRepository is the only caller, but the row-locking and level curve can only be
-proven against a real database; unit tests mock the session.
+Integration tests for XP and level against a real database (ADR-029 step 7b).
+
+The registry grants XP now, using the curve in ``models.player_xp``; the SQL function ``level_for_xp`` is the curve's
+reference. These tests pin the two together, prove an award reaches the database through the registry, and prove a
+``save_player`` of a copy loaded before the award cannot write the old XP and level back.
 """
 
-# pyright: reportAny=false
-# SQLAlchemy's raw Row attribute access (row.new_xp etc.) has no static column typing here --
-# the columns come from a raw `text()` query, not a typed ORM select.
-
 import uuid
+from typing import cast
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+
+from server.async_persistence import AsyncPersistenceLayer
+from server.game.level_service import LevelService
+from server.game.player_registry import PlayerRegistry, RegistrySettings, SessionFactory
+from server.models.player_xp import level_for_xp
 
 
 @pytest.fixture
@@ -41,6 +44,17 @@ async def player_row(session_factory: async_sessionmaker[AsyncSession]):
         await session.commit()
 
 
+async def _stored(session_factory: async_sessionmaker[AsyncSession], player_id: uuid.UUID) -> tuple[int, int]:
+    """(experience_points, level) as stored."""
+    async with session_factory() as session:
+        row = (
+            await session.execute(
+                text("SELECT experience_points, level FROM players WHERE player_id = :id"), {"id": str(player_id)}
+            )
+        ).one()
+    return cast(int, row[0]), cast(int, row[1])
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "xp,expected_level",
@@ -51,88 +65,59 @@ async def test_level_for_xp_boundaries(
 ) -> None:
     """total(L) = 50*L*(L-1): L2=100, L3=300, L10=4500. Boundaries land exactly, not off-by-one."""
     async with session_factory() as session:
-        level = (await session.execute(text("SELECT level_for_xp(:xp)"), {"xp": xp})).scalar()
+        level = cast(int | None, (await session.execute(text("SELECT level_for_xp(:xp)"), {"xp": xp})).scalar())
         assert level == expected_level
 
 
 @pytest.mark.asyncio
-async def test_award_player_xp_below_first_level_up_does_not_change_level(
-    session_factory: async_sessionmaker[AsyncSession], player_row: uuid.UUID
-) -> None:
+async def test_the_python_curve_is_the_sql_curve(session_factory: async_sessionmaker[AsyncSession]) -> None:
+    """Every level boundary and the XP either side of it, a spread in between, and the top of the integer range."""
+    boundaries = [50 * level * (level - 1) for level in range(1, 6000)]
+    samples = {0, 1, 2_000_000_000, 2_147_483_647}
+    samples.update(xp for boundary in boundaries for xp in (boundary - 1, boundary, boundary + 1) if xp >= 0)
+    samples.update(range(0, 5000, 7))
+    xps = sorted(samples)
+
     async with session_factory() as session:
-        row = (
+        rows = (
             await session.execute(
-                text("SELECT * FROM award_player_xp(:player_id, :delta)"),
-                {"player_id": player_row, "delta": 50},
+                text("SELECT x, level_for_xp(x) FROM unnest(CAST(:xps AS integer[])) AS x"), {"xps": xps}
             )
-        ).one()
-        await session.commit()
-        assert row.new_xp == 50
-        assert row.old_level == 1
-        assert row.new_level == 1
+        ).all()
+
+    assert len(rows) == len(xps)
+    pairs = [(cast(int, row[0]), cast(int, row[1])) for row in rows]
+    mismatches = [(xp, sql, level_for_xp(xp)) for xp, sql in pairs if sql != level_for_xp(xp)]
+    assert mismatches == [], f"(xp, sql level, python level): {mismatches[:5]}"
 
 
 @pytest.mark.asyncio
-async def test_award_player_xp_crossing_boundary_levels_up(
+@pytest.mark.usefixtures("fresh_database_manager")
+async def test_an_award_through_the_registry_reaches_the_database(
     session_factory: async_sessionmaker[AsyncSession], player_row: uuid.UUID
 ) -> None:
-    async with session_factory() as session:
-        row = (
-            await session.execute(
-                text("SELECT * FROM award_player_xp(:player_id, :delta)"),
-                {"player_id": player_row, "delta": 100},
-            )
-        ).one()
-        await session.commit()
-        assert row.new_xp == 100
-        assert row.old_level == 1
-        assert row.new_level == 2
+    registry = PlayerRegistry(cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0))
+    levels = LevelService(registry)
+
+    await levels.grant_xp(player_row, 50)
+    assert await _stored(session_factory, player_row) == (50, 1)
+
+    await levels.grant_xp(player_row, 250)  # 300 XP is level 3
+    assert await _stored(session_factory, player_row) == (300, 3)
 
 
 @pytest.mark.asyncio
-async def test_award_player_xp_is_monotonic_never_decreases_level(
+@pytest.mark.usefixtures("fresh_database_manager")
+async def test_a_save_of_a_copy_loaded_before_an_award_keeps_the_xp_and_level(
     session_factory: async_sessionmaker[AsyncSession], player_row: uuid.UUID
 ) -> None:
-    """A player boosted straight to a high level by one award, then given a tiny follow-up
-    award, must not have their level recomputed down to what that tiny amount alone implies."""
-    async with session_factory() as session:
-        _ = await session.execute(
-            text("SELECT * FROM award_player_xp(:player_id, :delta)"), {"player_id": player_row, "delta": 4500}
-        )
-        await session.commit()
-        row = (
-            await session.execute(
-                text("SELECT * FROM award_player_xp(:player_id, :delta)"),
-                {"player_id": player_row, "delta": 1},
-            )
-        ).one()
-        await session.commit()
-        assert row.old_level == 10
-        assert row.new_level == 10
+    """upsert_player used to write the loaded copy's XP and level back: now only the registry writes them."""
+    registry = PlayerRegistry(cast(SessionFactory, session_factory), settings=RegistrySettings(idle_ttl_seconds=0))
+    persistence = AsyncPersistenceLayer(_skip_room_cache=True)
+    stale_copy = await persistence.get_player_by_id(player_row)  # loaded at 0 XP, level 1
+    assert stale_copy is not None
 
+    await LevelService(registry).grant_xp(player_row, 100)
+    await persistence.save_player(stale_copy)
 
-@pytest.mark.asyncio
-async def test_award_player_xp_rejects_negative_delta(
-    session_factory: async_sessionmaker[AsyncSession], player_row: uuid.UUID
-) -> None:
-    async with session_factory() as session:
-        with pytest.raises(Exception, match="non-negative"):
-            _ = await session.execute(
-                text("SELECT * FROM award_player_xp(:player_id, :delta)"),
-                {"player_id": player_row, "delta": -1},
-            )
-        await session.rollback()
-
-
-@pytest.mark.asyncio
-async def test_award_player_xp_unknown_player_returns_no_row(
-    session_factory: async_sessionmaker[AsyncSession],
-) -> None:
-    async with session_factory() as session:
-        row = (
-            await session.execute(
-                text("SELECT * FROM award_player_xp(:player_id, :delta)"),
-                {"player_id": uuid.uuid4(), "delta": 10},
-            )
-        ).one_or_none()
-        assert row is None
+    assert await _stored(session_factory, player_row) == (100, 2)

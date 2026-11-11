@@ -124,7 +124,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._room_repo = RoomRepository(self._room_cache)
         self._player_repo = PlayerRepository(self._room_cache, event_bus)
         self._profession_repo = ProfessionRepository()
-        self._experience_repo = ExperienceRepository(event_bus=event_bus)
+        self._experience_repo = ExperienceRepository()
         self._health_service = None
         self._effects_service = None
         self._container_repo = ContainerRepository()
@@ -367,10 +367,6 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         await self._experience_repo.update_player_stat_field(
             player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
         )
-
-    async def award_player_xp(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> tuple[int, int, int]:
-        """Award XP and recompute level atomically. Delegates to ExperienceRepository. Returns (new_xp, old_level, new_level)."""
-        return await self._experience_repo.award_player_xp(player_id, amount, source)
 
     def _health(self) -> DpAdjusting:
         if self._health_service is None:  # never fall back to writing stats directly

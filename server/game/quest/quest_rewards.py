@@ -12,15 +12,18 @@ and never blocks quest completion.
 from __future__ import annotations
 
 import uuid
-from typing import Protocol, cast
+from typing import TYPE_CHECKING, Protocol, cast
 
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.exceptions import DatabaseError
 from server.game.items.item_giver import ItemGiver
-from server.models.player import Player
+from server.game.player_registry import PlayerNotFoundError
 from server.schemas.quest import QuestDefinitionSchema, QuestRewardSchema
 from server.structured_logging.enhanced_logging_config import get_logger
+
+if TYPE_CHECKING:
+    from server.game.player_registry import PlayerRegistry
 
 logger = get_logger(__name__)
 
@@ -41,17 +44,6 @@ class SpellLearner(Protocol):  # pylint: disable=too-few-public-methods  # Reaso
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
 
 
-class PlayerStore(Protocol):
-    """AsyncPersistenceLayer surface used by the respawn_room reward."""
-
-    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
-        """Load a player."""
-        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright needs a stub body for a non-None return
-
-    async def save_player(self, player: Player) -> None:
-        """Persist a player."""
-
-
 def _config_value(reward: QuestRewardSchema, *keys: str) -> object:
     """First truthy config value among keys (reward config is untyped JSONB)."""
     for key in keys:
@@ -67,7 +59,7 @@ class QuestRewardsMixin:
     _level_service: XpGranter | None
     _spell_learning_service: SpellLearner | None
     _item_granter: ItemGiver | None
-    _async_persistence: object | None
+    _player_registry: PlayerRegistry
 
     async def _apply_xp_reward(self, player_id: uuid.UUID, quest_id: str, reward: QuestRewardSchema) -> None:
         """Apply a single XP reward. No-op if no level service or zero amount."""
@@ -122,15 +114,11 @@ class QuestRewardsMixin:
         if not isinstance(room_id, str):
             logger.warning("respawn_room reward without config.room_id", quest_id=quest_id)
             return
-        store = cast("PlayerStore | None", self._async_persistence)
-        if store is None:
-            return
         try:
-            player = await store.get_player_by_id(player_id)
-            if player is None:
-                return
-            player.respawn_room_id = room_id
-            await store.save_player(player)
+            async with self._player_registry.mutate(player_id) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+                player.row.set_respawn_room_id(room_id, sync=True)
+        except PlayerNotFoundError:
+            return  # the character is gone: nothing to point
         except (DatabaseError, SQLAlchemyError) as e:
             logger.warning(
                 "Failed to apply respawn_room quest reward",

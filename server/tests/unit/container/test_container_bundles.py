@@ -60,7 +60,7 @@ def test_game_bundle_refuses_a_quest_service_without_the_player_registry() -> No
     """Quest instances live in the registry (ADR-029 step 5a), so the quest service cannot be built before it."""
     bundle = GameBundle()
     with pytest.raises(RuntimeError, match="player registry must be built before the quest service"):
-        bundle._init_quest_service(MagicMock())  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - unit-testing the bundle's private wiring step  # Appropriate because: this file tests each GameBundle wiring helper directly, and initialize() needs the whole app
+        bundle._init_quest_service()  # pyright: ignore[reportPrivateUsage]  # pylint: disable=protected-access  # Reason: TEST_DOUBLE - unit-testing the bundle's private wiring step  # Appropriate because: this file tests each GameBundle wiring helper directly, and initialize() needs the whole app
 
 
 def test_time_bundle_resolve_hourly_holidays() -> None:
