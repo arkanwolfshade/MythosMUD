@@ -13,6 +13,7 @@ unit of work: it seeds the player's instances, calls the service, and reads back
 from __future__ import annotations
 
 import asyncio
+import json
 import uuid
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -25,7 +26,6 @@ import pytest
 from server.events.event_types import BaseEvent
 from server.game.player_registry import DbSession, PlayerAggregate, PlayerRegistry, QuestInstanceData
 from server.game.quest.quest_service import QuestService
-from server.models.player import Player
 from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
 
 # pylint: disable=redefined-outer-name  # Reason: Pytest fixtures are injected as function parameters, which triggers this warning but is the standard pytest pattern
@@ -768,31 +768,13 @@ async def test_turn_in_at_entity_turns_in_every_quest_listing_it(mock_def_repo: 
     assert quests.db.commits == 1  # every turn-in joined one unit
 
 
-class _RespawnPersistence:
-    """Typed async_persistence stand-in for reward application."""
-
-    def __init__(self, player: Player) -> None:
-        self.player: Player = player
-        self.saved: list[Player] = []
-
-    async def get_player_by_id(self, player_id: uuid.UUID) -> Player:
-        _ = player_id
-        return self.player
-
-    async def save_player(self, player: Player) -> None:
-        self.saved.append(player)
-
-
-async def _complete_tutorial_with_rewards(rewards: list[dict[str, object]], persistence: _RespawnPersistence) -> None:
+async def _complete_tutorial_with_rewards(rewards: list[dict[str, object]], quests: _Quests) -> None:
     def_repo = _MockDefRepo()
-    quests = _Quests()
     row = _make_definition_row()
     row.definition["rewards"] = rewards
     quests.seed("leave_the_tutorial")
     def_repo.get_by_id = AsyncMock(return_value=row)
-    service = QuestService(
-        quest_definition_repository=def_repo, player_registry=quests.registry, async_persistence=persistence
-    )
+    service = QuestService(quest_definition_repository=def_repo, player_registry=quests.registry)
     with (
         patch("server.game.quest.quest_service.notify_quest_progress"),
         patch("server.game.quest.quest_service.notify_quest_completed"),
@@ -800,27 +782,34 @@ async def _complete_tutorial_with_rewards(rewards: list[dict[str, object]], pers
         await service.record_complete_activity(quests.player_id, "exit_tutorial_room")
 
 
+def _committed_respawns(quests: _Quests) -> list[object]:
+    """The respawn_room_id of every changed-columns write the registry committed."""
+    return [
+        changes["respawn_room_id"]
+        for changes in (
+            json.loads(str(params["changes"])) for params in quests.db.executed if params and "changes" in params
+        )
+        if "respawn_room_id" in changes
+    ]
+
+
 async def test_respawn_room_reward_moves_the_players_respawn():
-    """Completing leave_the_tutorial points respawn at the Sanitarium Main Foyer."""
-    foyer = "earth_arkhamcity_sanitarium_room_foyer_001"
-    player = Player(name="Newbie", respawn_room_id="earth_arkhamcity_sanitarium_room_tutorial_bedroom_001")
-    persistence = _RespawnPersistence(player)
+    """Completing leave_the_tutorial points respawn at the room named, as a registry write of that column only."""
+    quests = _Quests()
 
-    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {"room_id": foyer}}], persistence)
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {"room_id": "room_elsewhere"}}], quests)
 
-    assert player.respawn_room_id == foyer
-    assert persistence.saved == [player]
+    view = quests.registry.peek(quests.player_id)
+    assert view is not None and view.row.respawn_room_id == "room_elsewhere"
+    assert _committed_respawns(quests) == ["room_elsewhere"]
 
 
 async def test_respawn_room_reward_without_room_id_changes_nothing():
-    bedroom = "earth_arkhamcity_sanitarium_room_tutorial_bedroom_001"
-    player = Player(name="Newbie", respawn_room_id=bedroom)
-    persistence = _RespawnPersistence(player)
+    quests = _Quests()
 
-    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {}}], persistence)
+    await _complete_tutorial_with_rewards([{"type": "respawn_room", "config": {}}], quests)
 
-    assert player.respawn_room_id == bedroom
-    assert persistence.saved == []
+    assert _committed_respawns(quests) == []
 
 
 @pytest.mark.asyncio

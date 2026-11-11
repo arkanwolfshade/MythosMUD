@@ -1,19 +1,18 @@
 """
 Experience repository for async persistence operations.
 
-This module provides async database operations for player XP and stat management
-using PostgreSQL stored procedures.
+This module provides async database operations for player stat management using PostgreSQL stored procedures.
+XP and level are awarded by the player registry (ADR-029 step 7b), not here.
 """
 
 import uuid
-from typing import Protocol, cast
+from typing import cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from structlog.stdlib import BoundLogger
 
 from server.database import get_session_maker
-from server.events.event_types import BaseEvent, PlayerXPAwardEvent
 from server.exceptions import DatabaseError
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.error_logging import log_and_raise
@@ -21,18 +20,11 @@ from server.utils.error_logging import log_and_raise
 logger: BoundLogger = get_logger(__name__)
 
 
-class _ExperienceEventBus(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
-    """Minimal event bus surface for XP award publishing."""
-
-    def publish(self, event: BaseEvent) -> None: ...  # pylint: disable=missing-function-docstring  # Reason: Protocol stub
-
-
 class ExperienceRepository:
     """
     Repository for player experience and stats persistence operations.
 
-    Handles XP awards, stat updates, and leveling with atomic database
-    operations to prevent race conditions.
+    Handles atomic stat-field updates (fear, occult knowledge, and the like).
     """
 
     # Field name to JSONB path for update_player_stat_field
@@ -51,82 +43,9 @@ class ExperienceRepository:
         "charisma": ["charisma"],
     }
 
-    def __init__(self, event_bus: _ExperienceEventBus | None = None) -> None:
-        """
-        Initialize the experience repository.
-
-        Args:
-            event_bus: Optional EventBus for publishing XP/level events
-        """
-        self._event_bus: _ExperienceEventBus | None = event_bus
+    def __init__(self) -> None:
+        """Initialize the experience repository."""
         self._logger: BoundLogger = get_logger(__name__)
-
-    async def award_player_xp(self, player_id: uuid.UUID | str, delta: int, reason: str = "") -> tuple[int, int, int]:
-        """
-        Award XP and recompute level atomically via the award_player_xp stored function.
-
-        Args:
-            player_id: Player UUID or string
-            delta: XP amount (must be non-negative)
-            reason: Source of XP, for logging
-
-        Returns:
-            (new_xp, old_level, new_level)
-
-        Raises:
-            ValueError: If delta is negative or player not found
-            DatabaseError: If database operation fails
-        """
-        if delta < 0:
-            raise ValueError(f"XP delta must be non-negative, got {delta}")
-
-        try:
-            session_maker = get_session_maker()
-            async with session_maker() as session:
-                result = await session.execute(
-                    text("SELECT new_xp, old_level, new_level FROM award_player_xp(:player_id, :delta)"),
-                    {"player_id": str(player_id), "delta": delta},
-                )
-                row = result.one_or_none()
-                if row is None:
-                    raise ValueError(f"Player {player_id} not found")
-
-                await session.commit()
-
-                # Raw text() query -> SQLAlchemy Row has no static column typing; cast (not int())
-                # keeps the Any confined to a single, explicit conversion point.
-                new_xp = cast(int, row.new_xp)
-                old_level = cast(int, row.old_level)
-                new_level = cast(int, row.new_level)
-
-                self._logger.info(
-                    "Player XP awarded atomically",
-                    player_id=str(player_id),
-                    delta=delta,
-                    reason=reason,
-                    new_xp=new_xp,
-                    old_level=old_level,
-                    new_level=new_level,
-                )
-
-                if self._event_bus:
-                    event = PlayerXPAwardEvent(
-                        player_id=uuid.UUID(str(player_id)),
-                        xp_amount=delta,
-                        new_level=new_level,
-                    )
-                    self._event_bus.publish(event)
-
-                return new_xp, old_level, new_level
-        except (SQLAlchemyError, OSError) as e:
-            log_and_raise(
-                DatabaseError,
-                f"Database error awarding XP for player '{player_id}': {e}",
-                operation="award_player_xp",
-                player_id=str(player_id),
-                details={"player_id": str(player_id), "delta": delta, "reason": reason, "error": str(e)},
-                user_friendly="Failed to update player experience",
-            )
 
     async def _persist_stat_field_delta(
         self,

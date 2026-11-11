@@ -249,7 +249,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         )
         logger.info("Exploration, movement, follow and party services initialized")
 
-    def _init_quest_service(self, container: ApplicationContainer) -> None:
+    def _init_quest_service(self) -> None:
         from server.game.quest import QuestService
         from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
 
@@ -263,7 +263,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             level_service=self.level_service,
             spell_learning_service=None,
             item_granter=self.item_granter,
-            async_persistence=container.async_persistence,
         )
 
     def _init_player_quest_layer(self, container: ApplicationContainer) -> None:
@@ -305,11 +304,10 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
 
         from server.game.level_service import LevelService
 
-        self.level_service = LevelService(
-            async_persistence=async_persistence,
-            level_up_hook=_skill_improvement_on_level_up,
-        )
-        self._init_quest_service(container)
+        if self.player_registry is None:
+            raise RuntimeError("The player registry must be built before the level service")
+        self.level_service = LevelService(self.player_registry, level_up_hook=_skill_improvement_on_level_up)
+        self._init_quest_service()
         logger.info("Container, level, skill and quest services initialized")
 
     async def _init_emote_service(self) -> None:

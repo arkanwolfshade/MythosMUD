@@ -31152,14 +31152,6 @@
             {
                 "code": "reportAny",
                 "range": {
-                    "startColumn": 30,
-                    "endColumn": 57,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
                     "startColumn": 8,
                     "endColumn": 19,
                     "lineCount": 1
@@ -37947,38 +37939,6 @@
             }
         ],
         "./server/game/level_service.py": [
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 27,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnannotatedClassAttribute",
-                "range": {
-                    "startColumn": 13,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportUnannotatedClassAttribute",
                 "range": {
@@ -46266,22 +46226,6 @@
                 }
             },
             {
-                "code": "reportAny",
-                "range": {
-                    "startColumn": 8,
-                    "endColumn": 25,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportExplicitAny",
-                "range": {
-                    "startColumn": 27,
-                    "endColumn": 30,
-                    "lineCount": 1
-                }
-            },
-            {
                 "code": "reportUnannotatedClassAttribute",
                 "range": {
                     "startColumn": 13,
@@ -46294,14 +46238,6 @@
                 "range": {
                     "startColumn": 13,
                     "endColumn": 36,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportUnannotatedClassAttribute",
-                "range": {
-                    "startColumn": 13,
-                    "endColumn": 31,
                     "lineCount": 1
                 }
             },
