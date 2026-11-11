@@ -14,6 +14,7 @@ that dimensional shifts are properly recorded.
 
 import time
 import uuid
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -45,6 +46,17 @@ if TYPE_CHECKING:
     from ..services.player_combat_service import PlayerCombatService
     from .instance_manager import InstanceManager
     from .player_registry import PlayerAggregate, PlayerRegistry
+
+
+@dataclass(frozen=True, slots=True)
+class _MoveAttempt:
+    """Who is moving and where, as the caller named them and as resolved; one move's identity for logs and monitors."""
+
+    player_id: uuid.UUID | str
+    resolved_player_id: uuid.UUID | str
+    from_room_id: str
+    to_room_id: str
+    start_time: float
 
 
 class MovementService(RoomOccupancyMixin):
@@ -335,60 +347,45 @@ class MovementService(RoomOccupancyMixin):
         )
 
     def _record_move_validation_failure(
-        self, monitor: Any, attempt: dict[str, Any], timing_breakdown: dict[str, float]
+        self, monitor: MovementMonitor, attempt: _MoveAttempt, timing_breakdown: dict[str, float]
     ) -> None:
         """Record timing and monitor stats when movement validation fails."""
-        start_time = attempt["start_time"]
-        duration_ms = (time.time() - start_time) * 1000
+        duration_ms = (time.time() - attempt.start_time) * 1000
         self._logger.debug(
             "Movement validation failed",
-            player_id=attempt["resolved_player_id"],
+            player_id=attempt.resolved_player_id,
             duration_ms=duration_ms,
             **timing_breakdown,
         )
-        monitor.record_movement_attempt(
-            attempt["player_id"], attempt["from_room_id"], attempt["to_room_id"], False, duration_ms
-        )
+        monitor.record_movement_attempt(attempt.player_id, attempt.from_room_id, attempt.to_room_id, False, duration_ms)
 
-    async def _execute_move_locked(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: the move's context: who, where, the unit's aggregate and the timing/monitor sinks
+    async def _execute_move_locked(
         self,
         player: "Player",
         aggregate: "PlayerAggregate",
-        resolved_player_id: uuid.UUID | str,
-        player_id: uuid.UUID | str,
-        from_room_id: str,
-        to_room_id: str,
+        attempt: _MoveAttempt,
         timing_breakdown: dict[str, float],
         monitor: MovementMonitor,
-        start_time: float,
     ) -> tuple[bool, str | None]:
         """Run the movement inside the player's unit of work.
 
         Returns:
             (whether the player moved, the tutorial instance they just left, if any: to flush once the unit commits)
         """
-        attempt = {
-            "player_id": player_id,
-            "resolved_player_id": resolved_player_id,
-            "from_room_id": from_room_id,
-            "to_room_id": to_room_id,
-            "start_time": start_time,
-        }
-
         validation_start = time.time()
-        if not await self._validate_movement(player, from_room_id, to_room_id):
+        if not await self._validate_movement(player, attempt.from_room_id, attempt.to_room_id):
             timing_breakdown["validation_ms"] = (time.time() - validation_start) * 1000
             self._record_move_validation_failure(monitor, attempt, timing_breakdown)
             return False, None
         timing_breakdown["validation_ms"] = (time.time() - validation_start) * 1000
 
         from_room, to_room = self._get_rooms_for_movement(
-            from_room_id, to_room_id, resolved_player_id, timing_breakdown
+            attempt.from_room_id, attempt.to_room_id, attempt.resolved_player_id, timing_breakdown
         )
 
-        self._execute_room_transfer(from_room, to_room, resolved_player_id, timing_breakdown)
-        self._persist_player_location(aggregate, to_room_id, timing_breakdown)
-        return True, self._apply_tutorial_exit(aggregate, to_room_id)
+        self._execute_room_transfer(from_room, to_room, attempt.resolved_player_id, timing_breakdown)
+        self._persist_player_location(aggregate, attempt.to_room_id, timing_breakdown)
+        return True, self._apply_tutorial_exit(aggregate, attempt.to_room_id)
 
     async def _move_in_unit(
         self,
@@ -406,20 +403,13 @@ class MovementService(RoomOccupancyMixin):
         """
         player, resolved_player_id = await self._resolve_player_for_movement(player_id, timing_breakdown)
         player_uuid = uuid.UUID(str(resolved_player_id))
+        attempt = _MoveAttempt(player_id, resolved_player_id, from_room_id, to_room_id, start_time)
         lock_start = time.time()
         try:
             async with self._registry.mutate(player_uuid) as aggregate:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
                 timing_breakdown["lock_wait_ms"] = (time.time() - lock_start) * 1000
                 moved, exited_instance_id = await self._execute_move_locked(
-                    player,
-                    aggregate,
-                    resolved_player_id,
-                    player_id,
-                    from_room_id,
-                    to_room_id,
-                    timing_breakdown,
-                    monitor,
-                    start_time,
+                    player, aggregate, attempt, timing_breakdown, monitor
                 )
         except PlayerNotFoundError as e:
             raise ValidationError(f"Player not found: {player_id}") from e
