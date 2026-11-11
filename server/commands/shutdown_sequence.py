@@ -9,8 +9,9 @@ import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from ..exceptions import DatabaseError
-from ..models.player import Player
 from ..structured_logging.enhanced_logging_config import get_logger
 from .shutdown_process_termination import schedule_process_termination
 
@@ -27,13 +28,16 @@ class _ConnectionManager(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
 
 
-class _PlayerStore(Protocol):
-    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
-        """Load a player by ID."""
+class _RegistryFlush(Protocol):
+    async def close(self) -> int:
+        """Write every dirty player; returns how many were written."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
 
-    async def save_player(self, player: Player) -> None:
-        """Persist a player."""
+
+class _ShutdownContainer(Protocol):
+    @property
+    def player_registry(self) -> _RegistryFlush | None:
+        """The player registry, if running."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
 
 
@@ -44,8 +48,8 @@ class _PlayerShutdownState(Protocol):
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
 
     @property
-    def persistence(self) -> _PlayerStore:
-        """Player persistence layer."""
+    def container(self) -> _ShutdownContainer | None:
+        """Application container, if running."""
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body for basedpyright
 
 
@@ -71,31 +75,22 @@ def _online_player_ids(connection_manager: _ConnectionManager) -> list[uuid.UUID
 
 
 async def _persist_all_players(app: _PlayerShutdownApp) -> None:
-    """Phase 1: Persist all active player data."""
-    logger.info("Phase 1: Persisting all active player data")
-    connection_manager = app.state.connection_manager
-    if connection_manager:
-        try:
-            connected_players = _online_player_ids(connection_manager)
-            logger.info("Persisting connected players", count=len(connected_players))
+    """Phase 1: Write every dirty player now (ADR-029).
 
-            persistence = app.state.persistence
-            for player_id in connected_players:
-                try:
-                    player_obj = await persistence.get_player_by_id(player_id)
-                    if player_obj:
-                        await persistence.save_player(player_obj)
-                        logger.debug("Persisted player", player_id=player_id)
-                    else:
-                        logger.warning("Player object not found for ID, skipping persistence", player_id=player_id)
-                except Exception as e:  # pylint: disable=broad-exception-caught  # Reason: one bad player must not stop the rest being saved
-                    logger.error("Failed to persist player", player_id=player_id, error=str(e), exc_info=True)
-
-            logger.info("Phase 1 complete: All player data persisted")
-        except DatabaseError as e:
-            logger.error("Error during player persistence phase", error=str(e), exc_info=True)
-    else:
-        logger.warning("No connection manager found, skipping player persistence")
+    The lifespan shutdown flushes the registry again once uvicorn exits, but the process terminator forces an exit if
+    that has not happened ten seconds after it asks, so a slow later phase must not be able to cost lazy data.
+    """
+    logger.info("Phase 1: Flushing the player registry")
+    container = app.state.container
+    registry = container.player_registry if container is not None else None
+    if registry is None:
+        logger.warning("No player registry found, skipping player flush")
+        return
+    try:
+        written = await registry.close()
+        logger.info("Phase 1 complete: Player registry flushed", players_written=written)
+    except (DatabaseError, SQLAlchemyError, RuntimeError) as e:
+        logger.error("Error flushing the player registry", error=str(e), exc_info=True)
 
 
 async def _despawn_all_npcs(app: Any) -> None:
@@ -227,7 +222,7 @@ async def execute_shutdown_sequence(app: _PlayerShutdownApp) -> None:
     Execute the graceful shutdown sequence.
 
     This function performs an orderly shutdown of all server services:
-    1. Persist all active player data
+    1. Flush the player registry (every dirty player)
     2. Despawn all NPCs (turn off AI, cancel spawning)
     3. Disconnect all players gracefully
     4. Stop NATS message handler

@@ -34,6 +34,7 @@ from server.realtime.player_presence_tracker import (
 )
 from server.services.corruption_tier_cache import corruption_tier_cache
 from server.tests.fixtures.shared.player_registry import FakeDatabase, aggregate, raw_row
+from server.tests.unit.game.player_registry.fakes import FakeLoader
 
 
 @pytest.fixture(autouse=True)
@@ -857,14 +858,22 @@ def _manager_with(
     return manager
 
 
+def _row_changes(db: FakeDatabase) -> list[dict[str, object]]:
+    """The players-row columns each ``update_player_row`` call wrote, in order."""
+    return [cast(dict[str, object], json.loads(str(p["changes"]))) for p in db.executed if p and "changes" in p]
+
+
 @pytest.mark.asyncio
 async def test_tutorial_reentry_gives_stranded_player_a_fresh_instance():
     """A player saved in the template room with no instance goes back through a fresh tutorial."""
     rooms = {BEDROOM_ID: _template_bedroom(), FOYER_ID: _foyer()}
     instance_manager = InstanceManager(room_cache=rooms)
     save_player = AsyncMock()
-    manager = _manager_with(instance_manager, rooms, save_player)
-    player = Player(player_id=str(uuid.uuid4()), name="Stranded", current_room_id=BEDROOM_ID, tutorial_instance_id=None)
+    player_id = uuid.uuid4()
+    db = FakeDatabase()
+    registry = PlayerRegistry(db.session, loader=FakeLoader({player_id: raw_row(player_id)}))
+    manager = _manager_with(instance_manager, rooms, save_player, player_registry=registry)
+    player = Player(player_id=str(player_id), name="Stranded", current_room_id=BEDROOM_ID, tutorial_instance_id=None)
 
     room_id = await _resolve_room_id_for_tutorial_reconnect(player, manager)
 
@@ -874,7 +883,11 @@ async def test_tutorial_reentry_gives_stranded_player_a_fresh_instance():
     assert player.tutorial_instance_id is not None
     assert instance_manager.get_instance(player.tutorial_instance_id) is not None
     assert player.current_room_id == room_id
-    save_player.assert_awaited_once_with(player)
+    # ADR-029 step 8a: the room and the new instance are one registry unit, not a save of the whole copy.
+    save_player.assert_not_awaited()
+    assert _row_changes(db) == [{"current_room_id": room_id, "tutorial_instance_id": player.tutorial_instance_id}]
+    placed = registry.peek(player_id)
+    assert placed is not None and placed.row.current_room_id == room_id
 
 
 START_ID = "earth_demo_zone_room_square_001"
@@ -996,8 +1009,10 @@ async def test_lost_instance_is_replaced_populated_and_its_leftovers_are_cleared
     fresh = instance_manager.get_instance(cast(str, player.tutorial_instance_id))
     assert fresh is not None
     populate.assert_awaited_once_with(fresh)
-    # ADR-029 step 4c-i: stripped through the registry after the full-row save, then mirrored onto this copy.
-    save_player.assert_awaited_once()
+    # ADR-029 step 8a: placed through the registry (no full-row save); step 4c-i: the plot item is stripped through
+    # it too, then mirrored onto this copy.
+    save_player.assert_not_awaited()
+    assert {"current_room_id": room_id, "tutorial_instance_id": player.tutorial_instance_id} in _row_changes(db)
     write = db.last_inventory_write()
     assert write is not None
     committed = cast(list[dict[str, object]], json.loads(str(write["inventory_json"])))

@@ -83,44 +83,9 @@ class TestLogoutCommand:
 
         # Verify persistence operations
         mock_request.app.state.persistence.get_player_by_name.assert_called_once_with("testplayer")
-        mock_request.app.state.persistence.save_player.assert_called_once()
 
         # Verify connection cleanup (implementation uses UUID, not display name)
         mock_connection_manager.force_disconnect_player.assert_called_once_with(_TEST_PLAYER_UUID)
-
-    @pytest.mark.asyncio
-    async def test_logout_command_persists_position(
-        self,
-        mock_request: MagicMock,
-        mock_current_user: dict[str, Any],
-        mock_alias_storage: MagicMock,
-    ) -> None:
-        """Ensure logout syncs in-memory position back to persistence."""
-        mock_player = MagicMock()
-        mock_player.name = "testplayer"
-        mock_player.player_id = _TEST_PLAYER_UUID_STR
-        mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-        mock_request.app.state.persistence.save_player = AsyncMock()
-
-        mock_connection_manager = MagicMock()
-        mock_connection_manager.force_disconnect_player = AsyncMock()
-        mock_connection_manager.online_players = {_TEST_PLAYER_UUID_STR: {"position": "sitting"}}
-        mock_connection_manager.get_online_player_by_display_name.return_value = None
-        mock_connection_manager.async_persistence = MagicMock()
-        mock_connection_manager.async_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-        mock_request.app.state.connection_manager = mock_connection_manager
-
-        await handle_logout_command(
-            command_data={"args": []},
-            current_user=mock_current_user,
-            request=mock_request,
-            _alias_storage=mock_alias_storage,
-            player_name="testplayer",
-        )
-
-        mock_player.set_stats.assert_called_once_with({"position": "sitting"})
-        mock_request.app.state.persistence.save_player.assert_called_once_with(mock_player)
 
     @pytest.mark.asyncio
     async def test_logout_command_no_persistence(

@@ -20,9 +20,6 @@ from server.commands.logout_commands import (
     _clear_corrupted_cache_entry,
     _disconnect_player_connections,
     _get_player_for_logout,
-    _get_player_position_from_connection_manager,
-    _sync_player_position,
-    _update_and_save_player_last_active,
     handle_logout_command,
     handle_quit_command,
 )
@@ -162,88 +159,6 @@ async def test_get_player_for_logout_persistence_returns_coroutine(mock_request,
             player = await _get_player_for_logout(mock_request, mock_persistence, "testplayer")
 
             assert player is None
-
-
-def test_get_player_position_from_connection_manager_by_id(mock_connection_manager, mock_player):
-    """Test _get_player_position_from_connection_manager retrieves position by player_id."""
-    player_id_str = str(mock_player.player_id)
-    mock_connection_manager.online_players[player_id_str] = {"position": "sitting"}
-
-    position = _get_player_position_from_connection_manager(mock_connection_manager, mock_player, "TestPlayer")
-
-    assert position == "sitting"
-
-
-def test_get_player_position_from_connection_manager_by_name(mock_connection_manager, mock_player):
-    """Test _get_player_position_from_connection_manager retrieves position by display name."""
-    mock_connection_manager.online_players = {}
-    mock_connection_manager.get_online_player_by_display_name = MagicMock(return_value={"position": "lying"})
-
-    position = _get_player_position_from_connection_manager(mock_connection_manager, mock_player, "TestPlayer")
-
-    assert position == "lying"
-
-
-def test_get_player_position_from_connection_manager_not_found(mock_connection_manager, mock_player):
-    """Test _get_player_position_from_connection_manager returns None when player not found."""
-    mock_connection_manager.online_players = {}
-    mock_connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
-
-    position = _get_player_position_from_connection_manager(mock_connection_manager, mock_player, "TestPlayer")
-
-    assert position is None
-
-
-def test_get_player_position_from_connection_manager_no_manager(mock_player):
-    """Test _get_player_position_from_connection_manager handles None connection manager."""
-    position = _get_player_position_from_connection_manager(None, mock_player, "TestPlayer")
-
-    assert position is None
-
-
-def test_sync_player_position_updates_stats(mock_player):
-    """Test _sync_player_position updates player stats when position differs."""
-    mock_player.get_stats = MagicMock(return_value={"position": "standing"})
-
-    _sync_player_position(mock_player, "sitting")
-
-    mock_player.set_stats.assert_called_once()
-    call_args = mock_player.set_stats.call_args[0][0]
-    assert call_args["position"] == "sitting"
-
-
-def test_sync_player_position_no_change(mock_player):
-    """Test _sync_player_position does not update when position is same."""
-    mock_player.get_stats = MagicMock(return_value={"position": "standing"})
-
-    _sync_player_position(mock_player, "standing")
-
-    # Should not call set_stats if position hasn't changed
-    # (Implementation may still call it, but we verify the logic)
-
-
-def test_sync_player_position_none_value(mock_player):
-    """Test _sync_player_position handles None position value."""
-    _sync_player_position(mock_player, None)
-
-    # Should return early without updating
-    mock_player.set_stats.assert_not_called()
-
-
-@pytest.mark.asyncio
-async def test_update_and_save_player_last_active_success(mock_persistence, mock_player):
-    """Test _update_and_save_player_last_active updates and saves player."""
-    await _update_and_save_player_last_active(mock_persistence, mock_player)
-
-    assert mock_player.last_active is not None
-    mock_persistence.save_player.assert_awaited_once_with(mock_player)
-
-
-@pytest.mark.asyncio
-async def test_update_and_save_player_last_active_no_persistence(mock_player):
-    """Test _update_and_save_player_last_active handles None persistence."""
-    # Should not raise
-    await _update_and_save_player_last_active(None, mock_player)
 
 
 @pytest.mark.asyncio
@@ -398,7 +313,6 @@ async def test_handle_logout_command_success(mock_request, mock_persistence, moc
     assert result["result"] == "Logged out successfully"
     assert result["session_terminated"] is True
     assert result["connections_closed"] is True
-    mock_persistence.save_player.assert_awaited_once()
     mock_connection_manager.force_disconnect_player.assert_awaited_once()
 
 
@@ -439,24 +353,3 @@ async def test_handle_logout_command_error_handling(mock_request, mock_persisten
     # Should still return success even on error
     assert result["result"] == "Logged out successfully"
     assert result["session_terminated"] is True
-
-
-@pytest.mark.asyncio
-async def test_handle_logout_command_syncs_position(
-    mock_request, mock_persistence, mock_connection_manager, mock_player
-):
-    """Test handle_logout_command syncs player position from connection manager."""
-    mock_request.app.state.container.async_persistence = mock_persistence
-    mock_request.app.state.container.connection_manager = mock_connection_manager
-    mock_connection_manager.online_players = {str(mock_player.player_id): {"position": "lying"}}
-    mock_persistence.save_player = AsyncMock()
-
-    with patch("server.commands.logout_commands._get_player_for_logout", return_value=mock_player):
-        with patch("server.commands.logout_commands._sync_player_position") as mock_sync:
-            await handle_logout_command({}, {"username": "testuser"}, mock_request, None, "TestPlayer")
-
-    mock_sync.assert_called_once()
-    # Verify position was retrieved
-    call_args = mock_sync.call_args[0]
-    assert call_args[0] == mock_player
-    assert call_args[1] == "lying"

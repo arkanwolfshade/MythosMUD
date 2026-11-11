@@ -12,6 +12,7 @@ from typing import Any, cast
 from fastapi import Request
 
 from ..alias_storage import AliasStorage
+from ..game.player_registry import PlayerRegistry
 from ..models.player import Player
 from ..persistence.protocols import PlayerRepositoryProtocol
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -96,63 +97,27 @@ async def _get_player_for_logout(
     return player
 
 
-def _get_player_position_from_connection_manager(connection_manager: Any, player: Any, player_name: str) -> str | None:
+def _player_registry_of(request: object | None) -> PlayerRegistry | None:
+    """The app's player registry (ADR-029), or None without an app or a container."""
+    app = cast(object | None, getattr(request, "app", None))
+    state = cast(object | None, getattr(app, "state", None))
+    container = cast(object | None, getattr(state, "container", None))
+    return cast(PlayerRegistry | None, getattr(container, "player_registry", None))
+
+
+async def _record_last_active(request: object | None, player: Player) -> None:
+    """Stamp the player's ``last_active`` now, as a registry unit (lazy: the sweep or shutdown writes it).
+
+    Logout used to copy the connection manager's cached ``position`` into the player's stats and ``save_player`` the
+    whole row. That cache is set at connect and on respawn only, so it put an old posture back (sit, log out, come
+    back standing); the registry owns posture since step 7a, so only ``last_active`` is written here.
     """
-    Get player's current position from connection manager.
-
-    Args:
-        connection_manager: Connection manager instance
-        player: Player object
-        player_name: Player display name
-
-    Returns:
-        Position value or None if not found
-    """
-    if not connection_manager:
-        return None
-
-    player_identifier = getattr(player, "player_id", None)
-    player_info = None
-
-    if player_identifier:
-        player_info = connection_manager.online_players.get(str(player_identifier))
-
-    if not player_info:
-        player_info = connection_manager.get_online_player_by_display_name(player_name)
-
-    return player_info.get("position") if player_info else None
-
-
-def _sync_player_position(player: Any, position_value: str | None) -> None:
-    """
-    Synchronize player's position from connection manager to player stats.
-
-    Args:
-        player: Player object
-        position_value: Position value to sync (can be None)
-    """
-    if not position_value:
+    registry = _player_registry_of(request)
+    if registry is None:
+        logger.warning("Player registry not available; last active not recorded")
         return
-
-    stats = player.get_stats()
-    if stats.get("position") != position_value:
-        stats["position"] = position_value
-        player.set_stats(stats)
-
-
-async def _update_and_save_player_last_active(persistence: Any, player: Any) -> None:
-    """
-    Update and save player's last active timestamp.
-
-    Args:
-        persistence: Persistence layer instance
-        player: Player object
-    """
-    if not persistence:
-        return
-
-    player.last_active = datetime.now(UTC)
-    await persistence.save_player(player)
+    async with registry.mutate(_coerce_player_uuid(player.player_id)) as aggregate:
+        aggregate.row.touch_last_active(datetime.now(UTC))
     logger.info("Player logout - updated last active")
 
 
@@ -280,8 +245,7 @@ async def handle_quit_command(
         try:
             player = await persistence.get_player_by_name(username)
             if player:
-                player.last_active = datetime.now(UTC)
-                await persistence.save_player(player)
+                await _record_last_active(request, cast(Player, player))
         except (OSError, ValueError, TypeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904
             logger.error("Error updating last active on quit", error=str(e), error_type=type(e).__name__)
 
@@ -301,14 +265,11 @@ async def _prepare_player_for_logout(
     persistence: Any,
     connection_manager: Any,
     lookup_name: str,
-    player_name: str,
 ) -> None:
     player = await _get_player_for_logout(request, persistence, lookup_name)
     if not player:
         return
-    position_value = _get_player_position_from_connection_manager(connection_manager, player, player_name)
-    _sync_player_position(player, position_value)
-    await _update_and_save_player_last_active(persistence, player)
+    await _record_last_active(cast(object | None, request), player)
     if connection_manager:
         player_id = uuid.UUID(player.player_id) if isinstance(player.player_id, str) else player.player_id
         connection_manager.intentional_disconnects.add(player_id)
@@ -350,7 +311,7 @@ async def handle_logout_command(
             logger.info("Logout blocked - player in combat")
             return {"result": LOGOUT_COMBAT_BLOCKED_MESSAGE}
 
-        await _prepare_player_for_logout(request, persistence, connection_manager, lookup_name, player_name)
+        await _prepare_player_for_logout(request, persistence, connection_manager, lookup_name)
         await _disconnect_player_connections(connection_manager, player_name, mark_intentional=True)
         logger.info("Player logged out successfully")
         return {
