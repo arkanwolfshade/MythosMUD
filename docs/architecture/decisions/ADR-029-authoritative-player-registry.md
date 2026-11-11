@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.19** · MythosMUD · 2026-11-11
+**Version 1.0.20** · MythosMUD · 2026-11-11
 
 ---
 
@@ -364,8 +364,15 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 8. Connection lifecycle (login, grace, logout, pin and evict), API and admin, e2e test endpoints and fixtures.
    Delivered in slices; making DP and MP lazy is deliberately not one of them (issue #1202: it needs every DP and MP
    reader on the registry first, the death tick's SQL candidate queries included).
-   - 8a: lifecycle. Pin on connect and unpin when the grace period ends; reconnect placement, logout and the
-     shutdown save become registry units.
+   - 8a: the lifecycle savers. Logout and quit stamp `last_active` through a registry unit (lazy: the sweep or shutdown
+     writes it) instead of saving the whole row, and no longer copy the connection manager's `position` into the
+     player's stats first. That value is a cache set at connect and on respawn only, so the copy put an old posture
+     back (sit, log out, come back standing). The tutorial reconnect commits the room and the new instance id as one
+     sync unit (`place_in_instance`); the instance id used to reach the database only through the whole-row
+     save. The admin shutdown's first phase flushes the registry (`close()`) instead of loading and re-saving every
+     online player; the lifespan shutdown flushes again, but the process terminator forces an exit ten seconds after
+     it asks, so the early flush stays. Pin and unpin move to 8d: a pinned player stays resident like a non-zero idle
+     TTL, which is only safe once every writer of registry-owned values is a unit, so it waits for 8c.
    - 8b: the e2e harness. `/v1/admin/test/...` replaces the three scripts that wrote Postgres behind the registry:
      `POST players/reset` (the shared players back in the default room at 50 DP), `POST players/{name}/reset-tutorial`,
      `POST players/{name}/place` and `GET players/{name}/state` (the `E2ePlayerState` shape). Each reset is one sync
@@ -382,8 +389,8 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      an online character, as the scripts did not: the spec logs them out first.
    - 8c: the remaining writers of registry-owned values (fear and occult knowledge, admin set stat, `last_active`)
      and the communication and spell-effect savers deferred from 7c and 7d.
-   - 8d: raise `player_registry_idle_ttl_seconds` above 0 once every writer is a unit, and make the effects countdown
-     lazy.
+   - 8d: pin on connect and unpin when the grace period ends; raise `player_registry_idle_ttl_seconds` above 0 once
+     every writer is a unit, and make the effects countdown lazy.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
 
 ## 7. Open Items
@@ -402,6 +409,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.20 | 2026-11-11 | §6: step 8a as shipped (logout and quit stamp `last_active` through the registry and stop copying the connection manager's cached position; the tutorial reconnect commits room and instance as one unit; the admin shutdown flushes the registry instead of re-saving players). Pin and unpin move from 8a to 8d, since pinning is equivalent to a non-zero idle TTL |
 | 1.0.19 | 2026-11-11 | §6: step 8 is sliced into 8a to 8d, with lazy DP and MP out of it (#1202). Step 8b as shipped (test-only `/v1/admin/test` endpoints on the e2e server replace `e2e_reset_players.py`, `e2e_player_state.py` and `e2e_place_player.py`; resets are registry units, `PlayerQuestsPart.clear()` and `delete_quest_instances_by_player` are new, the state read is the registry's view) |
 | 1.0.18 | 2026-11-11 | §6: step 7b as shipped (XP and level are a registry unit with the curve in Python, pinned to `level_for_xp`; `award_player_xp` removed; `upsert_player` keeps XP and level; the respawn-room quest reward is a unit) |
 | 1.0.17 | 2026-11-10 | §6: step 7 is split into 7a to 7d. Step 7a as shipped (a move is one unit on the moving player, replacing the `RLock`; room, tutorial exit and posture are changed-column sync writes; the instance flush follows the commit; `upsert_player` still takes the room from legacy savers until step 8) |

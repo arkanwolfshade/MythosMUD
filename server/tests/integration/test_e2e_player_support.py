@@ -164,6 +164,7 @@ async def test_reset_tutorial_character_starts_a_used_character_over(
         player = await registry.get(player_id)
         assert player is not None
         assert player.row.stats["position"] == "standing"
+        assert state.position == "standing"
         assert [effect.effect_type for effect in player.effects.effects] == ["login_warded"]
         assert player.cooldowns.expires_at("folk_tonic") is None
     finally:
