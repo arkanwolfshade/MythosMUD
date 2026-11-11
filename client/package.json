@@ -65,7 +65,7 @@
     "knip": "^6.43.0",
     "markdownlint-cli": "^0.50.0",
     "patch-package": "^8.0.1",
-    "postcss": "^8.5.31",
+    "postcss": "^8.5.32",
     "prettier": "^3.9.10",
     "stylelint": "^17.16.0",
     "tailwindcss": "^4.3.3",
