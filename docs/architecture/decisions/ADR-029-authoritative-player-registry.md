@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.18** · MythosMUD · 2026-11-11
+**Version 1.0.19** · MythosMUD · 2026-11-11
 
 ---
 
@@ -402,7 +402,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
-| 1.0.19 | 2026-11-11 | �6: step 8 is sliced into 8a to 8d, with lazy DP and MP out of it (#1202). Step 8b as shipped (test-only `/v1/admin/test` endpoints on the e2e server replace `e2e_reset_players.py`, `e2e_player_state.py` and `e2e_place_player.py`; resets are registry units, `PlayerQuestsPart.clear()` and `delete_quest_instances_by_player` are new, the state read is the registry's view) |
+| 1.0.19 | 2026-11-11 | §6: step 8 is sliced into 8a to 8d, with lazy DP and MP out of it (#1202). Step 8b as shipped (test-only `/v1/admin/test` endpoints on the e2e server replace `e2e_reset_players.py`, `e2e_player_state.py` and `e2e_place_player.py`; resets are registry units, `PlayerQuestsPart.clear()` and `delete_quest_instances_by_player` are new, the state read is the registry's view) |
 | 1.0.18 | 2026-11-11 | §6: step 7b as shipped (XP and level are a registry unit with the curve in Python, pinned to `level_for_xp`; `award_player_xp` removed; `upsert_player` keeps XP and level; the respawn-room quest reward is a unit) |
 | 1.0.17 | 2026-11-10 | §6: step 7 is split into 7a to 7d. Step 7a as shipped (a move is one unit on the moving player, replacing the `RLock`; room, tutorial exit and posture are changed-column sync writes; the instance flush follows the commit; `upsert_player` still takes the room from legacy savers until step 8) |
 | 1.0.16 | 2026-11-10 | §3.4: effects and their countdown are sync until step 8 (counters lazy then). §6: step 6d as shipped (`PlayerEffectsPart`, row-level sync writes with part-named ids, loaded by `get_player_lucidity_state`; `PlayerEffects` service; the tick is one unit per player with effects and sends damage-over-time DP updates; the countdown moves from a batched statement into the unit) |
