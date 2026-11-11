@@ -1,13 +1,12 @@
 """Unit tests for graceful shutdown sequence execution."""
 
-import uuid
 from dataclasses import dataclass
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
-from server.async_persistence import AsyncPersistenceLayer
 from server.commands.shutdown_sequence import (
     _cancel_background_tasks,
     _cleanup_connection_manager,
@@ -25,7 +24,7 @@ from server.exceptions import DatabaseError
 class _ShutdownAppState:
     connection_manager: MagicMock | None = None
     persistence: MagicMock | None = None
-    container: MagicMock | None = None
+    container: "_Container | MagicMock | None" = None
     nats_message_handler: AsyncMock | None = None
     nats_service: AsyncMock | None = None
     task_registry: MagicMock | None = None
@@ -39,6 +38,25 @@ class _ShutdownApp:
     state: _ShutdownAppState
 
 
+class _Registry:
+    """A player registry that counts the flushes it is asked for, and can fail them."""
+
+    def __init__(self, error: Exception | None = None) -> None:
+        self.error: Exception | None = error
+        self.flushes: int = 0
+
+    async def close(self) -> int:
+        self.flushes += 1
+        if self.error is not None:
+            raise self.error
+        return 2
+
+
+@dataclass
+class _Container:
+    player_registry: _Registry | None = None
+
+
 @pytest.mark.asyncio
 async def test_execute_shutdown_sequence_happy_path():
     """execute_shutdown_sequence runs all phases and schedules termination."""
@@ -48,17 +66,13 @@ async def test_execute_shutdown_sequence_happy_path():
     conn_mgr.force_disconnect_player = AsyncMock()
     conn_mgr.force_cleanup = AsyncMock()
 
-    get_player = AsyncMock(return_value=MagicMock())
-    save_player = AsyncMock()
-    persistence = MagicMock(spec=AsyncPersistenceLayer)
-    persistence.get_player_by_id = get_player
-    persistence.save_player = save_player
-
     lifecycle = MagicMock()
     lifecycle.active_npcs = {"npc-1": object()}
     lifecycle.despawn_npc = MagicMock()
 
+    registry = _Registry()
     container = MagicMock()
+    container.player_registry = registry
     container.npc_spawning_service = MagicMock()
     container.npc_lifecycle_manager = lifecycle
 
@@ -74,7 +88,6 @@ async def test_execute_shutdown_sequence_happy_path():
     app = _ShutdownApp(
         _ShutdownAppState(
             connection_manager=conn_mgr,
-            persistence=persistence,
             container=container,
             nats_message_handler=nats_handler,
             nats_service=nats_service,
@@ -86,8 +99,7 @@ async def test_execute_shutdown_sequence_happy_path():
     with patch("server.commands.shutdown_sequence.schedule_process_termination") as mock_schedule:
         await execute_shutdown_sequence(app)
 
-    get_player.assert_awaited_once_with(uuid.UUID(player_id))
-    save_player.assert_awaited_once()
+    assert registry.flushes == 1
     lifecycle.despawn_npc.assert_called_once_with("npc-1", reason="server_shutdown")
     conn_mgr.force_disconnect_player.assert_awaited_once()
     nats_handler.stop.assert_awaited_once()
@@ -98,36 +110,33 @@ async def test_execute_shutdown_sequence_happy_path():
 
 
 @pytest.mark.asyncio
-async def test_persist_all_players_no_connection_manager():
-    """_persist_all_players skips when connection manager is missing."""
-    app = _ShutdownApp(_ShutdownAppState(connection_manager=None))
+async def test_persist_all_players_flushes_the_registry():
+    """_persist_all_players has the player registry write every dirty player."""
+    registry = _Registry()
+    app = _ShutdownApp(_ShutdownAppState(container=_Container(registry)))
+
     await _persist_all_players(app)
+
+    assert registry.flushes == 1
 
 
 @pytest.mark.asyncio
-async def test_persist_all_players_database_error_on_player():
-    """_persist_all_players logs and continues when one player fails."""
-    player_id = uuid4()
-    conn_mgr = MagicMock()
-    conn_mgr.get_online_players.return_value = [{"player_id": player_id}]
-    persistence = MagicMock(spec=AsyncPersistenceLayer)
-    persistence.get_player_by_id = AsyncMock(return_value=MagicMock())
-    persistence.save_player = AsyncMock(side_effect=DatabaseError("save failed"))
-
-    app = _ShutdownApp(_ShutdownAppState(connection_manager=conn_mgr, persistence=persistence))
-    await _persist_all_players(app)
+async def test_persist_all_players_without_container_or_registry_is_skipped():
+    """_persist_all_players does nothing when there is no container, or the container has no registry."""
+    await _persist_all_players(_ShutdownApp(_ShutdownAppState(container=None)))
+    await _persist_all_players(_ShutdownApp(_ShutdownAppState(container=_Container(None))))
 
 
 @pytest.mark.asyncio
-async def test_persist_all_players_player_not_found():
-    """_persist_all_players skips when player object is missing."""
-    conn_mgr = MagicMock()
-    conn_mgr.get_online_players.return_value = [{"player_id": uuid4()}]
-    persistence = MagicMock(spec=AsyncPersistenceLayer)
-    persistence.get_player_by_id = AsyncMock(return_value=None)
+@pytest.mark.parametrize("error", [DatabaseError("write failed"), SQLAlchemyError("write failed"), RuntimeError("x")])
+async def test_persist_all_players_logs_a_failed_write_and_returns(error: Exception):
+    """A failed registry write is logged, not raised, so the later shutdown phases still run."""
+    registry = _Registry(error)
+    app = _ShutdownApp(_ShutdownAppState(container=_Container(registry)))
 
-    app = _ShutdownApp(_ShutdownAppState(connection_manager=conn_mgr, persistence=persistence))
     await _persist_all_players(app)
+
+    assert registry.flushes == 1
 
 
 @pytest.mark.asyncio
@@ -234,14 +243,13 @@ async def test_execute_shutdown_sequence_non_os_error_still_terminates():
     conn_mgr.get_online_players = MagicMock(return_value=[{"player_id": str(uuid4())}])
     conn_mgr.force_disconnect_player = force_disconnect
     conn_mgr.force_cleanup = force_cleanup
-    persistence = MagicMock(spec=AsyncPersistenceLayer)
-    persistence.get_player_by_id = AsyncMock(side_effect=AttributeError("boom"))
+    registry = _Registry(AttributeError("boom"))
     nats_disconnect = AsyncMock()
     nats_service = MagicMock()
     nats_service.disconnect = nats_disconnect
 
     app = _ShutdownApp(
-        _ShutdownAppState(connection_manager=conn_mgr, persistence=persistence, nats_service=nats_service)
+        _ShutdownAppState(connection_manager=conn_mgr, container=_Container(registry), nats_service=nats_service)
     )
     with patch("server.commands.shutdown_sequence.schedule_process_termination") as mock_schedule:
         await execute_shutdown_sequence(app)

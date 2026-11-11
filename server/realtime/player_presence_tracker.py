@@ -14,7 +14,7 @@ from ..constants.instance_rooms import PENDING_INSTANCE_ID
 from ..exceptions import DatabaseError
 from ..game.effect_store import clear_instance_scoped_effects
 from ..game.instance_manager import Instance, InstanceContentLifecycle, InstanceManager, template_id_of
-from ..game.instance_state import QuestResetter, clear_lost_instance_items, restart_instance_run
+from ..game.instance_state import QuestResetter, clear_lost_instance_items, place_in_instance, restart_instance_run
 from ..game.player_registry import PlayerRegistry
 from ..models.corruption import compute_tier
 from ..models.player import Player
@@ -221,8 +221,7 @@ async def _resolve_room_id_for_tutorial_reconnect(player: Any, manager: Any) -> 
         return None
 
     setattr(player, "current_room_id", first_room_id)  # noqa: B010  # Reason: SQLAlchemy column
-    if manager.async_persistence:
-        await manager.async_persistence.save_player(player)
+    await place_in_instance(registry, player_obj, first_room_id)
     if restarted:
         await clear_lost_instance_items(registry, player_obj)
     return first_room_id

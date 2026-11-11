@@ -90,6 +90,20 @@ class QuestResetter(Protocol):  # pylint: disable=too-few-public-methods  # Reas
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires an explicit stub body for a non-None Protocol return type
 
 
+async def place_in_instance(registry: PlayerRegistry | None, player: Player, room_id: str) -> None:
+    """Commit the player's placement in a (new) tutorial instance as one registry unit (ADR-029 step 8a).
+
+    ``_start_fresh_instance`` records the instance on the loaded copy only; this writes it, with the room, to the
+    aggregate. It used to ``save_player`` that whole copy, which also wrote back every other column it held.
+    """
+    if registry is None:
+        logger.warning("Player registry not available; tutorial placement not saved", player_id=player.player_id)
+        return
+    async with registry.mutate(uuid.UUID(str(player.player_id)), sync=True) as aggregate:
+        aggregate.row.set_current_room_id(room_id, sync=True)
+        aggregate.row.set_tutorial_instance_id(player.tutorial_instance_id)
+
+
 async def _reset_dp_and_lucidity(registry: PlayerRegistry, player_id: uuid.UUID) -> None:
     """Full DP (standing) and a new character's lucidity, as one registry unit: the registry is DP's only writer
     (ADR-029 step 6a), so the reconnect's own save of the player no longer writes it."""
