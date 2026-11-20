@@ -22,30 +22,6 @@ $$;
 -- an integration test checks that the two agree. The stored award_player_xp function is gone.
 DROP FUNCTION IF EXISTS :schema_name.award_player_xp(uuid, integer); -- noqa: PRS
 
-
--- update_player_stat_field: atomically update a stat field in stats JSONB
--- p_path: JSONB path array, e.g. ARRAY['current_dp'] or ARRAY['strength']
--- Caller must validate field_name against whitelist before calling.
-CREATE OR REPLACE FUNCTION :schema_name.update_player_stat_field( -- noqa: PRS
-    p_player_id UUID,
-    p_path text[],
-    p_delta numeric
-)
-RETURNS integer
-LANGUAGE plpgsql
-AS $$
-DECLARE
-    rows_updated integer;
-BEGIN
-    UPDATE players
-    SET stats = jsonb_set(
-        COALESCE(stats, '{}'::jsonb),
-        p_path,
-        to_jsonb((COALESCE((stats #>> p_path)::numeric, 0) + p_delta)::numeric),
-        true
-    )
-    WHERE player_id = p_player_id;
-    GET DIAGNOSTICS rows_updated = ROW_COUNT;
-    RETURN rows_updated;
-END;
-$$;
+-- Fear and occult knowledge are changed by the player registry (ADR-029 step 8c), and admin set stat writes its stat
+-- the same way. The stored update_player_stat_field function, an atomic update the registry never saw, is gone.
+DROP FUNCTION IF EXISTS :schema_name.update_player_stat_field(uuid, text[], numeric); -- noqa: PRS

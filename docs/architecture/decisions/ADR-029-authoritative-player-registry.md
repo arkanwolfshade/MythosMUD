@@ -1,6 +1,6 @@
 # ADR-029: Authoritative In-Memory Player Registry
 
-**Version 1.0.20** · MythosMUD · 2026-11-11
+**Version 1.0.21** · MythosMUD · 2026-11-19
 
 ---
 
@@ -388,7 +388,16 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
      the shared players after the server checks, since the reset needs the server up. A reset still does not refuse
      an online character, as the scripts did not: the spec logs them out first.
    - 8c: the remaining writers of registry-owned values (fear and occult knowledge, admin set stat, `last_active`)
-     and the communication and spell-effect savers deferred from 7c and 7d.
+     and the communication and spell-effect savers deferred from 7c and 7d. Delivered in two parts.
+     - 8c-i: fear, occult knowledge and admin set stat. Fear and occult knowledge were the stored function
+       `update_player_stat_field`, an atomic `jsonb_set` the registry never saw. They are now one sync unit each,
+       through a stat adjuster the combat bundle injects into the persistence layer (as it does the lucidity
+       adjuster); the function, `ExperienceRepository` and its tests are gone. `upsert_player` keeps an existing
+       player's stored `fear` and `occult_knowledge`, as it does corruption, DP and MP, so a save of a copy loaded
+       before a change cannot write the old value back. Admin set stat writes any stat other than DP, MP,
+       corruption and lucidity as the one `stats` key in a unit, instead of saving the loaded copy whole. On the
+       way, the effects API's occult-knowledge path called a method that does not exist
+       (`async_gain_occult_knowledge`) and so always failed; it now calls the real one.
    - 8d: pin on connect and unpin when the grace period ends; raise `player_registry_idle_ttl_seconds` above 0 once
      every writer is a unit, and make the effects countdown lazy.
 9. Gate: privatise the player repositories, delete the ORM runtime paths, and add the lint rule.
@@ -409,6 +418,7 @@ Stacked PRs (`gh stack`), each green on its own, with correctness required once 
 | 1.0.1 | 2026-10-26 | §6: step 2 ships the machinery plus the `players`-row part; other parts land with their callers |
 | 1.0.2 | 2026-10-26 | §6: step 3 splits into 3a (lucidity) and 3b (effects). §7: K and N were set in step 2 (4 and 5); lucidity's drift was measured (2 of 4 dev characters disagreed) and resolved by backfilling missing `player_lucidity` rows from `stats.lucidity` |
 | 1.0.3 | 2026-10-27 | §6: step 3b splits into 3b-i (move to `player_effects`) and 3b-ii (drop `players.status_effects`). §7: no data migration was needed; the column held only short-lived tick state, which 3b-i stopped reading |
+| 1.0.21 | 2026-11-19 | §6: step 8c is split in two. 8c-i as shipped (fear and occult knowledge are registry units, `update_player_stat_field` and `ExperienceRepository` removed, `upsert_player` keeps stored fear and occult knowledge; admin set stat writes one stats key in a unit) |
 | 1.0.20 | 2026-11-11 | §6: step 8a as shipped (logout and quit stamp `last_active` through the registry and stop copying the connection manager's cached position; the tutorial reconnect commits room and instance as one unit; the admin shutdown flushes the registry instead of re-saving players). Pin and unpin move from 8a to 8d, since pinning is equivalent to a non-zero idle TTL |
 | 1.0.19 | 2026-11-11 | §6: step 8 is sliced into 8a to 8d, with lazy DP and MP out of it (#1202). Step 8b as shipped (test-only `/v1/admin/test` endpoints on the e2e server replace `e2e_reset_players.py`, `e2e_player_state.py` and `e2e_place_player.py`; resets are registry units, `PlayerQuestsPart.clear()` and `delete_quest_instances_by_player` are new, the state read is the registry's view) |
 | 1.0.18 | 2026-11-11 | §6: step 7b as shipped (XP and level are a registry unit with the curve in Python, pinned to `level_for_xp`; `award_player_xp` removed; `upsert_player` keeps XP and level; the respawn-room quest reward is a unit) |

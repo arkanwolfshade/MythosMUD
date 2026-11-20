@@ -552,7 +552,7 @@ $$;
 -- copy loaded before a registry inventory commit cannot write the old stacks back. Likewise the stats keys only the
 -- registry writes (corruption since step 5c; DP and the death room since step 6a; MP since step 6b): a save keeps
 -- the stored values, and never brings back a key the registry removed. XP and level are the registry's too (step 7b):
--- an update leaves experience_points and level as stored.
+-- an update leaves experience_points and level as stored. Fear and occult knowledge too (step 8c).
 CREATE OR REPLACE PROCEDURE :schema_name.upsert_player(
     p_player_id UUID,
     p_user_id UUID,
@@ -595,14 +595,21 @@ BEGIN
         is_admin = EXCLUDED.is_admin,
         profession_id = EXCLUDED.profession_id,
         last_active = EXCLUDED.last_active,
-        stats = (EXCLUDED.stats - ARRAY['corruption', 'current_dp', 'magic_points', 'death_room_id', 'death_location'])
-            || jsonb_strip_nulls(jsonb_build_object(
-                'corruption', players.stats -> 'corruption',
-                'current_dp', players.stats -> 'current_dp',
-                'magic_points', players.stats -> 'magic_points',
-                'death_room_id', players.stats -> 'death_room_id',
-                'death_location', players.stats -> 'death_location'
-            )),
+        stats = (
+            EXCLUDED.stats - ARRAY[
+                'corruption', 'current_dp', 'magic_points', 'death_room_id', 'death_location', 'fear',
+                'occult_knowledge'
+            ]
+        )
+        || jsonb_strip_nulls(jsonb_build_object(
+            'corruption', players.stats -> 'corruption',
+            'current_dp', players.stats -> 'current_dp',
+            'magic_points', players.stats -> 'magic_points',
+            'death_room_id', players.stats -> 'death_room_id',
+            'death_location', players.stats -> 'death_location',
+            'fear', players.stats -> 'fear',
+            'occult_knowledge', players.stats -> 'occult_knowledge'
+        )),
         -- A soft delete is one-way: a save of a copy loaded before the delete committed must not undo it.
         is_deleted = players.is_deleted OR EXCLUDED.is_deleted,
         deleted_at = CASE WHEN players.is_deleted THEN players.deleted_at ELSE EXCLUDED.deleted_at END,

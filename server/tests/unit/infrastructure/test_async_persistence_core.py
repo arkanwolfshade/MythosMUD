@@ -32,7 +32,7 @@ def test_async_persistence_layer_init_skip_room_cache(mock_event_bus):
     assert layer._room_repo is not None
     assert layer._player_repo is not None
     assert layer._profession_repo is not None
-    assert layer._experience_repo is not None
+    assert layer._stat_adjuster is None  # wired by the combat bundle
     assert layer._health_service is None  # wired by the combat bundle
     assert layer._container_repo is not None
     assert layer._item_repo is not None

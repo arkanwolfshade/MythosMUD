@@ -35,8 +35,8 @@ foreach ($path in $PossiblePaths) {
     if ($path -eq "nats-server") {
         # Check if it's in PATH
         try {
-            $null = Get-Command $path -ErrorAction Stop
-            $NatsServerPath = $path
+            # Full path, not the bare name: Split-Path -Parent of a bare name is empty and Join-Path below throws
+            $NatsServerPath = (Get-Command $path -ErrorAction Stop).Source
             break
         }
         catch {

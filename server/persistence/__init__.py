@@ -31,7 +31,6 @@ from .protocols import PlayerRepositoryProtocol, RoomRepositoryProtocol
 # Import new async repositories (available for gradual migration)
 from .repositories import (
     ContainerRepository,
-    ExperienceRepository,
     ItemRepository,
     PlayerRepository,
     ProfessionRepository,
@@ -60,7 +59,6 @@ __all__ = [
     # New async repositories (gradual migration)
     "PlayerRepository",
     "RoomRepository",
-    "ExperienceRepository",
     "ProfessionRepository",
     "ContainerRepository",
     "ItemRepository",

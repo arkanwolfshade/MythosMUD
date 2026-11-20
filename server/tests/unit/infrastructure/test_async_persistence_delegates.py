@@ -20,6 +20,7 @@ from server.async_persistence import (
     AsyncPersistenceLayer,
 )
 from server.container.async_persistence_access import get_container_async_persistence
+from server.container.bundles.combat import make_stat_adjuster
 from server.game.effect_store import PlayerEffects
 from server.game.player_registry.player_effects import ADD_EFFECT_SQL, DELETE_EFFECTS_BY_TYPE_SQL
 from server.models.player import Player
@@ -90,21 +91,28 @@ async def test_get_current_lcd_without_a_reader_refuses_rather_than_reading_a_st
 
 
 @pytest.mark.asyncio
-async def test_apply_fear_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test apply_fear delegates to ExperienceRepository."""
-    mock_player = MagicMock(spec=Player)
+async def test_apply_fear_adds_fear_in_one_registry_unit(async_persistence_layer: AsyncPersistenceLayer):
+    """Fear changed through the layer is a synchronous player registry unit (ADR-029 step 8c), not an atomic SQL update."""
     player_id = uuid.uuid4()
-    mock_player.player_id = player_id
-    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 20, "max_dp": 20, "fear": 3})
+    async_persistence_layer.set_stat_adjuster(make_stat_adjuster(harness.registry))
 
-    await async_persistence_layer.apply_fear(mock_player, 5, "test_source")
+    await async_persistence_layer.apply_fear(_stored_player(player_id, {}), 5, "test_source")
 
-    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        player_id,
-        "fear",
-        5,
-        "test_source: fear increase",
-    )
+    assert harness.stats(player_id)["fear"] == 8
+    assert harness.db.commits == 1
+
+
+@pytest.mark.asyncio
+async def test_fear_and_occult_without_the_adjuster_refuse(async_persistence_layer: AsyncPersistenceLayer):
+    """No fallback to writing stats directly: the registry would not see the change."""
+    async_persistence_layer.set_stat_adjuster(None)
+    player = _stored_player(uuid.uuid4(), {})
+
+    with pytest.raises(RuntimeError, match="Stat adjuster not wired"):
+        await async_persistence_layer.apply_fear(player, 1, "test_source")
+    with pytest.raises(RuntimeError, match="Stat adjuster not wired"):
+        await async_persistence_layer.gain_occult_knowledge(player, 1, "test_source")
 
 
 @pytest.mark.asyncio
@@ -133,22 +141,18 @@ async def test_adjust_corruption_without_the_service_refuses(async_persistence_l
 
 
 @pytest.mark.asyncio
-async def test_gain_occult_knowledge_delegates(async_persistence_layer: AsyncPersistenceLayer):
-    """Test gain_occult_knowledge delegates to ExperienceRepository (via the facade, not a
-    disconnected ExperienceRepository(event_bus=None) instance)."""
-    mock_player = MagicMock(spec=Player)
+async def test_gain_occult_knowledge_starts_from_zero_in_one_registry_unit(
+    async_persistence_layer: AsyncPersistenceLayer,
+):
+    """A player with no occult knowledge yet gets the amount; the change is one registry unit (ADR-029 step 8c)."""
     player_id = uuid.uuid4()
-    mock_player.player_id = player_id
-    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 20, "max_dp": 20})
+    async_persistence_layer.set_stat_adjuster(make_stat_adjuster(harness.registry))
 
-    await async_persistence_layer.gain_occult_knowledge(mock_player, 7, "test_source")
+    await async_persistence_layer.gain_occult_knowledge(_stored_player(player_id, {}), 7, "test_source")
 
-    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
-        player_id,
-        "occult_knowledge",
-        7,
-        "test_source: occult knowledge gain",
-    )
+    assert harness.stats(player_id)["occult_knowledge"] == 7
+    assert harness.db.commits == 1
 
 
 def _stored_player(player_id: uuid.UUID, stats: dict[str, object]) -> Player:

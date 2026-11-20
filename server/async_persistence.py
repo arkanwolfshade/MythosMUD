@@ -47,7 +47,6 @@ from .persistence.container_create_params import ContainerCreateParams
 from .persistence.protocols import PlayerRepositoryProtocol, RoomRepositoryProtocol
 from .persistence.repositories import (
     ContainerRepository,
-    ExperienceRepository,
     ItemRepository,
     PlayerEffectRepository,
     PlayerRepository,
@@ -63,6 +62,8 @@ if TYPE_CHECKING:
 
 # (player_id, delta, reason_code): apply one lucidity adjustment and commit it.
 LucidityAdjuster = Callable[[uuid.UUID, int, str], Awaitable[None]]
+# (player_id, stats key, delta, reason): add delta to one numeric stats key and commit it (ADR-029 step 8c).
+StatAdjuster = Callable[[uuid.UUID, str, int, str], Awaitable[None]]
 # Reads a player's LCD from the player registry (ADR-029 step 5b-i).
 LucidityReader = Callable[[uuid.UUID], Awaitable[int]]
 
@@ -86,7 +87,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     _room_repo: RoomRepositoryProtocol
     _player_repo: PlayerRepositoryProtocol
     _profession_repo: ProfessionRepository
-    _experience_repo: ExperienceRepository
+    _stat_adjuster: StatAdjuster | None
     _health_service: DpAdjusting | None
     _effects_service: PlayerEffectsWriting | None
     _container_repo: ContainerRepository
@@ -124,7 +125,7 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         self._room_repo = RoomRepository(self._room_cache)
         self._player_repo = PlayerRepository(self._room_cache, event_bus)
         self._profession_repo = ProfessionRepository()
-        self._experience_repo = ExperienceRepository()
+        self._stat_adjuster = None
         self._health_service = None
         self._effects_service = None
         self._container_repo = ContainerRepository()
@@ -155,6 +156,10 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
     def set_health_service(self, service: DpAdjusting | None) -> None:
         """Set the PlayerHealthService (on the player registry) that damage and healing run; injected likewise."""
         self._health_service = service
+
+    def set_stat_adjuster(self, adjuster: StatAdjuster | None) -> None:
+        """Set how fear and occult knowledge change (a player registry unit); injected like the lucidity adjuster."""
+        self._stat_adjuster = adjuster
 
     def set_effects_service(self, service: PlayerEffectsWriting | None) -> None:
         """Set the PlayerEffects (on the player registry) that adding and removing effects run; injected likewise."""
@@ -347,9 +352,8 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         await self._lucidity_adjuster(player_id, delta, source)
 
     async def apply_fear(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Apply fear to a player. Delegates to ExperienceRepository."""
-        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
-        await self._experience_repo.update_player_stat_field(player_id, "fear", amount, f"{source}: fear increase")
+        """Add fear to a player, as one player registry unit."""
+        await self._adjust_stat(uuid.UUID(str(player.player_id)), "fear", amount, f"{source}: fear increase")
 
     async def adjust_corruption(
         self, player_id: uuid.UUID, delta: int, *, reason_code: str, **options: Unpack[CorruptionAdjustOptions]
@@ -362,11 +366,16 @@ class AsyncPersistenceLayer(AsyncPersistenceRoomFacade):  # pylint: disable=too-
         )
 
     async def gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown") -> None:
-        """Gain occult knowledge for a player. Delegates to ExperienceRepository."""
-        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
-        await self._experience_repo.update_player_stat_field(
-            player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
+        """Add occult knowledge to a player, as one player registry unit."""
+        await self._adjust_stat(
+            uuid.UUID(str(player.player_id)), "occult_knowledge", amount, f"{source}: occult knowledge gain"
         )
+
+    async def _adjust_stat(self, player_id: uuid.UUID, key: str, delta: int, reason: str) -> None:
+        if self._stat_adjuster is None:
+            # Wiring is missing (the combat bundle sets it at startup): never fall back to writing stats directly.
+            raise RuntimeError("Stat adjuster not wired; cannot change player stats")
+        await self._stat_adjuster(player_id, key, delta, reason)
 
     def _health(self) -> DpAdjusting:
         if self._health_service is None:  # never fall back to writing stats directly

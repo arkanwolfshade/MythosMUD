@@ -151,6 +151,24 @@ function Test-MythosMudProjectProcess {
     return $false
 }
 
+function Get-MythosMudChildProcess {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$ProcessId
+    )
+
+    # Windows reuses PIDs, and a process whose real parent exited keeps that stale ParentProcessId. Once the PID is
+    # reused, ParentProcessId alone names unrelated processes (e.g. DiscordSystemHelper) as children. A real child
+    # is never created before its parent.
+    $parent = Get-CimInstance -ClassName Win32_Process -Filter "ProcessId = $ProcessId" -ErrorAction SilentlyContinue
+    if (-not $parent) {
+        return @()
+    }
+    return @(Get-CimInstance -ClassName Win32_Process -Filter "ParentProcessId = $ProcessId" |
+            Where-Object { $_.CreationDate -ge $parent.CreationDate })
+}
+
 function Stop-MythosMudProjectProcessTree {
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -190,7 +208,7 @@ function Stop-MythosMudProjectProcessTree {
     }
 
     try {
-        $children = Get-CimInstance -ClassName Win32_Process -Filter "ParentProcessId = $ProcessId"
+        $children = Get-MythosMudChildProcess -ProcessId $ProcessId
 
         foreach ($child in $children) {
             Stop-MythosMudProjectProcessTreeInternal @forwardCommon -ProcessId $child.ProcessId
@@ -217,7 +235,7 @@ function Stop-MythosMudProjectProcessTreeInternal {
     }
 
     try {
-        $children = Get-CimInstance -ClassName Win32_Process -Filter "ParentProcessId = $ProcessId"
+        $children = Get-MythosMudChildProcess -ProcessId $ProcessId
 
         foreach ($child in $children) {
             Stop-MythosMudProjectProcessTreeInternal @PSBoundParameters -ProcessId $child.ProcessId

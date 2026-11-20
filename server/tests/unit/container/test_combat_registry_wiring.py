@@ -28,6 +28,7 @@ class RecordingPersistence:
         self.health_service: DpAdjusting | None = None
         self.effects_service: PlayerEffectsWriting | None = None
         self.wired_lucidity: bool = False
+        self.wired_stats: bool = False
 
     def get_room_by_id(self, room_id: str) -> None:  # bound by the bundle as the respawn room lookup
         _ = room_id
@@ -38,6 +39,9 @@ class RecordingPersistence:
 
     def set_lucidity_reader(self, reader: object) -> None:
         _ = reader
+
+    def set_stat_adjuster(self, adjuster: object) -> None:
+        self.wired_stats = adjuster is not None
 
     def set_corruption_service(self, service: CorruptionAdjusting | None) -> None:
         self.corruption_service = service
@@ -88,6 +92,7 @@ async def test_corruption_is_wired_onto_the_player_registry(monkeypatch: pytest.
     await CombatBundle().initialize(cast(ApplicationContainer, cast(object, container)))
 
     assert persistence.wired_lucidity
+    assert persistence.wired_stats  # fear and occult knowledge (step 8c)
     assert isinstance(persistence.corruption_service, CorruptionService)
     assert isinstance(persistence.health_service, PlayerHealthService)  # DP from ticks and mechanics (step 6a)
     assert isinstance(persistence.effects_service, PlayerEffects)  # effects spells and the ward add (step 6d)

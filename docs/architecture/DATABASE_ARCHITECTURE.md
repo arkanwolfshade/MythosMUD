@@ -1,6 +1,6 @@
 # Database Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-09-16
+**Version 1.0.1** · MythosMUD · 2026-11-19
 
 ---
 
@@ -177,7 +177,6 @@ removed without a matching update here fails that test.
 | --- | --- | --- |
 | `PlayerRepository` | Player CRUD/query — get/save/delete, batch fetch, room validation | Split across `player_repository.py` + `_mappers.py`/`_room.py`/`_save.py`; retry with exponential backoff |
 | `RoomRepository` | Room lookup | In-memory cache loaded at startup; no queries after that |
-| `ExperienceRepository` | XP and stat fields | Atomic updates; whitelist-based field validation |
 | `ProfessionRepository` | Profession catalog lookup | Simple async queries, no dependencies |
 | `ContainerRepository` | Container CRUD | Wraps `container_persistence.py` via `asyncio.to_thread()` |
 | `ItemRepository` | Item instance creation/existence | Wraps `item_instance_persistence.py` via `asyncio.to_thread()` |
@@ -237,14 +236,12 @@ async def get_player(player_id: UUID, player_repo: PlayerRepository = Depends(ge
 ### 3.3 Atomic updates
 
 **[SPEC]**
-`ExperienceRepository` updates a single JSONB field without loading and rewriting the whole row,
-preventing lost-update races under concurrent XP events (DP moved to the player registry, ADR-029 step 6a):
-
-```sql
-UPDATE players
-SET stats = jsonb_set(stats, '{current_health}', ...)
-WHERE player_id = :player_id
-```
+A player's own state is changed only through the player registry
+([ADR-029](decisions/ADR-029-authoritative-player-registry.md)): each change is a unit of work under the player's
+lock, and its write sends only the columns and `stats` keys it changed (`update_player_row` merges them), so two
+changes to one player cannot overwrite each other. The single-field SQL updates that did this before (DP in
+`HealthRepository`, XP and the stat fields such as fear and occult knowledge in `ExperienceRepository`) are gone;
+the last of them moved in ADR-029 step 8c.
 
 ## 4. Connection pooling
 
