@@ -14,6 +14,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
 
 if TYPE_CHECKING:
+    from ..async_persistence import AsyncPersistenceLayer
     from ..models.player import Player
 
 logger = get_logger(__name__)
@@ -158,7 +159,8 @@ class PlayerStateService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.async_gain_occult_knowledge(player, amount, source)
+        persistence = cast("AsyncPersistenceLayer", self.persistence)
+        await persistence.gain_occult_knowledge(cast("Player", player), amount, source)
         logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 

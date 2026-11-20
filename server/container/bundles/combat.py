@@ -20,7 +20,7 @@ from anyio import sleep
 from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
-    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster, LucidityReader
+    from server.async_persistence import AsyncPersistenceLayer, LucidityAdjuster, LucidityReader, StatAdjuster
     from server.container.main import ApplicationContainer
     from server.game.player_registry import PlayerRegistry
     from server.services.lucidity_helpers import CatatoniaObserverProtocol
@@ -49,6 +49,23 @@ def make_lucidity_adjuster(registry: PlayerRegistry, observer: CatatoniaObserver
 
     async def adjust(player_id: uuid_lib.UUID, delta: int, reason_code: str) -> None:
         _ = await service.apply_lucidity_adjustment(player_id, delta, reason_code=reason_code)
+
+    return adjust
+
+
+def make_stat_adjuster(registry: PlayerRegistry) -> StatAdjuster:
+    """Add to one numeric stats key (fear, occult knowledge) as a synchronous player registry unit (ADR-029 step 8c).
+
+    These used to be an atomic SQL update the registry never saw, so a resident copy of the player went stale against
+    it. A missing or non-numeric value counts as 0, as it did in SQL.
+    """
+
+    async def adjust(player_id: uuid_lib.UUID, key: str, delta: int, reason: str) -> None:
+        async with registry.mutate(player_id, sync=True) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            current = player.row.stats.get(key, 0)
+            base = current if isinstance(current, int | float) and not isinstance(current, bool) else 0
+            player.row.set_stat(key, base + delta, sync=True)
+        logger.info("Player stat adjusted", player_id=str(player_id), stat=key, delta=delta, reason=reason)
 
     return adjust
 
@@ -169,6 +186,8 @@ class CombatBundle:
             observer = cast("CatatoniaObserverProtocol", self.catatonia_registry)
             persistence.set_lucidity_adjuster(make_lucidity_adjuster(player_registry, observer))
             persistence.set_lucidity_reader(make_lucidity_reader(player_registry))
+            # Fear and occult knowledge, which mechanics and the effects API add to (step 8c).
+            persistence.set_stat_adjuster(make_stat_adjuster(player_registry))
             # Corruption changed through the persistence layer (spells, mechanics) too (step 5c).
             from server.game.effect_store import PlayerEffects
             from server.services.corruption_service import CorruptionService

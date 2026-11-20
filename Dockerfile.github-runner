@@ -130,7 +130,7 @@ WORKDIR /workspace
 # All operations in single RUN to keep service running during execution.
 # Note: Running as root in Docker, use su to execute as postgres user.
 # codeql[hardcoded-credential]: Test password for CI Docker container setup only, not used in production
-# hadolint ignore=DL3009
+# hadolint ignore=DL3064
 ARG POSTGRES_PASSWORD=Cthulhu1
 # Note: service command required to start PostgreSQL in Ubuntu container for CI workflows.
 # Alternative approaches (pg_ctlcluster, direct postgres binary) are more complex and
@@ -167,17 +167,21 @@ RUN service postgresql start && \
 #
 # For local development, test defaults are used automatically.
 # codeql[hardcoded-credential]: Test secret defaults for CI Docker container only, not used in production
-# hadolint ignore=DL3009
+# hadolint ignore=DL3064
 ARG MYTHOSMUD_ADMIN_PASSWORD=test-admin-password
+# hadolint ignore=DL3064
 ARG MYTHOSMUD_SECRET_KEY=test-secret-key-for-ci-workflow
+# hadolint ignore=DL3064
 ARG MYTHOSMUD_JWT_SECRET=test-jwt-secret-for-ci-workflow
+# hadolint ignore=DL3064
 ARG MYTHOSMUD_RESET_TOKEN_SECRET=test-reset-token-secret-for-ci-workflow
+# hadolint ignore=DL3064
 ARG MYTHOSMUD_VERIFICATION_TOKEN_SECRET=test-verification-token-secret-for-ci-workflow
 
 # Database URL uses test password for CI container self-contained setup.
 # This is acceptable for test/CI images but should NEVER be used in production.
 # For production, override POSTGRES_PASSWORD via --build-arg or use runtime -e flags.
-# hadolint ignore=DL3009
+# hadolint ignore=DL3064
 ENV DATABASE_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
     DATABASE_NPC_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
     MYTHOSMUD_ADMIN_PASSWORD="${MYTHOSMUD_ADMIN_PASSWORD}" \

@@ -2,7 +2,6 @@
 
 from .container_repository import ContainerRepository
 from .dialogue_definition_repository import DialogueDefinitionRepository
-from .experience_repository import ExperienceRepository
 from .item_repository import ItemRepository
 from .player_effect_repository import PlayerEffectRepository
 from .player_repository import PlayerRepository
@@ -17,7 +16,6 @@ __all__ = [
     "PlayerRepository",
     "PlayerEffectRepository",
     "RoomRepository",
-    "ExperienceRepository",
     "ContainerRepository",
     "ItemRepository",
     "PlayerSkillRepository",

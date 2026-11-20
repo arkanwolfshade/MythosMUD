@@ -125,14 +125,15 @@ async def test_handle_admin_set_stat_command_success_str():
     mock_app.state = mock_state
     mock_request.app = mock_app
 
-    result = await _handle_admin_set_stat_command(
-        {"args": ["STR", "TargetPlayer", "75"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
-    )
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["STR", "TargetPlayer", "75"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
+        )
 
     assert "result" in result
     assert "Set TargetPlayer's STR from 50 to 75" in result["result"]
     set_stats.assert_called_once()
-    save_player.assert_called_once_with(mock_target_player)
+    save_player.assert_not_called()  # the registry writes the stat (ADR-029 step 8c)
 
 
 @pytest.mark.asyncio
@@ -183,6 +184,29 @@ async def test_handle_admin_set_stat_dp_writes_through_the_player_registry():
     assert "Set TargetPlayer's DP" in result["result"]
     assert harness.stats(player_id)["current_dp"] == 12
     assert harness.stats(player_id)["position"] == "standing"  # revived from lying
+    assert harness.db.commits == 1
+    save_player.assert_not_awaited()
+
+
+@pytest.mark.parametrize(("stat_input", "stat_key"), [("STR", "strength"), ("Occult", "occult")])
+@pytest.mark.asyncio
+async def test_handle_admin_set_stat_writes_any_other_stat_through_the_player_registry(stat_input: str, stat_key: str):
+    """ADR-029 step 8c: the one stats key is committed in a registry unit; the loaded copy is never saved whole."""
+    request, target, _apply_dp, persistence = _make_all_stat_types_harness()
+    player_id = uuid.uuid4()
+    target.player_id = player_id
+    save_player: AsyncMock = AsyncMock()
+    persistence.save_player = save_player
+    harness = lucidity_registry({player_id: None}, stats={"current_dp": 20, "max_dp": 20, "strength": 50, "occult": 0})
+
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=harness.registry):
+        result = await _handle_admin_set_stat_command(
+            {"args": [stat_input, "TargetPlayer", "42"]}, {"name": "AdminPlayer"}, request, None, "AdminPlayer"
+        )
+
+    assert f"Set TargetPlayer's {stat_input}" in result["result"]
+    assert harness.stats(player_id)[stat_key] == 42
+    assert harness.stats(player_id)["current_dp"] == 20  # nothing else changed
     assert harness.db.commits == 1
     save_player.assert_not_awaited()
 
@@ -343,9 +367,10 @@ async def test_handle_admin_set_stat_command_value_out_of_range():
     mock_request.app = mock_app
 
     # Test value above range
-    result = await _handle_admin_set_stat_command(
-        {"args": ["STR", "TargetPlayer", "150"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
-    )
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["STR", "TargetPlayer", "150"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
+        )
 
     assert "result" in result
     assert "Set TargetPlayer's STR" in result["result"]
@@ -356,9 +381,10 @@ async def test_handle_admin_set_stat_command_value_out_of_range():
     # Test value below range
     mock_target_player.get_stats = MagicMock(return_value={"strength": 50})
     mock_target_player.set_stats = MagicMock()
-    result = await _handle_admin_set_stat_command(
-        {"args": ["STR", "TargetPlayer", "-10"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
-    )
+    with patch("server.commands.admin_setstat_command.player_registry", return_value=MagicMock()):
+        result = await _handle_admin_set_stat_command(
+            {"args": ["STR", "TargetPlayer", "-10"]}, {"name": "AdminPlayer"}, mock_request, None, "AdminPlayer"
+        )
 
     assert "result" in result
     assert "Set TargetPlayer's STR" in result["result"]

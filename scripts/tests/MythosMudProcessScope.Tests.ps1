@@ -27,4 +27,18 @@ Describe "MythosMudProcessScope" {
         ($s -contains 'jcodemunch') | Should Be $true
         ($s -contains 'modelcontextprotocol') | Should Be $true
     }
+
+    It "Get-MythosMudChildProcess skips a process whose parent PID was reused by a newer process" {
+        $born = Get-Date '2026-11-20T13:00:00'
+        Mock Get-CimInstance -ParameterFilter { $Filter -eq 'ProcessId = 42' } {
+            [pscustomobject]@{ ProcessId = 42; CreationDate = $born }
+        }
+        Mock Get-CimInstance -ParameterFilter { $Filter -eq 'ParentProcessId = 42' } {
+            [pscustomobject]@{ ProcessId = 7600; CreationDate = $born.AddHours(-1) }  # started before PID 42 existed
+            [pscustomobject]@{ ProcessId = 43; CreationDate = $born.AddSeconds(1) }
+        }
+        $children = @(Get-MythosMudChildProcess -ProcessId 42)
+        $children.Count | Should Be 1
+        $children[0].ProcessId | Should Be 43
+    }
 }

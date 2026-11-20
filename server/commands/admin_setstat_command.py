@@ -298,14 +298,16 @@ async def _apply_stat_change_and_build_result(
     old_value = stats.get(ctx.stat_key)
     warning_message, range_warning = calculate_stat_warnings(ctx.stat_key, ctx.value, stats)
     previous_position = _mutate_player_stat(ctx, stats)
-    # DP and MP have one writer, the player registry (ADR-029 steps 6a, 6b): upsert_player keeps the stored values.
+    # Every stat is written through the player registry: DP and MP by their services (ADR-029 steps 6a, 6b), any
+    # other stat as the one stats key it is (step 8c). Saving the loaded copy would write back every column it holds.
     target_id = uuid.UUID(str(ctx.target_player_obj.player_id))
     if ctx.stat_key == "current_dp":
         _ = await PlayerHealthService(player_registry()).set_dp(target_id, ctx.value)
     elif ctx.stat_key == "magic_points":
         _ = await PlayerMpService(player_registry()).set_mp(target_id, ctx.value)
     else:
-        await ctx.persistence.save_player(ctx.target_player_obj)
+        async with player_registry().mutate(target_id, sync=True) as player:  # pylint: disable=contextmanager-generator-missing-cleanup  # Reason: @asynccontextmanager always drives this generator to completion; pylint cannot see through the wrapper
+            player.row.set_stat(ctx.stat_key, ctx.value, sync=True)
     await _notify_player_stat_change(
         AdminSetStatNotifyContext(
             app=ctx.app,
